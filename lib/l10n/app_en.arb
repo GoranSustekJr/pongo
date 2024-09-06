@@ -1,0 +1,459 @@
+{
+    "@@locale": "en",
+    "language": "English",
+    "@language": {
+        "description": "Current language"
+    },
+
+    "search": "Search",
+    "@search": {
+        "description": "Search"
+    },
+
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "Cancel"
+    },
+
+    "okey": "OK",
+    "@okey": {
+        "description": "OK"
+    },
+
+    "areyousure": "Are you sure?",
+    "@areyousure": {
+        "description": "Are You Sure?"
+    },
+
+    "clearqueue": "Clear queue?",
+    "@clearqueue": {
+        "description": "Clear Queue?"
+    },
+
+    "clearqueuebody": "In order to play the song, the queue needs to be cleared.",
+    "@clearqueuebody": {
+        "description": "Clear Queue?"
+    },
+
+    "signin": "Sign in",
+    "@signin": {
+        "description": "sign in"
+    },
+
+    "signinwith": "Sign in with",
+    "@signinwith": {
+        "description": "Sign in with"
+    },
+
+    "bysigninginyou": "By signing in you accept our terms of service and privacy policies.",
+    "@bysigninginyou": {
+        "description": "By signing in you"
+    },
+
+    "klemen": "With Pongo life sounds beter",
+    "@klemen": {
+        "description": "Sign in with"
+    },
+
+    "or": "or",
+    "@or": {
+        "description": "or"
+    },
+
+    "profile": "Profile",
+    "@profile": {
+        "description": "profile"
+    },
+
+    "name": "Name",
+    "@name": {
+        "description": "name"
+    },
+
+    "email": "Email",
+    "@email": {
+        "description": "email"
+    },
+
+    "premium": "Premium",
+    "@premium": {
+        "description": "premium"
+    },
+
+    "subscribed": "Subscribed",
+    "@subscribed": {
+        "description": "subscribed"
+    },
+
+    "signout": "Sign out",
+    "@signout": {
+        "description": "sign out"
+    },
+
+    "settings": "Settings",
+    "@settings": {
+        "description": "settings"
+    },
+
+    "yourprofile": "Your Profile",
+    "@yourprofile": {
+        "description": "yourprofile"
+    },
+
+    "library": "Library",
+    "@library": {
+        "description": "library"
+    },
+
+    "online": "Online",
+    "@online": {
+        "description": "online"
+    },
+
+    "offline": "Offline",
+    "@offline": {
+        "description": "offline"
+    },
+    
+    "playlist": "Playlist",
+    "@playlist": {
+        "description": "playlist"
+    },
+
+    "favouritesongs": "Favourite Songs",
+    "@favouritesongs": {
+        "description": "favouritesongs"
+    },
+
+    "onlinefavouritesongs": "Online Favourite Songs",
+    "@onlinefavouritesongs": {
+        "description": "onlinefavouritesongs"
+    },
+
+    "playlists": "Playlists",
+    "@playlists": {
+        "description": "playlists"
+    },
+
+    "onlineplaylists": "Online Playlists",
+    "@onlineplaylists": {
+        "description": "onlineplaylists"
+    },
+
+    "songs": "Songs",
+    "@songs": {
+        "description": "songs"
+    },
+
+    "offlinesongs": "Offline Songs",
+    "@offlinesongs": {
+        "description": "offlinesongs"
+    },
+
+    "offlineplaylists": "Offline Playlists",
+    "@offlineplaylists": {
+        "description": "offlineplaylists"
+    },
+
+    "newplaylist": "New Playlist",
+    "@newplaylist": {
+        "description": "newplaylist"
+    },
+
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "cancel"
+    },
+
+    "create": "Create",
+    "@create": {
+        "description": "create"
+    },
+
+    "download": "Download",
+    "@download": {
+        "description": "download"
+    },
+    
+    "addtoplaylist": "Add to playlist",
+    "@addtoplaylist": {
+        "description": "addtoplaylist"
+    },
+
+    "like": "Like",
+    "@like": {
+        "description": "like"
+    },
+
+    "artist": "Artist",
+    "@artist": {
+        "description": "artist"
+    },
+
+    "artists": "Artists",
+    "@artists": {
+        "description": "artists"
+    },
+
+    "plain": "plain",
+    "@plain": {
+        "description": "plain"
+    },
+
+    "sync": "sync",
+    "@sync": {
+        "description": "sync"
+    },
+
+    "nosynclyrics": "No synced lyrics",
+    "@nosynclyrics": {
+        "description": "nosynclyrics"
+    },
+
+    "noplainlyrics": "No plain lyrics",
+    "@noplainlyrics": {
+        "description": "noplainlyrics"
+    },
+
+    "wanttohelpoutlyrics": "Want to help out? Add lyrics to lrclib.net!",
+    "@wanttohelpoutlyrics": {
+        "description": "wanttohelpoutlyrics"
+    },
+
+    "album": "Album",
+    "@album": {
+        "description": "album"
+    },
+
+    "albums": "Albums",
+    "@albums": {
+        "description": "albums"
+    },
+
+    "tracks": "Tracks",
+    "@tracks": {
+        "description": "tracks"
+    },
+
+    "removetrackfromplaylist": "Are you sure you want to remove this track from the playlist?",
+    "@removetrackfromplaylist": {
+        "description": "removetrackfromplaylist"
+    },
+
+    "continuee": "Continue",
+    "@continuee": {
+        "description": "continuee"
+    },
+
+    "removeplaylist": "Are you sure you want to remove this playlist?",
+    "@removeplaylist": {
+        "description": "removeplaylist"
+    },
+
+    "haltmusicplayer": "Halt the music player?",
+    "@haltmusicplayer": {
+        "description": "haltmusicplayer"
+    },
+
+    "haltmusicplayerbody": "Are you sure you want to halt the music player?",
+    "@haltmusicplayerbody": {
+        "description": "haltmusicplayerbody"
+    },
+    
+    "halt": "Halt",
+    "@halt": {
+        "description": "halt"
+    },
+
+    "changetitle": "Change Name",
+    "@changetitle": {
+        "description": "changetitle"
+    },
+
+    "taptochange": "Tap to change",
+    "@taptochange": {
+        "description": "taptochange"
+    },
+
+    "change": "Change",
+    "@change": {
+        "description": "change"
+    },
+
+    "changeplaylisttile": "Change playlist title",
+    "@changeplaylisttile": {
+        "description": "changeplaylisttile"
+    },
+
+    "changeplaylisttilebody": "Are you sure you want to change the playlist title?",
+    "@changeplaylisttilebody": {
+        "description": "changeplaylisttilebody"
+    },
+   
+    "pleaseallowaccesstophotogalery": "Please allow Pongo acces to your photo gallery",
+    "@pleaseallowaccesstophotogalery": {
+        "description": "pleaseallowaccesstophotogalery"
+    },
+
+    "editplaylist": "Edit playlist",
+    "@editplaylist": {
+        "description": "editplaylist"
+    },
+
+    "editplaylistbody": "The playlist must not be playing while editing. In order to edit it, halt the playlist",
+    "@editplaylistbody": {
+        "description": "editplaylistbody"
+    },
+
+    "playlist": "Playlist",
+    "@playlist": {
+        "description": "playlist"
+    },
+
+    "selectedtracks": "Selected tracks",
+    "@selectedtracks": {
+        "description": "selectedtracks"
+    },
+
+    "delete": "Delete",
+    "@delete": {
+        "description": "delete"
+    },
+
+    "removetracksfromplaylist": "Are you sure you want to remove these tracks from the playlist?",
+    "@removetracksfromplaylist": {
+        "description": "removetracksfromplaylist"
+    },
+
+    "preferences": "Preferences",
+    "@preferences": {
+        "description": "preferences"
+    },
+
+    "yourpreferences": "Your preferences",
+    "@yourpreferences": {
+        "description": "yourpreferences"
+    },
+
+    "countrycode": "Country code: ",
+    "@countrycode": {
+        "description": "Country code"
+    },
+
+    "searchpreferences": "Search preferences",
+    "@searchpreferences": {
+        "description": "Search preferences"
+    },
+
+    "searchmarket": "Search market",
+    "@searchmarket": {
+        "description": "Country code"
+    },
+
+    "selectmarket": "Select market",
+    "@selectmarket": {
+        "description": "selectmarket"
+    },
+
+    "selectmarketbody": "Search resulsts and suggestions depend on the selected market",
+    "@selectmarketbody": {
+        "description": "selectmarketbody"
+    },
+
+    "foryou": "For you",
+    "@foryou": {
+        "description": "foryou"
+    },
+
+    "releasedAlbums": "Released albums",
+    "@releasedAlbums": {
+        "description": "releasedAlbums"
+    },
+
+    "singles": "Singles",
+    "@singles": {
+        "description": "singles"
+    },
+
+    "compilations": "Compilations",
+    "@compilations": {
+        "description": "compilations"
+    },
+
+    "appearson": "Appears on",
+    "@appearson": {
+        "description": "appearson"
+    },
+
+    "noalbums": "No albums",
+    "@noalbums": {
+        "description": "noalbums"
+    },
+
+    "notracks": "No tracks",
+    "@notracks": {
+        "description": "notracks"
+    },
+
+    "toptentracks": "Top 10 Tracks",
+    "@toptentracks": {
+        "description": "toptentracks"
+    },
+
+    "doublecliktoadjustvolume": "Double click to adjust volume",
+    "@doublecliktoadjustvolume": {
+        "description": "doublecliktoadjustvolume"
+    },
+
+    "newalbums": "New albums",
+    "@newalbums": {
+        "description": "newalbums"
+    },
+
+    "lyrics": "Lyrics",
+    "@lyrics": {
+        "description": "lyrics"
+    },
+
+    "trackdownloaded": "Track downloaded",
+    "@trackdownloaded": {
+        "description": "trackdownloaded"
+    },
+
+    "createnewplaylist": "Create new playlist",
+    "@createnewplaylist": {
+        "description": "createnewplaylist"
+    },
+
+    "alreadyinplaylist": "Already in playlist",
+    "@alreadyinplaylist": {
+        "description": "alreadyinplaylist"
+    },
+
+    "addsongtoplaylist": "Add song to playlist",
+    "@addsongtoplaylist": {
+        "description": "addsongtoplaylist"
+    },
+
+    "newplaylistlocal": "New local playlist",
+    "@newplaylistlocal": {
+        "description": "newplaylistlocal"
+    },
+
+    "playlistdownloaded": "Playlist downloaded",
+    "@playlistdownloaded": {
+        "description": "playlistdownloaded"
+    },
+
+    "clearallhistory": "Clear all history",
+    "@clearallhistory": {
+        "description": "clearallhistory"
+    },
+
+    "clearallhistorybody": "Are you sure you want to clear all search history?",
+    "@clearallhistorybody": {
+        "description": "clearallhistorybody"
+    }
+
+
+}
