@@ -7,36 +7,48 @@ class Bottom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return ValueListenableBuilder(
         valueListenable: showBottomNavBar,
         builder: (context, _, __) {
-          return AnimatedSwitcher(
-            duration: Duration(milliseconds: showBottomNavBar.value ? 300 : 0),
-            child: showBottomNavBar.value
-                ? SizedBox(
-                    key: const ValueKey(true),
-                    height: kIsApple ? 155 : 170,
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          bottom: 0,
-                          child: SizedBox(
+          return ValueListenableBuilder(
+            valueListenable: currentTrackHeight,
+            builder: (context, index, child) {
+              return RepaintBoundary(
+                child: SizedBox(
+                  key: const ValueKey(true),
+                  height: kIsApple ? 155 : 170,
+                  child: Stack(
+                    children: [
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.fastEaseInToSlowEaseOut,
+                        bottom: showBottomNavBar.value
+                            ? -(currentTrackHeight.value / size.height) *
+                                (size.height / 2)
+                            : -(size.height / 2),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: const TrackInfo(),
+                        ),
+                      ),
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.fastEaseInToSlowEaseOut,
+                        bottom: showBottomNavBar.value
+                            ? -(currentTrackHeight.value / size.height) *
+                                (size.height / 2)
+                            : -(size.height / 2),
+                        child: SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            child: const TrackInfo(),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: const BottomNavBar()),
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox(
-                    key: ValueKey(false),
+                            child:
+                                const RepaintBoundary(child: BottomNavBar())),
+                      ),
+                    ],
                   ),
+                ),
+              );
+            },
           );
         });
   }

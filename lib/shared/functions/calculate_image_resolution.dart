@@ -27,7 +27,7 @@ String calculateWantedResolution(List images, int width, int height) {
   if (images.isNotEmpty) {
     String? wanted;
     int wantedResolution = width * height;
-    print(images[0]);
+
     List<Map> resolutions = images
         .map((image) => {
               "image": image["url"],
@@ -90,7 +90,6 @@ String calculateWantedResolutionForTrack(List images, int width, int height) {
   if (images.isNotEmpty) {
     String? wanted;
     int wantedResolution = width * height;
-    print(images[0]);
     List<Map> resolutions = images
         .map((image) => {
               "image": image.url,

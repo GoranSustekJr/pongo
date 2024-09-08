@@ -1,17 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
-playPauseMini(bool playing, Function() function) {
-  return Theme(
-    data: ThemeData(
-      splashColor: Col.transp,
-      hoverColor: Col.transp,
-      highlightColor: Col.transp,
-      focusColor: Col.transp,
-    ),
-    child: IconButton(
-      onPressed: function,
-      icon: AnimatedSwitcher(
+class PlayPauseMini extends StatefulWidget {
+  final AsyncSnapshot<PlaybackState> playbackState;
+  final Function() function;
+  const PlayPauseMini(
+      {super.key, required this.function, required this.playbackState});
+
+  @override
+  State<PlayPauseMini> createState() => _PlayPauseMiniState();
+}
+
+class _PlayPauseMiniState extends State<PlayPauseMini> {
+  @override
+  Widget build(BuildContext context) {
+    bool playing = false;
+    if (widget.playbackState.data != null) {
+      playing = widget.playbackState.data!.playing;
+    }
+    return CupertinoButton(
+      padding: EdgeInsets.zero,
+      onPressed: widget.function,
+      child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 250),
         transitionBuilder: (Widget child, Animation<double> animation) {
           return FadeTransition(
@@ -36,6 +46,10 @@ playPauseMini(bool playing, Function() function) {
                 color: Colors.white,
               ),
       ),
-    ),
-  );
+    );
+  }
 }
+/* playPauseMini(bool playing, Function() function) {
+  return 
+}
+ */

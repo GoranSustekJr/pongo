@@ -13,12 +13,13 @@ class UserData {
       final response = await http.post(
         Uri.parse("${AppConstants.SERVER_URL}user_data"),
         body: jsonEncode(
-          {"jwt": accessTokenHandler.accessToken},
+          {"at+JWT": accessTokenHandler.accessToken},
         ),
       );
 
       if (response.statusCode == 200) {
         Map data = jsonDecode(response.body);
+        print("data; $data");
         return data;
       } else if (response.statusCode == 401) {
         if (tries < 2) {

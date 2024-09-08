@@ -17,3 +17,6 @@ ValueNotifier<bool> showSearchBar = ValueNotifier(true);
 
 // Current track stid
 ValueNotifier<String> currentStid = ValueNotifier("");
+
+// Is the current track showing
+ValueNotifier<double> currentTrackHeight = ValueNotifier(0);

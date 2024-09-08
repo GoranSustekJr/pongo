@@ -10,8 +10,8 @@ class TrackMetadata {
     Overlay.of(context).insert(overlayEntry);
  */
     // Init websocket connection
-    final WebSocketChannel channel = WebSocketChannel.connect(
-        Uri.parse("wss://goransustekdoo.ddns.net:5002/test"));
+    final WebSocketChannel channel =
+        WebSocketChannel.connect(Uri.parse("ws://192.168.0.44:9090/test"));
     final accessTokenHandler = Provider.of<AccessToken>(context, listen: false);
 
     // Send the stid

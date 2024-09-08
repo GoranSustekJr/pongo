@@ -1,4 +1,3 @@
-import 'dart:io';
 import '../../exports.dart';
 
 final kIsDesktop = kIsLinux || kIsWindows || kIsMacOS;

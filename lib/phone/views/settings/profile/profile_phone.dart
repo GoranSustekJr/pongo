@@ -12,7 +12,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
   // User data
   String email = "";
   String name = "";
-  Uint8List? image;
+  String image = "";
 
   // Show Body
   bool showBody = false;
@@ -45,7 +45,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
       setState(() {
         email = data["email"];
         name = data["name"];
-        image = base64Decode(data["picture"]);
+        image = data["picture"];
         showBody = true;
       });
     } else {
@@ -121,7 +121,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                               radius: 80,
                               backgroundColor: Col.primaryCard.withAlpha(150),
                               foregroundImage:
-                                  image != null ? MemoryImage(image!) : null,
+                                  image != "" ? NetworkImage(image) : null,
                             ),
                             razh(AppBar().preferredSize.height),
                             settingTile(

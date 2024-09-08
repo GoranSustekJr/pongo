@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/shared/widgets/pulsating_icon.dart';
 import '../../../exports.dart';
 
 class BottomNavBar extends StatelessWidget {

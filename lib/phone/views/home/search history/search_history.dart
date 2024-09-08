@@ -28,10 +28,9 @@ class _SearchHistoryPhoneState extends State<SearchHistoryPhone> {
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).viewInsets.bottom);
     return Container(
       height: MediaQuery.of(context).size.height -
-          MediaQuery.of(context).viewInsets.bottom /* * (2 / 5) */,
+          MediaQuery.of(context).viewInsets.bottom,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: Col.primaryCard.withAlpha(150),
@@ -44,7 +43,6 @@ class _SearchHistoryPhoneState extends State<SearchHistoryPhone> {
               padding: const EdgeInsets.only(
                 top: 0,
                 left: 20,
-                right: 20,
               ),
               child: Column(
                   mainAxisSize: MainAxisSize.max,
@@ -80,9 +78,9 @@ class _SearchHistoryPhoneState extends State<SearchHistoryPhone> {
                               ),
                             ),
                             const Expanded(child: SizedBox()),
-                            AnimatedOpacity(
+                            AnimatedContainer(
                               duration: const Duration(milliseconds: 350),
-                              opacity: clear ? 1 : 0,
+                              width: !clear ? 50 : 0,
                               child: SizedBox(
                                 width: 50,
                                 height: 40,

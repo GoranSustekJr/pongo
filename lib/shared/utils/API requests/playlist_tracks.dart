@@ -1,10 +1,12 @@
 import 'package:pongo/exports.dart';
 import 'package:http/http.dart' as http;
 
-class SearchSpotify {
+class PlaylistSpotify {
   // REMOVED     REMOVED
 
-  Future<Map> search(context, String q) async {
+  // Initialize the API
+
+  Future<Map> get(context, String spid) async {
     int tries = 0;
 
     try {
@@ -12,22 +14,21 @@ class SearchSpotify {
         tries++;
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
-        String market = await Storage().getMarket() ?? 'US';
+
         print(accessTokenHandler.accessToken);
         final response = await http.post(
-          Uri.parse("${AppConstants.SERVER_URL}search_spotify"),
+          Uri.parse("${AppConstants.SERVER_URL}get_playlist"),
           body: jsonEncode(
             {
               "at+JWT": accessTokenHandler.accessToken,
-              "query": q,
-              "market": market,
+              "spid": spid,
             },
           ),
         );
 
         if (response.statusCode == 200) {
           Map<String, dynamic> data = jsonDecode(response.body);
-          print("KEYS: ${data["albums"]["items"].length}");
+
           return data;
         } else if (response.statusCode == 401) {
           if (tries < 2) {

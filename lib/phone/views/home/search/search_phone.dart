@@ -1,6 +1,7 @@
 import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:mini_music_visualizer/mini_music_visualizer.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/views/playlist/playlist_phone.dart';
 import 'package:pongo/shared/utils/API%20requests/search.dart';
 import 'package:pongo/shared/utils/API%20requests/track_metadata.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
@@ -276,16 +277,19 @@ class _SearchPhoneState extends State<SearchPhone> {
                                       });
                                     },
                                     (duration) async {
-                                      final String blurHash = tracks[index]
-                                                  .album !=
-                                              null
-                                          ? await BlurhashFFI.encode(
-                                              NetworkImage(
-                                                  calculateBestImageForTrack(
-                                                      tracks[index]
-                                                          .album!
-                                                          .images)))
-                                          : AppConstants().BLURHASH;
+                                      final String blurHash =
+                                          tracks[index].album != null
+                                              ? await BlurhashFFI.encode(
+                                                  NetworkImage(
+                                                    calculateBestImageForTrack(
+                                                        tracks[index]
+                                                            .album!
+                                                            .images),
+                                                  ),
+                                                  componentX: 3,
+                                                  componentY: 3,
+                                                )
+                                              : AppConstants().BLURHASH;
 
                                       UriAudioSource source = AudioSource.uri(
                                         Uri.parse(
@@ -298,6 +302,9 @@ class _SearchPhoneState extends State<SearchPhone> {
                                                 .artists
                                                 .map((artist) => artist.name)
                                                 .join(', '),
+                                            album: tracks[index].album != null
+                                                ? tracks[index].album!.name
+                                                : "",
                                             duration: Duration(
                                                 milliseconds:
                                                     (duration * 1000).toInt()),
@@ -309,6 +316,12 @@ class _SearchPhoneState extends State<SearchPhone> {
                                                 : ''),
                                             artHeaders: {
                                               "blurhash": blurHash,
+                                              "released":
+                                                  tracks[index].album != null
+                                                      ? tracks[index]
+                                                          .album!
+                                                          .releaseDate
+                                                      : "",
                                             }),
                                       );
 
@@ -347,7 +360,12 @@ class _SearchPhoneState extends State<SearchPhone> {
                               data: playlists[index],
                               type: TileType.playlist,
                               onTap: () {
-                                //TODO: something
+                                print(playlists[index].id);
+                                Navigations().nextScreen(
+                                    context,
+                                    PlaylistPhone(
+                                      playlist: playlists[index],
+                                    ));
                               },
                             );
                           },

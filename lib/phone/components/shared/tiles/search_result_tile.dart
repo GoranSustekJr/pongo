@@ -67,22 +67,80 @@ class SearchResultTile extends StatelessWidget {
             height: 85,
             width: MediaQuery.of(context).size.width,
             child: CupertinoButton(
-              onPressed: onTap,
-              padding: EdgeInsets.zero,
-              child: ListTile(
-                leading: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minWidth: 44,
-                    minHeight: 44,
-                    maxWidth: 66,
-                    maxHeight: 66,
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                onPressed: onTap,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 65,
+                      height: 65,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7.5),
+                        color: Col.realBackground.withAlpha(150),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(7.5),
+                        child: imageUrl == ""
+                            ? Center(
+                                child: Icon(noImage, color: Colors.white),
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: imageUrl,
+                                cacheManager: CacheManagerImage(),
+                                fit: BoxFit.cover,
+                              ),
+                      ),
+                    ),
+                    razw(12.5),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 18.5,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                          razh(2.5),
+                          Text(
+                            subtitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white.withAlpha(200),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      child: trailing,
+                    ),
+                  ],
+                ) /* ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Container(
+                  width: 55,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(7.5),
+                    color: Col.realBackground.withAlpha(150),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(7.5),
                     child: imageUrl == ""
                         ? Container(
-                            width: 66,
-                            height: 66,
+                            width: 65,
+                            height: 65,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(7.5),
                               color: Col.realBackground.withAlpha(150),
@@ -91,8 +149,9 @@ class SearchResultTile extends StatelessWidget {
                               child: Icon(noImage),
                             ),
                           )
-                        : Image.network(
-                            imageUrl,
+                        : CachedNetworkImage(
+                            imageUrl: imageUrl,
+                            cacheManager: CacheManagerImage(),
                             fit: BoxFit.cover,
                           ),
                   ),
@@ -117,8 +176,8 @@ class SearchResultTile extends StatelessWidget {
                   ),
                 ),
                 trailing: trailing,
-              ),
-            ),
+              ), */
+                ),
           )
         : InkWell(
             splashColor: Colors.white.withAlpha(200),
@@ -141,8 +200,9 @@ class SearchResultTile extends StatelessWidget {
                         ? Center(
                             child: Icon(AppIcons.blankTrack),
                           )
-                        : Image.network(
-                            imageUrl,
+                        : CachedNetworkImage(
+                            imageUrl: imageUrl,
+                            cacheManager: CacheManagerImage(),
                             fit: BoxFit.cover,
                           ),
                   ),
