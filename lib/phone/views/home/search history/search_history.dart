@@ -80,7 +80,7 @@ class _SearchHistoryPhoneState extends State<SearchHistoryPhone> {
                             const Expanded(child: SizedBox()),
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 350),
-                              width: !clear ? 50 : 0,
+                              width: clear ? 50 : 0,
                               child: SizedBox(
                                 width: 50,
                                 height: 40,

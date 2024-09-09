@@ -1,4 +1,5 @@
 import '../../../exports.dart';
+import 'package:http/http.dart' as http;
 
 class TrackMetadata {
   checkTrackExists(context, String stid, Function(String) doesNotExist,
@@ -10,8 +11,8 @@ class TrackMetadata {
     Overlay.of(context).insert(overlayEntry);
  */
     // Init websocket connection
-    final WebSocketChannel channel =
-        WebSocketChannel.connect(Uri.parse("ws://192.168.0.44:9090/test"));
+    final WebSocketChannel channel = WebSocketChannel.connect(
+        Uri.parse("ws://goransustekdoo.ddns.net:9090/test"));
     final accessTokenHandler = Provider.of<AccessToken>(context, listen: false);
 
     // Send the stid
@@ -123,5 +124,87 @@ class TrackMetadata {
         }
       }
     });
+  }
+
+  Future getLyrics(context, String name, String artist, double duration,
+      String album, Function(Map, double) finished) async {
+    try {
+      print(1);
+      final response = await http.get(
+        Uri(
+          scheme: 'https',
+          host: 'lrclib.net',
+          path: '/api/get',
+          queryParameters: {
+            "artist_name": artist,
+            "track_name": name,
+            "duration": duration.toString(),
+            "album_name": album,
+          },
+        ),
+      );
+      print(2);
+
+      if (response.statusCode == 200) {
+        //print(jsonDecode(response.body));
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        print("RESPONSE; BYTES; ${response.bodyBytes}");
+        print("RESPONSE; UTF8-DECODED; ${utf8.decode(response.bodyBytes)}");
+        print(
+            "RESPONSE; JSON-DECODED; ${json.decode(utf8.decode(response.bodyBytes))["plainLyrics"]}");
+        print(
+            "RESPONSE; ONLY-JSON-DECODED; ${json.decode((response.body))["plainLyrics"]}");
+
+        print("HEADERS; ${response.headers}");
+        if (data["syncedLyrics"] == null || data["plainLyrics"] == null) {
+          getIfLyricsFail(context, name, artist, duration, album, finished);
+        } else {
+          finished(data, duration);
+        }
+      } else {
+        print(response.statusCode);
+        print(jsonDecode(response.body));
+        getIfLyricsFail(context, name, artist, duration, album, finished);
+      }
+    } catch (e) {
+      print(e);
+
+      return {};
+    }
+    finished({"plainLyrics": "", "syncedLyrics": ""}, duration);
+  }
+
+  getIfLyricsFail(context, String name, String artist, double duration,
+      String album, Function(Map, double) finished) async {
+    print(
+        "GEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEET");
+    final response = await http.get(
+      Uri(
+        scheme: 'https',
+        host: 'lrclib.net',
+        path: '/api/search',
+        queryParameters: {
+          "q": "$artist $name",
+        },
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(utf8.decode(response.bodyBytes));
+
+      for (int i = 0; i < data.length; i++) {
+        print(data[i]["duration"]);
+      }
+      if (data.length == 0) {
+        print("object");
+        finished({"plainLyrics": "", "syncedLyrics": ""}, duration);
+      } else {
+        print(data[0].keys);
+
+        finished(data[0], duration);
+      }
+    } else {
+      finished({"plainLyrics": "", "syncedLyrics": ""}, duration);
+    }
   }
 }

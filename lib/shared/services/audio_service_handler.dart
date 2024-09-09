@@ -223,15 +223,11 @@ class AudioServiceHandler extends BaseAudioHandler implements AudioHandler {
     switch (repeatMode) {
       case AudioServiceRepeatMode.none:
         audioPlayer.setLoopMode(LoopMode.off);
-        print("Shuffle mode; off");
         break;
       case AudioServiceRepeatMode.one:
-        audioPlayer.setLoopMode(LoopMode.one);
-        break;
       case AudioServiceRepeatMode.group:
       case AudioServiceRepeatMode.all:
         audioPlayer.setLoopMode(LoopMode.all);
-        print("Shuffle mode; on");
         break;
     }
   }

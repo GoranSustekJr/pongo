@@ -21,7 +21,7 @@ class Bottom extends StatelessWidget {
                   child: Stack(
                     children: [
                       AnimatedPositioned(
-                        duration: const Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 350),
                         curve: Curves.fastEaseInToSlowEaseOut,
                         bottom: showBottomNavBar.value
                             ? -(currentTrackHeight.value / size.height) *
@@ -33,7 +33,7 @@ class Bottom extends StatelessWidget {
                         ),
                       ),
                       AnimatedPositioned(
-                        duration: const Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 350),
                         curve: Curves.fastEaseInToSlowEaseOut,
                         bottom: showBottomNavBar.value
                             ? -(currentTrackHeight.value / size.height) *

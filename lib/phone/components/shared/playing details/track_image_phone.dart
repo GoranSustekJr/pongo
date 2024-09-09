@@ -15,7 +15,11 @@ class TrackImagePhone extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return AnimatedPositioned(
       duration: Duration(milliseconds: lyricsOn ? 200 : 600),
-      top: lyricsOn ? 0 : MediaQuery.of(context).padding.top + 30,
+      //top: lyricsOn ? 0 : MediaQuery.of(context).padding.top + 30,
+      bottom: lyricsOn
+          ? size.height
+          : size.height -
+              (MediaQuery.of(context).padding.top + 30 + size.width - 60),
       curve: Curves.decelerate,
       child: AnimatedOpacity(
         opacity: lyricsOn ? 0 : 1,

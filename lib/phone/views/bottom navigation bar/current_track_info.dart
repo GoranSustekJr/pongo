@@ -85,7 +85,7 @@ class _TrackInfoState extends State<TrackInfo> {
                               ),
                               Positioned.fill(
                                 child: Container(
-                                  color: Colors.black.withAlpha(25),
+                                  color: Colors.black.withAlpha(50),
                                 ),
                               ),
                               Positioned.fill(

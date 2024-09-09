@@ -32,14 +32,7 @@ class Blurhash extends StatelessWidget {
                 hash: blurhash,
                 imageFit: BoxFit.cover,
               ),
-              Positioned.fill(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                      sigmaX: sigmaX.toDouble(),
-                      sigmaY: sigmaY.toDouble()), // Use dynamic values
-                  child: child,
-                ),
-              ),
+              child,
             ],
           ),
         ),

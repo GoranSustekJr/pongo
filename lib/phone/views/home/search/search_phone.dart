@@ -277,57 +277,85 @@ class _SearchPhoneState extends State<SearchPhone> {
                                       });
                                     },
                                     (duration) async {
-                                      final String blurHash =
-                                          tracks[index].album != null
-                                              ? await BlurhashFFI.encode(
-                                                  NetworkImage(
-                                                    calculateBestImageForTrack(
+                                      await TrackMetadata().getLyrics(
+                                        context,
+                                        tracks[index].name,
+                                        tracks[index]
+                                            .artists
+                                            .map((artist) => artist.name)
+                                            .join(', '),
+                                        duration,
+                                        tracks[index].album != null
+                                            ? tracks[index].album!.name
+                                            : "",
+                                        (lyrics, duration) async {
+                                          print(lyrics["plainLyrics"]);
+
+                                          final String blurHash =
+                                              tracks[index].album != null
+                                                  ? await BlurhashFFI.encode(
+                                                      NetworkImage(
+                                                        calculateBestImageForTrack(
+                                                            tracks[index]
+                                                                .album!
+                                                                .images),
+                                                      ),
+                                                      componentX: 3,
+                                                      componentY: 3,
+                                                    )
+                                                  : AppConstants().BLURHASH;
+
+                                          UriAudioSource source =
+                                              AudioSource.uri(
+                                            Uri.parse(
+                                                "${AppConstants.SERVER_URL}play_song/${tracks[index].id}"),
+                                            tag: MediaItem(
+                                                id:
+                                                    "search.online.${tracks[index].id}",
+                                                title: tracks[index].name,
+                                                artist: tracks[index]
+                                                    .artists
+                                                    .map(
+                                                        (artist) => artist.name)
+                                                    .join(', '),
+                                                album: tracks[index].album != null
+                                                    ? tracks[index].album!.name
+                                                    : "",
+                                                duration: Duration(
+                                                    milliseconds:
+                                                        (duration * 1000)
+                                                            .toInt()),
+                                                artUri: Uri.parse(tracks[index]
+                                                            .album !=
+                                                        null
+                                                    ? calculateBestImageForTrack(
                                                         tracks[index]
                                                             .album!
-                                                            .images),
-                                                  ),
-                                                  componentX: 3,
-                                                  componentY: 3,
-                                                )
-                                              : AppConstants().BLURHASH;
+                                                            .images)
+                                                    : ''),
+                                                artHeaders: {
+                                                  "blurhash": blurHash,
+                                                  "released":
+                                                      tracks[index].album !=
+                                                              null
+                                                          ? tracks[index]
+                                                              .album!
+                                                              .releaseDate
+                                                          : "",
+                                                  "plainLyrics":
+                                                      lyrics["plainLyrics"] ??
+                                                          "",
+                                                  "syncedLyrics":
+                                                      lyrics["syncedLyrics"] ??
+                                                          "",
+                                                }),
+                                          );
 
-                                      UriAudioSource source = AudioSource.uri(
-                                        Uri.parse(
-                                            "${AppConstants.SERVER_URL}play_song/${tracks[index].id}"),
-                                        tag: MediaItem(
-                                            id:
-                                                "search.online.${tracks[index].id}",
-                                            title: tracks[index].name,
-                                            artist: tracks[index]
-                                                .artists
-                                                .map((artist) => artist.name)
-                                                .join(', '),
-                                            album: tracks[index].album != null
-                                                ? tracks[index].album!.name
-                                                : "",
-                                            duration: Duration(
-                                                milliseconds:
-                                                    (duration * 1000).toInt()),
-                                            artUri: Uri.parse(tracks[index]
-                                                        .album !=
-                                                    null
-                                                ? calculateBestImageForTrack(
-                                                    tracks[index].album!.images)
-                                                : ''),
-                                            artHeaders: {
-                                              "blurhash": blurHash,
-                                              "released":
-                                                  tracks[index].album != null
-                                                      ? tracks[index]
-                                                          .album!
-                                                          .releaseDate
-                                                      : "",
-                                            }),
+                                          await audioServiceHandler.initSongs(
+                                              songs: [source.tag as MediaItem]);
+                                          audioServiceHandler.play();
+                                        },
                                       );
-
-                                      await audioServiceHandler.initSongs(
-                                          songs: [source.tag as MediaItem]);
-                                      audioServiceHandler.play();
                                     },
                                   );
                                 } else {

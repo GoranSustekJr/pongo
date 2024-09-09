@@ -7,11 +7,13 @@ class OtherControlsPhone extends StatelessWidget {
   final bool lyricsOn;
   final String trackId;
   final Function() downloadTrack;
+  final Function() changeLyricsOn;
   const OtherControlsPhone(
       {super.key,
       required this.lyricsOn,
       required this.trackId,
-      required this.downloadTrack});
+      required this.downloadTrack,
+      required this.changeLyricsOn});
 
   @override
   Widget build(BuildContext context) {
@@ -26,27 +28,22 @@ class OtherControlsPhone extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                iconButton(lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
+                    Colors.white, changeLyricsOn),
                 iconButton(
-                  audioServiceHandler.audioPlayer.loopMode.name == "one"
-                      ? CupertinoIcons.repeat_1
-                      : CupertinoIcons.repeat,
-                  audioServiceHandler.audioPlayer.loopMode.name != "all" &&
-                          audioServiceHandler.audioPlayer.loopMode.name != "one"
+                  CupertinoIcons.repeat,
+                  audioServiceHandler.audioPlayer.loopMode.name != "all"
                       ? Colors.white.withAlpha(150)
                       : Colors.white,
                   () {
                     if (audioServiceHandler.audioPlayer.loopMode.name ==
-                        "one") {
-                      audioServiceHandler
-                          .setRepeatMode(AudioServiceRepeatMode.all);
-                    } else if (audioServiceHandler.audioPlayer.loopMode.name ==
                         "all") {
                       audioServiceHandler
                           .setRepeatMode(AudioServiceRepeatMode.none);
                     } else if (audioServiceHandler.audioPlayer.loopMode.name ==
                         "off") {
                       audioServiceHandler
-                          .setRepeatMode(AudioServiceRepeatMode.one);
+                          .setRepeatMode(AudioServiceRepeatMode.all);
                     }
                     print(audioServiceHandler.audioPlayer.loopMode.name);
                   },

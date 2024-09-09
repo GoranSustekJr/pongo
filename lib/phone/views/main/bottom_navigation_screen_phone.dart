@@ -100,7 +100,7 @@ class _BottomNavigationScreenPhoneState
                         });
                       },
                       child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 350),
                         curve: Curves.fastEaseInToSlowEaseOut,
                         height: currentTrackHeight.value,
                         child: const PlayingDetailsPhone(),

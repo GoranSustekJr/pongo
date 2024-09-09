@@ -159,6 +159,6 @@ SPEC CHECKSUMS:
   super_native_extensions: 4916b3c627a9c7fffdc48a23a9eca0b1ac228fa7
   volume_controller: 531ddf792994285c9b17f9d8a7e4dcdd29b3eae9
 
-PODFILE CHECKSUM: 0b37d3d2c9488dd649fcdbf1175a99cffbfe9aac
+PODFILE CHECKSUM: ece3f8b7dee989824502fc3ce3c0c7f1f52bc958
 
 COCOAPODS: 1.15.2
