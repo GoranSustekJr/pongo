@@ -97,7 +97,7 @@ class _HomePhoneState extends State<HomePhone> {
                     top: searchBarIsSearching.value
                         ? MediaQuery.of(context).size.height
                         : 0,
-                    child: RecomendationsPhone(),
+                    child: const RecomendationsPhone(),
                   ),
                   // 3. - Search history screen
                   AnimatedPositioned(

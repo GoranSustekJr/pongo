@@ -67,7 +67,7 @@ class SearchResultTile extends StatelessWidget {
             height: 85,
             width: MediaQuery.of(context).size.width,
             child: CupertinoButton(
-                padding: EdgeInsets.symmetric(horizontal: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 onPressed: onTap,
                 child: Row(
                   children: [

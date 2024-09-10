@@ -18,6 +18,16 @@ class AudioServiceHandler extends BaseAudioHandler implements AudioHandler {
   AudioServiceHandler() {
     audioPlayer.playbackEventStream.listen(broadcastState);
     audioPlayer.setAudioSource(playlist);
+    audioPlayer.processingStateStream.listen((state) async {
+      if (state == ProcessingState.completed) {
+        if (queue.value.length - 1 == audioPlayer.currentIndex) {
+          await skipToQueueItem(0);
+          pause();
+        } else {
+          skipToNext();
+        }
+      }
+    });
   }
 
   exists(MediaItem item) async {
@@ -35,8 +45,8 @@ class AudioServiceHandler extends BaseAudioHandler implements AudioHandler {
 
   // Create audio source from media item
   AudioSource createAudioSource(MediaItem item) {
-    return item.artHeaders!["downloaded"] == "true"
-        ? AudioSource.file(item.artHeaders!["audio"]!)
+    return item.extras!["downloaded"] == "true"
+        ? AudioSource.file(item.extras!["audio"]!)
         : LockCachingAudioSource(
             Uri.parse(
                 "${AppConstants.SERVER_URL}play_song/${item.id.split(".")[2]}"),
@@ -67,7 +77,7 @@ class AudioServiceHandler extends BaseAudioHandler implements AudioHandler {
   }
 
   Future<void> startFadeIn() async {
-    Duration fadeDuration = Duration(milliseconds: 400);
+    Duration fadeDuration = const Duration(milliseconds: 400);
     int steps = 10;
     double stepSize = tempVolume / steps;
     int stepTime = (fadeDuration.inMilliseconds / steps).round();
@@ -162,16 +172,6 @@ class AudioServiceHandler extends BaseAudioHandler implements AudioHandler {
     listenForCurrentSongIndexChanges();
 
     // Listen for processing state changes and skip to the next song when completed
-    audioPlayer.processingStateStream.listen((state) async {
-      if (state == ProcessingState.completed) {
-        if (queue.value.length - 1 == audioPlayer.currentIndex) {
-          await skipToQueueItem(0);
-          pause();
-        } else {
-          skipToNext();
-        }
-      }
-    });
   }
 
   // Play function to start playback

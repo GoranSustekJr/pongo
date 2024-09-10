@@ -25,7 +25,7 @@ class _LyricsPhoneState extends State<LyricsPhone> {
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-      duration: Duration(milliseconds: 0),
+      duration: const Duration(milliseconds: 0),
       top: widget.lyricsOn ? 0 : MediaQuery.of(context).size.height,
       child: AnimatedOpacity(
         opacity: widget.lyricsOn ? 1 : 0,

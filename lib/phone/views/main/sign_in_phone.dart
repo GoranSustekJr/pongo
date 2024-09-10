@@ -11,7 +11,7 @@ class _SignInPhoneState extends State<SignInPhone> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         // decoration: Constants().backgroundBoxDecoration,
@@ -50,7 +50,7 @@ class _SignInPhoneState extends State<SignInPhone> {
                 "${AppLocalizations.of(context)!.signinwith} Google", "Google"),
             Row(
               children: [
-                Expanded(
+                const Expanded(
                   child: Divider(
                     indent: 10,
                     endIndent: 5,
@@ -62,7 +62,7 @@ class _SignInPhoneState extends State<SignInPhone> {
                   AppLocalizations.of(context)!.or,
                   //      style: TextStyle(color: Col.fadeIcon),
                 ),
-                Expanded(
+                const Expanded(
                   child: Divider(
                     // color: Col.fadeIcon,
                     indent: 5,

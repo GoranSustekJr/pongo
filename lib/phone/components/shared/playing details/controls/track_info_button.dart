@@ -32,7 +32,7 @@ trackInfoButton(context, String trackId, Function() download) {
           buttonBuilder: (context, showMenu) => CupertinoButton(
             onPressed: showMenu,
             padding: EdgeInsets.zero,
-            child: Icon(
+            child: const Icon(
               AppIcons.info,
               color: Colors.white,
             ),
@@ -48,7 +48,7 @@ trackInfoButton(context, String trackId, Function() download) {
             onPressed: () {
               PopupMenu(
                 context: context,
-                config: MenuConfig(
+                config: const MenuConfig(
                   itemWidth: 150,
                   backgroundColor: Col.primaryCard,
                   lineColor: Colors.greenAccent,
@@ -64,13 +64,13 @@ trackInfoButton(context, String trackId, Function() download) {
                       )),
                   PopUpMenuItem(
                       title: AppLocalizations.of(context)!.addtoplaylist,
-                      image: Icon(
+                      image: const Icon(
                         AppIcons.musicAlbums,
                         color: Colors.white,
                       )),
                   PopUpMenuItem(
                       title: AppLocalizations.of(context)!.like,
-                      image: Icon(
+                      image: const Icon(
                         AppIcons.heart,
                         color: Colors.white,
                       )),

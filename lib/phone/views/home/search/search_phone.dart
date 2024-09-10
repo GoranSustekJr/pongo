@@ -280,16 +280,16 @@ class _SearchPhoneState extends State<SearchPhone> {
                                       await TrackMetadata().getLyrics(
                                         context,
                                         tracks[index].name,
-                                        tracks[index]
-                                            .artists
-                                            .map((artist) => artist.name)
-                                            .join(', '),
+                                        tracks[index].artists[0].name,
                                         duration,
                                         tracks[index].album != null
                                             ? tracks[index].album!.name
                                             : "",
                                         (lyrics, duration) async {
-                                          print(lyrics["plainLyrics"]);
+                                          print(
+                                              "lyrics dur; ${lyrics["duration"]}");
+                                          print(
+                                              "track dur; ${lyrics["duration"] != null ? ((lyrics["duration"]) - duration).toInt().abs() > 2 ? ((lyrics["duration"]) - duration).toInt().toString() : "0" : "0"}");
 
                                           final String blurHash =
                                               tracks[index].album != null
@@ -333,7 +333,7 @@ class _SearchPhoneState extends State<SearchPhone> {
                                                             .album!
                                                             .images)
                                                     : ''),
-                                                artHeaders: {
+                                                extras: {
                                                   "blurhash": blurHash,
                                                   "released":
                                                       tracks[index].album !=
@@ -348,6 +348,20 @@ class _SearchPhoneState extends State<SearchPhone> {
                                                   "syncedLyrics":
                                                       lyrics["syncedLyrics"] ??
                                                           "",
+                                                  "syncTimeDelay": lyrics[
+                                                              "duration"] !=
+                                                          null
+                                                      ? ((lyrics["duration"]) -
+                                                                      duration)
+                                                                  .toInt()
+                                                                  .abs() >
+                                                              2
+                                                          ? ((lyrics["duration"]) -
+                                                                  duration)
+                                                              .toInt()
+                                                              .toString()
+                                                          : "0"
+                                                      : "0",
                                                 }),
                                           );
 

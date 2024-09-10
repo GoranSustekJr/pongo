@@ -82,7 +82,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                 currentTimestamp.inMilliseconds - 250 - widget.syncTimeDelay &&
             !isUserScrolling) {
           autoScrollController.scrollToIndex(i,
-              duration: Duration(milliseconds: 350),
+              duration: const Duration(milliseconds: 350),
               preferPosition: AutoScrollPosition.middle);
           WidgetsBinding.instance.addPostFrameCallback((_) {
             setState(() {
@@ -93,6 +93,14 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
       }
     }
     return 0;
+  }
+
+  @override
+  void dispose() {
+    autoScrollController.dispose();
+    controller.dispose();
+    manualScrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -164,22 +172,6 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                     } else {
                                       return GestureDetector(
                                         onTap: () {
-                                          // Go to specific lyric
-                                          /*   if (index > 0 &&
-                                              index <
-                                                  widget.lyrics.length - 1) {
-                                            final currentTimestamp =
-                                                parseTimestamp(
-                                                    widget.lyrics[index]);
-                                            if (currentTimestamp != null) {
-                                              final duration = Duration(
-                                                milliseconds: currentTimestamp
-                                                    .inMilliseconds,
-                                              );
-                                              audioServiceHandler
-                                                  .seek(duration);
-                                            }
-                                          } */
                                           if (index > 0 &&
                                               index <
                                                   widget.lyrics.length - 1) {
@@ -197,59 +189,60 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                             }
                                           }
                                         },
-                                        child: AutoScrollTag(
-                                          key: ValueKey(index),
-                                          controller: autoScrollController,
-                                          index: index,
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 0),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: SizedBox(
-                                                        width: size.width - 20,
-                                                        child:
-                                                            AnimatedDefaultTextStyle(
-                                                          duration:
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      200),
-                                                          style: currentLyricIndex ==
-                                                                  index
-                                                              ? const TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize:
-                                                                      35.5,
-                                                                  height: 1.5)
-                                                              : (currentLyricIndex ==
-                                                                          index +
-                                                                              1 ||
-                                                                      currentLyricIndex ==
-                                                                          index -
-                                                                              1)
-                                                                  ? TextStyle(
+                                        child: RepaintBoundary(
+                                          child: AutoScrollTag(
+                                            key: ValueKey(index),
+                                            controller: autoScrollController,
+                                            index: index,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 0),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: SizedBox(
+                                                          width:
+                                                              size.width - 20,
+                                                          child:
+                                                              AnimatedSwitcher(
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        200),
+                                                            child: Text(
+                                                              "${fixEncoding(lyric).replaceAll(regExp, '')}\n\n",
+                                                              key: ValueKey<
+                                                                      int>(
+                                                                  currentLyricIndex ==
+                                                                          index
+                                                                      ? 1
+                                                                      : 0),
+                                                              maxLines: null,
+                                                              softWrap: true,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: currentLyricIndex ==
+                                                                      index
+                                                                  ? const TextStyle(
                                                                       color: Colors
-                                                                          .white
-                                                                          .withAlpha(
-                                                                              150),
+                                                                          .white,
                                                                       fontWeight:
                                                                           FontWeight
-                                                                              .w400,
+                                                                              .bold,
                                                                       fontSize:
-                                                                          35,
+                                                                          35.5,
                                                                       height:
-                                                                          1.5)
+                                                                          1.5,
+                                                                    )
                                                                   : TextStyle(
                                                                       color: Colors
                                                                           .white
@@ -263,20 +256,16 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                                                       fontSize:
                                                                           35,
                                                                       height:
-                                                                          1.5),
-                                                          child: Text(
-                                                            "${fixEncoding(lyric).replaceAll(regExp, '')}\n\n",
-                                                            maxLines: null,
-                                                            softWrap: true,
-                                                            textAlign: TextAlign
-                                                                .center, // TODO: Make customasiable textalign!
+                                                                          1.5,
+                                                                    ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),

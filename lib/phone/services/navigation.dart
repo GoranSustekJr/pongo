@@ -15,7 +15,7 @@ class TrackPageRoute extends PageRouteBuilder {
           Animation<double> secondaryAnimation, Widget child) =>
       SlideTransition(
         position: Tween<Offset>(
-          begin: Offset(0, 1),
+          begin: const Offset(0, 1),
           end: Offset.zero,
         ).animate(CurvedAnimation(
             parent: animation, curve: Curves.fastEaseInToSlowEaseOut)),

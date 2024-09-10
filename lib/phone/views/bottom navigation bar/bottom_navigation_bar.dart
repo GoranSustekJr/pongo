@@ -25,8 +25,8 @@ class Bottom extends StatelessWidget {
                         curve: Curves.fastEaseInToSlowEaseOut,
                         bottom: showBottomNavBar.value
                             ? -(currentTrackHeight.value / size.height) *
-                                (size.height / 2)
-                            : -(size.height / 2),
+                                (size.height / 3)
+                            : -(size.height / 3),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           child: const TrackInfo(),
@@ -37,8 +37,8 @@ class Bottom extends StatelessWidget {
                         curve: Curves.fastEaseInToSlowEaseOut,
                         bottom: showBottomNavBar.value
                             ? -(currentTrackHeight.value / size.height) *
-                                (size.height / 2)
-                            : -(size.height / 2),
+                                (size.height / 3)
+                            : -(size.height / 3),
                         child: SizedBox(
                             width: MediaQuery.of(context).size.width,
                             child:

@@ -11,6 +11,7 @@ class TrackPlainLyricsPhone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Padding(
       padding: const EdgeInsets.only(left: 10),
       child: SizedBox(

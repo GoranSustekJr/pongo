@@ -14,7 +14,7 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
     return SizedBox(
       width: size.width,
       height: size.height,
-      child: Center(
+      child: const Center(
         child: Text("R E C O M E N D A T I O N S"),
       ),
     );

@@ -38,6 +38,11 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
         setState(() {
           currentMediaItemId = stid;
           currentMediaItem = mediaItem;
+          if (mediaItem != null) {
+            // TODO: Add this as an option in settings
+            syncTimeDelay =
+                int.parse(mediaItem.extras!["syncTimeDelay"]!) * 1000;
+          }
         });
       }
     }
@@ -66,7 +71,7 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
             child: currentMediaItem != null
                 ? Blurhash(
                     key: ValueKey(currentMediaItemId),
-                    blurhash: currentMediaItem!.artHeaders?["blurhash"] ??
+                    blurhash: currentMediaItem!.extras?["blurhash"] ??
                         AppConstants().BLURHASH,
                     sigmaX: 10,
                     sigmaY: 10,
@@ -76,26 +81,16 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                         children: [
                           LyricsPhone(
                             plainLyrics: currentMediaItem!
-                                .artHeaders!["plainLyrics"]!
+                                .extras!["plainLyrics"]!
                                 .split('\n'),
                             syncedLyrics: [
                               ...["{#¶€[”„’‘¤ß÷×¤ß#˘¸}"],
-                              ...currentMediaItem!.artHeaders!["syncedLyrics"]!
+                              ...currentMediaItem!.extras!["syncedLyrics"]!
                                   .split('\n')
                             ],
                             lyricsOn: lyricsOn,
                             useSyncedLyrics: useSynced,
                             syncTimeDelay: syncTimeDelay,
-                          ),
-                          /*  */
-                          TrackControlsPhone(
-                            currentMediaItem: currentMediaItem!,
-                            lyricsOn: lyricsOn,
-                            changeLyricsOn: () {
-                              setState(() {
-                                lyricsOn = !lyricsOn;
-                              });
-                            },
                           ),
                           LyricsButtonPhone(
                             syncTimeDelay: syncTimeDelay,
@@ -111,6 +106,11 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                                 useSynced = !useSynced;
                               });
                             },
+                            resetSyncTimeDelay: () {
+                              setState(() {
+                                syncTimeDelay = 0;
+                              });
+                            },
                             plus: () {
                               setState(() {
                                 syncTimeDelay += 250;
@@ -119,6 +119,15 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                             minus: () {
                               setState(() {
                                 syncTimeDelay -= 250;
+                              });
+                            },
+                          ),
+                          TrackControlsPhone(
+                            currentMediaItem: currentMediaItem!,
+                            lyricsOn: lyricsOn,
+                            changeLyricsOn: () {
+                              setState(() {
+                                lyricsOn = !lyricsOn;
                               });
                             },
                           ),

@@ -129,7 +129,7 @@ class TrackMetadata {
   Future getLyrics(context, String name, String artist, double duration,
       String album, Function(Map, double) finished) async {
     try {
-      print(1);
+      print("1, $album");
       final response = await http.get(
         Uri(
           scheme: 'https',
@@ -138,7 +138,7 @@ class TrackMetadata {
           queryParameters: {
             "artist_name": artist,
             "track_name": name,
-            "duration": duration.toString(),
+            "duration": duration.toInt().toString(),
             "album_name": album,
           },
         ),
@@ -148,15 +148,18 @@ class TrackMetadata {
       if (response.statusCode == 200) {
         //print(jsonDecode(response.body));
         final data = json.decode(utf8.decode(response.bodyBytes));
-        print("RESPONSE; BYTES; ${response.bodyBytes}");
+        /*  print("RESPONSE; BYTES; ${response.bodyBytes}");
         print("RESPONSE; UTF8-DECODED; ${utf8.decode(response.bodyBytes)}");
         print(
             "RESPONSE; JSON-DECODED; ${json.decode(utf8.decode(response.bodyBytes))["plainLyrics"]}");
         print(
             "RESPONSE; ONLY-JSON-DECODED; ${json.decode((response.body))["plainLyrics"]}");
 
-        print("HEADERS; ${response.headers}");
+        print("HEADERS; ${response.headers}"); */
+
         if (data["syncedLyrics"] == null || data["plainLyrics"] == null) {
+          /*   print("SHIT; PLAIN; ${data["plainLyrics"]}; ");
+          print("SYNCED; ${data["syncedLyrics"]}"); */
           getIfLyricsFail(context, name, artist, duration, album, finished);
         } else {
           finished(data, duration);
@@ -171,40 +174,59 @@ class TrackMetadata {
 
       return {};
     }
-    finished({"plainLyrics": "", "syncedLyrics": ""}, duration);
+    //finished({"plainLyrics": "", "syncedLyrics": "", "duration": 0}, duration);
   }
 
   getIfLyricsFail(context, String name, String artist, double duration,
       String album, Function(Map, double) finished) async {
     print(
         "GEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEET");
+    print("$name - $artist");
     final response = await http.get(
       Uri(
         scheme: 'https',
         host: 'lrclib.net',
         path: '/api/search',
         queryParameters: {
-          "q": "$artist $name",
+          "q": "$name - $artist",
         },
       ),
     );
 
     if (response.statusCode == 200) {
       final data = json.decode(utf8.decode(response.bodyBytes));
-
+      print(data.length);
+      List<int> synced = [];
+      List<int> plain = [];
+      List durations = [];
       for (int i = 0; i < data.length; i++) {
-        print(data[i]["duration"]);
+        if (data[i]["syncedLyrics"] != null) {
+          durations.add(data[i]["duration"]);
+          synced.add(i);
+        } else {
+          plain.add(i);
+        }
       }
-      if (data.length == 0) {
-        print("object");
-        finished({"plainLyrics": "", "syncedLyrics": ""}, duration);
+      print("SYNCED DATA; $synced");
+      if (data.isEmpty) {
+        finished(
+            {"plainLyrics": "", "syncedLyrics": "", "duration": 0}, duration);
       } else {
-        print(data[0].keys);
-
-        finished(data[0], duration);
+        if (synced.isNotEmpty) {
+          int index = durations
+              .asMap()
+              .entries
+              .map((e) => MapEntry(e.key, (e.value - duration).abs()))
+              .reduce((a, b) => a.value < b.value ? a : b)
+              .key;
+          finished(data[synced[index]], duration);
+        } else {
+          finished(data[0], duration);
+        }
       }
     } else {
-      finished({"plainLyrics": "", "syncedLyrics": ""}, duration);
+      finished(
+          {"plainLyrics": "", "syncedLyrics": "", "duration": 0}, duration);
     }
   }
 }

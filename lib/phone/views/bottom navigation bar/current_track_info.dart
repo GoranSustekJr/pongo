@@ -72,9 +72,9 @@ class _TrackInfoState extends State<TrackInfo> {
                                     const AlwaysStoppedAnimation<double>(1),
                                 child: ClipRRect(
                                   child: Blurhash(
-                                    blurhash: currentMediaItem
-                                            .artHeaders?["blurhash"] ??
-                                        AppConstants().BLURHASH,
+                                    blurhash:
+                                        currentMediaItem.extras?["blurhash"] ??
+                                            AppConstants().BLURHASH,
                                     sigmaX: 0,
                                     sigmaY: 0,
                                     child: Container(

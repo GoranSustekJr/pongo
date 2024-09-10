@@ -1,8 +1,8 @@
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/main/bottom_navigation_screen_phone.dart';
 
-class AuthRedirectScreen extends StatelessWidget {
-  const AuthRedirectScreen({super.key});
+class AuthRedirectPhone extends StatelessWidget {
+  const AuthRedirectPhone({super.key});
 
   @override
   Widget build(BuildContext context) {

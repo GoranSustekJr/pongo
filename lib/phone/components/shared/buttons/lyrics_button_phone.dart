@@ -10,6 +10,7 @@ class LyricsButtonPhone extends StatelessWidget {
   final Function() changeUseSynced;
   final Function() plus;
   final Function() minus;
+  final Function() resetSyncTimeDelay;
   const LyricsButtonPhone({
     super.key,
     required this.syncTimeDelay,
@@ -19,6 +20,7 @@ class LyricsButtonPhone extends StatelessWidget {
     required this.changeLyricsOn,
     required this.useSynced,
     required this.changeUseSynced,
+    required this.resetSyncTimeDelay,
   });
 
   @override
@@ -96,13 +98,18 @@ class LyricsButtonPhone extends StatelessWidget {
                       Expanded(child: Container()),
                       FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: Text(
-                          "${syncTimeDelay / 1000} s",
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                        child: CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: resetSyncTimeDelay,
+                          child: Text(
+                            "${syncTimeDelay / 1000} s",
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.fade,
                           ),
-                          overflow: TextOverflow.fade,
                         ),
                       ),
                       Expanded(child: Container()),

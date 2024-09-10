@@ -51,7 +51,7 @@ class _MyAppPhoneState extends State<MyAppPhone> {
       ],
       theme: AppTheme().dark,
       showSemanticsDebugger: false,
-      home: Background(child: const AuthRedirectScreen()),
+      home: const Background(child: AuthRedirectPhone()),
     );
   }
 }

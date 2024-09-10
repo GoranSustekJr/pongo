@@ -53,7 +53,7 @@ class TrackControlsPhone extends StatelessWidget {
                         ),
                         TrackProgressPhone(
                           album: currentMediaItem.album!,
-                          released: currentMediaItem.artHeaders!["released"]!,
+                          released: currentMediaItem.extras!["released"]!,
                           duration: currentMediaItem.duration,
                         ),
                         PlayControlPhone(

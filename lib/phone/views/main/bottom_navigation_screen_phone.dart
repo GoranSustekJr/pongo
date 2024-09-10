@@ -101,7 +101,8 @@ class _BottomNavigationScreenPhoneState
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 350),
-                        curve: Curves.fastEaseInToSlowEaseOut,
+                        curve: Curves
+                            .fastEaseInToSlowEaseOut, //Curves.fastEaseInToSlowEaseOut,
                         height: currentTrackHeight.value,
                         child: const PlayingDetailsPhone(),
                       ),
