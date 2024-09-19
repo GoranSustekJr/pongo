@@ -45,9 +45,23 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
+		<key>NSAllowsArbitraryLoadsForMedia</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>goransustekdoo.ddns.net</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Using Camera For Playlist Images</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>No need but gettings error so trying to fix it.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Using Photo Library For Playlist Images</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -56,9 +70,8 @@
 	<array>
 		<string>audio</string>
 		<string>fetch</string>
+		<string>processing</string>
 	</array>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>No need but gettings error so trying to fix it.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

@@ -71,16 +71,24 @@ class _TrackInfoState extends State<TrackInfo> {
                                 opacity:
                                     const AlwaysStoppedAnimation<double>(1),
                                 child: ClipRRect(
-                                  child: Blurhash(
-                                    blurhash:
-                                        currentMediaItem.extras?["blurhash"] ??
-                                            AppConstants().BLURHASH,
-                                    sigmaX: 0,
-                                    sigmaY: 0,
-                                    child: Container(
-                                      color: Colors.transparent,
-                                    ),
-                                  ),
+                                  child: ValueListenableBuilder(
+                                      valueListenable: currentBlurhash,
+                                      builder: (context, signedIn, child) {
+                                        return AnimatedSwitcher(
+                                          duration:
+                                              const Duration(milliseconds: 300),
+                                          child: Blurhash(
+                                            key:
+                                                ValueKey(currentBlurhash.value),
+                                            blurhash: currentBlurhash.value,
+                                            sigmaX: 0,
+                                            sigmaY: 0,
+                                            child: Container(
+                                              color: Colors.transparent,
+                                            ),
+                                          ),
+                                        );
+                                      }),
                                 ),
                               ),
                               Positioned.fill(
@@ -131,20 +139,6 @@ class _TrackInfoState extends State<TrackInfo> {
                                         }
                                       }
                                     });
-                                  },
-                                  onDoubleTap: () {
-                                    /*  showModalBottomSheet(
-                                        backgroundColor: Col.transp,
-                                        isScrollControlled: true,
-                                        context: context,
-                                        builder: (context) => QueuePhone()); */
-                                  },
-                                  onLongPress: () {
-                                    /*   showModalBottomSheet(
-                                        backgroundColor: Col.transp,
-                                        isScrollControlled: true,
-                                        context: context,
-                                        builder: (context) => QueuePhone()); */
                                   },
                                   onTap: () async {
                                     currentTrackHeight.value = size.height;
@@ -216,7 +210,7 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                       CachedNetworkImage(
                                                                     imageUrl: currentMediaItem
                                                                         .artUri
-                                                                        .toString(), //  "REMOVEDtrack_art/${currentMediaItem.id.split(".")[2]}.png",
+                                                                        .toString(),
                                                                     width: 40,
                                                                     height: 40,
                                                                   ),

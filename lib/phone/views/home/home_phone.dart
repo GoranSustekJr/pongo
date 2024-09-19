@@ -2,7 +2,7 @@ import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/home/recomendations/recomendations_phone.dart';
 import 'package:pongo/phone/views/home/search%20bar/search_bar_android_phone.dart';
 import 'package:pongo/phone/views/home/search%20bar/search_bar_ios_phone.dart';
-import 'package:pongo/phone/views/home/search%20history/search_history.dart';
+import 'package:pongo/phone/views/home/search%20history/search_history_phone.dart';
 import 'package:pongo/phone/views/home/search/search_phone.dart';
 
 class HomePhone extends StatefulWidget {

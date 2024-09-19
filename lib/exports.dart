@@ -10,6 +10,12 @@ export 'package:pongo/shared/models/access_token.dart';
 export 'package:pongo/shared/services/auth/sign_in_handler.dart';
 export 'package:pongo/shared/services/token%20handlers/access_token_handler.dart';
 export 'package:pongo/shared/services/token%20handlers/refresh_token_handler.dart';
+export 'package:pongo/shared/models/spotify/track.dart';
+export 'package:pongo/phone/widgets/playlist/tiles/playlist_song_tile.dart';
+export 'package:mini_music_visualizer/mini_music_visualizer.dart';
+export 'package:pongo/shared/utils/API%20requests/track_play.dart';
+export 'package:pongo/phone/views/playlist/playlist_phone.dart';
+
 export 'shared/api/api.dart';
 export 'shared/components/components.dart';
 export 'shared/constants/markets.dart';
@@ -19,11 +25,11 @@ export 'shared/models/models.dart';
 export 'shared/functions/calculate_image_resolution.dart';
 export 'shared/services/cache_manager.dart';
 
-export 'package:pongo/phone/views/main/sign_in.dart';
+export 'package:pongo/phone/views/main/sign_in_phone.dart';
 export 'package:pongo/phone/components/components.dart';
 
 export 'package:pongo/phone/theme/colors.dart';
-export 'phone/views/main/auth_redirect_screen.dart';
+export 'phone/views/main/auth_redirect_screen_phone.dart';
 export 'phone/widgets/widgets.dart';
 
 export 'phone/services/services.dart';

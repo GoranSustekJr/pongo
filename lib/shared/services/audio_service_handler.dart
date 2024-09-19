@@ -1,7 +1,8 @@
 import '../../exports.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
 
-class AudioServiceHandler extends BaseAudioHandler implements AudioHandler {
+class AudioServiceHandler extends BaseAudioHandler
+    implements AudioHandler, QueueHandler, SeekHandler {
   // AudioPlayer instance
   final AudioPlayer audioPlayer = AudioPlayer();
 
@@ -146,7 +147,12 @@ class AudioServiceHandler extends BaseAudioHandler implements AudioHandler {
 
     // Empty playlist and queue
     playlist.clear();
+    playlist.sequence.clear();
+    playlist.shuffleIndices.clear();
     queue.value.clear();
+    if (audioPlayer.sequence != null) {
+      audioPlayer.sequence!.clear();
+    }
 
     // Remove current media item
     mediaItem.value = null;
@@ -160,14 +166,14 @@ class AudioServiceHandler extends BaseAudioHandler implements AudioHandler {
     // Listen for playback events and broadcast the state
 
     // Create a list of audio sources from the provided songs
-    playlist.clear();
+    await playlist.clear();
     queue.value.clear();
 
-    playlist.addAll(songs.map(createAudioSource).toList());
+    await playlist.addAll(songs.map(createAudioSource).toList());
     // Set the audio source of the audio player to the concatenation of the audio sources
     // Add the songs to the queue
     queue.add(songs);
-
+    await audioPlayer.setAudioSource(playlist);
     // Listen for changes in the current song index
     listenForCurrentSongIndexChanges();
 

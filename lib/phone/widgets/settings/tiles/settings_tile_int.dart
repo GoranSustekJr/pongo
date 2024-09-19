@@ -1,15 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
-settingTile(
-    context,
-    bool first,
-    bool last,
-    IconData icon,
-    IconData? trailingIcon,
-    String title,
-    String? subtitle,
-    Function() function) {
+settingsTileInt(context, bool first, bool last, IconData icon, int trailingNum,
+    String title, String? subtitle, Function() function) {
   double radius = 15;
   BorderRadius borderRadius = BorderRadius.only(
     topLeft: first ? Radius.circular(radius) : Radius.zero,
@@ -72,21 +65,23 @@ settingTile(
                               ),
                           ],
                         )),
-                        if (trailingIcon != null)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Container(
-                              height: 25,
-                              width: 1,
-                              color: Col.onIcon.withAlpha(200),
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Container(
+                            height: 25,
+                            width: 1,
+                            color: Col.onIcon.withAlpha(200),
                           ),
-                        if (trailingIcon != null)
-                          SizedBox(
-                              width: 28,
-                              height: 48,
-                              child: Icon(trailingIcon,
-                                  color: Col.onIcon.withAlpha(200), size: 20)),
+                        ),
+                        SizedBox(
+                            width: 28,
+                            height: 48,
+                            child: Center(
+                              child: Text(
+                                trailingNum.toString(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            )),
                         const SizedBox(
                           width: 15,
                         )
@@ -146,21 +141,20 @@ settingTile(
                               ),
                           ],
                         )),
-                        if (trailingIcon != null)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Container(
-                              height: 25,
-                              width: 1,
-                              color: Col.onIcon.withAlpha(200),
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Container(
+                            height: 25,
+                            width: 1,
+                            color: Col.onIcon.withAlpha(200),
                           ),
-                        if (trailingIcon != null)
-                          SizedBox(
-                              width: 28,
-                              height: 58,
-                              child: Icon(trailingIcon,
-                                  color: Col.onIcon.withAlpha(200), size: 20)),
+                        ),
+                        SizedBox(
+                            width: 28,
+                            height: 48,
+                            child: Center(
+                              child: Text(trailingNum.toString()),
+                            )),
                         const SizedBox(
                           width: 15,
                         )

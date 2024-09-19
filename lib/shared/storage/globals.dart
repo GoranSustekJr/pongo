@@ -20,3 +20,24 @@ ValueNotifier<String> currentStid = ValueNotifier("");
 
 // Is the current track showing
 ValueNotifier<double> currentTrackHeight = ValueNotifier(0);
+
+// Use sync time delay
+ValueNotifier<bool> useSyncTimeDelay = ValueNotifier(false);
+
+// Use synced lyrics
+ValueNotifier<bool> useSyncedLyrics = ValueNotifier(false);
+
+// Current blurhash
+ValueNotifier<String> currentBlurhash = ValueNotifier(AppConstants().BLURHASH);
+
+// Number of artists to display
+ValueNotifier<int> numberOfSearchArtists = ValueNotifier(3);
+
+// Number of albums to display
+ValueNotifier<int> numberOfSearchAlbums = ValueNotifier(5);
+
+// Number of tracks to display
+ValueNotifier<int> numberOfSearchTracks = ValueNotifier(50);
+
+// Number of playlists to display
+ValueNotifier<int> numberOfSearchPlaylists = ValueNotifier(20);

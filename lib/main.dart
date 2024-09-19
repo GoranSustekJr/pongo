@@ -11,8 +11,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Audio Session Configuration
-  //final session = await AudioSession.instance;
-  //await session.configure(AudioSessionConfiguration.music());
+  final session = await AudioSession.instance;
+  await session.configure(const AudioSessionConfiguration.music());
 
   // Initialize the audio handle
   late AudioHandler audioHandler;
@@ -53,6 +53,20 @@ void main() async {
   // Is User Signed In
   bool signedIn = await Storage().getSignedIn();
   isUserSignedIn.value = signedIn;
+
+  // Preferences
+  bool syncTimeDelay = await Storage().getSyncDelay();
+  useSyncTimeDelay.value = syncTimeDelay;
+  bool syncedLyircs = await Storage().getUseSyncedLyrics();
+  useSyncedLyrics.value = syncedLyircs;
+  int numSearchArtists = await Storage().getNumOfSearchArtists();
+  numberOfSearchArtists.value = numSearchArtists;
+  int numSearchAlbums = await Storage().getNumOfSearchAlbums();
+  numberOfSearchAlbums.value = numSearchAlbums;
+  int numSearchTracks = await Storage().getNumOfSearchTracks();
+  numberOfSearchTracks.value = numSearchTracks;
+  int numSearchPlaylists = await Storage().getNumOfSearchPlaylists();
+  numberOfSearchPlaylists.value = numSearchPlaylists;
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();

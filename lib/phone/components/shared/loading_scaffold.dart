@@ -1,7 +1,8 @@
 import 'package:pongo/exports.dart';
 
-loadingScaffold(context) {
+loadingScaffold(context, ValueKey key) {
   return Scaffold(
+    key: key,
     backgroundColor: Colors.black,
     appBar: AppBar(
       automaticallyImplyLeading: false,

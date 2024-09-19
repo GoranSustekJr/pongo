@@ -82,7 +82,7 @@
     "toptentracks": "Top 10 pjesama",
     "doublecliktoadjustvolume": "Dvaput kliknite za podešavanje glasnoće",
     "newalbums": "Novi albumi",
-    "lyrics": "Lyrics",
+    "lyrics": "Stihovi",
     "trackdownloaded": "Pjesma preuzeta",
     "createnewplaylist": "Kreiraj novu playlistu",
     "alreadyinplaylist": "Već u playlisti",
@@ -90,7 +90,30 @@
     "newplaylistlocal": "Nova lokalna playlista",
     "playlistdownloaded": "Playlista preuzeta",
     "clearallhistory": "Izbriši cijelu povijest",
-    "clearallhistorybody": "Jeste li sigurni da želite izbrisati cijelu povijest pretraživanja?"
+    "clearallhistorybody": "Jeste li sigurni da želite izbrisati cijelu povijest pretraživanja?",
+    "topten": "Top 10",
+    "singlesandcompilations": "Singlovi i kompilacije",
+    "relatedartists": "Srodni izvođači",
+    "data": "Podaci",
+    "saveyourdata": "Spremi svoje podatke",
+    "clearaudioplayercache": "Obriši predmemoriju audio playera",
+    "clearyouraudioplayercache": "Obriši svoju predmemoriju audio playera",
+    "clearimagecache": "Obriši predmemoriju slika",
+    "clearyourassetimagecache": "Obriši predmemoriju svojih slika",
+    "clearallcache": "Obriši svu predmemoriju",
+    "clearallappcache": "Obriši svu predmemoriju aplikacije",
+    "cache": "Predmemorija",
+    "howmanyartistsshownwhensearching": "Koliko izvođača je prikazano prilikom pretraživanja",
+    "howmanyalbumsshownwhensearching": "Koliko albuma je prikazano prilikom pretraživanja",
+    "howmanytracksshownwhensearching": "Koliko pjesama je prikazano prilikom pretraživanja",
+    "howmanyplaylistsshownwhensearching": "Koliko popisa pjesama je prikazano prilikom pretraživanja",
+    "synctimedelay": "Kašnjenje sinkronizacije",
+    "usesynctimedelay": "Koristi kašnjenje sinkronizacije",
+    "prefersyncedlyrics": "Preferiraj sinkronizirane tekstove",
+    "preferusageofsyncedlyrics": "Preferiraj korištenje sinkroniziranih tekstova"
+
+
+
 
 
 

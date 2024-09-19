@@ -7,6 +7,13 @@ class SearchSpotify {
   Future<Map> search(context, String q) async {
     int tries = 0;
 
+    // Search result num
+
+    final numSearchArtists = await Storage().getNumOfSearchArtists();
+    final numSearchAlbums = await Storage().getNumOfSearchAlbums();
+    final numSearchTracks = await Storage().getNumOfSearchTracks();
+    final numSearchPlaylists = await Storage().getNumOfSearchPlaylists();
+
     try {
       while (tries < 2) {
         tries++;
@@ -21,6 +28,10 @@ class SearchSpotify {
               "at+JWT": accessTokenHandler.accessToken,
               "query": q,
               "market": market,
+              "artists_num": numSearchArtists,
+              "albums_num": numSearchAlbums,
+              "tracks_num": numSearchTracks,
+              "playlists_num": numSearchPlaylists,
             },
           ),
         );

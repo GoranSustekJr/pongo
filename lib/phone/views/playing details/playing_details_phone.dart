@@ -1,6 +1,8 @@
+import 'package:blurhash_ffi/blurhash.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/playing%20details/track_controls_phone.dart';
 import 'package:pongo/phone/components/shared/playing%20details/track_image_phone.dart';
+import 'package:pongo/shared/utils/API%20requests/track_metadata.dart';
 
 class PlayingDetailsPhone extends StatefulWidget {
   const PlayingDetailsPhone({super.key});
@@ -23,7 +25,20 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
   bool lyricsOn = false;
 
   // Use Synced
-  bool useSynced = true;
+  bool useSynced = false;
+
+  // Blurhash
+  String blurhash = AppConstants().BLURHASH;
+
+  // Lyrics
+  String syncedLyrics = "";
+  String plainLyrics = "";
+
+  @override
+  void initState() {
+    super.initState();
+    useSynced = useSyncedLyrics.value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +47,47 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
 
     // Function to update the current media item safely
-    void newMediaItem(String? stid, MediaItem? mediaItem) {
-      // Only update if the new media item is different
+    void newMediaItem(String? stid, MediaItem? mediaItem) async {
       if (currentMediaItemId != stid) {
+        final String blurHash = mediaItem!.artUri != null
+            ? await BlurhashFFI.encode(
+                NetworkImage(
+                  mediaItem.artUri.toString(),
+                ),
+                componentX: 3,
+                componentY: 3,
+              )
+            : AppConstants().BLURHASH;
+
+        currentBlurhash.value = blurHash;
+        final lyrics = await TrackMetadata().getLyrics(
+          context,
+          mediaItem.title,
+          mediaItem.artist!.split(', ')[0],
+          mediaItem.duration!.inSeconds.toDouble(),
+          mediaItem.album!,
+        );
+        print("Run");
+        int syncDelay = 0;
+        if (lyrics["duration"] != null && useSyncTimeDelay.value) {
+          final int difference =
+              ((lyrics["duration"]) - mediaItem.duration!.inSeconds.toDouble())
+                  .toInt()
+                  .abs();
+          syncDelay = difference > 2
+              ? ((lyrics["duration"]) -
+                      mediaItem.duration!.inSeconds.toDouble())
+                  .toInt()
+              : 0;
+        }
+
         setState(() {
           currentMediaItemId = stid;
           currentMediaItem = mediaItem;
-          if (mediaItem != null) {
-            // TODO: Add this as an option in settings
-            syncTimeDelay =
-                int.parse(mediaItem.extras!["syncTimeDelay"]!) * 1000;
-          }
+          syncTimeDelay = syncDelay * 1000;
+          blurhash = blurHash;
+          plainLyrics = lyrics["plainLyrics"] ?? "";
+          syncedLyrics = lyrics["syncedLyrics"] ?? "";
         });
       }
     }
@@ -71,8 +116,10 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
             child: currentMediaItem != null
                 ? Blurhash(
                     key: ValueKey(currentMediaItemId),
-                    blurhash: currentMediaItem!.extras?["blurhash"] ??
-                        AppConstants().BLURHASH,
+                    blurhash:
+                        blurhash /* currentMediaItem!.extras?["blurhash"] ??
+                        AppConstants().BLURHASH */
+                    ,
                     sigmaX: 10,
                     sigmaY: 10,
                     child: Container(
@@ -80,13 +127,10 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                       child: Stack(
                         children: [
                           LyricsPhone(
-                            plainLyrics: currentMediaItem!
-                                .extras!["plainLyrics"]!
-                                .split('\n'),
+                            plainLyrics: plainLyrics.split('\n'),
                             syncedLyrics: [
                               ...["{#¶€[”„’‘¤ß÷×¤ß#˘¸}"],
-                              ...currentMediaItem!.extras!["syncedLyrics"]!
-                                  .split('\n')
+                              ...syncedLyrics.split('\n'),
                             ],
                             lyricsOn: lyricsOn,
                             useSyncedLyrics: useSynced,

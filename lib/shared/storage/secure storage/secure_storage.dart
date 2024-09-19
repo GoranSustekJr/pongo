@@ -15,6 +15,12 @@ class Storage {
   static String oauth2APIClientIDKey = "OAUTH2APICLIENTIDKEY";
   static String localeKey = "LOCALEKEY";
   static String marketKey = "MARKETKEY";
+  static String syncDelayKey = "SYNCDELAYKEY";
+  static String useSyncedLyricsKey = "USESYNCEDLYRICSKEY";
+  static String numOfSearchArtistsKey = "NUMOFSEARCHARTISTSKEY";
+  static String numOfSearchAlbumsKey = "NUMOFSEARCHALBUMSKEY";
+  static String numOfSearchTracksKey = "NUMOFSEARCHTRACKSKEY";
+  static String numOfSearchPlaylistsKey = "NUMOFSEARCHPLAYLISTSKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -114,6 +120,95 @@ class Storage {
       return "US";
     } else {
       return key;
+    }
+  }
+
+  // Sync delay
+  Future<void> writeSyncDelay(bool syncDelay) async {
+    await storage.write(key: syncDelayKey, value: syncDelay.toString());
+  }
+
+  Future<bool> getSyncDelay() async {
+    String? key = await storage.read(key: syncDelayKey);
+    if (key == null) {
+      return false;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Sync lyrics
+  Future<void> writeUseSyncedLyrics(bool useSyncedLyrics) async {
+    await storage.write(
+        key: useSyncedLyricsKey, value: useSyncedLyrics.toString());
+  }
+
+  Future<bool> getUseSyncedLyrics() async {
+    String? key = await storage.read(key: useSyncedLyricsKey);
+    if (key == null) {
+      return false;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Num of search artists
+  Future<void> writeNumOfSearchArtists(int numOfSearchArtists) async {
+    await storage.write(
+        key: numOfSearchArtistsKey, value: numOfSearchArtists.toString());
+  }
+
+  Future<int> getNumOfSearchArtists() async {
+    String? key = await storage.read(key: numOfSearchArtistsKey);
+    if (key == null) {
+      return 3;
+    } else {
+      return int.parse(key);
+    }
+  }
+
+  // Num of search albums
+  Future<void> writeNumOfSearchAlbums(int numOfSearchAlbums) async {
+    await storage.write(
+        key: numOfSearchAlbumsKey, value: numOfSearchAlbums.toString());
+  }
+
+  Future<int> getNumOfSearchAlbums() async {
+    String? key = await storage.read(key: numOfSearchAlbumsKey);
+    if (key == null) {
+      return 5;
+    } else {
+      return int.parse(key);
+    }
+  }
+
+  // Num of search tracks
+  Future<void> writeNumOfSearchTracks(int numOfSearchTracks) async {
+    await storage.write(
+        key: numOfSearchTracksKey, value: numOfSearchTracks.toString());
+  }
+
+  Future<int> getNumOfSearchTracks() async {
+    String? key = await storage.read(key: numOfSearchTracksKey);
+    if (key == null) {
+      return 50;
+    } else {
+      return int.parse(key);
+    }
+  }
+
+  // Num of search playlists
+  Future<void> writeNumOfSearchPlaylists(int numOfSearchPlaylists) async {
+    await storage.write(
+        key: numOfSearchPlaylistsKey, value: numOfSearchPlaylists.toString());
+  }
+
+  Future<int> getNumOfSearchPlaylists() async {
+    String? key = await storage.read(key: numOfSearchPlaylistsKey);
+    if (key == null) {
+      return 20;
+    } else {
+      return int.parse(key);
     }
   }
 

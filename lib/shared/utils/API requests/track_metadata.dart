@@ -126,10 +126,9 @@ class TrackMetadata {
     });
   }
 
-  Future getLyrics(context, String name, String artist, double duration,
-      String album, Function(Map, double) finished) async {
+  Future<Map<String, dynamic>> getLyrics(BuildContext context, String name,
+      String artist, double duration, String album) async {
     try {
-      print("1, $album");
       final response = await http.get(
         Uri(
           scheme: 'https',
@@ -143,90 +142,93 @@ class TrackMetadata {
           },
         ),
       );
-      print(2);
 
       if (response.statusCode == 200) {
-        //print(jsonDecode(response.body));
         final data = json.decode(utf8.decode(response.bodyBytes));
-        /*  print("RESPONSE; BYTES; ${response.bodyBytes}");
-        print("RESPONSE; UTF8-DECODED; ${utf8.decode(response.bodyBytes)}");
-        print(
-            "RESPONSE; JSON-DECODED; ${json.decode(utf8.decode(response.bodyBytes))["plainLyrics"]}");
-        print(
-            "RESPONSE; ONLY-JSON-DECODED; ${json.decode((response.body))["plainLyrics"]}");
 
-        print("HEADERS; ${response.headers}"); */
-
+        // Check if syncedLyrics or plainLyrics is null
         if (data["syncedLyrics"] == null || data["plainLyrics"] == null) {
-          /*   print("SHIT; PLAIN; ${data["plainLyrics"]}; ");
-          print("SYNCED; ${data["syncedLyrics"]}"); */
-          getIfLyricsFail(context, name, artist, duration, album, finished);
+          // If either is null, attempt to get alternative lyrics
+          return await getIfLyricsFail(context, name, artist, duration, album);
         } else {
-          finished(data, duration);
+          return data; // Return the fetched lyrics
         }
       } else {
-        print(response.statusCode);
-        print(jsonDecode(response.body));
-        getIfLyricsFail(context, name, artist, duration, album, finished);
+        // Handle non-200 status codes
+        print("getLyrics failed with status code: ${response.statusCode}");
+        return await getIfLyricsFail(context, name, artist, duration, album);
       }
     } catch (e) {
-      print(e);
-
-      return {};
+      print("Error fetching lyrics: $e");
+      return await getIfLyricsFail(context, name, artist, duration, album);
     }
-    //finished({"plainLyrics": "", "syncedLyrics": "", "duration": 0}, duration);
   }
 
-  getIfLyricsFail(context, String name, String artist, double duration,
-      String album, Function(Map, double) finished) async {
-    print(
-        "GEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEET");
-    print("$name - $artist");
-    final response = await http.get(
-      Uri(
-        scheme: 'https',
-        host: 'lrclib.net',
-        path: '/api/search',
-        queryParameters: {
-          "q": "$name - $artist",
-        },
-      ),
-    );
+  Future<Map<String, dynamic>> getIfLyricsFail(BuildContext context,
+      String name, String artist, double duration, String album) async {
+    try {
+      print("Attempting to fetch alternative lyrics for: $name - $artist");
 
-    if (response.statusCode == 200) {
-      final data = json.decode(utf8.decode(response.bodyBytes));
-      print(data.length);
-      List<int> synced = [];
-      List<int> plain = [];
-      List durations = [];
-      for (int i = 0; i < data.length; i++) {
-        if (data[i]["syncedLyrics"] != null) {
-          durations.add(data[i]["duration"]);
-          synced.add(i);
-        } else {
-          plain.add(i);
+      final response = await http.get(
+        Uri(
+          scheme: 'https',
+          host: 'lrclib.net',
+          path: '/api/search',
+          queryParameters: {
+            "q": "$name - $artist",
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        print(1);
+        if (data.isEmpty) {
+          // If no lyrics are found, return an empty response
+          print(2);
+          return {"plainLyrics": "", "syncedLyrics": "", "duration": 0};
         }
-      }
-      print("SYNCED DATA; $synced");
-      if (data.isEmpty) {
-        finished(
-            {"plainLyrics": "", "syncedLyrics": "", "duration": 0}, duration);
-      } else {
-        if (synced.isNotEmpty) {
-          int index = durations
+
+        // Filter synced lyrics
+        List<int> syncedIndexes = [];
+        List<int> durations = [];
+        print(3);
+        for (int i = 0; i < data.length; i++) {
+          if (data[i]["syncedLyrics"] != null) {
+            print(4);
+            syncedIndexes.add(i);
+            print(5);
+
+            durations.add(data[i]["duration"].toInt());
+          }
+        }
+        print(6);
+
+        if (syncedIndexes.isNotEmpty) {
+          // Find the closest match by duration
+          print(7);
+          int closestMatchIndex = durations
               .asMap()
               .entries
-              .map((e) => MapEntry(e.key, (e.value - duration).abs()))
+              .map((entry) =>
+                  MapEntry(entry.key, (entry.value - duration).abs()))
               .reduce((a, b) => a.value < b.value ? a : b)
               .key;
-          finished(data[synced[index]], duration);
+
+          // Return the closest match with synced lyrics
+          return data[syncedIndexes[closestMatchIndex]];
         } else {
-          finished(data[0], duration);
+          // If no synced lyrics are found, return the first result (plain lyrics)
+          return data[0];
         }
+      } else {
+        print(
+            "getIfLyricsFail failed with status code: ${response.statusCode}");
+        return {"plainLyrics": "", "syncedLyrics": "", "duration": 0};
       }
-    } else {
-      finished(
-          {"plainLyrics": "", "syncedLyrics": "", "duration": 0}, duration);
+    } catch (e) {
+      print("Error fetching alternative lyrics: $e");
+      return {"plainLyrics": "", "syncedLyrics": "", "duration": 0};
     }
   }
 }

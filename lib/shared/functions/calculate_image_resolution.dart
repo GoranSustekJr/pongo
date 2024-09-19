@@ -115,7 +115,7 @@ String calculateWantedResolutionForTrack(List images, int width, int height) {
     }
 
     if (wanted == null) {
-      return calculateBestImage(images);
+      return calculateBestImageForTrack(images);
     }
 
     return wanted;

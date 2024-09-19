@@ -71,4 +71,8 @@ class AppIcons {
   static const lyricsFill = CupertinoIcons.quote_bubble_fill;
 
   static const lyrics = CupertinoIcons.quote_bubble;
+
+  static const audioPlayer = CupertinoIcons.music_house_fill;
+
+  static const image = CupertinoIcons.photo_fill;
 }

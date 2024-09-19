@@ -57,11 +57,12 @@ class OtherControlsPhone extends StatelessWidget {
                   AppIcons.musicQueue,
                   Colors.white,
                   () {
-                    /* showModalBottomSheet(
-                        backgroundColor: Col.transp,
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (context) => QueuePhone()); */
+                    final audioServiceHandler =
+                        Provider.of<AudioHandler>(context, listen: false)
+                            as AudioServiceHandler;
+
+                    print(audioServiceHandler.audioPlayer.effectiveIndices);
+                    print(audioServiceHandler.playlist.sequence);
                   },
                 ),
               ],

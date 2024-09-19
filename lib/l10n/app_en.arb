@@ -453,7 +453,106 @@
     "clearallhistorybody": "Are you sure you want to clear all search history?",
     "@clearallhistorybody": {
         "description": "clearallhistorybody"
-    }
+    },
 
+    "topten": "Top 10",
+    "@topten": {
+        "description": "topten"
+    },
+
+    "singlesandcompilations": "Singles and compilations",
+    "@singlesandcompilations": {
+        "description": "Singles and compilations"
+    },
+
+    "relatedartists": "Related artists",
+    "@relatedartists": {
+        "description": "relatedartists"
+    },
+
+    "data": "Data",
+    "@data": {
+        "description": "data"
+    },
+
+    "saveyourdata": "Save your data",
+    "@saveyourdata": {
+        "description": "saveyourdata"
+    },
+
+    "clearaudioplayercache": "Clear audio player cache",
+    "@clearaudioplayercache": {
+        "description": "clearaudioplayercache"
+    },
+
+    "clearyouraudioplayercache": "Clear your audio player cache",
+    "@clearyouraudioplayercache": {
+        "description": "clearyouraudioplayercache"
+    },
+
+    "clearimagecache": "Clear image cache",
+    "@clearimagecache": {
+        "description": "clearimagecache"
+    },
+
+    "clearyourassetimagecache": "Clear your asset image cache",
+    "@clearyourassetimagecache": {
+        "description": "clearyourassetimagecache"
+    },
+
+    "clearallcache": "Clear all cache",
+    "@clearallcache": {
+        "description": "clearallcache"
+    },
+
+    "clearallappcache": "Clear all app cache",
+    "@clearallappcache": {
+        "description": "clearallappcache"
+    },
+
+    "cache": "Cache",
+    "@cache": {
+        "description": "cache"
+    },
+
+    "howmanyartistsshownwhensearching": "How many artists shown when searching",
+    "@howmanyartistsshownwhensearching": {
+        "description": "howmanyartistsshownwhensearching"
+    },
+
+    "howmanyalbumsshownwhensearching":  "How many albums shown when searching",
+    "@howmanyalbumsshownwhensearching": {
+        "description": "howmanyalbumsshownwhensearching"
+    },
+
+    "howmanytracksshownwhensearching": "How many tracks shown when searching",
+    "@howmanytracksshownwhensearching": {
+        "description": "howmanytracksshownwhensearching"
+    },
+
+    "howmanyplaylistsshownwhensearching": "How many playlists shown when searching",
+    "@howmanyplaylistsshownwhensearching": {
+        "description": "howmanyplaylistsshownwhensearching"
+    },
+
+    "synctimedelay": "Sync time delay",
+    "@synctimedelay": {
+        "description": "synctimedelay"
+    },
+
+    "usesynctimedelay": "Use sync time delay",
+    "@usesynctimedelay": {
+        "description": "usesynctimedelay"
+    },
+
+    "prefersyncedlyrics": "Prefer synced lyrics",
+    "@prefersyncedlyrics": {
+        "description": "prefersyncedlyrics"
+    },
+
+    "preferusageofsyncedlyrics": "Prefer usage of synced lyrics",
+    "@preferusageofsyncedlyrics": {
+        "description": "preferusageofsyncedlyrics"
+    }
 
 }

@@ -86,7 +86,6 @@ class SearchResultTile extends StatelessWidget {
                               )
                             : CachedNetworkImage(
                                 imageUrl: imageUrl,
-                                cacheManager: CacheManagerImage(),
                                 fit: BoxFit.cover,
                               ),
                       ),
@@ -126,58 +125,7 @@ class SearchResultTile extends StatelessWidget {
                       child: trailing,
                     ),
                   ],
-                ) /* ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Container(
-                  width: 55,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7.5),
-                    color: Col.realBackground.withAlpha(150),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(7.5),
-                    child: imageUrl == ""
-                        ? Container(
-                            width: 65,
-                            height: 65,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(7.5),
-                              color: Col.realBackground.withAlpha(150),
-                            ),
-                            child: Center(
-                              child: Icon(noImage),
-                            ),
-                          )
-                        : CachedNetworkImage(
-                            imageUrl: imageUrl,
-                            cacheManager: CacheManagerImage(),
-                            fit: BoxFit.cover,
-                          ),
-                  ),
-                ),
-                title: Text(
-                  title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 18.5,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                subtitle: Text(
-                  subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white.withAlpha(200),
-                  ),
-                ),
-                trailing: trailing,
-              ), */
-                ),
+                )),
           )
         : InkWell(
             splashColor: Colors.white.withAlpha(200),
@@ -202,7 +150,6 @@ class SearchResultTile extends StatelessWidget {
                           )
                         : CachedNetworkImage(
                             imageUrl: imageUrl,
-                            cacheManager: CacheManagerImage(),
                             fit: BoxFit.cover,
                           ),
                   ),

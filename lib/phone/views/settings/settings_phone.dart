@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/views/settings/data/data_phone.dart';
 import 'package:pongo/phone/views/settings/profile/profile_phone.dart';
 
 import 'preferences/preferences_phone.dart';
@@ -54,7 +55,7 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                     children: [
                       razh(kIsApple ? size.width / 5 : size.width / 4),
                       settingsText(AppLocalizations.of(context)!.profile),
-                      settingTile(
+                      settingsTile(
                           context,
                           true,
                           false,
@@ -65,7 +66,7 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                         //Navigationss().nextScreen(context, '/profile', {});
                         Navigations().nextScreen(context, const ProfilePhone());
                       }),
-                      settingTile(
+                      settingsTile(
                           context,
                           false,
                           true,
@@ -79,14 +80,15 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                       }),
                       razh(20),
                       settingsText("Data"),
-                      settingTile(
+                      settingsTile(
                           context,
                           true,
                           true,
                           CupertinoIcons.chart_bar_fill,
                           AppIcons.settings,
-                          "Data",
-                          "Save your data", () {
+                          AppLocalizations.of(context)!.data,
+                          AppLocalizations.of(context)!.saveyourdata, () {
+                        Navigations().nextScreen(context, const DataPhone());
                         //Navigationss().nextScreen(context, '/profile', {});
                         // Navigations().nextScreen(context, PhoneProfileOther());
                       }),

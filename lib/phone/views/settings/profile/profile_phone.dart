@@ -124,7 +124,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                   image != "" ? NetworkImage(image) : null,
                             ),
                             razh(AppBar().preferredSize.height),
-                            settingTile(
+                            settingsTile(
                                 context,
                                 true,
                                 false,
@@ -133,7 +133,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                 name,
                                 AppLocalizations.of(context)!.name,
                                 () {}),
-                            settingTile(
+                            settingsTile(
                                 context,
                                 false,
                                 false,
@@ -142,7 +142,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                 email,
                                 AppLocalizations.of(context)!.email,
                                 () {}),
-                            settingTile(
+                            settingsTile(
                               context,
                               false,
                               true,
@@ -165,7 +165,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                       ),
                     ),
                   )
-                : loadingScaffold(context),
+                : loadingScaffold(context, const ValueKey(false)),
           );
         });
   }
