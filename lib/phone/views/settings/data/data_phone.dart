@@ -105,10 +105,8 @@ class _DataPhoneState extends State<DataPhone> {
                         () async {
                       //TODO:
                       print("Clear");
-                      DefaultCacheManager manager = DefaultCacheManager();
-                      manager.emptyCache();
-                      PaintingBinding.instance.imageCache.clear();
 
+                      await DefaultCacheManager().emptyCache();
                       print("done");
                     }),
                     settingsTile(
@@ -119,8 +117,12 @@ class _DataPhoneState extends State<DataPhone> {
                       AppIcons.trash,
                       AppLocalizations.of(context)!.clearallcache,
                       AppLocalizations.of(context)!.clearallappcache,
-                      () {
+                      () async {
                         //TODO:
+                        print("Clear");
+                        await AudioPlayer.clearAssetCache();
+                        await DefaultCacheManager().emptyCache();
+                        print("done");
                       },
                     ),
                   ],

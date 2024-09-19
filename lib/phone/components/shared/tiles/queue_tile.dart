@@ -1,67 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
-enum TileType { playlist, artist, album, track }
-
-class SearchResultTile extends StatelessWidget {
-  final dynamic data;
-  final TileType type;
+class QueueTile extends StatelessWidget {
+  final String title;
+  final String artist;
+  final String imageUrl;
   final Function() onTap;
   final Widget? trailing;
-  const SearchResultTile(
-      {super.key,
-      this.data,
-      required this.type,
-      required this.onTap,
-      this.trailing});
+  const QueueTile({
+    super.key,
+    required this.onTap,
+    this.trailing,
+    required this.title,
+    required this.artist,
+    required this.imageUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final String imageUrl;
-    final String title;
-    final String subtitle;
-    final String heroTag;
-    final IconData noImage;
-
-    switch (type) {
-      case TileType.track:
-        imageUrl = data.album != null
-            ? calculateWantedResolutionForTrack(data.album.images, 300, 300)
-            : '';
-        title = data.name;
-        subtitle = data.artists.map((artist) => artist.name).join(', ');
-        noImage = AppIcons.blankTrack;
-        break;
-
-      case TileType.playlist:
-        imageUrl = data.image ?? '';
-        title = data.name;
-        subtitle = data.description != null
-            ? data.description!.contains("<a href=spotify:")
-                ? AppLocalizations.of(context)!.playlist
-                : data.description!
-            : AppLocalizations.of(context)!.playlist;
-        heroTag = data.id;
-        noImage = AppIcons.blankAlbum;
-        break;
-
-      case TileType.artist:
-        imageUrl = data.image ?? '';
-        title = data.name;
-        subtitle = AppLocalizations.of(context)!.artist;
-        heroTag = "${data.id}-search";
-        noImage = AppIcons.blankArtist;
-        break;
-
-      case TileType.album:
-        imageUrl = data.image ?? '';
-        title = data.name;
-        subtitle = data.artists.join(", ");
-        heroTag = data.id;
-        noImage = AppIcons.blankAlbum;
-        break;
-    }
-
     return kIsApple
         ? SizedBox(
             height: 85,
@@ -82,7 +38,8 @@ class SearchResultTile extends StatelessWidget {
                         borderRadius: BorderRadius.circular(7.5),
                         child: imageUrl == ""
                             ? Center(
-                                child: Icon(noImage, color: Colors.white),
+                                child: Icon(AppIcons.blankTrack,
+                                    color: Colors.white),
                               )
                             : CachedNetworkImage(
                                 imageUrl: imageUrl,
@@ -109,7 +66,7 @@ class SearchResultTile extends StatelessWidget {
                           ),
                           razh(2.5),
                           Text(
-                            subtitle,
+                            artist,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -146,7 +103,7 @@ class SearchResultTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(7.5),
                     child: imageUrl == ""
                         ? Center(
-                            child: Icon(noImage),
+                            child: Icon(AppIcons.blankTrack),
                           )
                         : CachedNetworkImage(
                             imageUrl: imageUrl,
@@ -164,7 +121,7 @@ class SearchResultTile extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                  subtitle,
+                  artist,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(

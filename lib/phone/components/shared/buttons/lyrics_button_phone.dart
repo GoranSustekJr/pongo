@@ -26,7 +26,7 @@ class LyricsButtonPhone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedPositioned(
-      duration: const Duration(milliseconds: 750),
+      duration: const Duration(milliseconds: 500),
       curve: Curves.decelerate,
       top: lyricsOn ? MediaQuery.of(context).padding.top + 12.5 : -50,
       child: SizedBox(

@@ -4,12 +4,16 @@ import 'controls.dart';
 class TrackControlsPhone extends StatelessWidget {
   final MediaItem currentMediaItem;
   final bool lyricsOn;
+  final bool showQueue;
   final Function() changeLyricsOn;
+  final Function() changeShowQueue;
   const TrackControlsPhone({
     super.key,
     required this.currentMediaItem,
     required this.lyricsOn,
     required this.changeLyricsOn,
+    required this.showQueue,
+    required this.changeShowQueue,
   });
 
   @override
@@ -20,16 +24,17 @@ class TrackControlsPhone extends StatelessWidget {
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 750),
       curve: Curves.decelerate,
-      bottom: lyricsOn
-          ? -50
+      bottom: lyricsOn || showQueue
+          ? -50 - 70
           : (size.height -
-                  (size.width - 60) -
-                  380 -
-                  MediaQuery.of(context).padding.top) /
-              2,
+                      (size.width - 60) -
+                      380 -
+                      MediaQuery.of(context).padding.top) /
+                  2 -
+              70,
       child: SizedBox(
         width: size.width,
-        height: 330,
+        height: 400, // 330
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: BackdropFilter(
@@ -64,9 +69,11 @@ class TrackControlsPhone extends StatelessWidget {
                         const VolumeControlPhone(),
                         OtherControlsPhone(
                           lyricsOn: lyricsOn,
+                          showQueue: showQueue,
                           trackId: currentMediaItem.id,
                           downloadTrack: () {},
                           changeLyricsOn: changeLyricsOn,
+                          changeShowQueue: changeShowQueue,
                         ),
                       ],
                     );

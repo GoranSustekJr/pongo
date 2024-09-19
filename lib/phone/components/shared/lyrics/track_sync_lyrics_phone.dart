@@ -155,44 +155,51 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                               )
                             : SizedBox(
                                 height: size.height,
-                                child: ListView(
-                                  shrinkWrap: true,
+                                child: Scrollbar(
                                   controller: autoScrollController,
-                                  children: widget.lyrics.map(
-                                    (lyric) {
-                                      int index = widget.lyrics.indexOf(lyric);
-                                      if (lyric == "{#¶€[”„’‘¤ß÷×¤ß#}") {
-                                        return SizedBox(
-                                            height: size.height / 2 -
-                                                AppBar().preferredSize.height -
-                                                MediaQuery.of(context)
-                                                    .padding
-                                                    .top);
-                                      } else if (lyric ==
-                                          "{#¶€[”„’‘¤ß÷×¤ß#˘¸}") {
-                                        return SizedBox(
-                                            height: size.height / 2);
-                                      } else {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            if (index > 0 &&
-                                                index <
-                                                    widget.lyrics.length - 1) {
-                                              final currentTimestamp =
-                                                  parseTimestamp(
-                                                      widget.lyrics[index]);
-                                              if (currentTimestamp != null) {
-                                                final duration = Duration(
-                                                  milliseconds: currentTimestamp
-                                                          .inMilliseconds -
-                                                      widget.syncTimeDelay,
-                                                );
-                                                audioServiceHandler
-                                                    .seek(duration);
+                                  child: ListView(
+                                    shrinkWrap: true,
+                                    controller: autoScrollController,
+                                    children: widget.lyrics.map(
+                                      (lyric) {
+                                        int index =
+                                            widget.lyrics.indexOf(lyric);
+                                        if (lyric == "{#¶€[”„’‘¤ß÷×¤ß#}") {
+                                          return SizedBox(
+                                              height: size.height / 2 -
+                                                  AppBar()
+                                                      .preferredSize
+                                                      .height -
+                                                  MediaQuery.of(context)
+                                                      .padding
+                                                      .top);
+                                        } else if (lyric ==
+                                            "{#¶€[”„’‘¤ß÷×¤ß#˘¸}") {
+                                          return SizedBox(
+                                              height: size.height / 2);
+                                        } else {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              if (index > 0 &&
+                                                  index <
+                                                      widget.lyrics.length -
+                                                          1) {
+                                                final currentTimestamp =
+                                                    parseTimestamp(
+                                                        widget.lyrics[index]);
+                                                if (currentTimestamp != null) {
+                                                  final duration = Duration(
+                                                    milliseconds:
+                                                        currentTimestamp
+                                                                .inMilliseconds -
+                                                            widget
+                                                                .syncTimeDelay,
+                                                  );
+                                                  audioServiceHandler
+                                                      .seek(duration);
+                                                }
                                               }
-                                            }
-                                          },
-                                          child: RepaintBoundary(
+                                            },
                                             child: AutoScrollTag(
                                               key: ValueKey(index),
                                               controller: autoScrollController,
@@ -267,11 +274,11 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ).toList(),
+                                          );
+                                        }
+                                      },
+                                    ).toList(),
+                                  ),
                                 ),
                               ),
                       ),

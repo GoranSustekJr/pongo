@@ -20,7 +20,10 @@ class AppIcons {
   static const libraryFill = CupertinoIcons.music_albums_fill;
 
   static final musicQueue =
-      kIsApple ? CupertinoIcons.music_note_list : Icons.queue_music_rounded;
+      kIsApple ? CupertinoIcons.collections : Icons.queue_music_rounded;
+
+  static final musicQueueFill =
+      kIsApple ? CupertinoIcons.collections_solid : Icons.queue_music_rounded;
 
   static const info = CupertinoIcons.info_circle;
 

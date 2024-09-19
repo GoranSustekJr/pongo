@@ -1,7 +1,9 @@
 import 'package:blurhash_ffi/blurhash.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/components/shared/buttons/queue_button_phone.dart';
 import 'package:pongo/phone/components/shared/playing%20details/track_controls_phone.dart';
 import 'package:pongo/phone/components/shared/playing%20details/track_image_phone.dart';
+import 'package:pongo/phone/components/shared/queue/queue_phone.dart';
 import 'package:pongo/shared/utils/API%20requests/track_metadata.dart';
 
 class PlayingDetailsPhone extends StatefulWidget {
@@ -26,6 +28,9 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
 
   // Use Synced
   bool useSynced = false;
+
+  // Show current song details | show queue
+  bool showQueue = false;
 
   // Blurhash
   String blurhash = AppConstants().BLURHASH;
@@ -126,6 +131,16 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                       color: Colors.black.withAlpha(45),
                       child: Stack(
                         children: [
+                          QueuePhone(showQueue: showQueue, lyricsOn: lyricsOn),
+                          QueueButtonPhone(
+                            showQueue: showQueue,
+                            lyricsOn: lyricsOn,
+                            changeShowQueue: () {
+                              setState(() {
+                                showQueue = !showQueue;
+                              });
+                            },
+                          ),
                           LyricsPhone(
                             plainLyrics: plainLyrics.split('\n'),
                             syncedLyrics: [
@@ -169,14 +184,21 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                           TrackControlsPhone(
                             currentMediaItem: currentMediaItem!,
                             lyricsOn: lyricsOn,
+                            showQueue: showQueue,
                             changeLyricsOn: () {
                               setState(() {
                                 lyricsOn = !lyricsOn;
                               });
                             },
+                            changeShowQueue: () {
+                              setState(() {
+                                showQueue = !showQueue;
+                              });
+                            },
                           ),
                           TrackImagePhone(
                             lyricsOn: lyricsOn,
+                            showQueue: showQueue,
                             image: currentMediaItem!.artUri.toString(),
                           ),
                         ],
