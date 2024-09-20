@@ -25,6 +25,14 @@ export 'shared/models/models.dart';
 export 'shared/functions/calculate_image_resolution.dart';
 export 'shared/services/cache_manager.dart';
 
+export 'package:pongo/phone/components/shared/tiles/recommended_tile.dart';
+export 'package:pongo/phone/views/album/album_phone.dart';
+export 'package:pongo/phone/views/artist/artist_phone.dart';
+export 'package:pongo/phone/views/home/recomendations/recommendations%20body/recommendations_for_you_phone.dart';
+export 'package:pongo/phone/views/home/recomendations/recommendations%20body/recommended_pongo_phone.dart';
+export 'package:pongo/phone/views/home/recomendations/recommendations_body_phone.dart';
+export 'package:pongo/shared/utils/API%20requests/recommendations.dart';
+
 export 'package:pongo/phone/views/main/sign_in_phone.dart';
 export 'package:pongo/phone/components/components.dart';
 

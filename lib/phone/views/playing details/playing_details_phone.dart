@@ -32,6 +32,9 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
   // Show current song details | show queue
   bool showQueue = false;
 
+  // Queue scroll controller
+  ScrollController queueScrollController = ScrollController();
+
   // Blurhash
   String blurhash = AppConstants().BLURHASH;
 
@@ -121,17 +124,18 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
             child: currentMediaItem != null
                 ? Blurhash(
                     key: ValueKey(currentMediaItemId),
-                    blurhash:
-                        blurhash /* currentMediaItem!.extras?["blurhash"] ??
-                        AppConstants().BLURHASH */
-                    ,
+                    blurhash: blurhash,
                     sigmaX: 10,
                     sigmaY: 10,
                     child: Container(
                       color: Colors.black.withAlpha(45),
                       child: Stack(
                         children: [
-                          QueuePhone(showQueue: showQueue, lyricsOn: lyricsOn),
+                          QueuePhone(
+                            showQueue: showQueue,
+                            lyricsOn: lyricsOn,
+                            scrollController: queueScrollController,
+                          ),
                           QueueButtonPhone(
                             showQueue: showQueue,
                             lyricsOn: lyricsOn,

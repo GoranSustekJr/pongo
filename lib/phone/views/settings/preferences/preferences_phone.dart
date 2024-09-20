@@ -31,6 +31,10 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   int numOfSearchTracks = 50;
   int numOfSearchPlaylists = 20;
 
+  // Recommendations
+  bool recommendedForYou = true;
+  bool recommendedPongo = true;
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +60,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final numSearchAlbums = await Storage().getNumOfSearchAlbums();
     final numSearchTracks = await Storage().getNumOfSearchTracks();
     final numSearchPlaylists = await Storage().getNumOfSearchPlaylists();
+    final recommendForYou = await Storage().getRecommendedForYou();
+    final recommendPongo = await Storage().getRecommendedPongo();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -65,6 +71,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       numOfSearchAlbums = numSearchAlbums;
       numOfSearchTracks = numSearchTracks;
       numOfSearchPlaylists = numSearchPlaylists;
+      recommendedForYou = recommendForYou;
+      recommendedPongo = recommendPongo;
     });
   }
 
@@ -213,6 +221,38 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                         });
                       });
                     }),
+                    razh(20),
+                    settingsText(AppLocalizations.of(context)!.recommendations),
+                    settingsTileSwitcher(
+                      context,
+                      true,
+                      false,
+                      CupertinoIcons.arrow_down_doc_fill,
+                      recommendedForYou, // AppIcons.edit,
+                      AppLocalizations.of(context)!.showrecommendedforyou,
+                      AppLocalizations.of(context)!.showrecommendedforyoubody,
+                      (use) async {
+                        setState(() {
+                          recommendedForYou = use;
+                        });
+                        Storage().writeRecommendedForYou(use);
+                      },
+                    ),
+                    settingsTileSwitcher(
+                      context,
+                      false,
+                      true,
+                      CupertinoIcons.arrow_up_doc_fill,
+                      recommendedPongo, // AppIcons.edit,
+                      AppLocalizations.of(context)!.showrecommendedbypongo,
+                      AppLocalizations.of(context)!.showrecommendedbypongobody,
+                      (use) async {
+                        setState(() {
+                          recommendedPongo = use;
+                        });
+                        Storage().writeRecommendedPongo(use);
+                      },
+                    ),
                     razh(20),
                     settingsText(AppLocalizations.of(context)!.lyrics),
                     settingsTileSwitcher(

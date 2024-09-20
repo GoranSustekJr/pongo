@@ -129,6 +129,8 @@ class _ArtistPhoneState extends State<ArtistPhone> {
           .toList();
       showBody = true;
     });
+
+    await DatabaseHelper().insertLFHArtists(widget.artist.id);
   }
 
   @override

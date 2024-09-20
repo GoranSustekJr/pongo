@@ -263,6 +263,8 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
       }
 
       await audioServiceHandler.initSongs(songs: mediaItems);
+      await audioServiceHandler
+          .skipToQueueItem(audioServiceHandler.audioPlayer.shuffleIndices![0]);
       audioServiceHandler.play();
       setState(() {
         loadingShuffle = false;

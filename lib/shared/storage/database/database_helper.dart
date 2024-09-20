@@ -95,7 +95,7 @@ class DatabaseHelper {
   Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
     print(oldVersion);
     print(newVersion);
-    await db.execute('''
+    /* await db.execute('''
       CREATE TABLE local_playlist (
         lpid INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT,
@@ -108,7 +108,7 @@ class DatabaseHelper {
         order_number INT,
         FOREIGN KEY(lpid) REFERENCES local_playlist(lpid)
       )
-    ''');
+    '''); */
   }
 
   // Insert online playlist
@@ -301,5 +301,45 @@ class DatabaseHelper {
 
   Future<void> updateLocalPlaylistCover(int lpid, Uint8List cover) async {
     await updateLoclPlaylistCover(this, lpid, cover);
+  }
+
+  Future<void> insertLFHArtists(String said) async {
+    await insertLFHArtsts(this, said);
+  }
+
+  Future<void> removeLFHArtists(String said) async {
+    await removeLFHArtsts(this, said);
+  }
+
+  Future<void> clearLFHArtists() async {
+    await clearLFHArtsts(this);
+  }
+
+  Future<List<String>> queryLFHArtistsBy50() async {
+    return await queryLFHArtstsBy50(this);
+  }
+
+  Future<List<String>> queryLFHArtistsBy5() async {
+    return await queryLFHArtstsBy5(this);
+  }
+
+  Future<void> insertLFHTracks(String stid) async {
+    await insertLFHTrcks(this, stid);
+  }
+
+  Future<void> removeLFHTracks(String stid) async {
+    await removeLFHTrcks(this, stid);
+  }
+
+  Future<void> clearLFHTracks() async {
+    await clearLFHTrcks(this);
+  }
+
+  Future<List<String>> queryLFHTracksBy50() async {
+    return await queryLFHTrcksBy50(this);
+  }
+
+  Future<List<String>> queryLFHTracksBy5() async {
+    return await queryLFHTrcksBy5(this);
   }
 }

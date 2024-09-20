@@ -1,5 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:blurhash_ffi/blurhash_ffi.dart';
 import 'package:pongo/shared/utils/API%20requests/track_metadata.dart';
 
 class TrackPlay {
@@ -79,6 +78,7 @@ class TrackPlay {
             },
           );
         } else {
+          print("STARTED; $i");
           UriAudioSource source = AudioSource.uri(
             Uri.parse("${AppConstants.SERVER_URL}play_song/${tracks[i].id}"),
             tag: MediaItem(
@@ -99,7 +99,8 @@ class TrackPlay {
               },
             ),
           );
-          play(source.tag, i);
+          print("GOING; $i");
+          play(source.tag as MediaItem, i);
         }
       } else {
         break;

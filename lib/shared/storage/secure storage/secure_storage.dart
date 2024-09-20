@@ -21,6 +21,8 @@ class Storage {
   static String numOfSearchAlbumsKey = "NUMOFSEARCHALBUMSKEY";
   static String numOfSearchTracksKey = "NUMOFSEARCHTRACKSKEY";
   static String numOfSearchPlaylistsKey = "NUMOFSEARCHPLAYLISTSKEY";
+  static String recommendedForYouKey = "RECOMMENDEDFORYOUKEY";
+  static String recommendedPongoKey = "RECOMMENDEDPONGOKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -209,6 +211,36 @@ class Storage {
       return 20;
     } else {
       return int.parse(key);
+    }
+  }
+
+  // Get recommendations for oyu
+  Future<void> writeRecommendedForYou(bool recommendedForYou) async {
+    await storage.write(
+        key: recommendedForYouKey, value: recommendedForYou.toString());
+  }
+
+  Future<bool> getRecommendedForYou() async {
+    String? key = await storage.read(key: recommendedForYouKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Get recommendations by Pongo
+  Future<void> writeRecommendedPongo(bool recommendedPongo) async {
+    await storage.write(
+        key: recommendedPongoKey, value: recommendedPongo.toString());
+  }
+
+  Future<bool> getRecommendedPongo() async {
+    String? key = await storage.read(key: recommendedPongoKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
     }
   }
 

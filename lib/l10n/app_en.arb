@@ -553,6 +553,36 @@
     "preferusageofsyncedlyrics": "Prefer usage of synced lyrics",
     "@preferusageofsyncedlyrics": {
         "description": "preferusageofsyncedlyrics"
+    },
+
+    "recommendations": "Recommendations",
+    "@recommendations": {
+        "description": "recommendations"
+    },
+
+    "showrecommendedforyou": "Show recommended for you",
+    "@showrecommendedforyou": {
+        "description": "showrecommendedforyou"
+    },
+
+    "showrecommendedforyoubody": "Show recommendations from your five most recent tracks",
+    "@showrecommendedforyoubody": {
+        "description": "showrecommendedforyoubody"
+    },
+
+    "showrecommendedbypongo": "Show recommended by Pongo",
+    "@showrecommendedbypongo": {
+        "description": "showrecommendedbypongo"
+    },
+
+    "showrecommendedbypongobody": "Show random recommendations by Pongo",
+    "@showrecommendedbypongobody": {
+        "description": "showrecommendedbypongobody"
+    },
+    
+    "recommendationsdisabled": "Recommendations disabled. They can be enabled in 'Settings > Preferences > Recommmendations'. Then restart the app.",
+    "@recommendationsdisabled": {
+        "description": "recommendationsdisabled"
     }
 
 }

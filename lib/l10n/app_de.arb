@@ -109,9 +109,12 @@
     "synctimedelay": "Synchronisierungszeitverzögerung",
     "usesynctimedelay": "Verwende die Synchronisierungszeitverzögerung",
     "prefersyncedlyrics": "Bevorzuge synchronisierte Liedtexte",
-    "preferusageofsyncedlyrics": "Bevorzuge die Verwendung synchronisierter Liedtexte"
-
-
-
+    "preferusageofsyncedlyrics": "Bevorzuge die Verwendung synchronisierter Liedtexte",
+    "recommendations": "Empfehlungen",
+    "showrecommendedforyou": "Zeige Empfehlungen für dich",
+    "showrecommendedforyoubody": "Zeige Empfehlungen aus deinen fünf neuesten Titeln",
+    "showrecommendedbypongo": "Zeige von Pongo empfohlene",
+    "showrecommendedbypongobody": "Zeige zufällige Empfehlungen von Pongo",
+    "recommendationsdisabled": "Empfehlungen deaktiviert. Sie können in 'Einstellungen > Präferenzen > Empfehlungen' aktiviert werden. Starten Sie dann die App neu."
 
 }

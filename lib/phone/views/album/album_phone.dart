@@ -153,13 +153,18 @@ class _AlbumPhoneState extends State<AlbumPhone> {
               }
             },
             (mediaItem, i) async {
+              print("YEAAH; $i");
               if (i == 0) {
+                print("HMMM; $i");
                 await audioServiceHandler.initSongs(songs: [mediaItem]);
                 audioServiceHandler.play();
               } else {
+                print("HMMMAAAAAAAA; $i");
+                audioServiceHandler.queue.value.add(mediaItem);
+                print("AAAAAAAAA");
                 await audioServiceHandler.playlist
                     .add(audioServiceHandler.createAudioSource(mediaItem));
-                audioServiceHandler.queue.value.add(mediaItem);
+                print("BBBBBBBBBBBB");
               }
             },
           );
@@ -213,6 +218,7 @@ class _AlbumPhoneState extends State<AlbumPhone> {
       setState(() {
         loadingShuffle = true;
       });
+
       final data = await AlbumSpotify().getShuffle(context, widget.album.id);
       setState(() {
         existingTracks = {
@@ -226,6 +232,7 @@ class _AlbumPhoneState extends State<AlbumPhone> {
       final audioServiceHandler =
           Provider.of<AudioHandler>(context, listen: false)
               as AudioServiceHandler;
+
       await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);
 
       for (int i = 0; i < tracks.length; i++) {
@@ -251,7 +258,9 @@ class _AlbumPhoneState extends State<AlbumPhone> {
       }
 
       await audioServiceHandler.initSongs(songs: mediaItems);
-      audioServiceHandler.play();
+      await audioServiceHandler
+          .skipToQueueItem(audioServiceHandler.audioPlayer.shuffleIndices![0]);
+      //audioServiceHandler.play();
       setState(() {
         loadingShuffle = false;
       });

@@ -4,14 +4,24 @@ import 'package:pongo/phone/components/shared/tiles/queue_tile.dart';
 class QueuePhone extends StatefulWidget {
   final bool showQueue;
   final bool lyricsOn;
+  final ScrollController scrollController;
   const QueuePhone(
-      {super.key, required this.showQueue, required this.lyricsOn});
+      {super.key,
+      required this.showQueue,
+      required this.lyricsOn,
+      required this.scrollController});
 
   @override
   State<QueuePhone> createState() => _QueuePhoneState();
 }
 
 class _QueuePhoneState extends State<QueuePhone> {
+  @override
+  void initState() {
+    super.initState();
+    // widget.scrollController.jumpTo(widget.scrollController.offset);
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -25,45 +35,47 @@ class _QueuePhoneState extends State<QueuePhone> {
       child: AnimatedOpacity(
         opacity: widget.showQueue && !widget.lyricsOn ? 1 : 0,
         duration: Duration(milliseconds: widget.lyricsOn ? 500 : 150),
-        child: RepaintBoundary(
-          child: StreamBuilder(
-              stream: audioServiceHandler.queue.stream,
-              builder: (context, snapshot) {
-                final queue = snapshot.data;
+        child: StreamBuilder(
+            stream: audioServiceHandler.queue.stream,
+            builder: (context, snapshot) {
+              final queue = snapshot.data;
 
-                return StreamBuilder(
-                    stream:
-                        audioServiceHandler.audioPlayer.shuffleIndicesStream,
-                    builder: (context, snap) {
-                      final shuffleIndices = snap.data;
+              return StreamBuilder(
+                  stream: audioServiceHandler.audioPlayer.shuffleIndicesStream,
+                  builder: (context, snap) {
+                    final shuffleIndices = snap.data;
 
-                      return StreamBuilder(
-                          stream: audioServiceHandler
-                              .audioPlayer.shuffleModeEnabledStream,
-                          builder: (context, snp) {
-                            final shuffleModeEnabled = (snp.data ?? false) &&
-                                (shuffleIndices != null
-                                    ? shuffleIndices.isNotEmpty
-                                    : false);
+                    return StreamBuilder(
+                        stream: audioServiceHandler
+                            .audioPlayer.shuffleModeEnabledStream,
+                        builder: (context, snp) {
+                          final shuffleModeEnabled = (snp.data ?? false) &&
+                              (shuffleIndices != null
+                                  ? shuffleIndices.isNotEmpty
+                                  : false);
 
-                            print("SHUFFLE ENABLED; $shuffleModeEnabled");
-                            print(snp.data);
+                          print("SHUFFLE ENABLED; $shuffleModeEnabled");
+                          print(snp.data);
 
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: SizedBox(
-                                height: size.height,
-                                width: size.width - 20,
-                                child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 200),
-                                  child: queue != null
-                                      ? SingleChildScrollView(
-                                          key: const ValueKey(true),
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: SizedBox(
+                              height: size.height,
+                              width: size.width - 20,
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 200),
+                                child: queue != null
+                                    ? SingleChildScrollView(
+                                        key: const ValueKey(true),
+                                        controller: widget.scrollController,
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                              minHeight: size.height),
                                           child: Column(
                                             children: <Widget>[
-                                              razh(kToolbarHeight),
+                                              razh(kToolbarHeight + 50),
                                               ListView.builder(
+                                                padding: EdgeInsets.zero,
                                                 itemCount: queue.length,
                                                 shrinkWrap: true,
                                                 physics:
@@ -145,23 +157,20 @@ class _QueuePhoneState extends State<QueuePhone> {
                                                   );
                                                 },
                                               ),
-                                              razh(300 -
-                                                  MediaQuery.of(context)
-                                                      .padding
-                                                      .bottom),
+                                              razh(300),
                                             ],
                                           ),
-                                        )
-                                      : const SizedBox(
-                                          key: ValueKey(false),
                                         ),
-                                ),
+                                      )
+                                    : const SizedBox(
+                                        key: ValueKey(false),
+                                      ),
                               ),
-                            );
-                          });
-                    });
-              }),
-        ),
+                            ),
+                          );
+                        });
+                  });
+            }),
       ),
     );
   }

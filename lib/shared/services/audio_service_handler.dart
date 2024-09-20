@@ -163,7 +163,8 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Function to initialize the songs and set up the audio player
   Future<void> initSongs({required List<MediaItem> songs}) async {
-    // Listen for playback events and broadcast the state
+    // Add track to history
+    await DatabaseHelper().insertLFHTracks(songs[0].id.split(".")[2]);
 
     // Create a list of audio sources from the provided songs
     await playlist.clear();
@@ -173,7 +174,7 @@ class AudioServiceHandler extends BaseAudioHandler
     // Set the audio source of the audio player to the concatenation of the audio sources
     // Add the songs to the queue
     queue.add(songs);
-    await audioPlayer.setAudioSource(playlist);
+    //await audioPlayer.setAudioSource(playlist);
     // Listen for changes in the current song index
     listenForCurrentSongIndexChanges();
 
@@ -242,11 +243,11 @@ class AudioServiceHandler extends BaseAudioHandler
   @override
   Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async {
     if (shuffleMode == AudioServiceShuffleMode.none) {
-      audioPlayer.setShuffleModeEnabled(false);
+      await audioPlayer.setShuffleModeEnabled(false);
       await super.setShuffleMode(AudioServiceShuffleMode.none);
       print("Shuffle mdoe, OFF");
     } else if (shuffleMode == AudioServiceShuffleMode.all) {
-      audioPlayer.setShuffleModeEnabled(true);
+      await audioPlayer.setShuffleModeEnabled(true);
       await super.setShuffleMode(AudioServiceShuffleMode.all);
       print("Shuffle mdoe, ON");
     }

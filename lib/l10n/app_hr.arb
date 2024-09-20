@@ -110,12 +110,12 @@
     "synctimedelay": "Kašnjenje sinkronizacije",
     "usesynctimedelay": "Koristi kašnjenje sinkronizacije",
     "prefersyncedlyrics": "Preferiraj sinkronizirane tekstove",
-    "preferusageofsyncedlyrics": "Preferiraj korištenje sinkroniziranih tekstova"
-
-
-
-
-
-
+    "preferusageofsyncedlyrics": "Preferiraj korištenje sinkroniziranih tekstova",
+    "recommendations": "Preporuke",
+    "showrecommendedforyou": "Prikaži preporučeno za tebe",
+    "showrecommendedforyoubody": "Prikaži preporuke na temelju tvojih pet posljednjih pjesama",
+    "showrecommendedbypongo": "Prikaži preporuke od Ponga",
+    "showrecommendedbypongobody": "Prikaži slučajne preporuke od Ponga",
+    "recommendationsdisabled": "Preporuke su onemogućene. Možete ih omogućiti u 'Postavke > Preferencije > Preporuke'. Potom ponovno pokrenite aplikaciju."
 
 }

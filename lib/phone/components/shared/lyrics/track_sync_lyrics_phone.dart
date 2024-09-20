@@ -155,130 +155,125 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                               )
                             : SizedBox(
                                 height: size.height,
-                                child: Scrollbar(
+                                child: ListView(
+                                  shrinkWrap: true,
                                   controller: autoScrollController,
-                                  child: ListView(
-                                    shrinkWrap: true,
-                                    controller: autoScrollController,
-                                    children: widget.lyrics.map(
-                                      (lyric) {
-                                        int index =
-                                            widget.lyrics.indexOf(lyric);
-                                        if (lyric == "{#¶€[”„’‘¤ß÷×¤ß#}") {
-                                          return SizedBox(
-                                              height: size.height / 2 -
-                                                  AppBar()
-                                                      .preferredSize
-                                                      .height -
-                                                  MediaQuery.of(context)
-                                                      .padding
-                                                      .top);
-                                        } else if (lyric ==
-                                            "{#¶€[”„’‘¤ß÷×¤ß#˘¸}") {
-                                          return SizedBox(
-                                              height: size.height / 2);
-                                        } else {
-                                          return GestureDetector(
-                                            onTap: () {
-                                              if (index > 0 &&
-                                                  index <
-                                                      widget.lyrics.length -
-                                                          1) {
-                                                final currentTimestamp =
-                                                    parseTimestamp(
-                                                        widget.lyrics[index]);
-                                                if (currentTimestamp != null) {
-                                                  final duration = Duration(
-                                                    milliseconds:
-                                                        currentTimestamp
-                                                                .inMilliseconds -
-                                                            widget
-                                                                .syncTimeDelay,
-                                                  );
-                                                  audioServiceHandler
-                                                      .seek(duration);
-                                                }
+                                  children: widget.lyrics.map(
+                                    (lyric) {
+                                      int index = widget.lyrics.indexOf(lyric);
+                                      if (lyric == "{#¶€[”„’‘¤ß÷×¤ß#}") {
+                                        return SizedBox(
+                                            height: size.height / 2 -
+                                                AppBar().preferredSize.height -
+                                                MediaQuery.of(context)
+                                                    .padding
+                                                    .top);
+                                      } else if (lyric ==
+                                          "{#¶€[”„’‘¤ß÷×¤ß#˘¸}") {
+                                        return SizedBox(
+                                            height: size.height / 2);
+                                      } else {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            if (index > 0 &&
+                                                index <
+                                                    widget.lyrics.length - 1) {
+                                              final currentTimestamp =
+                                                  parseTimestamp(
+                                                      widget.lyrics[index]);
+                                              if (currentTimestamp != null) {
+                                                final duration = Duration(
+                                                  milliseconds: currentTimestamp
+                                                          .inMilliseconds -
+                                                      widget.syncTimeDelay,
+                                                );
+                                                audioServiceHandler
+                                                    .seek(duration);
                                               }
-                                            },
-                                            child: AutoScrollTag(
-                                              key: ValueKey(index),
-                                              controller: autoScrollController,
-                                              index: index,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 0),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: SizedBox(
-                                                            width:
-                                                                size.width - 20,
-                                                            child:
-                                                                AnimatedSwitcher(
-                                                              duration:
-                                                                  const Duration(
-                                                                      milliseconds:
-                                                                          200),
-                                                              child: Text(
-                                                                "${fixEncoding(lyric).replaceAll(regExp, '')}\n\n",
-                                                                key: ValueKey<
-                                                                        int>(
-                                                                    currentLyricIndex ==
-                                                                            index
-                                                                        ? 1
-                                                                        : 0),
-                                                                maxLines: null,
-                                                                softWrap: true,
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style: currentLyricIndex ==
-                                                                        index
-                                                                    ? const TextStyle(
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                        fontSize:
-                                                                            35.5,
-                                                                        height:
-                                                                            1.5,
-                                                                      )
-                                                                    : TextStyle(
-                                                                        color: Colors
-                                                                            .white
-                                                                            .withAlpha(100),
-                                                                        fontWeight: kIsMacOS
-                                                                            ? FontWeight.w300
-                                                                            : FontWeight.w400,
-                                                                        fontSize:
-                                                                            35,
-                                                                        height:
-                                                                            1.5,
-                                                                      ),
-                                                              ),
+                                            }
+                                          },
+                                          child: AutoScrollTag(
+                                            key: ValueKey(index),
+                                            controller: autoScrollController,
+                                            index: index,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 0),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: SizedBox(
+                                                          width:
+                                                              size.width - 20,
+                                                          child:
+                                                              AnimatedSwitcher(
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        200),
+                                                            child: Text(
+                                                              "${fixEncoding(lyric).replaceAll(regExp, '')}\n\n",
+                                                              key: ValueKey<
+                                                                      int>(
+                                                                  currentLyricIndex ==
+                                                                          index
+                                                                      ? 1
+                                                                      : 0),
+                                                              maxLines: null,
+                                                              softWrap: true,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: currentLyricIndex ==
+                                                                      index
+                                                                  ? const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          35.5,
+                                                                      height:
+                                                                          1.5,
+                                                                    )
+                                                                  : TextStyle(
+                                                                      color: Colors
+                                                                          .white
+                                                                          .withAlpha(
+                                                                              100),
+                                                                      fontWeight: kIsMacOS
+                                                                          ? FontWeight
+                                                                              .w300
+                                                                          : FontWeight
+                                                                              .w400,
+                                                                      fontSize:
+                                                                          35,
+                                                                      height:
+                                                                          1.5,
+                                                                    ),
                                                             ),
                                                           ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                          );
-                                        }
-                                      },
-                                    ).toList(),
-                                  ),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  ).toList(),
                                 ),
                               ),
                       ),
