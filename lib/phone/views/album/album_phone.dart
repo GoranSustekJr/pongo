@@ -1,11 +1,7 @@
 import 'dart:ui';
-
 import 'package:blurhash_ffi/blurhash.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/components/album/play_shuffle_halt_album.dart';
-import 'package:pongo/phone/components/shared/other/sticky_header_delegate.dart';
-import 'package:pongo/shared/utils/API%20requests/album_tracks.dart';
 import 'album_body_phone.dart';
 
 class AlbumPhone extends StatefulWidget {
@@ -116,8 +112,13 @@ class _AlbumPhoneState extends State<AlbumPhone> {
       final audioServiceHandler =
           Provider.of<AudioHandler>(context, listen: false)
               as AudioServiceHandler;
+      // Set shuffle mode
       await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
+
+      // Set global id of the album
+      currentAlbumPlaylistId.value = "album:${widget.album.id}";
       if (missingTracks.isNotEmpty) {
+        queueAllowShuffle.value = false;
         setState(() {
           cancel = true;
         });
@@ -166,6 +167,9 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                     .add(audioServiceHandler.createAudioSource(mediaItem));
                 print("BBBBBBBBBBBB");
               }
+              if (i == tracks.length - 1) {
+                queueAllowShuffle.value = true;
+              }
             },
           );
         });
@@ -210,14 +214,20 @@ class _AlbumPhoneState extends State<AlbumPhone> {
         await audioServiceHandler.skipToQueueItem(index!);
         audioServiceHandler.play();
       }
+      queueAllowShuffle.value = true;
     }
   }
 
   playShuffle() async {
     if (!loadingShuffle && missingTracks.isEmpty) {
+      queueAllowShuffle.value = true;
+
       setState(() {
         loadingShuffle = true;
       });
+
+      // Set global id of the album
+      currentAlbumPlaylistId.value = "album:${widget.album.id}";
 
       final data = await AlbumSpotify().getShuffle(context, widget.album.id);
       setState(() {

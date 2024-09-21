@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/shared/functions/queue/add_to_queue.dart';
 
 class AppIcons {
   static final settings =
@@ -26,6 +27,7 @@ class AppIcons {
       kIsApple ? CupertinoIcons.collections_solid : Icons.queue_music_rounded;
 
   static const info = CupertinoIcons.info_circle;
+  static const addToQueue = CupertinoIcons.plus_square_on_square;
 
   static final download =
       kIsApple ? CupertinoIcons.cloud_download : Icons.cloud_download_rounded;

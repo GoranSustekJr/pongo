@@ -15,6 +15,10 @@ export 'package:pongo/phone/widgets/playlist/tiles/playlist_song_tile.dart';
 export 'package:mini_music_visualizer/mini_music_visualizer.dart';
 export 'package:pongo/shared/utils/API%20requests/track_play.dart';
 export 'package:pongo/phone/views/playlist/playlist_phone.dart';
+export 'package:pongo/shared/functions/play/play.dart';
+export 'package:pongo/shared/utils/API%20requests/recommendations.dart';
+export 'package:pongo/shared/functions/queue/add_to_queue.dart';
+export 'package:pongo/shared/utils/API%20requests/track_metadata.dart';
 
 export 'shared/api/api.dart';
 export 'shared/components/components.dart';
@@ -24,6 +28,7 @@ export 'shared/constants/app_icons.dart';
 export 'shared/models/models.dart';
 export 'shared/functions/calculate_image_resolution.dart';
 export 'shared/services/cache_manager.dart';
+export 'package:pongo/shared/utils/API%20requests/album_tracks.dart';
 
 export 'package:pongo/phone/components/shared/tiles/recommended_tile.dart';
 export 'package:pongo/phone/views/album/album_phone.dart';
@@ -31,7 +36,9 @@ export 'package:pongo/phone/views/artist/artist_phone.dart';
 export 'package:pongo/phone/views/home/recomendations/recommendations%20body/recommendations_for_you_phone.dart';
 export 'package:pongo/phone/views/home/recomendations/recommendations%20body/recommended_pongo_phone.dart';
 export 'package:pongo/phone/views/home/recomendations/recommendations_body_phone.dart';
-export 'package:pongo/shared/utils/API%20requests/recommendations.dart';
+
+export 'package:pongo/phone/components/album/play_shuffle_halt_album.dart';
+export 'package:pongo/phone/components/shared/other/sticky_header_delegate.dart';
 
 export 'package:pongo/phone/views/main/sign_in_phone.dart';
 export 'package:pongo/phone/components/components.dart';

@@ -52,54 +52,13 @@ class RecommendedPongoPhone extends StatelessWidget {
                   showLoading: pTrackLoading.contains(pTracks[index].id),
                   type: TileType.track,
                   onTap: () async {
-                    final playNew = audioServiceHandler.mediaItem.value != null
-                        ? audioServiceHandler.mediaItem.value!.id
-                                .split(".")[2] !=
-                            pTracks[index].id
-                        : true;
-                    if (playNew) {
-                      TrackPlay().playSingle(
-                          context,
-                          Track(
-                            id: pTracks[index].id,
-                            name: pTracks[index].name,
-                            artists: pTracks[index]
-                                .artists
-                                .map((artist) => ArtistTrack(
-                                    id: artist.id, name: artist.name))
-                                .toList(),
-                            album: pTracks[index].album == null
-                                ? null
-                                : AlbumTrack(
-                                    name: pTracks[index].album!.name,
-                                    images: pTracks[index]
-                                        .album!
-                                        .images
-                                        .map((image) => AlbumImagesTrack(
-                                            url: image.url,
-                                            height: image.height,
-                                            width: image.width))
-                                        .toList(),
-                                    releaseDate:
-                                        pTracks[index].album!.releaseDate,
-                                  ),
-                          ),
-                          "recommended.single.",
-                          loadingAdd,
-                          loadingRemove, (mediaItem) async {
-                        final audioServiceHandler =
-                            Provider.of<AudioHandler>(context, listen: false)
-                                as AudioServiceHandler;
-                        await audioServiceHandler.initSongs(songs: [mediaItem]);
-                        audioServiceHandler.play();
-                      });
-                    } else {
-                      if (audioServiceHandler.audioPlayer.playing) {
-                        await audioServiceHandler.pause();
-                      } else {
-                        await audioServiceHandler.play();
-                      }
-                    }
+                    await Play().onlineTrack(
+                        context,
+                        audioServiceHandler,
+                        "recommended.single.",
+                        pTracks[index],
+                        loadingAdd,
+                        loadingRemove);
                   },
                 );
               },
@@ -120,54 +79,13 @@ class RecommendedPongoPhone extends StatelessWidget {
                   showLoading: pTrackLoading.contains(pTracks[25 + index].id),
                   type: TileType.track,
                   onTap: () async {
-                    final playNew = audioServiceHandler.mediaItem.value != null
-                        ? audioServiceHandler.mediaItem.value!.id
-                                .split(".")[2] !=
-                            pTracks[25 + index].id
-                        : true;
-                    if (playNew) {
-                      TrackPlay().playSingle(
-                          context,
-                          Track(
-                            id: pTracks[25 + index].id,
-                            name: pTracks[25 + index].name,
-                            artists: pTracks[25 + index]
-                                .artists
-                                .map((artist) => ArtistTrack(
-                                    id: artist.id, name: artist.name))
-                                .toList(),
-                            album: pTracks[25 + index].album == null
-                                ? null
-                                : AlbumTrack(
-                                    name: pTracks[25 + index].album!.name,
-                                    images: pTracks[25 + index]
-                                        .album!
-                                        .images
-                                        .map((image) => AlbumImagesTrack(
-                                            url: image.url,
-                                            height: image.height,
-                                            width: image.width))
-                                        .toList(),
-                                    releaseDate:
-                                        pTracks[25 + index].album!.releaseDate,
-                                  ),
-                          ),
-                          "recommended.single.",
-                          loadingAdd,
-                          loadingRemove, (mediaItem) async {
-                        final audioServiceHandler =
-                            Provider.of<AudioHandler>(context, listen: false)
-                                as AudioServiceHandler;
-                        await audioServiceHandler.initSongs(songs: [mediaItem]);
-                        audioServiceHandler.play();
-                      });
-                    } else {
-                      if (audioServiceHandler.audioPlayer.playing) {
-                        await audioServiceHandler.pause();
-                      } else {
-                        await audioServiceHandler.play();
-                      }
-                    }
+                    await Play().onlineTrack(
+                        context,
+                        audioServiceHandler,
+                        "recommended.single.",
+                        pTracks[25 + index],
+                        loadingAdd,
+                        loadingRemove);
                   },
                 );
               },

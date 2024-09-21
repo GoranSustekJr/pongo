@@ -44,30 +44,37 @@ class QueueButtonPhone extends StatelessWidget {
                             40, 40, 40, 0.8) // Add transparency here
                         : Col.transp,
                   ),
-                  child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () async {
-                      if (audioServiceHandler.audioPlayer.shuffleModeEnabled) {
-                        await audioServiceHandler
-                            .setShuffleMode(AudioServiceShuffleMode.none);
-                      } else {
-                        await audioServiceHandler
-                            .setShuffleMode(AudioServiceShuffleMode.all);
-                      }
-                    },
-                    child: StreamBuilder(
-                        stream: audioServiceHandler
-                            .audioPlayer.shuffleModeEnabledStream,
-                        builder: (context, snapshot) {
-                          bool enabled = snapshot.data ?? false;
-                          return Icon(
-                            AppIcons.shuffle,
-                            color: enabled
-                                ? Colors.white
-                                : Colors.white.withAlpha(150),
-                          );
-                        }),
-                  ),
+                  child: ValueListenableBuilder(
+                      valueListenable: queueAllowShuffle,
+                      builder: (context, _, __) {
+                        return CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () async {
+                            if (queueAllowShuffle.value) {
+                              if (audioServiceHandler
+                                  .audioPlayer.shuffleModeEnabled) {
+                                await audioServiceHandler.setShuffleMode(
+                                    AudioServiceShuffleMode.none);
+                              } else {
+                                await audioServiceHandler.setShuffleMode(
+                                    AudioServiceShuffleMode.all);
+                              }
+                            }
+                          },
+                          child: StreamBuilder(
+                              stream: audioServiceHandler
+                                  .audioPlayer.shuffleModeEnabledStream,
+                              builder: (context, snapshot) {
+                                bool enabled = snapshot.data ?? false;
+                                return Icon(
+                                  AppIcons.shuffle,
+                                  color: enabled
+                                      ? Colors.white
+                                      : Colors.white.withAlpha(150),
+                                );
+                              }),
+                        );
+                      }),
                 ),
               ),
             ),
@@ -113,26 +120,12 @@ class QueueButtonPhone extends StatelessWidget {
                   child: CupertinoButton(
                     padding: EdgeInsets.zero,
                     onPressed: () async {
-                      if (audioServiceHandler.audioPlayer.shuffleModeEnabled) {
-                        await audioServiceHandler
-                            .setShuffleMode(AudioServiceShuffleMode.none);
-                      } else {
-                        await audioServiceHandler
-                            .setShuffleMode(AudioServiceShuffleMode.all);
-                      }
+                      //TODO: Something
                     },
-                    child: StreamBuilder(
-                        stream: audioServiceHandler
-                            .audioPlayer.shuffleModeEnabledStream,
-                        builder: (context, snapshot) {
-                          bool enabled = snapshot.data ?? false;
-                          return Icon(
-                            AppIcons.shuffle,
-                            color: enabled
-                                ? Colors.white
-                                : Colors.white.withAlpha(150),
-                          );
-                        }),
+                    child: const Icon(
+                      AppIcons.more,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

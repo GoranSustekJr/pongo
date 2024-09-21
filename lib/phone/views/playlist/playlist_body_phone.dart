@@ -85,9 +85,11 @@ class _PlaylistBodyPhoneState extends State<PlaylistBodyPhone>
 
                     if (playNew) {
                       print("play; $index");
+                      changeTrackOnTap.value = true;
                       widget.play(index);
                     } else if (skipTo &&
-                        (audioServiceHandler.playlist.length - 1) >= index) {
+                        (audioServiceHandler.playlist.length - 1) >= index &&
+                        changeTrackOnTap.value) {
                       await audioServiceHandler.skipToQueueItem(index);
                     } else {
                       if (audioServiceHandler.audioPlayer.playing) {

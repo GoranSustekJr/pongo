@@ -38,8 +38,12 @@ class TrackPlay {
           ),
         );
 
-        // Play the track using the mediaItem created from the source
-        play(source.tag as MediaItem);
+        // if stil this album playling
+        if (currentAlbumPlaylistId.value == id.split('.')[1] ||
+            id.split('.')[1] == "single") {
+          // Play the track using the mediaItem created from the source
+          play(source.tag as MediaItem);
+        }
 
         // Once everything is done, complete the completer
         completer.complete();

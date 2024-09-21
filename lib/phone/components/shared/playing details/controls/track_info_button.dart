@@ -33,7 +33,7 @@ trackInfoButton(context, String trackId, Function() download) {
             onPressed: showMenu,
             padding: EdgeInsets.zero,
             child: const Icon(
-              AppIcons.info,
+              AppIcons.more,
               color: Colors.white,
             ),
           ),
@@ -44,7 +44,7 @@ trackInfoButton(context, String trackId, Function() download) {
           height: 50,
           child: IconButton(
             splashColor: Col.primary,
-            icon: const Icon(AppIcons.info),
+            icon: const Icon(AppIcons.more),
             onPressed: () {
               PopupMenu(
                 context: context,

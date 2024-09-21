@@ -1,6 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/views/album/album_phone.dart';
-import 'package:pongo/phone/views/artist/artist_phone.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 class SearchBodyPhone extends StatelessWidget {
@@ -60,6 +58,7 @@ class SearchBodyPhone extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return SearchResultTile(
+                      key: ValueKey("artist.${artists[index].id}"),
                       data: artists[index],
                       type: TileType.artist,
                       onTap: () {
@@ -89,6 +88,7 @@ class SearchBodyPhone extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return SearchResultTile(
+                      key: ValueKey("album.${albums[index].id}"),
                       data: albums[index],
                       type: TileType.album,
                       onTap: () {
@@ -117,6 +117,7 @@ class SearchBodyPhone extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return SearchResultTile(
+                      key: ValueKey("track.${tracks[index].id}"),
                       data: tracks[index],
                       type: TileType.track,
                       trailing: SizedBox(
@@ -158,56 +159,24 @@ class SearchBodyPhone extends StatelessWidget {
                         ),
                       ),
                       onTap: () async {
-                        final playNew =
-                            audioServiceHandler.mediaItem.value != null
-                                ? audioServiceHandler.mediaItem.value!.id
-                                        .split(".")[2] !=
-                                    tracks[index].id
-                                : true;
-                        if (playNew) {
-                          TrackPlay().playSingle(
-                              context,
-                              Track(
-                                id: tracks[index].id,
-                                name: tracks[index].name,
-                                artists: tracks[index]
-                                    .artists
-                                    .map((artist) => ArtistTrack(
-                                        id: artist.id, name: artist.name))
-                                    .toList(),
-                                album: tracks[index].album == null
-                                    ? null
-                                    : AlbumTrack(
-                                        name: tracks[index].album!.name,
-                                        images: tracks[index]
-                                            .album!
-                                            .images
-                                            .map((image) => AlbumImagesTrack(
-                                                url: image.url,
-                                                height: image.height,
-                                                width: image.width))
-                                            .toList(),
-                                        releaseDate:
-                                            tracks[index].album!.releaseDate,
-                                      ),
-                              ),
-                              "search.single.",
-                              loadingAdd,
-                              loadingRemove, (mediaItem) async {
-                            final audioServiceHandler =
-                                Provider.of<AudioHandler>(context,
-                                    listen: false) as AudioServiceHandler;
-                            await audioServiceHandler
-                                .initSongs(songs: [mediaItem]);
-                            audioServiceHandler.play();
-                          });
-                        } else {
-                          if (audioServiceHandler.audioPlayer.playing) {
-                            await audioServiceHandler.pause();
-                          } else {
-                            await audioServiceHandler.play();
-                          }
-                        }
+                        await Play().onlineTrack(
+                          context,
+                          audioServiceHandler,
+                          "search.single.",
+                          tracks[index],
+                          loadingAdd,
+                          loadingRemove,
+                        );
+                      },
+                      addToQueue: () async {
+                        print("object");
+                        await AddToQueue().add(
+                          context,
+                          tracks[index],
+                          "search.single.",
+                          loadingAdd,
+                          loadingRemove,
+                        );
                       },
                     );
                   },
@@ -228,6 +197,7 @@ class SearchBodyPhone extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return SearchResultTile(
+                      key: ValueKey("playlist.${playlists[index].id}"),
                       data: playlists[index],
                       type: TileType.playlist,
                       onTap: () {

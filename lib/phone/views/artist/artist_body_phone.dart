@@ -1,7 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/views/artist/artist_phone.dart';
-
-import '../album/album_phone.dart';
 
 class ArtistBodyPhone extends StatefulWidget {
   final BuildContext context;
@@ -200,53 +197,22 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone>
                       ),
                     ),
                     onTap: () async {
-                      final playNew =
-                          audioServiceHandler.mediaItem.value != null
-                              ? audioServiceHandler.mediaItem.value!.id
-                                      .split(".")[2] !=
-                                  widget.tracks[index].id
-                              : true;
-                      if (playNew) {
-                        TrackPlay().playSingle(
-                            context,
-                            Track(
-                              id: widget.tracks[index].id,
-                              name: widget.tracks[index].name,
-                              artists: widget.tracks[index].artists
-                                  .map((artist) => ArtistTrack(
-                                      id: artist.id, name: artist.name))
-                                  .toList(),
-                              album: widget.tracks[index].album == null
-                                  ? null
-                                  : AlbumTrack(
-                                      name: widget.tracks[index].album!.name,
-                                      images: widget.tracks[index].album!.images
-                                          .map((image) => AlbumImagesTrack(
-                                              url: image.url,
-                                              height: image.height,
-                                              width: image.width))
-                                          .toList(),
-                                      releaseDate: widget
-                                          .tracks[index].album!.releaseDate,
-                                    ),
-                            ),
-                            "search.single.",
-                            widget.loadingAdd,
-                            widget.loadingRemove, (mediaItem) async {
-                          final audioServiceHandler =
-                              Provider.of<AudioHandler>(context, listen: false)
-                                  as AudioServiceHandler;
-                          await audioServiceHandler
-                              .initSongs(songs: [mediaItem]);
-                          audioServiceHandler.play();
-                        });
-                      } else {
-                        if (audioServiceHandler.audioPlayer.playing) {
-                          await audioServiceHandler.pause();
-                        } else {
-                          await audioServiceHandler.play();
-                        }
-                      }
+                      Play().onlineTrackTypteTrack(
+                          context,
+                          audioServiceHandler,
+                          "search.single.",
+                          widget.tracks[index],
+                          widget.loadingAdd,
+                          widget.loadingRemove);
+                    },
+                    addToQueue: () async {
+                      await AddToQueue().addTypeTrack(
+                        context,
+                        widget.tracks[index],
+                        "search.single.",
+                        widget.loadingAdd,
+                        widget.loadingRemove,
+                      );
                     },
                   );
                 },

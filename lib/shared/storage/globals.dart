@@ -18,6 +18,9 @@ ValueNotifier<bool> showSearchBar = ValueNotifier(true);
 // Current track stid
 ValueNotifier<String> currentStid = ValueNotifier("");
 
+// Current album/playlist id
+ValueNotifier<String> currentAlbumPlaylistId = ValueNotifier("");
+
 // Is the current track showing
 ValueNotifier<double> currentTrackHeight = ValueNotifier(0);
 
@@ -41,3 +44,9 @@ ValueNotifier<int> numberOfSearchTracks = ValueNotifier(50);
 
 // Number of playlists to display
 ValueNotifier<int> numberOfSearchPlaylists = ValueNotifier(20);
+
+// Queue allow shuffle
+ValueNotifier<bool> queueAllowShuffle = ValueNotifier(true);
+
+// Album/Playlist allow changing song on tap
+ValueNotifier<bool> changeTrackOnTap = ValueNotifier(true);

@@ -227,9 +227,34 @@ class _ArtistPhoneState extends State<ArtistPhone> {
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(15),
-                                            child: CachedNetworkImage(
-                                              imageUrl: widget.artist.image,
-                                            ),
+                                            child: widget.artist.image != ""
+                                                ? CachedNetworkImage(
+                                                    imageUrl:
+                                                        widget.artist.image,
+                                                  )
+                                                : Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width -
+                                                            60,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width -
+                                                            60,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(15),
+                                                        color: Col.primaryCard),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        AppIcons.blankArtist,
+                                                        size: 70,
+                                                      ),
+                                                    ),
+                                                  ),
                                           ),
                                         ),
                                       ),

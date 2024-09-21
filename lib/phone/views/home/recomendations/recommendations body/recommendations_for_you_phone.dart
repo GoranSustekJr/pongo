@@ -50,54 +50,13 @@ class RecommendationsForYouPhone extends StatelessWidget {
                   showLoading: pTrackLoading.contains(euTracks[index].id),
                   type: TileType.track,
                   onTap: () async {
-                    final playNew = audioServiceHandler.mediaItem.value != null
-                        ? audioServiceHandler.mediaItem.value!.id
-                                .split(".")[2] !=
-                            euTracks[index].id
-                        : true;
-                    if (playNew) {
-                      TrackPlay().playSingle(
-                          context,
-                          Track(
-                            id: euTracks[index].id,
-                            name: euTracks[index].name,
-                            artists: euTracks[index]
-                                .artists
-                                .map((artist) => ArtistTrack(
-                                    id: artist.id, name: artist.name))
-                                .toList(),
-                            album: euTracks[index].album == null
-                                ? null
-                                : AlbumTrack(
-                                    name: euTracks[index].album!.name,
-                                    images: euTracks[index]
-                                        .album!
-                                        .images
-                                        .map((image) => AlbumImagesTrack(
-                                            url: image.url,
-                                            height: image.height,
-                                            width: image.width))
-                                        .toList(),
-                                    releaseDate:
-                                        euTracks[index].album!.releaseDate,
-                                  ),
-                          ),
-                          "recommended.single.",
-                          loadingAdd,
-                          loadingRemove, (mediaItem) async {
-                        final audioServiceHandler =
-                            Provider.of<AudioHandler>(context, listen: false)
-                                as AudioServiceHandler;
-                        await audioServiceHandler.initSongs(songs: [mediaItem]);
-                        audioServiceHandler.play();
-                      });
-                    } else {
-                      if (audioServiceHandler.audioPlayer.playing) {
-                        await audioServiceHandler.pause();
-                      } else {
-                        await audioServiceHandler.play();
-                      }
-                    }
+                    await Play().onlineTrack(
+                        context,
+                        audioServiceHandler,
+                        "recommended.single.",
+                        euTracks[index],
+                        loadingAdd,
+                        loadingRemove);
                   },
                 );
               },
@@ -118,54 +77,13 @@ class RecommendationsForYouPhone extends StatelessWidget {
                   showLoading: pTrackLoading.contains(euTracks[25 + index].id),
                   type: TileType.track,
                   onTap: () async {
-                    final playNew = audioServiceHandler.mediaItem.value != null
-                        ? audioServiceHandler.mediaItem.value!.id
-                                .split(".")[2] !=
-                            euTracks[25 + index].id
-                        : true;
-                    if (playNew) {
-                      TrackPlay().playSingle(
-                          context,
-                          Track(
-                            id: euTracks[25 + index].id,
-                            name: euTracks[25 + index].name,
-                            artists: euTracks[25 + index]
-                                .artists
-                                .map((artist) => ArtistTrack(
-                                    id: artist.id, name: artist.name))
-                                .toList(),
-                            album: euTracks[25 + index].album == null
-                                ? null
-                                : AlbumTrack(
-                                    name: euTracks[25 + index].album!.name,
-                                    images: euTracks[25 + index]
-                                        .album!
-                                        .images
-                                        .map((image) => AlbumImagesTrack(
-                                            url: image.url,
-                                            height: image.height,
-                                            width: image.width))
-                                        .toList(),
-                                    releaseDate:
-                                        euTracks[25 + index].album!.releaseDate,
-                                  ),
-                          ),
-                          "recommended.single.",
-                          loadingAdd,
-                          loadingRemove, (mediaItem) async {
-                        final audioServiceHandler =
-                            Provider.of<AudioHandler>(context, listen: false)
-                                as AudioServiceHandler;
-                        await audioServiceHandler.initSongs(songs: [mediaItem]);
-                        audioServiceHandler.play();
-                      });
-                    } else {
-                      if (audioServiceHandler.audioPlayer.playing) {
-                        await audioServiceHandler.pause();
-                      } else {
-                        await audioServiceHandler.play();
-                      }
-                    }
+                    await Play().onlineTrack(
+                        context,
+                        audioServiceHandler,
+                        "recommended.single.",
+                        euTracks[25 + index],
+                        loadingAdd,
+                        loadingRemove);
                   },
                 );
               },

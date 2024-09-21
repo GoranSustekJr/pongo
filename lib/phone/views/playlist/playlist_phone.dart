@@ -123,8 +123,15 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
       final audioServiceHandler =
           Provider.of<AudioHandler>(context, listen: false)
               as AudioServiceHandler;
+      // Set shuffle mode
       await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
+
+      // Set global id of the playlist
+      currentAlbumPlaylistId.value = "playlist:${widget.playlist.id}";
+
       if (missingTracks.isNotEmpty) {
+        queueAllowShuffle.value = false;
+
         print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
         setState(() {
           cancel = true;
@@ -168,6 +175,9 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                 await audioServiceHandler.playlist
                     .add(audioServiceHandler.createAudioSource(mediaItem));
                 audioServiceHandler.queue.value.add(mediaItem);
+              }
+              if (i == tracks.length - 1) {
+                queueAllowShuffle.value = true;
               }
             },
           );
@@ -222,11 +232,16 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
 
   playShuffle() async {
     if (!loadingShuffle && missingTracks.isEmpty) {
+      queueAllowShuffle.value = true;
+
       setState(() {
         loadingShuffle = true;
       });
+
+      // Set global id of the playlist
       final data =
           await PlaylistSpotify().getShuffle(context, widget.playlist.id);
+
       setState(() {
         existingTracks = {
           for (var item in data["durations"])
