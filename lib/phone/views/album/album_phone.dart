@@ -60,7 +60,7 @@ class _AlbumPhoneState extends State<AlbumPhone> {
   }
 
   void getTracks() async {
-    final data = await AlbumSpotify().get(context, widget.album.id);
+    final data = await AlbumSpotify().getTracks(context, widget.album.id);
 
     final blurHash = widget.album.image != ""
         ? await BlurhashFFI.encode(
@@ -89,6 +89,7 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                       ))
                   .toList(),
               album: AlbumTrack(
+                id: widget.album.id,
                 name: widget.album.name,
                 releaseDate: widget.album.name,
                 images: [
@@ -193,7 +194,9 @@ class _AlbumPhoneState extends State<AlbumPhone> {
             id: "search.album:${widget.album.id}.${tracks[i].id}",
             title: tracks[i].name,
             artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-            album: tracks[i].album != null ? tracks[i].album!.name : "",
+            album: tracks[i].album != null
+                ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+                : "..Ææ..",
             duration: Duration(
                 milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
             artUri: Uri.parse(
@@ -250,7 +253,9 @@ class _AlbumPhoneState extends State<AlbumPhone> {
           id: "search.album:${widget.album.id}.${tracks[i].id}",
           title: tracks[i].name,
           artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-          album: tracks[i].album != null ? tracks[i].album!.name : "",
+          album: tracks[i].album != null
+              ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+              : "..Ææ..",
           duration: Duration(
               milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
           artUri: Uri.parse(
@@ -282,7 +287,6 @@ class _AlbumPhoneState extends State<AlbumPhone> {
     cancel = true;
     scrollController.removeListener(scrollControllerListener);
     scrollController.dispose();
-
     super.dispose();
   }
 

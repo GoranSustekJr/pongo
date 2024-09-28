@@ -60,6 +60,8 @@ class RecommendedPongoPhone extends StatelessWidget {
                         loadingAdd,
                         loadingRemove);
                   },
+                  doesNotExist: loadingAdd,
+                  doesNowExist: loadingRemove,
                 );
               },
             ),
@@ -87,6 +89,8 @@ class RecommendedPongoPhone extends StatelessWidget {
                         loadingAdd,
                         loadingRemove);
                   },
+                  doesNotExist: loadingAdd,
+                  doesNowExist: loadingRemove,
                 );
               },
             ),

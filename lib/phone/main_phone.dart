@@ -38,20 +38,22 @@ class _MyAppPhoneState extends State<MyAppPhone> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Pongo',
-      debugShowCheckedModeBanner: false,
-      supportedLocales: L10n.all,
-      locale: locale,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      theme: AppTheme().dark,
-      showSemanticsDebugger: false,
-      home: const Background(child: AuthRedirectPhone()),
+    return InAppNotification(
+      child: MaterialApp(
+        title: 'Pongo',
+        debugShowCheckedModeBanner: false,
+        supportedLocales: L10n.all,
+        locale: locale,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        theme: AppTheme().dark,
+        showSemanticsDebugger: false,
+        home: const Background(child: AuthRedirectPhone()),
+      ),
     );
   }
 }

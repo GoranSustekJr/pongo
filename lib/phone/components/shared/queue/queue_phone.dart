@@ -4,24 +4,17 @@ import 'package:pongo/phone/components/shared/tiles/queue_tile.dart';
 class QueuePhone extends StatefulWidget {
   final bool showQueue;
   final bool lyricsOn;
-  final ScrollController scrollController;
-  const QueuePhone(
-      {super.key,
-      required this.showQueue,
-      required this.lyricsOn,
-      required this.scrollController});
+  const QueuePhone({
+    super.key,
+    required this.showQueue,
+    required this.lyricsOn,
+  });
 
   @override
   State<QueuePhone> createState() => _QueuePhoneState();
 }
 
 class _QueuePhoneState extends State<QueuePhone> {
-  @override
-  void initState() {
-    super.initState();
-    // widget.scrollController.jumpTo(widget.scrollController.offset);
-  }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -39,7 +32,6 @@ class _QueuePhoneState extends State<QueuePhone> {
             stream: audioServiceHandler.queue.stream,
             builder: (context, snapshot) {
               final queue = snapshot.data;
-
               return StreamBuilder(
                   stream: audioServiceHandler.audioPlayer.shuffleIndicesStream,
                   builder: (context, snap) {
@@ -53,10 +45,6 @@ class _QueuePhoneState extends State<QueuePhone> {
                               (shuffleIndices != null
                                   ? shuffleIndices.isNotEmpty
                                   : false);
-
-                          print("SHUFFLE ENABLED; $shuffleModeEnabled");
-                          print(snp.data);
-
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: SizedBox(
@@ -67,7 +55,6 @@ class _QueuePhoneState extends State<QueuePhone> {
                                 child: queue != null
                                     ? SingleChildScrollView(
                                         key: const ValueKey(true),
-                                        controller: widget.scrollController,
                                         child: ConstrainedBox(
                                           constraints: BoxConstraints(
                                               minHeight: size.height),
@@ -152,7 +139,35 @@ class _QueuePhoneState extends State<QueuePhone> {
                                                           ),
                                                         ),
                                                       ),
-                                                      onTap: () {},
+                                                      onTap: () async {
+                                                        bool thisPlaying =
+                                                            audioServiceHandler
+                                                                        .mediaItem
+                                                                        .value !=
+                                                                    null
+                                                                ? audioServiceHandler
+                                                                        .mediaItem
+                                                                        .value!
+                                                                        .id ==
+                                                                    queue[ind]
+                                                                        .id
+                                                                : false;
+                                                        if (thisPlaying) {
+                                                          if (audioServiceHandler
+                                                              .audioPlayer
+                                                              .playing) {
+                                                            await audioServiceHandler
+                                                                .pause();
+                                                          } else {
+                                                            await audioServiceHandler
+                                                                .play();
+                                                          }
+                                                        } else {
+                                                          await audioServiceHandler
+                                                              .skipToQueueItem(
+                                                                  ind);
+                                                        }
+                                                      },
                                                     ),
                                                   );
                                                 },

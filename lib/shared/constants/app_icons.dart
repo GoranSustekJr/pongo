@@ -36,6 +36,8 @@ class AppIcons {
 
   static const heart = CupertinoIcons.heart;
 
+  static const heartFill = CupertinoIcons.heart_fill;
+
   static const play = CupertinoIcons.play_fill;
 
   static const shuffle = CupertinoIcons.shuffle;
@@ -80,4 +82,7 @@ class AppIcons {
   static const audioPlayer = CupertinoIcons.music_house_fill;
 
   static const image = CupertinoIcons.photo_fill;
+
+  static const firstToQueue = CupertinoIcons.rectangle_on_rectangle_angled;
+  static const lastToQueue = CupertinoIcons.rectangle_on_rectangle;
 }

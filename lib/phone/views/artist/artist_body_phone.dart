@@ -96,6 +96,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone>
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return SearchResultTile(
+                    key: ValueKey("album.${widget.albums[index].id}"),
                     data: widget.albums[index],
                     type: TileType.album,
                     onTap: () {
@@ -127,6 +128,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone>
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return SearchResultTile(
+                    key: ValueKey("album.${widget.otherAlbums[index].id}"),
                     data: widget.otherAlbums[index],
                     type: TileType.album,
                     onTap: () {
@@ -156,6 +158,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone>
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return SearchResultTile(
+                    key: ValueKey("album.${widget.tracks[index].id}"),
                     data: widget.tracks[index],
                     type: TileType.track,
                     trailing: SizedBox(
@@ -205,15 +208,6 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone>
                           widget.loadingAdd,
                           widget.loadingRemove);
                     },
-                    addToQueue: () async {
-                      await AddToQueue().addTypeTrack(
-                        context,
-                        widget.tracks[index],
-                        "search.single.",
-                        widget.loadingAdd,
-                        widget.loadingRemove,
-                      );
-                    },
                   );
                 },
               ),
@@ -232,6 +226,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone>
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return SearchResultTile(
+                    key: ValueKey("album.${widget.artists[index].id}"),
                     data: widget.artists[index],
                     type: TileType.artist,
                     onTap: () {

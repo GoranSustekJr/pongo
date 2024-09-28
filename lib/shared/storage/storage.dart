@@ -20,3 +20,6 @@ export 'database/play_history/remove.dart';
 export 'database/search history/insert.dart';
 export 'database/search history/query.dart';
 export 'database/search history/remove.dart';
+export 'package:pongo/shared/storage/database/favourites/insert.dart';
+export 'package:pongo/shared/storage/database/favourites/query.dart';
+export 'package:pongo/shared/storage/database/favourites/remove.dart';

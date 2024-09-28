@@ -51,13 +51,16 @@ class RecommendationsForYouPhone extends StatelessWidget {
                   type: TileType.track,
                   onTap: () async {
                     await Play().onlineTrack(
-                        context,
-                        audioServiceHandler,
-                        "recommended.single.",
-                        euTracks[index],
-                        loadingAdd,
-                        loadingRemove);
+                      context,
+                      audioServiceHandler,
+                      "recommended.single.",
+                      euTracks[index],
+                      loadingAdd,
+                      loadingRemove,
+                    );
                   },
+                  doesNotExist: loadingAdd,
+                  doesNowExist: loadingRemove,
                 );
               },
             ),
@@ -85,6 +88,8 @@ class RecommendationsForYouPhone extends StatelessWidget {
                         loadingAdd,
                         loadingRemove);
                   },
+                  doesNotExist: loadingAdd,
+                  doesNowExist: loadingRemove,
                 );
               },
             ),

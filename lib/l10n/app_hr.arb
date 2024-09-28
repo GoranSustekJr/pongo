@@ -37,6 +37,7 @@
     "download": "Preuzmi",
     "addtoplaylist": "Dodaj u Playlista",
     "like": "Sviđa mi se",
+    "unlike": "Ne sviđa mi se",
     "plain": "Plain",
     "sync": "Sync",
     "nosynclyrics": "Nema sinkroniziranih stihova",
@@ -116,6 +117,9 @@
     "showrecommendedforyoubody": "Prikaži preporuke na temelju tvojih pet posljednjih pjesama",
     "showrecommendedbypongo": "Prikaži preporuke od Ponga",
     "showrecommendedbypongobody": "Prikaži slučajne preporuke od Ponga",
-    "recommendationsdisabled": "Preporuke su onemogućene. Možete ih omogućiti u 'Postavke > Preferencije > Preporuke'. Potom ponovno pokrenite aplikaciju."
-
+    "recommendationsdisabled": "Preporuke su onemogućene. Možete ih omogućiti u 'Postavke > Preferencije > Preporuke'. Potom ponovno pokrenite aplikaciju.",
+    "firsttoqueue": "Prvi u red čekanja",
+    "lasttoqueue": "Zadnji u red čekanja",
+    "warning": "Upozorenje",
+    "shufflemodeison": "Načini nasumične reprodukcije je uključen!"
 }

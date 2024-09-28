@@ -96,6 +96,7 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                   .toList(),
               album: track["track"]["album"] != null
                   ? AlbumTrack(
+                      id: track["track"]["album"]["id"],
                       name: track["track"]["album"]["name"] as String,
                       releaseDate:
                           track["track"]["album"]["release_date"] as String,
@@ -205,7 +206,9 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
             id: "search.playlist:${widget.playlist.id}.${tracks[i].id}",
             title: tracks[i].name,
             artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-            album: tracks[i].album != null ? tracks[i].album!.name : "",
+            album: tracks[i].album != null
+                ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+                : "..Ææ..",
             duration: Duration(
                 milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
             artUri: Uri.parse(
@@ -261,7 +264,9 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
           id: "search.playlist:${widget.playlist.id}.${tracks[i].id}",
           title: tracks[i].name,
           artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-          album: tracks[i].album != null ? tracks[i].album!.name : "",
+          album: tracks[i].album != null
+              ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+              : "..Ææ..",
           duration: Duration(
               milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
           artUri: Uri.parse(

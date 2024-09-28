@@ -19,7 +19,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 6,
+      version: 7,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -38,6 +38,12 @@ class DatabaseHelper {
         track_id TEXT,
         order_number INT,
         FOREIGN KEY(opid) REFERENCES online_playlist(opid)
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE favourites (
+        id INTEGER,
+        stid TEXT
       )
     ''');
     await db.execute('''
@@ -94,21 +100,13 @@ class DatabaseHelper {
 
   Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
     print(oldVersion);
-    print(newVersion);
-    /* await db.execute('''
-      CREATE TABLE local_playlist (
-        lpid INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
-        cover BLOB
-      )''');
     await db.execute('''
-      CREATE TABLE lpid_track_id (
-        lpid INTEGER,
-        track_id TEXT,
-        order_number INT,
-        FOREIGN KEY(lpid) REFERENCES local_playlist(lpid)
+      CREATE TABLE favourites (
+        id INTEGER,
+        stid TEXT
       )
-    '''); */
+    ''');
+    print(newVersion);
   }
 
   // Insert online playlist
@@ -341,5 +339,27 @@ class DatabaseHelper {
 
   Future<List<String>> queryLFHTracksBy5() async {
     return await queryLFHTrcksBy5(this);
+  }
+
+  Future<void> insertFavouriteTrack(
+    String stid,
+  ) async {
+    await insertFavouriteTrck(this, stid);
+  }
+
+  Future<List<Map<String, dynamic>>> queryAllFavouriteTracks() async {
+    return await queryAllFavouriteTrcks(this);
+  }
+
+  Future<int> queryAllFavouriteTracksLength() async {
+    return await queryAllFavouriteTrcksLength(this);
+  }
+
+  Future<bool> favouriteTrackAlreadyExists(String stid) async {
+    return await favouriteTrckAlreadyExists(this, stid);
+  }
+
+  Future<void> removeFavouriteTrack(String stid, int id) async {
+    await removeFavouriteTrck(this, stid, id);
   }
 }

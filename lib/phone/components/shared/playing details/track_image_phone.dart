@@ -35,8 +35,14 @@ class TrackImagePhone extends StatelessWidget {
                 child: Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: CachedNetworkImage(
-                      imageUrl: image,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 500),
+                      switchInCurve: Curves.fastOutSlowIn,
+                      switchOutCurve: Curves.fastEaseInToSlowEaseOut,
+                      child: CachedNetworkImage(
+                        key: ValueKey(image),
+                        imageUrl: image,
+                      ),
                     ),
                   ),
                 ),

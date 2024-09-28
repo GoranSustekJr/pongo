@@ -7,6 +7,7 @@ class TrackControlsPhone extends StatelessWidget {
   final bool showQueue;
   final Function() changeLyricsOn;
   final Function() changeShowQueue;
+  final Function(String) showAlbum;
   const TrackControlsPhone({
     super.key,
     required this.currentMediaItem,
@@ -14,6 +15,7 @@ class TrackControlsPhone extends StatelessWidget {
     required this.changeLyricsOn,
     required this.showQueue,
     required this.changeShowQueue,
+    required this.showAlbum,
   });
 
   @override
@@ -25,7 +27,7 @@ class TrackControlsPhone extends StatelessWidget {
       duration: const Duration(milliseconds: 750),
       curve: Curves.decelerate,
       bottom: lyricsOn || showQueue
-          ? -50 - 70
+          ? -50 - 50
           : (size.height -
                       (size.width - 60) -
                       380 -
@@ -46,38 +48,45 @@ class TrackControlsPhone extends StatelessWidget {
                 right: 15,
                 top: 10,
               ),
-              child: StreamBuilder(
-                  stream: audioServiceHandler.playbackState,
-                  builder: (context, playbackState) {
-                    return Column(
-                      children: [
-                        TitleArtistVisualizerPhone(
-                          name: currentMediaItem.title,
-                          artist: currentMediaItem.artist!,
-                          playbackState: playbackState,
-                        ),
-                        TrackProgressPhone(
-                          album: currentMediaItem.album!,
-                          released: currentMediaItem.extras!["released"]!,
-                          duration: currentMediaItem.duration,
-                        ),
-                        PlayControlPhone(
-                          mediaItem: currentMediaItem,
-                          playbackState: playbackState,
-                          onTap: (_) {},
-                        ),
-                        const VolumeControlPhone(),
-                        OtherControlsPhone(
-                          lyricsOn: lyricsOn,
-                          showQueue: showQueue,
-                          trackId: currentMediaItem.id,
-                          downloadTrack: () {},
-                          changeLyricsOn: changeLyricsOn,
-                          changeShowQueue: changeShowQueue,
-                        ),
-                      ],
-                    );
-                  }),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                switchInCurve: Curves.fastOutSlowIn,
+                switchOutCurve: Curves.fastEaseInToSlowEaseOut,
+                child: StreamBuilder(
+                    key: ValueKey(currentMediaItem.id),
+                    stream: audioServiceHandler.playbackState,
+                    builder: (context, playbackState) {
+                      return Column(
+                        children: [
+                          TitleArtistVisualizerPhone(
+                            name: currentMediaItem.title,
+                            artist: currentMediaItem.artist!,
+                            playbackState: playbackState,
+                          ),
+                          TrackProgressPhone(
+                            album: currentMediaItem.album!,
+                            released: currentMediaItem.extras!["released"]!,
+                            duration: currentMediaItem.duration,
+                            showAlbum: showAlbum,
+                          ),
+                          PlayControlPhone(
+                            mediaItem: currentMediaItem,
+                            playbackState: playbackState,
+                            onTap: (_) {},
+                          ),
+                          const VolumeControlPhone(),
+                          OtherControlsPhone(
+                            lyricsOn: lyricsOn,
+                            showQueue: showQueue,
+                            trackId: currentMediaItem.id,
+                            downloadTrack: () {},
+                            changeLyricsOn: changeLyricsOn,
+                            changeShowQueue: changeShowQueue,
+                          ),
+                        ],
+                      );
+                    }),
+              ),
             ),
           ),
         ),

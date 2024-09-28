@@ -19,6 +19,7 @@ export 'package:pongo/shared/functions/play/play.dart';
 export 'package:pongo/shared/utils/API%20requests/recommendations.dart';
 export 'package:pongo/shared/functions/queue/add_to_queue.dart';
 export 'package:pongo/shared/utils/API%20requests/track_metadata.dart';
+export 'package:pongo/shared/utils/local%20notifications/notifications.dart';
 
 export 'shared/api/api.dart';
 export 'shared/components/components.dart';
@@ -49,6 +50,11 @@ export 'phone/widgets/widgets.dart';
 
 export 'phone/services/services.dart';
 
+export 'package:pongo/phone/components/shared/buttons/queue_button_phone.dart';
+export 'package:pongo/phone/components/shared/playing%20details/track_controls_phone.dart';
+export 'package:pongo/phone/components/shared/playing%20details/track_image_phone.dart';
+export 'package:pongo/phone/components/shared/queue/queue_phone.dart';
+
 export 'package:flutter/material.dart';
 export 'package:flutter/foundation.dart';
 export 'package:macos_ui/macos_ui.dart';
@@ -78,3 +84,4 @@ export 'package:html_unescape/html_unescape.dart';
 export 'package:marquee/marquee.dart';
 export 'package:kr_pull_down_button/pull_down_button.dart';
 export 'package:popup_menu_plus/popup_menu_plus.dart';
+export 'package:in_app_notification/in_app_notification.dart';

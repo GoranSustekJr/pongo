@@ -37,6 +37,7 @@
     "download": "Herunterladen",
     "addtoplaylist": "Zur Wiedergabeliste hinzufügen",
     "like": "Gefällt mir",
+    "unlike": "Gefällt mir nicht",
     "plain": "Plain",
     "sync": "Sync",
     "nosynclyrics": "Keine synchronisierten Texte",
@@ -115,6 +116,9 @@
     "showrecommendedforyoubody": "Zeige Empfehlungen aus deinen fünf neuesten Titeln",
     "showrecommendedbypongo": "Zeige von Pongo empfohlene",
     "showrecommendedbypongobody": "Zeige zufällige Empfehlungen von Pongo",
-    "recommendationsdisabled": "Empfehlungen deaktiviert. Sie können in 'Einstellungen > Präferenzen > Empfehlungen' aktiviert werden. Starten Sie dann die App neu."
-
+    "recommendationsdisabled": "Empfehlungen deaktiviert. Sie können in 'Einstellungen > Präferenzen > Empfehlungen' aktiviert werden. Starten Sie dann die App neu.",
+    "firsttoqueue": "Erste in der Waterschlange",
+    "lasttoqueue": "Letzte in der Waterschlange",
+    "warning": "Warnung",
+    "shufflemodeison": "Der Zufallsmodus ist aktiviert!"
 }

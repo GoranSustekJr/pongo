@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:pongo/exports.dart';
 
 enum TileType { playlist, artist, album, track }
@@ -8,15 +7,14 @@ class SearchResultTile extends StatelessWidget {
   final dynamic data;
   final TileType type;
   final Function() onTap;
-  final Function()? addToQueue;
   final Widget? trailing;
-  const SearchResultTile(
-      {super.key,
-      this.data,
-      required this.type,
-      required this.onTap,
-      this.trailing,
-      this.addToQueue});
+  const SearchResultTile({
+    super.key,
+    this.data,
+    required this.type,
+    required this.onTap,
+    this.trailing,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -66,89 +64,100 @@ class SearchResultTile extends StatelessWidget {
     }
 
     return kIsApple
-        ? SwipeActionCell(
-            key: key!,
+        ? /*SwipeActionCell(
+             key: key!,
             trailingActions: type == TileType.track
                 ? [
                     SwipeAction(
                       content: iconButton(
                           AppIcons.addToQueue, Colors.white, addToQueue!),
-                      onTap: (CompletionHandler handler) {},
+                      onTap: (CompletionHandler handler) {
+                        //handler.call(null);
+                      },
                       color: Col.transp,
                       backgroundRadius: 360,
                     ),
                   ]
                 : [],
             child: CupertinoContextMenu(
-              actions: const [
-                CupertinoContextMenuAction(child: Text("ACtion"))
+              actions: [
+                CupertinoContextMenuAction(
+                  isDestructiveAction: true,
+                  isDefaultAction: true,
+                  onPressed: () {
+                    print("object");
+                    //   Navigator.pop(context);
+                  },
+                  child: const Text("ACtion"),
+                )
               ],
               enableHapticFeedback: true,
-              child: SizedBox(
-                height: 85,
-                width: MediaQuery.of(context).size.width,
-                child: CupertinoButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    onPressed: onTap,
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 65,
-                          height: 65,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(7.5),
-                            color: Col.realBackground.withAlpha(150),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(7.5),
-                            child: imageUrl == ""
-                                ? Center(
-                                    child: Icon(noImage, color: Colors.white),
-                                  )
-                                : CachedNetworkImage(
-                                    imageUrl: imageUrl,
-                                    fit: BoxFit.cover,
-                                  ),
-                          ),
-                        ),
-                        razw(12.5),
-                        Expanded(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 18.5,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
+              child: */
+        SizedBox(
+            height: 85,
+            width: MediaQuery.of(context).size.width,
+            child: CupertinoButton(
+                padding: const EdgeInsets.only(left: 15, right: 5),
+                onPressed: onTap,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 65,
+                      height: 65,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(7.5),
+                        color: Col.realBackground.withAlpha(150),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(7.5),
+                        child: imageUrl == ""
+                            ? Center(
+                                child: Icon(noImage, color: Colors.white),
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: imageUrl,
+                                fit: BoxFit.cover,
                               ),
-                              razh(2.5),
-                              Text(
-                                subtitle,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white.withAlpha(200),
-                                ),
-                              ),
-                            ],
+                      ),
+                    ),
+                    razw(12.5),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 18.5,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          child: trailing,
-                        ),
-                      ],
-                    )),
-              ),
-            ),
+                          razh(2.5),
+                          Text(
+                            subtitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white.withAlpha(200),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      child: trailing,
+                    ),
+                  ],
+                )),
+            /*    ),
+            ), */
           )
         : InkWell(
             splashColor: Colors.white.withAlpha(200),

@@ -1,13 +1,13 @@
 import 'package:blurhash_ffi/blurhash.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/components/shared/buttons/queue_button_phone.dart';
-import 'package:pongo/phone/components/shared/playing%20details/track_controls_phone.dart';
-import 'package:pongo/phone/components/shared/playing%20details/track_image_phone.dart';
-import 'package:pongo/phone/components/shared/queue/queue_phone.dart';
-import 'package:pongo/shared/utils/API%20requests/track_metadata.dart';
 
 class PlayingDetailsPhone extends StatefulWidget {
-  const PlayingDetailsPhone({super.key});
+  final Function(String) showAlbum;
+  const PlayingDetailsPhone({
+    super.key,
+    required this.showAlbum,
+  });
 
   @override
   State<PlayingDetailsPhone> createState() => _PlayingDetailsPhoneState();
@@ -32,8 +32,8 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
   // Show current song details | show queue
   bool showQueue = false;
 
-  // Queue scroll controller
-  ScrollController queueScrollController = ScrollController();
+  // Queue state key
+  final GlobalKey<State<QueuePhone>> queueKey = GlobalKey<State<QueuePhone>>();
 
   // Blurhash
   String blurhash = AppConstants().BLURHASH;
@@ -117,100 +117,107 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
             });
           }
 
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 750),
-            switchInCurve: Curves.fastOutSlowIn,
-            switchOutCurve: Curves.fastEaseInToSlowEaseOut,
-            child: currentMediaItem != null
-                ? Blurhash(
+          return currentMediaItem != null
+              ? /* Blurhash(
                     key: ValueKey(currentMediaItemId),
                     blurhash: blurhash,
                     sigmaX: 10,
-                    sigmaY: 10,
-                    child: Container(
-                      color: Colors.black.withAlpha(45),
-                      child: Stack(
-                        children: [
-                          QueuePhone(
-                            showQueue: showQueue,
-                            lyricsOn: lyricsOn,
-                            scrollController: queueScrollController,
-                          ),
-                          QueueButtonPhone(
-                            showQueue: showQueue,
-                            lyricsOn: lyricsOn,
-                            changeShowQueue: () {
-                              setState(() {
-                                showQueue = !showQueue;
-                              });
-                            },
-                          ),
-                          LyricsPhone(
-                            plainLyrics: plainLyrics.split('\n'),
-                            syncedLyrics: [
-                              ...["{#¶€[”„’‘¤ß÷×¤ß#˘¸}"],
-                              ...syncedLyrics.split('\n'),
-                            ],
-                            lyricsOn: lyricsOn,
-                            useSyncedLyrics: useSynced,
-                            syncTimeDelay: syncTimeDelay,
-                          ),
-                          LyricsButtonPhone(
-                            syncTimeDelay: syncTimeDelay,
-                            lyricsOn: lyricsOn,
-                            useSynced: useSynced,
-                            changeLyricsOn: () {
-                              setState(() {
-                                lyricsOn = !lyricsOn;
-                              });
-                            },
-                            changeUseSynced: () {
-                              setState(() {
-                                useSynced = !useSynced;
-                              });
-                            },
-                            resetSyncTimeDelay: () {
-                              setState(() {
-                                syncTimeDelay = 0;
-                              });
-                            },
-                            plus: () {
-                              setState(() {
-                                syncTimeDelay += 250;
-                              });
-                            },
-                            minus: () {
-                              setState(() {
-                                syncTimeDelay -= 250;
-                              });
-                            },
-                          ),
-                          TrackControlsPhone(
-                            currentMediaItem: currentMediaItem!,
-                            lyricsOn: lyricsOn,
-                            showQueue: showQueue,
-                            changeLyricsOn: () {
-                              setState(() {
-                                lyricsOn = !lyricsOn;
-                              });
-                            },
-                            changeShowQueue: () {
-                              setState(() {
-                                showQueue = !showQueue;
-                              });
-                            },
-                          ),
-                          TrackImagePhone(
-                            lyricsOn: lyricsOn,
-                            showQueue: showQueue,
-                            image: currentMediaItem!.artUri.toString(),
-                          ),
-                        ],
+                    sigmaY: 10,*/
+              Stack(
+                  children: [
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 500),
+                      switchInCurve: Curves.fastOutSlowIn,
+                      switchOutCurve: Curves.fastEaseInToSlowEaseOut,
+                      child: Blurhash(
+                        key: ValueKey(currentMediaItemId),
+                        blurhash: blurhash,
+                        sigmaX: 10,
+                        sigmaY: 10,
+                        child: Container(),
                       ),
                     ),
-                  )
-                : const SizedBox(),
-          );
+                    Container(
+                      color: Colors.black.withAlpha(45),
+                    ),
+                    QueuePhone(
+                      key: queueKey,
+                      showQueue: showQueue,
+                      lyricsOn: lyricsOn,
+                    ),
+                    QueueButtonPhone(
+                      showQueue: showQueue,
+                      lyricsOn: lyricsOn,
+                      changeShowQueue: () {
+                        setState(() {
+                          showQueue = !showQueue;
+                        });
+                      },
+                    ),
+                    LyricsPhone(
+                      plainLyrics: plainLyrics.split('\n'),
+                      syncedLyrics: [
+                        ...["{#¶€[”„’‘¤ß÷×¤ß#˘¸}"],
+                        ...syncedLyrics.split('\n'),
+                      ],
+                      lyricsOn: lyricsOn,
+                      useSyncedLyrics: useSynced,
+                      syncTimeDelay: syncTimeDelay,
+                    ),
+                    LyricsButtonPhone(
+                      syncTimeDelay: syncTimeDelay,
+                      lyricsOn: lyricsOn,
+                      useSynced: useSynced,
+                      changeLyricsOn: () {
+                        setState(() {
+                          lyricsOn = !lyricsOn;
+                        });
+                      },
+                      changeUseSynced: () {
+                        setState(() {
+                          useSynced = !useSynced;
+                        });
+                      },
+                      resetSyncTimeDelay: () {
+                        setState(() {
+                          syncTimeDelay = 0;
+                        });
+                      },
+                      plus: () {
+                        setState(() {
+                          syncTimeDelay += 250;
+                        });
+                      },
+                      minus: () {
+                        setState(() {
+                          syncTimeDelay -= 250;
+                        });
+                      },
+                    ),
+                    TrackControlsPhone(
+                      currentMediaItem: currentMediaItem!,
+                      lyricsOn: lyricsOn,
+                      showQueue: showQueue,
+                      changeLyricsOn: () {
+                        setState(() {
+                          lyricsOn = !lyricsOn;
+                        });
+                      },
+                      changeShowQueue: () {
+                        setState(() {
+                          showQueue = !showQueue;
+                        });
+                      },
+                      showAlbum: widget.showAlbum,
+                    ),
+                    TrackImagePhone(
+                      lyricsOn: lyricsOn,
+                      showQueue: showQueue,
+                      image: currentMediaItem!.artUri.toString(),
+                    ),
+                  ],
+                )
+              : const SizedBox();
         },
       ),
     );

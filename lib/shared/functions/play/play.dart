@@ -26,6 +26,7 @@ class Play {
             album: track.album == null
                 ? null
                 : AlbumTrack(
+                    id: track.album!.id,
                     name: track.album!.name,
                     images: track.album!.images
                         .map((image) => AlbumImagesTrack(
@@ -78,6 +79,7 @@ class Play {
             album: track.album == null
                 ? null
                 : AlbumTrack(
+                    id: track.album!.id,
                     name: track.album!.name,
                     images: track.album!.images
                         .map((image) => AlbumImagesTrack(

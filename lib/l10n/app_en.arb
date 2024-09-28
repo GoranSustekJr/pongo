@@ -185,6 +185,11 @@
         "description": "like"
     },
 
+    "unlike": "Unlike",
+    "@unlike": {
+        "description": "unlike"
+    },
+
     "artist": "Artist",
     "@artist": {
         "description": "artist"
@@ -583,6 +588,26 @@
     "recommendationsdisabled": "Recommendations disabled. They can be enabled in 'Settings > Preferences > Recommmendations'. Then restart the app.",
     "@recommendationsdisabled": {
         "description": "recommendationsdisabled"
+    },
+
+    "firsttoqueue": "First to queue",
+    "@firsttoqueue": {
+        "description": "firsttoqueue"
+    },
+
+    "lasttoqueue": "Last to queue",
+    "@lasttoqueue": {
+        "description": "lasttoqueue"
+    },
+
+    "warning": "Warning",
+    "@warning": {
+        "description": "warning"
+    },
+
+    "shufflemodeison": "Shuffle mode is on!",
+    "@shufflemodeison": {
+        "description": "shufflemodeison"
     }
 
 }

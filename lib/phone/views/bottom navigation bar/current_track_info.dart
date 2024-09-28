@@ -339,9 +339,6 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                 currentMediaItem
                                                                     .title,
                                                                 maxLines: 1,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
                                                                 style:
                                                                     bottomTitle,
                                                               ),
@@ -350,9 +347,6 @@ class _TrackInfoState extends State<TrackInfo> {
                                                               currentMediaItem
                                                                   .artist!,
                                                               maxLines: 1,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
                                                               style:
                                                                   bottomArtist,
                                                             ),

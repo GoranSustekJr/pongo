@@ -1,5 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/shared/utils/API%20requests/track_metadata.dart';
 
 class TrackPlay {
   Future<void> playSingle(
@@ -25,7 +24,9 @@ class TrackPlay {
             id: "$id${track.id}",
             title: track.name,
             artist: track.artists.map((artist) => artist.name).join(', '),
-            album: track.album != null ? track.album!.name : "",
+            album: track.album != null
+                ? "${track.album!.id}..Ææ..${track.album!.name}"
+                : "..Ææ..",
             duration: Duration(milliseconds: (duration * 1000).toInt()),
             artUri: Uri.parse(
               track.album != null
@@ -56,6 +57,39 @@ class TrackPlay {
     return completer.future;
   }
 
+  Future<void> playAlreadyExists(
+    context,
+    Track track,
+    String id,
+    int i,
+    Map<String, double> existingTracks,
+    Function(MediaItem, int) play,
+  ) async {
+    UriAudioSource source = AudioSource.uri(
+      Uri.parse("${AppConstants.SERVER_URL}play_song/${track.id}"),
+      tag: MediaItem(
+        id: "$id${track.id}",
+        title: track.name,
+        artist: track.artists.map((artist) => artist.name).join(', '),
+        album: track.album != null
+            ? "${track.album!.id}..Ææ..${track.album!.name}"
+            : "..Ææ..",
+        duration:
+            Duration(milliseconds: (existingTracks[track.id]! * 1000).toInt()),
+        artUri: Uri.parse(
+          track.album != null
+              ? calculateBestImageForTrack(track.album!.images)
+              : '',
+        ),
+        extras: {
+          "released": track.album != null ? track.album!.releaseDate : "",
+          "salid": track.album != null ? track.album!.id : "",
+        },
+      ),
+    );
+    await play(source.tag as MediaItem, i);
+  }
+
   Future<void> playConcenating(
     context,
     String spid,
@@ -83,28 +117,14 @@ class TrackPlay {
           );
         } else {
           print("STARTED; $i");
-          UriAudioSource source = AudioSource.uri(
-            Uri.parse("${AppConstants.SERVER_URL}play_song/${tracks[i].id}"),
-            tag: MediaItem(
-              id: "$id${tracks[i].id}",
-              title: tracks[i].name,
-              artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-              album: tracks[i].album != null ? tracks[i].album!.name : "",
-              duration: Duration(
-                  milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
-              artUri: Uri.parse(
-                tracks[i].album != null
-                    ? calculateBestImageForTrack(tracks[i].album!.images)
-                    : '',
-              ),
-              extras: {
-                "released":
-                    tracks[i].album != null ? tracks[i].album!.releaseDate : "",
-              },
-            ),
+          await playAlreadyExists(
+            context,
+            tracks[i],
+            id,
+            i,
+            existingTracks,
+            play,
           );
-          print("GOING; $i");
-          play(source.tag as MediaItem, i);
         }
       } else {
         break;

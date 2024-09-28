@@ -1,5 +1,6 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart'
     as progressbutton;
+import 'package:flutter/cupertino.dart';
 
 import '../../../../../exports.dart';
 
@@ -7,11 +8,14 @@ class TrackProgressPhone extends StatefulWidget {
   final String album;
   final String released;
   final Duration? duration;
-  const TrackProgressPhone(
-      {super.key,
-      required this.album,
-      required this.released,
-      required this.duration});
+  final Function(String) showAlbum;
+  const TrackProgressPhone({
+    super.key,
+    required this.album,
+    required this.released,
+    required this.duration,
+    required this.showAlbum,
+  });
 
   @override
   State<TrackProgressPhone> createState() => _TrackProgressPhoneState();
@@ -30,6 +34,8 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
           return StreamBuilder(
               stream: audioServiceHandler.bufferStream,
               builder: (context, buffer) {
+                print(widget.album);
+
                 //  print ("Duration: ${buffer.data}");
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 15),
@@ -102,14 +108,21 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 150,
                               child: Center(
-                                child: marquee(
-                                    widget.album,
-                                    TextStyle(
-                                      color: Colors.white.withAlpha(200),
-                                      fontSize: 12,
-                                    ),
-                                    null,
-                                    null),
+                                child: CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () async {
+                                    await widget.showAlbum(
+                                        widget.album.split("..Ææ..")[0]);
+                                  },
+                                  child: marquee(
+                                      widget.album.split("..Ææ..")[1],
+                                      TextStyle(
+                                        color: Colors.white.withAlpha(200),
+                                        fontSize: 12,
+                                      ),
+                                      null,
+                                      null),
+                                ),
                               ),
                             ),
                             if (position.data != null &&

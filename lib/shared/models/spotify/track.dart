@@ -22,11 +22,13 @@ class ArtistTrack {
 }
 
 class AlbumTrack {
+  final String id;
   final String name;
   final String releaseDate;
   final List<AlbumImagesTrack> images;
 
   AlbumTrack({
+    required this.id,
     required this.name,
     required this.images,
     required this.releaseDate,

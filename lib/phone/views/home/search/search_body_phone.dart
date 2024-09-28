@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/components/search/Pull%20down%20menu%20items/search_track_pulldown_menu_items.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 class SearchBodyPhone extends StatelessWidget {
@@ -7,10 +9,12 @@ class SearchBodyPhone extends StatelessWidget {
   final List<Album> albums;
   final List<Playlist> playlists;
   final List<String> loading;
+  final List<String> favourites;
   final ScrollController scrollController;
   final TextStyle suggestionHeader;
   final Function(String) loadingAdd;
   final Function(String) loadingRemove;
+
   const SearchBodyPhone({
     super.key,
     required this.tracks,
@@ -22,6 +26,7 @@ class SearchBodyPhone extends StatelessWidget {
     required this.suggestionHeader,
     required this.loadingAdd,
     required this.loadingRemove,
+    required this.favourites,
   });
 
   @override
@@ -62,7 +67,6 @@ class SearchBodyPhone extends StatelessWidget {
                       data: artists[index],
                       type: TileType.artist,
                       onTap: () {
-                        // TODO: something
                         Navigations().nextScreen(
                             context,
                             ArtistPhone(
@@ -120,43 +124,76 @@ class SearchBodyPhone extends StatelessWidget {
                       key: ValueKey("track.${tracks[index].id}"),
                       data: tracks[index],
                       type: TileType.track,
-                      trailing: SizedBox(
-                        height: 40,
-                        width: 20,
-                        child: AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 200),
-                          child: loading.contains(tracks[index].id)
-                              ? const CircularProgressIndicator.adaptive(
-                                  key: ValueKey(true),
-                                )
-                              : StreamBuilder(
-                                  key: const ValueKey(false),
-                                  stream: audioServiceHandler.mediaItem.stream,
-                                  builder: (context, snapshot) {
-                                    final String id = snapshot.data != null
-                                        ? snapshot.data!.id.split(".")[2]
-                                        : "";
+                      trailing: Row(
+                        children: [
+                          SizedBox(
+                            height: 40,
+                            width: 20,
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: loading.contains(tracks[index].id)
+                                  ? const CircularProgressIndicator.adaptive(
+                                      key: ValueKey(true),
+                                    )
+                                  : StreamBuilder(
+                                      key: const ValueKey(false),
+                                      stream:
+                                          audioServiceHandler.mediaItem.stream,
+                                      builder: (context, snapshot) {
+                                        final String id = snapshot.data != null
+                                            ? snapshot.data!.id.split(".")[2]
+                                            : "";
 
-                                    return id == tracks[index].id
-                                        ? StreamBuilder(
-                                            stream: audioServiceHandler
-                                                .audioPlayer.playingStream,
-                                            builder: (context, playingStream) {
-                                              return SizedBox(
-                                                width: 20,
-                                                height: 40,
-                                                child: MiniMusicVisualizer(
-                                                  color: Colors.white,
-                                                  radius: 60,
-                                                  animate: playingStream.data ??
-                                                      false,
-                                                ),
-                                              );
-                                            })
-                                        : const SizedBox();
-                                  },
+                                        return id == tracks[index].id
+                                            ? StreamBuilder(
+                                                stream: audioServiceHandler
+                                                    .audioPlayer.playingStream,
+                                                builder:
+                                                    (context, playingStream) {
+                                                  return SizedBox(
+                                                    width: 20,
+                                                    height: 40,
+                                                    child: MiniMusicVisualizer(
+                                                      color: Colors.white,
+                                                      radius: 60,
+                                                      animate:
+                                                          playingStream.data ??
+                                                              false,
+                                                    ),
+                                                  );
+                                                })
+                                            : const SizedBox();
+                                      },
+                                    ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 50,
+                            height: 20,
+                            child: PullDownButton(
+                              offset: const Offset(30, 30),
+                              position: PullDownMenuPosition.automatic,
+                              itemBuilder: (context) =>
+                                  searchTrackPulldownMenuItems(
+                                context,
+                                tracks[index],
+                                "search.single.",
+                                favourites.contains(tracks[index].id),
+                                loadingAdd,
+                                loadingRemove,
+                              ),
+                              buttonBuilder: (context, showMenu) =>
+                                  CupertinoButton(
+                                onPressed: showMenu,
+                                padding: EdgeInsets.zero,
+                                child: const Icon(
+                                  CupertinoIcons.ellipsis,
+                                  color: Colors.white,
                                 ),
-                        ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                       onTap: () async {
                         await Play().onlineTrack(
@@ -164,16 +201,6 @@ class SearchBodyPhone extends StatelessWidget {
                           audioServiceHandler,
                           "search.single.",
                           tracks[index],
-                          loadingAdd,
-                          loadingRemove,
-                        );
-                      },
-                      addToQueue: () async {
-                        print("object");
-                        await AddToQueue().add(
-                          context,
-                          tracks[index],
-                          "search.single.",
                           loadingAdd,
                           loadingRemove,
                         );

@@ -96,6 +96,7 @@ class _ArtistPhoneState extends State<ArtistPhone> {
           .map(
             (track) => Track(
               album: AlbumTrack(
+                id: track["album"]["id"],
                 name: track["album"]["name"],
                 images: (track["album"]["images"] as List<dynamic>)
                     .map((image) => AlbumImagesTrack(
