@@ -16,9 +16,6 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   AutoScrollController autoScrollController =
       AutoScrollController(axis: Axis.vertical);
 
-  // Fade scroll view controller
-  ScrollController controller = ScrollController();
-
   // Regex for text
   RegExp regExp = RegExp(r'\[.*?\]');
 
@@ -72,7 +69,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
 
   // Find the index of the current lyric based on the position
   findCurrentLyricIndex(Duration position) {
-    for (int i = 1; i < widget.lyrics.length - 1; i++) {
+    for (int i = 0; i < widget.lyrics.length - 1; i++) {
       final currentTimestamp = parseTimestamp(widget.lyrics[i]);
 
       if (currentTimestamp != null) {
@@ -98,7 +95,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   @override
   void dispose() {
     autoScrollController.dispose();
-    controller.dispose();
+
     manualScrollController.dispose();
     super.dispose();
   }
@@ -126,165 +123,110 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
             padding: const EdgeInsets.only(left: 10),
             child: Stack(
               children: [
-                RepaintBoundary(
-                  child: SizedBox(
-                    height: size.height,
-                    width: size.width - 20,
-                    child: Center(
-                      child: SingleChildScrollView(
-                        controller: controller,
-                        child: widget.lyrics.length <= 2
-                            ? Column(
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.nosynclyrics,
-                                    textAlign: currentLyricsTextAlignment.value,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 29),
-                                  ),
-                                  Text(
-                                    AppLocalizations.of(context)!
-                                        .wanttohelpoutlyrics,
-                                    textAlign: currentLyricsTextAlignment.value,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 15),
-                                  ),
-                                ],
-                              )
-                            : SizedBox(
-                                height: size.height,
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  controller: autoScrollController,
-                                  children: widget.lyrics.map(
-                                    (lyric) {
-                                      int index = widget.lyrics.indexOf(lyric);
-                                      if (lyric == "{#¶€[”„’‘¤ß÷×¤ß#}") {
-                                        return SizedBox(
-                                            height: size.height / 2 -
-                                                AppBar().preferredSize.height -
-                                                MediaQuery.of(context)
-                                                    .padding
-                                                    .top);
-                                      } else if (lyric ==
-                                          "{#¶€[”„’‘¤ß÷×¤ß#˘¸}") {
-                                        return SizedBox(
-                                            height: size.height / 2);
-                                      } else {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            if (index > 0 &&
-                                                index <
-                                                    widget.lyrics.length - 1) {
-                                              final currentTimestamp =
-                                                  parseTimestamp(
-                                                      widget.lyrics[index]);
-                                              if (currentTimestamp != null) {
-                                                final duration = Duration(
-                                                  milliseconds: currentTimestamp
-                                                          .inMilliseconds -
-                                                      widget.syncTimeDelay,
-                                                );
-                                                audioServiceHandler
-                                                    .seek(duration);
-                                              }
-                                            }
-                                          },
-                                          child: AutoScrollTag(
-                                            key: ValueKey(index),
-                                            controller: autoScrollController,
-                                            index: index,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 0,
+                SizedBox(
+                  height: size.height,
+                  width: size.width - 20,
+                  child: widget.lyrics.length <= 2
+                      ? Column(
+                          children: [
+                            razh(size.height / 2 -
+                                AppBar().preferredSize.height -
+                                MediaQuery.of(context).padding.top),
+                            Text(
+                              AppLocalizations.of(context)!.nosynclyrics,
+                              textAlign: currentLyricsTextAlignment.value,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w700, fontSize: 29),
+                            ),
+                            Text(
+                              AppLocalizations.of(context)!.wanttohelpoutlyrics,
+                              textAlign: currentLyricsTextAlignment.value,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w500, fontSize: 15),
+                            ),
+                          ],
+                        )
+                      : ListView.builder(
+                          padding: EdgeInsets.only(
+                            top: size.height / 2 -
+                                AppBar().preferredSize.height -
+                                MediaQuery.of(context).padding.top,
+                            bottom: size.height / 2 -
+                                AppBar().preferredSize.height -
+                                MediaQuery.of(context).padding.top,
+                          ),
+                          controller: autoScrollController,
+                          itemCount: widget.lyrics.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                if (index < widget.lyrics.length - 1) {
+                                  final currentTimestamp =
+                                      parseTimestamp(widget.lyrics[index]);
+                                  if (currentTimestamp != null) {
+                                    final duration = Duration(
+                                      milliseconds:
+                                          currentTimestamp.inMilliseconds -
+                                              widget.syncTimeDelay,
+                                    );
+                                    audioServiceHandler.seek(duration);
+                                  }
+                                }
+                              },
+                              child: AutoScrollTag(
+                                key: ValueKey(index),
+                                controller: autoScrollController,
+                                index: index,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 0),
+                                  child: Align(
+                                    alignment: currentLyricsTextAlignment
+                                                .value ==
+                                            TextAlign.left
+                                        ? Alignment.centerLeft
+                                        : currentLyricsTextAlignment.value ==
+                                                TextAlign.center
+                                            ? Alignment.center
+                                            : currentLyricsTextAlignment
+                                                        .value ==
+                                                    TextAlign.right
+                                                ? Alignment.centerRight
+                                                : Alignment.center,
+                                    child: AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 250),
+                                      child: Text(
+                                        "${widget.lyrics[index].replaceAll(regExp, '')}\n\n\n"
+                                            .trimLeft(),
+                                        key: ValueKey<int>(
+                                            currentLyricIndex == index ? 1 : 0),
+                                        maxLines: null,
+                                        softWrap: true,
+                                        textAlign:
+                                            currentLyricsTextAlignment.value,
+                                        style: currentLyricIndex == index
+                                            ? const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 35,
+                                                height: 1,
+                                              )
+                                            : TextStyle(
+                                                color:
+                                                    Colors.white.withAlpha(100),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 35,
+                                                height: 1,
                                               ),
-                                              child: Row(
-                                                mainAxisAlignment: currentLyricsTextAlignment
-                                                            .value ==
-                                                        TextAlign.left
-                                                    ? MainAxisAlignment.start
-                                                    : currentLyricsTextAlignment
-                                                                .value ==
-                                                            TextAlign.center
-                                                        ? MainAxisAlignment
-                                                            .center
-                                                        : currentLyricsTextAlignment
-                                                                    .value ==
-                                                                TextAlign.right
-                                                            ? MainAxisAlignment
-                                                                .end
-                                                            : MainAxisAlignment
-                                                                .spaceEvenly,
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: SizedBox(
-                                                      width: size.width - 20,
-                                                      child: AnimatedSwitcher(
-                                                        duration:
-                                                            const Duration(
-                                                                milliseconds:
-                                                                    200),
-                                                        child: Text(
-                                                          "${fixEncoding(lyric).replaceAll(regExp, '')}\n\n"
-                                                              .trimLeft(),
-                                                          key: ValueKey<int>(
-                                                              currentLyricIndex ==
-                                                                      index
-                                                                  ? 1
-                                                                  : 0),
-                                                          maxLines: null,
-                                                          softWrap: true,
-                                                          textAlign:
-                                                              currentLyricsTextAlignment
-                                                                  .value,
-                                                          style: currentLyricIndex ==
-                                                                  index
-                                                              ? const TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize:
-                                                                      35.5,
-                                                                  height: 1.5,
-                                                                )
-                                                              : TextStyle(
-                                                                  color: Colors
-                                                                      .white
-                                                                      .withAlpha(
-                                                                          100),
-                                                                  fontWeight: kIsMacOS
-                                                                      ? FontWeight
-                                                                          .w300
-                                                                      : FontWeight
-                                                                          .w400,
-                                                                  fontSize: 35,
-                                                                  height: 1.5,
-                                                                ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ).toList(),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
-                      ),
-                    ),
-                  ),
+                            );
+                          },
+                        ),
                 ),
               ],
             ),
@@ -293,14 +235,4 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
       ),
     );
   }
-}
-
-String fixEncoding(String incorrectString) {
-  // Convert the incorrectly encoded string to a list of bytes
-  List<int> bytes = utf8.encode(incorrectString);
-
-  // Decode the bytes to a properly encoded string
-  String fixedString = utf8.decode(bytes);
-
-  return fixedString;
 }

@@ -54,3 +54,6 @@ ValueNotifier<bool> changeTrackOnTap = ValueNotifier(true);
 // lyrics text align
 ValueNotifier<TextAlign> currentLyricsTextAlignment =
     ValueNotifier(TextAlign.center);
+
+// Next Screen on
+ValueNotifier<bool> nextScreenOn = ValueNotifier(false);

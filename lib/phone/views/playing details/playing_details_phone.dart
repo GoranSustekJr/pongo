@@ -162,7 +162,6 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                           LyricsPhone(
                             plainLyrics: plainLyrics.split('\n'),
                             syncedLyrics: [
-                              ...["{#¶€[”„’‘¤ß÷×¤ß#˘¸}"],
                               ...syncedLyrics.split('\n'),
                             ],
                             lyricsOn: lyricsOn,

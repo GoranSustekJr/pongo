@@ -63,6 +63,34 @@ class AudioServiceHandler extends BaseAudioHandler
     });
   }
 
+  void reorderQueue(AudioServiceHandler audioServiceHandler, int oldIndex,
+      int newIndex) async {
+    newIndex = newIndex > oldIndex ? newIndex - 1 : newIndex;
+    // Retrieve the current queue
+    final currentQueue = audioServiceHandler.queue.value;
+
+    // Check if the indices are valid
+    if (oldIndex < 0 ||
+        oldIndex >= currentQueue.length ||
+        newIndex < 0 ||
+        newIndex >= currentQueue.length) {
+      return; // Exit if indices are out of bounds
+    }
+
+    print("$oldIndex; $newIndex");
+    // Remove the item from the old index
+    final itemToMove = currentQueue.removeAt(oldIndex);
+
+    // Insert the item at the new index
+    currentQueue.insert(newIndex, itemToMove);
+
+    // Update the queue in the audio service handler
+    audioServiceHandler.queue.value = currentQueue;
+
+    // Move index in the playlist
+    await playlist.move(oldIndex, newIndex);
+  }
+
   Future<void> startFadeOut() async {
     tempVolume = volume;
     Duration fadeDuration = const Duration(milliseconds: 101);

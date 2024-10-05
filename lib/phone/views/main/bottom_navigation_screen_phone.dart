@@ -100,12 +100,11 @@ class _BottomNavigationScreenPhoneState
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 350),
-                        curve: Curves
-                            .fastEaseInToSlowEaseOut, //Curves.fastEaseInToSlowEaseOut,
+                        curve: Curves.fastEaseInToSlowEaseOut,
                         height: currentTrackHeight.value,
                         child: PlayingDetailsPhone(
                           showAlbum: (salid) async {
-                            currentTrackHeight.value = 0;
+                            /* currentTrackHeight.value = 0;
                             Map album =
                                 await AlbumSpotify().getData(context, salid);
                             print(album);
@@ -124,7 +123,7 @@ class _BottomNavigationScreenPhoneState
                                         album["images"], 300, 300)),
                                 context: context,
                               ),
-                            );
+                            ); */
                           },
                         ),
                       ),
