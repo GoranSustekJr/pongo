@@ -138,7 +138,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                 children: [
                                   Text(
                                     AppLocalizations.of(context)!.nosynclyrics,
-                                    textAlign: TextAlign.center,
+                                    textAlign: currentLyricsTextAlignment.value,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w700,
                                         fontSize: 29),
@@ -146,7 +146,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                   Text(
                                     AppLocalizations.of(context)!
                                         .wanttohelpoutlyrics,
-                                    textAlign: TextAlign.center,
+                                    textAlign: currentLyricsTextAlignment.value,
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w500,
                                         fontSize: 15),
@@ -199,73 +199,79 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 0),
-                                              child: Column(
+                                                vertical: 0,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment: currentLyricsTextAlignment
+                                                            .value ==
+                                                        TextAlign.left
+                                                    ? MainAxisAlignment.start
+                                                    : currentLyricsTextAlignment
+                                                                .value ==
+                                                            TextAlign.center
+                                                        ? MainAxisAlignment
+                                                            .center
+                                                        : currentLyricsTextAlignment
+                                                                    .value ==
+                                                                TextAlign.right
+                                                            ? MainAxisAlignment
+                                                                .end
+                                                            : MainAxisAlignment
+                                                                .spaceEvenly,
+                                                mainAxisSize: MainAxisSize.max,
                                                 children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Align(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: SizedBox(
-                                                          width:
-                                                              size.width - 20,
-                                                          child:
-                                                              AnimatedSwitcher(
-                                                            duration:
-                                                                const Duration(
-                                                                    milliseconds:
-                                                                        200),
-                                                            child: Text(
-                                                              "${fixEncoding(lyric).replaceAll(regExp, '')}\n\n",
-                                                              key: ValueKey<
-                                                                      int>(
-                                                                  currentLyricIndex ==
-                                                                          index
-                                                                      ? 1
-                                                                      : 0),
-                                                              maxLines: null,
-                                                              softWrap: true,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: currentLyricIndex ==
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: SizedBox(
+                                                      width: size.width - 20,
+                                                      child: AnimatedSwitcher(
+                                                        duration:
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    200),
+                                                        child: Text(
+                                                          "${fixEncoding(lyric).replaceAll(regExp, '')}\n\n"
+                                                              .trimLeft(),
+                                                          key: ValueKey<int>(
+                                                              currentLyricIndex ==
                                                                       index
-                                                                  ? const TextStyle(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          35.5,
-                                                                      height:
-                                                                          1.5,
-                                                                    )
-                                                                  : TextStyle(
-                                                                      color: Colors
-                                                                          .white
-                                                                          .withAlpha(
-                                                                              100),
-                                                                      fontWeight: kIsMacOS
-                                                                          ? FontWeight
-                                                                              .w300
-                                                                          : FontWeight
-                                                                              .w400,
-                                                                      fontSize:
-                                                                          35,
-                                                                      height:
-                                                                          1.5,
-                                                                    ),
-                                                            ),
-                                                          ),
+                                                                  ? 1
+                                                                  : 0),
+                                                          maxLines: null,
+                                                          softWrap: true,
+                                                          textAlign:
+                                                              currentLyricsTextAlignment
+                                                                  .value,
+                                                          style: currentLyricIndex ==
+                                                                  index
+                                                              ? const TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize:
+                                                                      35.5,
+                                                                  height: 1.5,
+                                                                )
+                                                              : TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withAlpha(
+                                                                          100),
+                                                                  fontWeight: kIsMacOS
+                                                                      ? FontWeight
+                                                                          .w300
+                                                                      : FontWeight
+                                                                          .w400,
+                                                                  fontSize: 35,
+                                                                  height: 1.5,
+                                                                ),
                                                         ),
-                                                      )
-                                                    ],
-                                                  ),
+                                                      ),
+                                                    ),
+                                                  )
                                                 ],
                                               ),
                                             ),

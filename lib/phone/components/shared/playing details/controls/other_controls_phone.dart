@@ -6,18 +6,21 @@ import 'track_info_button.dart';
 class OtherControlsPhone extends StatelessWidget {
   final bool lyricsOn;
   final bool showQueue;
+  final bool favourite;
   final String trackId;
   final Function() downloadTrack;
   final Function() changeLyricsOn;
   final Function() changeShowQueue;
-  const OtherControlsPhone(
-      {super.key,
-      required this.lyricsOn,
-      required this.trackId,
-      required this.downloadTrack,
-      required this.changeLyricsOn,
-      required this.showQueue,
-      required this.changeShowQueue});
+  const OtherControlsPhone({
+    super.key,
+    required this.lyricsOn,
+    required this.trackId,
+    required this.downloadTrack,
+    required this.changeLyricsOn,
+    required this.showQueue,
+    required this.changeShowQueue,
+    required this.favourite,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +58,7 @@ class OtherControlsPhone extends StatelessWidget {
                 trackInfoButton(
                   context,
                   trackId,
+                  favourite,
                   downloadTrack,
                 ),
                 iconButton(

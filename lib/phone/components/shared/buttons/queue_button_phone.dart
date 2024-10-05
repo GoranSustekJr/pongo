@@ -1,28 +1,32 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/components/queue/pull%20down%20menus/queue_edit_pull_down_menu_items.dart';
+import 'package:pongo/phone/components/queue/pull%20down%20menus/queue_more_pull_down_menu_items.dart';
 
 class QueueButtonPhone extends StatelessWidget {
   final bool showQueue;
   final bool lyricsOn;
+  final bool editQueue;
   final Function() changeShowQueue;
+  final Function() changeEditQueue;
+  final Function() removeItemsFromQueue;
   const QueueButtonPhone({
     super.key,
     required this.showQueue,
     required this.changeShowQueue,
+    required this.editQueue,
     required this.lyricsOn,
+    required this.changeEditQueue,
+    required this.removeItemsFromQueue,
   });
 
   @override
   Widget build(BuildContext context) {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
-    return AnimatedPositioned(
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.decelerate,
-      top: showQueue && !lyricsOn
-          ? MediaQuery.of(context).padding.top + 12.5
-          : -50,
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + 12.5,
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: 40,
@@ -117,14 +121,29 @@ class QueueButtonPhone extends StatelessWidget {
                             40, 40, 40, 0.8) // Add transparency here
                         : Col.transp,
                   ),
-                  child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () async {
-                      //TODO: Something
-                    },
-                    child: const Icon(
-                      AppIcons.more,
-                      color: Colors.white,
+                  child: PullDownButton(
+                    offset: const Offset(10, 10),
+                    position: PullDownMenuPosition.automatic,
+                    itemBuilder: (context) => editQueue
+                        ? queueEditPullDownMenuItems(
+                            context,
+                            changeEditQueue,
+                            removeItemsFromQueue,
+                            () {},
+                          )
+                        : queueMorePullDownMenuItems(
+                            context,
+                            changeEditQueue,
+                            () {},
+                            () {},
+                          ),
+                    buttonBuilder: (context, showMenu) => CupertinoButton(
+                      onPressed: showMenu,
+                      padding: EdgeInsets.zero,
+                      child: const Icon(
+                        CupertinoIcons.ellipsis,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

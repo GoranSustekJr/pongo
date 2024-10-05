@@ -26,7 +26,6 @@ class RecommendedTile extends StatelessWidget {
     final String imageUrl;
     final String title;
     final String subtitle;
-    final String heroTag;
     final IconData noImage;
     final List<Widget> pullDownMenuItems;
 
@@ -50,7 +49,6 @@ class RecommendedTile extends StatelessWidget {
                 ? AppLocalizations.of(context)!.playlist
                 : data.description!
             : AppLocalizations.of(context)!.playlist;
-        heroTag = data.id;
         noImage = AppIcons.blankAlbum;
         pullDownMenuItems = [const SizedBox()];
         break;
@@ -59,7 +57,6 @@ class RecommendedTile extends StatelessWidget {
         imageUrl = data.image ?? '';
         title = data.name;
         subtitle = AppLocalizations.of(context)!.artist;
-        heroTag = "${data.id}-search";
         noImage = AppIcons.blankArtist;
         pullDownMenuItems = [const SizedBox()];
         break;
@@ -68,7 +65,6 @@ class RecommendedTile extends StatelessWidget {
         imageUrl = data.image ?? '';
         title = data.name;
         subtitle = data.artists.join(", ");
-        heroTag = data.id;
         noImage = AppIcons.blankAlbum;
         pullDownMenuItems = [const SizedBox()];
         break;

@@ -1,5 +1,4 @@
 import 'package:blurhash_ffi/blurhash.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
 
 class PlayingDetailsPhone extends StatefulWidget {
@@ -28,6 +27,9 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
 
   // Use Synced
   bool useSynced = false;
+
+  // favourite
+  bool favourite = false;
 
   // Show current song details | show queue
   bool showQueue = false;
@@ -75,7 +77,6 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
           mediaItem.duration!.inSeconds.toDouble(),
           mediaItem.album!,
         );
-        print("Run");
         int syncDelay = 0;
         if (lyrics["duration"] != null && useSyncTimeDelay.value) {
           final int difference =
@@ -89,6 +90,9 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
               : 0;
         }
 
+        bool fav =
+            await DatabaseHelper().favouriteTrackAlreadyExists(stid ?? "");
+
         setState(() {
           currentMediaItemId = stid;
           currentMediaItem = mediaItem;
@@ -96,6 +100,7 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
           blurhash = blurHash;
           plainLyrics = lyrics["plainLyrics"] ?? "";
           syncedLyrics = lyrics["syncedLyrics"] ?? "";
+          favourite = fav;
         });
       }
     }
@@ -104,122 +109,124 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
       color: Colors.black,
       height: size.height,
       width: size.width,
-      child: StreamBuilder<MediaItem?>(
-        stream: audioServiceHandler.mediaItem.stream,
-        builder: (context, snapshot) {
-          // Check if data is available and if the media item has changed
-          if (snapshot.hasData && snapshot.data != null) {
-            String newId = snapshot.data!.id.split(".")[2];
+      child: ValueListenableBuilder(
+          valueListenable: currentTrackHeight,
+          builder: (context, _, __) {
+            return StreamBuilder<MediaItem?>(
+              stream: audioServiceHandler.mediaItem.stream,
+              builder: (context, snapshot) {
+                // Check if data is available and if the media item has changed
+                if (snapshot.hasData && snapshot.data != null) {
+                  String newId = snapshot.data!.id.split(".")[2];
 
-            // Update the media item safely outside the build process
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              newMediaItem(newId, snapshot.data);
-            });
-          }
+                  // Update the media item safely outside the build process
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    newMediaItem(newId, snapshot.data);
+                  });
+                }
 
-          return currentMediaItem != null
-              ? /* Blurhash(
-                    key: ValueKey(currentMediaItemId),
-                    blurhash: blurhash,
-                    sigmaX: 10,
-                    sigmaY: 10,*/
-              Stack(
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 500),
-                      switchInCurve: Curves.fastOutSlowIn,
-                      switchOutCurve: Curves.fastEaseInToSlowEaseOut,
-                      child: Blurhash(
+                return currentMediaItem !=
+                        null //&& currentTrackHeight.value > 0
+                    ? /* Blurhash(
                         key: ValueKey(currentMediaItemId),
                         blurhash: blurhash,
                         sigmaX: 10,
-                        sigmaY: 10,
-                        child: Container(),
-                      ),
-                    ),
-                    Container(
-                      color: Colors.black.withAlpha(45),
-                    ),
-                    QueuePhone(
-                      key: queueKey,
-                      showQueue: showQueue,
-                      lyricsOn: lyricsOn,
-                    ),
-                    QueueButtonPhone(
-                      showQueue: showQueue,
-                      lyricsOn: lyricsOn,
-                      changeShowQueue: () {
-                        setState(() {
-                          showQueue = !showQueue;
-                        });
-                      },
-                    ),
-                    LyricsPhone(
-                      plainLyrics: plainLyrics.split('\n'),
-                      syncedLyrics: [
-                        ...["{#¶€[”„’‘¤ß÷×¤ß#˘¸}"],
-                        ...syncedLyrics.split('\n'),
-                      ],
-                      lyricsOn: lyricsOn,
-                      useSyncedLyrics: useSynced,
-                      syncTimeDelay: syncTimeDelay,
-                    ),
-                    LyricsButtonPhone(
-                      syncTimeDelay: syncTimeDelay,
-                      lyricsOn: lyricsOn,
-                      useSynced: useSynced,
-                      changeLyricsOn: () {
-                        setState(() {
-                          lyricsOn = !lyricsOn;
-                        });
-                      },
-                      changeUseSynced: () {
-                        setState(() {
-                          useSynced = !useSynced;
-                        });
-                      },
-                      resetSyncTimeDelay: () {
-                        setState(() {
-                          syncTimeDelay = 0;
-                        });
-                      },
-                      plus: () {
-                        setState(() {
-                          syncTimeDelay += 250;
-                        });
-                      },
-                      minus: () {
-                        setState(() {
-                          syncTimeDelay -= 250;
-                        });
-                      },
-                    ),
-                    TrackControlsPhone(
-                      currentMediaItem: currentMediaItem!,
-                      lyricsOn: lyricsOn,
-                      showQueue: showQueue,
-                      changeLyricsOn: () {
-                        setState(() {
-                          lyricsOn = !lyricsOn;
-                        });
-                      },
-                      changeShowQueue: () {
-                        setState(() {
-                          showQueue = !showQueue;
-                        });
-                      },
-                      showAlbum: widget.showAlbum,
-                    ),
-                    TrackImagePhone(
-                      lyricsOn: lyricsOn,
-                      showQueue: showQueue,
-                      image: currentMediaItem!.artUri.toString(),
-                    ),
-                  ],
-                )
-              : const SizedBox();
-        },
-      ),
+                        sigmaY: 10,*/
+                    Stack(
+                        children: [
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 500),
+                            switchInCurve: Curves.fastOutSlowIn,
+                            switchOutCurve: Curves.fastEaseInToSlowEaseOut,
+                            child: Blurhash(
+                              key: ValueKey(currentMediaItemId),
+                              blurhash: blurhash,
+                              sigmaX: 10,
+                              sigmaY: 10,
+                              child: Container(),
+                            ),
+                          ),
+                          Container(
+                            color: Colors.black.withAlpha(45),
+                          ),
+                          QueuePhone(
+                            key: queueKey,
+                            showQueue: showQueue,
+                            lyricsOn: lyricsOn,
+                            changeShowQueue: () {
+                              setState(() {
+                                showQueue = !showQueue;
+                              });
+                            },
+                          ),
+                          LyricsPhone(
+                            plainLyrics: plainLyrics.split('\n'),
+                            syncedLyrics: [
+                              ...["{#¶€[”„’‘¤ß÷×¤ß#˘¸}"],
+                              ...syncedLyrics.split('\n'),
+                            ],
+                            lyricsOn: lyricsOn,
+                            useSyncedLyrics: useSynced,
+                            syncTimeDelay: syncTimeDelay,
+                          ),
+                          LyricsButtonPhone(
+                            syncTimeDelay: syncTimeDelay,
+                            lyricsOn: lyricsOn,
+                            useSynced: useSynced,
+                            changeLyricsOn: () {
+                              setState(() {
+                                lyricsOn = !lyricsOn;
+                              });
+                            },
+                            changeUseSynced: () {
+                              setState(() {
+                                useSynced = !useSynced;
+                              });
+                            },
+                            resetSyncTimeDelay: () {
+                              setState(() {
+                                syncTimeDelay = 0;
+                              });
+                            },
+                            plus: () {
+                              setState(() {
+                                syncTimeDelay += 250;
+                              });
+                            },
+                            minus: () {
+                              setState(() {
+                                syncTimeDelay -= 250;
+                              });
+                            },
+                          ),
+                          TrackControlsPhone(
+                            currentMediaItem: currentMediaItem!,
+                            lyricsOn: lyricsOn,
+                            showQueue: showQueue,
+                            favourite: favourite,
+                            changeLyricsOn: () {
+                              setState(() {
+                                lyricsOn = !lyricsOn;
+                              });
+                            },
+                            changeShowQueue: () {
+                              setState(() {
+                                showQueue = !showQueue;
+                              });
+                            },
+                            showAlbum: widget.showAlbum,
+                          ),
+                          TrackImagePhone(
+                            lyricsOn: lyricsOn,
+                            showQueue: showQueue,
+                            image: currentMediaItem!.artUri.toString(),
+                          ),
+                        ],
+                      )
+                    : const SizedBox();
+              },
+            );
+          }),
     );
   }
 }

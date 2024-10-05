@@ -74,8 +74,8 @@ class TrackPlainLyricsPhone extends StatelessWidget {
                                                     : 1.5),
                                             maxLines: null,
                                             softWrap: true,
-                                            textAlign: TextAlign
-                                                .center, // TODO: Left or center lyrics on SETTINGS!
+                                            textAlign: currentLyricsTextAlignment
+                                                .value, // TODO: Left or center lyrics on SETTINGS!
                                           ),
                                         ),
                                       )

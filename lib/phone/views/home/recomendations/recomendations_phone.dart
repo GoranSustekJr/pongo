@@ -39,7 +39,7 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
     getRecommendations();
   }
 
-  void getRecommendations() async {
+  Future<void> getRecommendations() async {
     final data = await Recommendations().get(context);
 
     print(data.keys);
@@ -134,6 +134,9 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
               euTracks: euTracks,
               euArtists: euArtists,
               recommendationsDisabled: recommendationsDisabled,
+              onRefresh: () async {
+                await getRecommendations();
+              },
             )
           : const SizedBox(
               key: ValueKey(false),

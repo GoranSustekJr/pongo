@@ -50,3 +50,7 @@ ValueNotifier<bool> queueAllowShuffle = ValueNotifier(true);
 
 // Album/Playlist allow changing song on tap
 ValueNotifier<bool> changeTrackOnTap = ValueNotifier(true);
+
+// lyrics text align
+ValueNotifier<TextAlign> currentLyricsTextAlignment =
+    ValueNotifier(TextAlign.center);

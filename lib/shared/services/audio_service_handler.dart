@@ -164,19 +164,24 @@ class AudioServiceHandler extends BaseAudioHandler
   // Function to initialize the songs and set up the audio player
   Future<void> initSongs({required List<MediaItem> songs}) async {
     // Add track to history
+    print(1);
     await DatabaseHelper().insertLFHTracks(songs[0].id.split(".")[2]);
-
+    print(2);
     // Create a list of audio sources from the provided songs
     await playlist.clear();
+    print(3);
     queue.value.clear();
-
+    print(4);
     await playlist.addAll(songs.map(createAudioSource).toList());
     // Set the audio source of the audio player to the concatenation of the audio sources
     // Add the songs to the queue
+    print(5);
     queue.add(songs);
+    print(6);
     //await audioPlayer.setAudioSource(playlist);
     // Listen for changes in the current song index
     listenForCurrentSongIndexChanges();
+    print(7);
 
     // Listen for processing state changes and skip to the next song when completed
   }
@@ -222,7 +227,13 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Skip to the previous item in the queue
   @override
-  Future<void> skipToPrevious() async => audioPlayer.seekToPrevious();
+  Future<void> skipToPrevious() async {
+    if (audioPlayer.position.inSeconds < 5) {
+      await audioPlayer.seekToPrevious();
+    } else {
+      await seek(const Duration(seconds: 0));
+    }
+  }
 
   // Set repeat mode
   @override
@@ -245,11 +256,9 @@ class AudioServiceHandler extends BaseAudioHandler
     if (shuffleMode == AudioServiceShuffleMode.none) {
       await audioPlayer.setShuffleModeEnabled(false);
       await super.setShuffleMode(AudioServiceShuffleMode.none);
-      print("Shuffle mdoe, OFF");
     } else if (shuffleMode == AudioServiceShuffleMode.all) {
       await audioPlayer.setShuffleModeEnabled(true);
       await super.setShuffleMode(AudioServiceShuffleMode.all);
-      print("Shuffle mdoe, ON");
     }
     broadcastState(PlaybackEvent());
   }

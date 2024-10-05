@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/shared/functions/queue/add_to_queue.dart';
 
 class AppIcons {
   static final settings =
@@ -9,6 +8,8 @@ class AppIcons {
   static const profile = CupertinoIcons.person_fill;
 
   static final mail = kIsApple ? CupertinoIcons.mail : Icons.mail;
+
+  static const playlist = Icons.queue_music_rounded;
 
   static final premium =
       kIsApple ? CupertinoIcons.checkmark_circle : Icons.verified_rounded;

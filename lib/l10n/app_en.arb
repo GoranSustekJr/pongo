@@ -608,6 +608,71 @@
     "shufflemodeison": "Shuffle mode is on!",
     "@shufflemodeison": {
         "description": "shufflemodeison"
+    },
+
+    "leftalignment": "Left alignment",
+    "@leftalignment": {
+        "description": "leftalignment"
+    },
+
+    "centeralignment": "Center alignment",
+    "@centeralignment": {
+        "description": "centeralignment"
+    },
+
+    "rightalignment": "Right alignment",
+    "@rightalignment": {
+        "description": "rightalignment"
+    },
+
+    "justify": "Justify",
+    "@justify": {
+        "description": "justify"
+    },
+
+    "lefttextalign": "Left text align",
+    "@lefttextalign": {
+        "description": "lefttextalign"
+    },
+
+    "centertextalign": "Center text align",
+    "@centertextalign": {
+        "description": "centertextalign"
+    },
+
+    "righttextalign": "Right text align",
+    "@righttextalign": {
+        "description": "righttextalign"
+    },
+
+    "justifytextalign": "Justify text align",
+    "@justifytextalign": {
+        "description": "justifytextalign"
+    },
+
+    "alignment": "alignment",
+    "@alignment": {
+        "description": "alignment"
+    },
+
+    "lyircstextalignment": "Lyrics text alignment",
+    "@lyircstextalignment": {
+        "description": "lyircstextalignment"
+    },
+
+    "edit": "Edit",
+    "@edit": {
+        "description": "Edit"
+    },
+
+    "clear": "Clear",
+    "@clear": {
+        "description": "clear"
+    },
+
+    "saveasplaylist": "Save as playlist",
+    "@saveasplaylist": {
+        "description": "saveasplaylist"
     }
 
 }

@@ -121,5 +121,18 @@
     "firsttoqueue": "Prvi u red čekanja",
     "lasttoqueue": "Zadnji u red čekanja",
     "warning": "Upozorenje",
-    "shufflemodeison": "Načini nasumične reprodukcije je uključen!"
+    "shufflemodeison": "Načini nasumične reprodukcije je uključen!",
+    "leftalignment": "Lijevo poravnanje",
+    "centeralignment": "Srednje poravnanje",
+    "rightalignment": "Desno poravnanje",
+    "justify": "Obostrano",
+    "lefttextalign": "Lijevo poravnanje teksta",
+    "centertextalign": "Srednje poravnanje teksta",
+    "righttextalign": "Desno poravnanje teksta",
+    "justifytextalign": "Obostrano poravnanje teksta",
+    "alignment": "poravnanje",
+    "lyircstextalignment": "Poravnanje stihova pjesme",
+    "edit": "Uredi",
+    "clear": "Počisti",
+    "saveasplaylist": "Spremi kao playlistu"
 }

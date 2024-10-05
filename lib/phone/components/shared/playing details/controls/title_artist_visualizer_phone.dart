@@ -26,13 +26,21 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
               children: [
                 marquee(
                   name,
-                  const TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
+                  const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
                   null,
                   null,
                 ),
                 marquee(
                   artist,
-                  const TextStyle(fontSize: 18.5, fontWeight: FontWeight.w400),
+                  const TextStyle(
+                    fontSize: 18.5,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white,
+                  ),
                   null,
                   null,
                 ),

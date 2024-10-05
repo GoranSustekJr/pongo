@@ -18,7 +18,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
             title: AppLocalizations.of(context)!.download,
             icon: AppIcons.download,
           ),
-          const PullDownMenuDivider(),
+          const PullDownMenuDivider.large(),
           PullDownMenuItem(
             onTap: () {
               // TODO: Add download function
@@ -62,12 +62,12 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
               ),
             ),
           ),
-          const PullDownMenuDivider.large(),
+          // const PullDownMenuDivider.large(),
           /* FutureBuilder(
             future: DatabaseHelper().favouriteTrackAlreadyExists(track.id),
             builder: (context, snap) {},
           ), */
-          PullDownMenuItem(
+          /*  PullDownMenuItem(
             onTap: () async {
               await DatabaseHelper().insertFavouriteTrack(track.id);
             },
@@ -81,7 +81,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
                 height: 1,
               ),
             ),
-          ),
+          ), */
         ]
       : [];
 }

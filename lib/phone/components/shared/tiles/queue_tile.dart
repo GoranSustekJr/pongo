@@ -23,7 +23,7 @@ class QueueTile extends StatelessWidget {
             height: 85,
             width: MediaQuery.of(context).size.width,
             child: CupertinoButton(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
+                padding: const EdgeInsets.only(left: 15),
                 onPressed: onTap,
                 child: Row(
                   children: [
@@ -56,7 +56,7 @@ class QueueTile extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            maxLines: 2,
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               fontSize: 18.5,
@@ -113,7 +113,7 @@ class QueueTile extends StatelessWidget {
                 ),
                 title: Text(
                   title,
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontSize: 18.5,

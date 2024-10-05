@@ -25,7 +25,6 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
   double progressBarHeight = 12.5;
   @override
   Widget build(BuildContext context) {
-    print("Durationnn; ${widget.duration}");
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return StreamBuilder(
@@ -34,8 +33,6 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
           return StreamBuilder(
               stream: audioServiceHandler.bufferStream,
               builder: (context, buffer) {
-                print(widget.album);
-
                 //  print ("Duration: ${buffer.data}");
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 15),

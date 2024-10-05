@@ -23,6 +23,7 @@ class Storage {
   static String numOfSearchPlaylistsKey = "NUMOFSEARCHPLAYLISTSKEY";
   static String recommendedForYouKey = "RECOMMENDEDFORYOUKEY";
   static String recommendedPongoKey = "RECOMMENDEDPONGOKEY";
+  static String lyricsTextAlignKey = "LYRICSTEXTALIGNKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -241,6 +242,27 @@ class Storage {
       return true;
     } else {
       return key == "true";
+    }
+  }
+
+  // Get lyrics text align
+  Future<void> writeLyricsTextAlign(TextAlign lyricsTextAlign) async {
+    await storage.write(
+        key: lyricsTextAlignKey, value: lyricsTextAlign.toString());
+  }
+
+  Future<TextAlign> getLyricsTextAlign() async {
+    String? key = await storage.read(key: lyricsTextAlignKey);
+    if (key == null) {
+      return TextAlign.center;
+    } else if (key == "TextAlign.left") {
+      return TextAlign.left;
+    } else if (key == "TextAlign.right") {
+      return TextAlign.right;
+    } else if (key == "TextAlign.justify") {
+      return TextAlign.justify;
+    } else {
+      return TextAlign.center;
     }
   }
 

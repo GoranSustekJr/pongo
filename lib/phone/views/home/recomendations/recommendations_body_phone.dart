@@ -9,6 +9,7 @@ class RecommendationsBodyPhone extends StatefulWidget {
   final List<sp.Track> euTracks;
   final List<Artist> euArtists;
   final bool recommendationsDisabled;
+  final Future<void> Function() onRefresh;
   const RecommendationsBodyPhone({
     super.key,
     required this.pTracks,
@@ -18,6 +19,7 @@ class RecommendationsBodyPhone extends StatefulWidget {
     required this.euTracks,
     required this.euArtists,
     required this.recommendationsDisabled,
+    required this.onRefresh,
   });
 
   @override
@@ -46,67 +48,75 @@ class _RecommendationsBodyPhoneState extends State<RecommendationsBodyPhone> {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       child: !widget.recommendationsDisabled
-          ? SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: Scaffold.of(context).appBarMaxHeight == null
-                      ? MediaQuery.of(context).padding.top +
-                          AppBar().preferredSize.height +
-                          20
-                      : Scaffold.of(context).appBarMaxHeight! + 20,
-                  // bottom: MediaQuery.of(context).padding.bottom,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    RecommendationsForYouPhone(
-                      pTracks: widget.pTracks,
-                      pArtists: widget.pArtists,
-                      pAlbums: widget.pAlbums,
-                      pPlaylists: widget.pPlaylists,
-                      euTracks: widget.euTracks,
-                      euArtists: widget.euArtists,
-                      suggestionHeader: suggestionHeader,
-                      pTrackLoading: pTrackLoading,
-                      audioServiceHandler: audioServiceHandler,
-                      loadingAdd: (stid) {
-                        setState(() {
-                          if (!pTrackLoading.contains(stid)) {
-                            pTrackLoading.add(stid);
-                          }
-                        });
-                      },
-                      loadingRemove: (stid) {
-                        setState(() {
-                          pTrackLoading.remove(stid);
-                        });
-                      },
-                    ),
-                    RecommendedPongoPhone(
-                      pTracks: widget.pTracks,
-                      pArtists: widget.pArtists,
-                      pAlbums: widget.pAlbums,
-                      pPlaylists: widget.pPlaylists,
-                      euTracks: widget.euTracks,
-                      euArtists: widget.euArtists,
-                      suggestionHeader: suggestionHeader,
-                      pTrackLoading: pTrackLoading,
-                      audioServiceHandler: audioServiceHandler,
-                      loadingAdd: (stid) {
-                        setState(() {
-                          if (!pTrackLoading.contains(stid)) {
-                            pTrackLoading.add(stid);
-                          }
-                        });
-                      },
-                      loadingRemove: (stid) {
-                        setState(() {
-                          pTrackLoading.remove(stid);
-                        });
-                      },
-                    ),
-                  ],
+          ? RefreshIndicator.adaptive(
+              displacement: 25,
+              edgeOffset: Scaffold.of(context).appBarMaxHeight == null
+                  ? MediaQuery.of(context).padding.top +
+                      AppBar().preferredSize.height
+                  : Scaffold.of(context).appBarMaxHeight!,
+              onRefresh: widget.onRefresh,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: Scaffold.of(context).appBarMaxHeight == null
+                        ? MediaQuery.of(context).padding.top +
+                            AppBar().preferredSize.height +
+                            20
+                        : Scaffold.of(context).appBarMaxHeight! + 20,
+                    // bottom: MediaQuery.of(context).padding.bottom,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      RecommendationsForYouPhone(
+                        pTracks: widget.pTracks,
+                        pArtists: widget.pArtists,
+                        pAlbums: widget.pAlbums,
+                        pPlaylists: widget.pPlaylists,
+                        euTracks: widget.euTracks,
+                        euArtists: widget.euArtists,
+                        suggestionHeader: suggestionHeader,
+                        pTrackLoading: pTrackLoading,
+                        audioServiceHandler: audioServiceHandler,
+                        loadingAdd: (stid) {
+                          setState(() {
+                            if (!pTrackLoading.contains(stid)) {
+                              pTrackLoading.add(stid);
+                            }
+                          });
+                        },
+                        loadingRemove: (stid) {
+                          setState(() {
+                            pTrackLoading.remove(stid);
+                          });
+                        },
+                      ),
+                      RecommendedPongoPhone(
+                        pTracks: widget.pTracks,
+                        pArtists: widget.pArtists,
+                        pAlbums: widget.pAlbums,
+                        pPlaylists: widget.pPlaylists,
+                        euTracks: widget.euTracks,
+                        euArtists: widget.euArtists,
+                        suggestionHeader: suggestionHeader,
+                        pTrackLoading: pTrackLoading,
+                        audioServiceHandler: audioServiceHandler,
+                        loadingAdd: (stid) {
+                          setState(() {
+                            if (!pTrackLoading.contains(stid)) {
+                              pTrackLoading.add(stid);
+                            }
+                          });
+                        },
+                        loadingRemove: (stid) {
+                          setState(() {
+                            pTrackLoading.remove(stid);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )

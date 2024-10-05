@@ -120,5 +120,18 @@
     "firsttoqueue": "Erste in der Waterschlange",
     "lasttoqueue": "Letzte in der Waterschlange",
     "warning": "Warnung",
-    "shufflemodeison": "Der Zufallsmodus ist aktiviert!"
+    "shufflemodeison": "Der Zufallsmodus ist aktiviert!",
+    "leftalignment": "Linksbündig ausrichtung",
+    "centeralignment": "Zentriert ausrichtung",
+    "rightalignment": "Rechtsbündig ausrichtung",
+    "justify": "Blocksatz",
+    "lefttextalign": "Linksbündiger Text",
+    "centertextalign": "Zentrierter Text",
+    "righttextalign": "Rechtsbündiger Text",
+    "justifytextalign": "Blocksatz des Textes",
+    "alignment": "ausrichtung",
+    "lyircstextalignment": "Liedtext-Ausrichtung",
+    "edit": "Bearbeiten",
+    "clear": "Löschen",
+    "saveasplaylist": "Als Playlist speichern"
 }
