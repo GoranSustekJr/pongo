@@ -77,14 +77,22 @@ class BottomNavBar extends StatelessWidget {
                                 : 0,
                             height: 50,
                             child: Center(
-                                child: PulsatingIcon(
-                              icon: internetConnectivityHandler.isConnected
-                                  ? CupertinoIcons.wifi
-                                  : CupertinoIcons.wifi_slash,
-                              color: internetConnectivityHandler.isConnected
-                                  ? Colors.blue
-                                  : Colors.red,
-                            )),
+                              child: Icon(
+                                internetConnectivityHandler.isConnected
+                                    ? CupertinoIcons.wifi
+                                    : CupertinoIcons.wifi_slash,
+                                color: internetConnectivityHandler.isConnected
+                                    ? Colors.blue
+                                    : Colors.red,
+                              ), /* PulsatingIcon(
+                                icon: internetConnectivityHandler.isConnected
+                                    ? CupertinoIcons.wifi
+                                    : CupertinoIcons.wifi_slash,
+                                color: internetConnectivityHandler.isConnected
+                                    ? Colors.blue
+                                    : Colors.red,
+                              ), */
+                            ),
                           );
                         },
                       ),

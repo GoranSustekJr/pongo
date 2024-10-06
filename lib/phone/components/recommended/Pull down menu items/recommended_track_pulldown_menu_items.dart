@@ -22,11 +22,11 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
               maxLines: 1,
             ),
           ),
-          //const PullDownMenuDivider(),
+          // Add to Playlist
           CupertinoContextMenuAction(
             onPressed: () {
               Navigator.of(context, rootNavigator: true).pop();
-              // TODO: Add download function
+              // TODO: Add playlist function
             },
             trailingIcon: AppIcons.musicAlbums,
             child: Text(
@@ -35,6 +35,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
             ),
           ),
           const PullDownMenuDivider.large(),
+          // Add First to Queue
           CupertinoContextMenuAction(
             onPressed: () async {
               await AddToQueue()
@@ -47,7 +48,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
               maxLines: 1,
             ),
           ),
-          //const PullDownMenuDivider(),
+          // Add Last to Queue
           CupertinoContextMenuAction(
             onPressed: () async {
               await AddToQueue()
@@ -61,16 +62,43 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
             ),
           ),
           const PullDownMenuDivider.large(),
-          CupertinoContextMenuAction(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).pop();
-              // TODO: Add download function
+          FutureBuilder<bool>(
+            future: DatabaseHelper().favouriteTrackAlreadyExists(track.id),
+            builder: (context, snapshot) {
+              final isFavorite = snapshot.data ?? false;
+              print(isFavorite);
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CupertinoContextMenuAction(
+                  onPressed: () {},
+                  trailingIcon: AppIcons.heart,
+                  child: Text(
+                    AppLocalizations.of(context)!.like,
+                    maxLines: 1,
+                  ),
+                );
+              }
+
+              return CupertinoContextMenuAction(
+                onPressed: () async {
+                  if (isFavorite) {
+                    await DatabaseHelper().removeFavouriteTrack(track.id);
+                    doesNowExist("");
+                  } else {
+                    await DatabaseHelper().insertFavouriteTrack(track.id);
+                    doesNowExist("");
+                  }
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                trailingIcon: isFavorite ? AppIcons.heartFill : AppIcons.heart,
+                child: Text(
+                  isFavorite
+                      ? AppLocalizations.of(context)!.unlike
+                      : AppLocalizations.of(context)!.like,
+                  maxLines: 1,
+                ),
+              );
             },
-            trailingIcon: AppIcons.heart,
-            child: Text(
-              AppLocalizations.of(context)!.like,
-              maxLines: 1,
-            ),
           ),
         ]
       : [];

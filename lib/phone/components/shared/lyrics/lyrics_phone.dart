@@ -24,10 +24,10 @@ class LyricsPhone extends StatefulWidget {
 class _LyricsPhoneState extends State<LyricsPhone> {
   @override
   Widget build(BuildContext context) {
-    return AnimatedPositioned(
-      duration: const Duration(milliseconds: 0),
-      top: widget.lyricsOn ? 0 : MediaQuery.of(context).size.height,
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 350),
       child: AnimatedOpacity(
+        key: ValueKey("${widget.plainLyrics}${widget.lyricsOn}"),
         opacity: widget.lyricsOn ? 1 : 0,
         duration: Duration(milliseconds: widget.lyricsOn ? 500 : 150),
         child: AnimatedSwitcher(
@@ -45,6 +45,7 @@ class _LyricsPhoneState extends State<LyricsPhone> {
                   key: const ValueKey(true), lyrics: widget.plainLyrics)
               : TrackSyncLyricsPhone(
                   key: const ValueKey(false),
+                  lyricsOn: widget.lyricsOn,
                   lyrics: widget.syncedLyrics,
                   syncTimeDelay: widget.syncTimeDelay,
                 ),

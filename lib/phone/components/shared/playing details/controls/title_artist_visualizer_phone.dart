@@ -1,4 +1,3 @@
-import 'package:mini_music_visualizer/mini_music_visualizer.dart';
 import 'package:pongo/exports.dart';
 
 class TitleArtistVisualizerPhone extends StatelessWidget {
@@ -48,10 +47,11 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
             ),
           ),
           const Expanded(child: SizedBox()),
-          SizedBox(
-            height: 45,
-            width: 30,
-            child: MiniMusicVisualizer(
+          const SizedBox(
+              height: 45,
+              width: 30,
+              child:
+                  SizedBox() /*  MiniMusicVisualizer(
               animate: playbackState.data != null
                   ? playbackState.data!.playing
                   : false,
@@ -61,8 +61,8 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
               color: Colors.white,
 
               // shadows: [BoxShadow(blurRadius: 50)],
-            ),
-          ),
+            ), */
+              ),
         ],
       ),
     );

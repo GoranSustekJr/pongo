@@ -4,7 +4,6 @@ import 'package:blurhash_ffi/blurhash.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/playlist/play_shuffle_halt_playlist.dart';
-import 'package:pongo/phone/components/shared/other/sticky_header_delegate.dart';
 import 'package:pongo/phone/views/playlist/playlist_body_phone.dart';
 import 'package:pongo/shared/utils/API%20requests/playlist_tracks.dart';
 
@@ -378,34 +377,25 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                                   ),
                                 ),
                               ),
-                              background: Stack(
-                                children: [
-                                  Center(
-                                    child: SizedBox(
-                                      width: MediaQuery.of(context).size.width -
-                                          60,
-                                      height:
-                                          MediaQuery.of(context).size.width -
-                                              60,
-                                      child: Center(
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                            top: MediaQuery.of(context)
-                                                .padding
-                                                .top,
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            child: CachedNetworkImage(
-                                              imageUrl: widget.playlist.image,
-                                            ),
-                                          ),
+                              background: Center(
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width - 60,
+                                  height:
+                                      MediaQuery.of(context).size.width - 60,
+                                  child: Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                        top: MediaQuery.of(context).padding.top,
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: CachedNetworkImage(
+                                          imageUrl: widget.playlist.image,
                                         ),
                                       ),
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           ),

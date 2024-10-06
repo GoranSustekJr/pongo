@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
-trackInfoButton(context, String trackId, bool favourite, Function() download) {
+trackInfoButton(context, String trackId, bool favourite, Function() download,
+    Function() refreshFavourite) {
   GlobalKey key = GlobalKey();
   return kIsApple
       ? PullDownButton(
@@ -23,9 +24,18 @@ trackInfoButton(context, String trackId, bool favourite, Function() download) {
             ),
             const PullDownMenuDivider(),
             PullDownMenuItem(
-              title: AppLocalizations.of(context)!.like,
+              title: favourite
+                  ? AppLocalizations.of(context)!.unlike
+                  : AppLocalizations.of(context)!.like,
               icon: favourite ? AppIcons.heartFill : AppIcons.heart,
-              onTap: () async {},
+              onTap: () async {
+                if (favourite) {
+                  await DatabaseHelper().removeFavouriteTrack(trackId);
+                } else {
+                  await DatabaseHelper().insertFavouriteTrack(trackId);
+                }
+                refreshFavourite();
+              },
             ),
           ],
           position: PullDownMenuPosition.above,

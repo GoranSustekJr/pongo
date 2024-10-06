@@ -9,7 +9,6 @@ class SearchBodyPhone extends StatelessWidget {
   final List<Album> albums;
   final List<Playlist> playlists;
   final List<String> loading;
-  final List<String> favourites;
   final ScrollController scrollController;
   final TextStyle suggestionHeader;
   final Function(String) loadingAdd;
@@ -26,7 +25,6 @@ class SearchBodyPhone extends StatelessWidget {
     required this.suggestionHeader,
     required this.loadingAdd,
     required this.loadingRemove,
-    required this.favourites,
   });
 
   @override
@@ -130,12 +128,12 @@ class SearchBodyPhone extends StatelessWidget {
                             height: 40,
                             width: 20,
                             child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: loading.contains(tracks[index].id)
-                                  ? const CircularProgressIndicator.adaptive(
-                                      key: ValueKey(true),
-                                    )
-                                  : StreamBuilder(
+                                duration: const Duration(milliseconds: 200),
+                                child: loading.contains(tracks[index].id)
+                                    ? const CircularProgressIndicator.adaptive(
+                                        key: ValueKey(true),
+                                      )
+                                    : const SizedBox() /* StreamBuilder(
                                       key: const ValueKey(false),
                                       stream:
                                           audioServiceHandler.mediaItem.stream,
@@ -164,35 +162,62 @@ class SearchBodyPhone extends StatelessWidget {
                                                 })
                                             : const SizedBox();
                                       },
-                                    ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 50,
-                            height: 20,
-                            child: PullDownButton(
-                              offset: const Offset(30, 30),
-                              position: PullDownMenuPosition.automatic,
-                              itemBuilder: (context) =>
-                                  searchTrackPulldownMenuItems(
-                                context,
-                                tracks[index],
-                                "search.single.",
-                                favourites.contains(tracks[index].id),
-                                loadingAdd,
-                                loadingRemove,
-                              ),
-                              buttonBuilder: (context, showMenu) =>
-                                  CupertinoButton(
-                                onPressed: showMenu,
-                                padding: EdgeInsets.zero,
-                                child: const Icon(
-                                  CupertinoIcons.ellipsis,
-                                  color: Colors.white,
+                                    ), */
                                 ),
-                              ),
-                            ),
-                          )
+                          ),
+                          FutureBuilder<bool>(
+                            future: DatabaseHelper()
+                                .favouriteTrackAlreadyExists(tracks[index].id),
+                            builder: (context, snapshot) {
+                              /*   if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const SizedBox(
+                                  width: 50,
+                                  height: 20,
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
+                                );
+                              } else  */
+                              if (snapshot.hasError) {
+                                return const SizedBox(
+                                  width: 50,
+                                  height: 20,
+                                  child: Center(
+                                      child: Icon(CupertinoIcons
+                                          .exclamationmark_circle)),
+                                );
+                              } else {
+                                bool isFavourite = snapshot.data ?? false;
+
+                                return SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: PullDownButton(
+                                    offset: const Offset(30, 30),
+                                    position: PullDownMenuPosition.automatic,
+                                    itemBuilder: (context) =>
+                                        searchTrackPulldownMenuItems(
+                                      context,
+                                      tracks[index],
+                                      "search.single.",
+                                      isFavourite,
+                                      loadingAdd,
+                                      loadingRemove,
+                                    ),
+                                    buttonBuilder: (context, showMenu) =>
+                                        CupertinoButton(
+                                      onPressed: showMenu,
+                                      padding: EdgeInsets.zero,
+                                      child: const Icon(
+                                        CupertinoIcons.ellipsis,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
                         ],
                       ),
                       onTap: () async {

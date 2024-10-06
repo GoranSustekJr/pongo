@@ -30,9 +30,6 @@ class _SearchPhoneState extends State<SearchPhone> {
   // Manage Tracks That Do Not Exist
   List<String> loading = [];
 
-  // Favourites
-  List<String> favourites = [];
-
   // Scroll controller
   final ScrollController scrollController = ScrollController();
 
@@ -107,15 +104,6 @@ class _SearchPhoneState extends State<SearchPhone> {
             }).toList()
           : [];
     });
-    for (int i = 0; i < tracks.length; i++) {
-      bool exists =
-          await DatabaseHelper().favouriteTrackAlreadyExists(tracks[i].id);
-      if (exists) {
-        setState(() {
-          favourites.add(tracks[i].id);
-        });
-      }
-    }
   }
 
   // Listen For Query Parameter Change
@@ -147,7 +135,6 @@ class _SearchPhoneState extends State<SearchPhone> {
               albums: albums,
               playlists: playlists,
               loading: loading,
-              favourites: favourites,
               scrollController: scrollController,
               suggestionHeader: suggestionHeader,
               loadingAdd: (stid) {

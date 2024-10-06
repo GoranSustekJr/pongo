@@ -88,13 +88,13 @@ class QueueBodyPhone extends StatelessWidget {
                                   ? Row(
                                       key: const ValueKey(true),
                                       children: [
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 40,
                                           width: 20,
                                           child: AnimatedSwitcher(
-                                            duration: const Duration(
-                                                milliseconds: 200),
-                                            child: StreamBuilder(
+                                            duration:
+                                                Duration(milliseconds: 200),
+                                            /*  child:  StreamBuilder(
                                               key: const ValueKey(false),
                                               stream: audioServiceHandler
                                                   .mediaItem.stream,
@@ -133,7 +133,7 @@ class QueueBodyPhone extends StatelessWidget {
                                                         })
                                                     : const SizedBox();
                                               },
-                                            ),
+                                            ), */
                                           ),
                                         ),
                                         razw(5),

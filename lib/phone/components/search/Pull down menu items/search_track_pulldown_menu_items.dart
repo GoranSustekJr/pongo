@@ -62,14 +62,17 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
               ),
             ),
           ),
-          // const PullDownMenuDivider.large(),
-          /* FutureBuilder(
-            future: DatabaseHelper().favouriteTrackAlreadyExists(track.id),
-            builder: (context, snap) {},
-          ), */
-          /*  PullDownMenuItem(
+          PullDownMenuItem(
             onTap: () async {
-              await DatabaseHelper().insertFavouriteTrack(track.id);
+              if (favourite) {
+                await DatabaseHelper().removeFavouriteTrack(track.id);
+                doesNotExist("");
+              } else {
+                await DatabaseHelper().insertFavouriteTrack(track.id);
+                doesNowExist("");
+              }
+              // The UI will not auto-refresh since there is no stateful management here
+              // You may need to manually update the parent widget's state
             },
             title: favourite
                 ? AppLocalizations.of(context)!.unlike
@@ -81,7 +84,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
                 height: 1,
               ),
             ),
-          ), */
+          ),
         ]
       : [];
 }

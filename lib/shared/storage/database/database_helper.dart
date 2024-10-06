@@ -359,7 +359,7 @@ class DatabaseHelper {
     return await favouriteTrckAlreadyExists(this, stid);
   }
 
-  Future<void> removeFavouriteTrack(String stid, int id) async {
-    await removeFavouriteTrck(this, stid, id);
+  Future<void> removeFavouriteTrack(String stid) async {
+    await removeFavouriteTrck(this, stid);
   }
 }

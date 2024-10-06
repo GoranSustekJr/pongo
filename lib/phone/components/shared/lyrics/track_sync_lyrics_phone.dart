@@ -2,10 +2,15 @@ import 'package:pongo/exports.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class TrackSyncLyricsPhone extends StatefulWidget {
+  final bool lyricsOn;
   final List<dynamic> lyrics;
   final int syncTimeDelay;
-  const TrackSyncLyricsPhone(
-      {super.key, required this.lyrics, required this.syncTimeDelay});
+  const TrackSyncLyricsPhone({
+    super.key,
+    required this.lyrics,
+    required this.syncTimeDelay,
+    required this.lyricsOn,
+  });
 
   @override
   State<TrackSyncLyricsPhone> createState() => _TrackSyncLyricsPhoneState();
@@ -23,7 +28,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   int index = 0;
 
   // Current line index
-  int currentLyricIndex = 0;
+  int currentLyricIndex = -1;
 
   // Is user scrolling
   bool isUserScrolling = false;
@@ -72,7 +77,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
     for (int i = 0; i < widget.lyrics.length - 1; i++) {
       final currentTimestamp = parseTimestamp(widget.lyrics[i]);
 
-      if (currentTimestamp != null) {
+      if (currentTimestamp != null && widget.lyricsOn) {
         if (position.inMilliseconds <=
                 currentTimestamp.inMilliseconds + 250 - widget.syncTimeDelay &&
             position.inMilliseconds >=

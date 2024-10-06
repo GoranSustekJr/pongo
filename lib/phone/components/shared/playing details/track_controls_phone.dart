@@ -7,7 +7,6 @@ class TrackControlsPhone extends StatelessWidget {
   final MediaItem currentMediaItem;
   final bool lyricsOn;
   final bool showQueue;
-  final bool favourite;
   final Function() changeLyricsOn;
   final Function() changeShowQueue;
   final Function(String) showAlbum;
@@ -19,7 +18,6 @@ class TrackControlsPhone extends StatelessWidget {
     required this.showQueue,
     required this.changeShowQueue,
     required this.showAlbum,
-    required this.favourite,
   });
 
   @override
@@ -87,7 +85,6 @@ class TrackControlsPhone extends StatelessWidget {
                               lyricsOn: lyricsOn,
                               showQueue: showQueue,
                               trackId: currentMediaItem.id,
-                              favourite: favourite,
                               downloadTrack: () {},
                               changeLyricsOn: changeLyricsOn,
                               changeShowQueue: changeShowQueue,

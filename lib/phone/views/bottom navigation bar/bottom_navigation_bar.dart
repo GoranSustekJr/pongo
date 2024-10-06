@@ -39,8 +39,9 @@ class Bottom extends StatelessWidget {
                               (size.height / 3)
                           : -(size.height / 3),
                       child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: const BottomNavBar()),
+                        width: MediaQuery.of(context).size.width,
+                        child: const BottomNavBar(),
+                      ),
                     ),
                   ],
                 ),

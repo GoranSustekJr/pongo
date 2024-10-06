@@ -93,24 +93,25 @@ class RecommendedTile extends StatelessWidget {
                             color: Col.realBackground.withAlpha(150),
                           ),
                           child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                  type == TileType.artist ? 360 : 7.5),
-                              child: Stack(
+                            borderRadius: BorderRadius.circular(
+                                type == TileType.artist ? 360 : 7.5),
+                            child: /* Stack(
                                 children: [
-                                  imageUrl == ""
-                                      ? Center(
-                                          child: Icon(noImage,
-                                              color: Colors.white),
-                                        )
-                                      : SizedBox(
-                                          height: 120,
-                                          width: 120,
-                                          child: CachedNetworkImage(
-                                            imageUrl: imageUrl,
-                                            fit: BoxFit.cover,
-                                          ),
+                                */
+                                imageUrl == ""
+                                    ? Center(
+                                        child:
+                                            Icon(noImage, color: Colors.white),
+                                      )
+                                    : SizedBox(
+                                        height: 120,
+                                        width: 120,
+                                        child: CachedNetworkImage(
+                                          imageUrl: imageUrl,
+                                          fit: BoxFit.cover,
                                         ),
-                                  Positioned(
+                                      ),
+                            /*   if (type == TileType.track)   Positioned(
                                     bottom: 0,
                                     right: 0,
                                     child: AnimatedOpacity(
@@ -128,22 +129,17 @@ class RecommendedTile extends StatelessWidget {
                                             color:
                                                 Col.primaryCard.withAlpha(225),
                                           ),
-                                          child: Center(
-                                              child: kIsApple
-                                                  ? const CupertinoActivityIndicator(
-                                                      radius: 10)
-                                                  : CircularProgressIndicator(
-                                                      key: const ValueKey(true),
-                                                      strokeWidth: 2,
-                                                      color: Colors.white
-                                                          .withAlpha(200),
-                                                    )),
+                                          child: const Center(
+                                            child: CircularProgressIndicator
+                                                .adaptive(),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ],
-                              )),
+                              ) */
+                          ),
                         ),
                         razh(2.5),
                         SizedBox(
