@@ -31,6 +31,9 @@ class _HomePhoneState extends State<HomePhone> {
   // Search history list
   List<String> searchHistory = [];
 
+  // Clear history list
+  bool clear = false;
+
   @override
   void initState() {
     super.initState();
@@ -100,6 +103,20 @@ class _HomePhoneState extends State<HomePhone> {
                     child: const RecomendationsPhone(),
                   ),
                   // 3. - Search history screen
+                  /*  Positioned(
+                    top: showSearchHistory
+                        ? 0
+                        : -MediaQuery.of(context).size.height,
+                    child: */
+                  /* AnimatedSwitcher(
+                    duration:
+                        Duration(milliseconds: showSearchHistory ? 400 : 350),
+                    child: showSearchHistory
+                        ? */
+                  /*    */
+                  /*  : const SizedBox(),
+                  ), */
+                  // ),
                   AnimatedPositioned(
                     top: showSearchHistory
                         ? 0
@@ -108,6 +125,8 @@ class _HomePhoneState extends State<HomePhone> {
                     duration:
                         Duration(milliseconds: showSearchHistory ? 400 : 350),
                     child: SearchHistoryPhone(
+                      showSearchHistory: showSearchHistory,
+                      clear: clear,
                       searchHistory: searchHistory
                           .map(
                             (item) {
@@ -130,6 +149,11 @@ class _HomePhoneState extends State<HomePhone> {
                         });
                         onFieldSubmitted(qry);
                         unfocus(focusNode);
+                      },
+                      changeClear: () {
+                        setState(() {
+                          clear = !clear;
+                        });
                       },
                     ),
                   ),

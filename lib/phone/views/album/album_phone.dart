@@ -339,7 +339,11 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                                   children: [
                                     backButton(context),
                                     Expanded(
-                                      child: marquee(
+                                        child: Text(
+                                      widget.album.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ) /*  marquee(
                                         widget.album.name,
                                         const TextStyle(
                                           fontSize: 23,
@@ -347,8 +351,8 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                                         ),
                                         1,
                                         null,
-                                      ),
-                                    ),
+                                      ), */
+                                        ),
                                   ],
                                 ),
                                 flexibleSpace: Opacity(

@@ -348,7 +348,11 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                                   children: [
                                     backButton(context),
                                     Expanded(
-                                      child: marquee(
+                                        child: Text(
+                                      widget.playlist.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ) /* marquee(
                                         widget.playlist.name,
                                         const TextStyle(
                                           fontSize: 23,
@@ -356,8 +360,8 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                                         ),
                                         1,
                                         null,
-                                      ),
-                                    ),
+                                      ), */
+                                        ),
                                   ],
                                 ),
                                 flexibleSpace: Opacity(

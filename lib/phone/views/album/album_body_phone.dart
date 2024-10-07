@@ -19,9 +19,8 @@ class AlbumBodyPhone extends StatefulWidget {
   State<AlbumBodyPhone> createState() => _AlbumBodyPhoneState();
 }
 
-class _AlbumBodyPhoneState extends State<AlbumBodyPhone>
-    with SingleTickerProviderStateMixin {
-  late AnimationController controller;
+class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
+  /* late AnimationController controller;
   late Animation<Color?> colorAnimation;
 
   @override
@@ -42,7 +41,7 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone>
   void dispose() {
     controller.dispose();
     super.dispose();
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -102,12 +101,12 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone>
                     height: 40,
                     width: 20,
                     child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      child: widget.loading.contains(widget.tracks[index].id)
-                          ? const CircularProgressIndicator.adaptive(
-                              key: ValueKey(true),
-                            )
-                          : StreamBuilder(
+                        duration: const Duration(milliseconds: 200),
+                        child: widget.loading.contains(widget.tracks[index].id)
+                            ? const CircularProgressIndicator.adaptive(
+                                key: ValueKey(true),
+                              )
+                            : const SizedBox() /* StreamBuilder(
                               key: const ValueKey(false),
                               stream: audioServiceHandler.mediaItem.stream,
                               builder: (context, snapshot) {
@@ -133,8 +132,8 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone>
                                         })
                                     : const SizedBox();
                               },
-                            ),
-                    ),
+                            ), */
+                        ),
                   ),
                 );
               },

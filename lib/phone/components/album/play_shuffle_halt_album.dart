@@ -19,9 +19,8 @@ class PlayShuffleHaltAlbum extends StatefulWidget {
   State<PlayShuffleHaltAlbum> createState() => _PlayShuffleHaltAlbumState();
 }
 
-class _PlayShuffleHaltAlbumState extends State<PlayShuffleHaltAlbum>
-    with SingleTickerProviderStateMixin {
-  // Pulsating shuffle icon
+class _PlayShuffleHaltAlbumState extends State<PlayShuffleHaltAlbum> {
+  /* // Pulsating shuffle icon
   late AnimationController controller;
   late Animation<Color?> colorAnimation;
 
@@ -43,7 +42,7 @@ class _PlayShuffleHaltAlbumState extends State<PlayShuffleHaltAlbum>
   void dispose() {
     controller.dispose();
     super.dispose();
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -79,32 +78,25 @@ class _PlayShuffleHaltAlbumState extends State<PlayShuffleHaltAlbum>
                             : Colors.white,
                         padding: EdgeInsets.zero,
                       ),
-                      AnimatedBuilder(
-                        animation: colorAnimation,
-                        builder: (context, child) {
-                          return iconTextButton(
-                            AppIcons.shuffle,
-                            " Shuffle",
-                            TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              color: widget.missingTracks.isNotEmpty
+                      iconTextButton(
+                        AppIcons.shuffle,
+                        " Shuffle",
+                        TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: widget.missingTracks.isNotEmpty
+                              ? Colors.white.withAlpha(125)
+                              : widget.loadingShuffle
                                   ? Colors.white.withAlpha(125)
-                                  : widget.loadingShuffle
-                                      ? colorAnimation.value ??
-                                          Colors.white.withAlpha(125)
-                                      : Colors.white,
-                            ),
-                            widget.shuffle,
-                            widget.missingTracks.isNotEmpty
+                                  : Colors.white,
+                        ),
+                        widget.shuffle,
+                        widget.missingTracks.isNotEmpty
+                            ? Colors.white.withAlpha(125)
+                            : widget.loadingShuffle
                                 ? Colors.white.withAlpha(125)
-                                : widget.loadingShuffle
-                                    ? colorAnimation.value ??
-                                        Colors.white.withAlpha(125)
-                                    : Colors.white,
-                            padding: EdgeInsets.zero,
-                          );
-                        },
+                                : Colors.white,
+                        padding: EdgeInsets.zero,
                       ),
                     ],
                   )
