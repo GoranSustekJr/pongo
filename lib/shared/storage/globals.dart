@@ -57,3 +57,6 @@ ValueNotifier<TextAlign> currentLyricsTextAlignment =
 
 // Next Screen on
 ValueNotifier<bool> nextScreenOn = ValueNotifier(false);
+
+// Search screen context
+ValueNotifier<BuildContext?> searchScreenContext = ValueNotifier(null);

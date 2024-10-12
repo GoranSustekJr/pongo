@@ -62,6 +62,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
               ),
             ),
           ),
+          const PullDownMenuDivider(),
           PullDownMenuItem(
             onTap: () async {
               if (favourite) {

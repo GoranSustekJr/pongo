@@ -52,7 +52,13 @@ class _MyAppPhoneState extends State<MyAppPhone> {
         ],
         theme: AppTheme().dark,
         showSemanticsDebugger: false,
-        home: const Background(child: AuthRedirectPhone()),
+        home: const SafeArea(
+          bottom: false,
+          top: false,
+          child: Background(
+            child: AuthRedirectPhone(),
+          ),
+        ),
       ),
     );
   }

@@ -105,26 +105,26 @@ class _BottomNavigationScreenPhoneState
                         child: RepaintBoundary(
                           child: PlayingDetailsPhone(
                             showAlbum: (salid) async {
-                              /* currentTrackHeight.value = 0;
-                                Map album =
-                                    await AlbumSpotify().getData(context, salid);
-                                print(album);
-                                Navigations().nextScreen(
-                                  context,
-                                  AlbumPhone(
-                                    album: Album(
-                                        id: album["id"],
-                                        name: album["name"],
-                                        type: album["album_type"],
-                                        artists: album["artists"].map((artist) {
-                                          return artist[
-                                              "name"]; //{artist["id"]: artist["name"]};
-                                        }).toList(),
-                                        image: calculateWantedResolution(
-                                            album["images"], 300, 300)),
-                                    context: context,
-                                  ),
-                                ); */
+                              currentTrackHeight.value = 0;
+                              navigationBarIndex.value = 0;
+                              Map album =
+                                  await AlbumSpotify().getData(context, salid);
+                              Navigations().nextScreen(
+                                searchScreenContext.value,
+                                AlbumPhone(
+                                  album: Album(
+                                      id: album["id"],
+                                      name: album["name"],
+                                      type: album["album_type"],
+                                      artists: album["artists"].map((artist) {
+                                        return artist[
+                                            "name"]; //{artist["id"]: artist["name"]};
+                                      }).toList(),
+                                      image: calculateWantedResolution(
+                                          album["images"], 300, 300)),
+                                  context: context,
+                                ),
+                              );
                             },
                           ),
                         ),

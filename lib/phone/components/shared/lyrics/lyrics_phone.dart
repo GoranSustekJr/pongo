@@ -26,29 +26,33 @@ class _LyricsPhoneState extends State<LyricsPhone> {
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 350),
-      child: AnimatedOpacity(
-        key: ValueKey("${widget.plainLyrics}${widget.lyricsOn}"),
-        opacity: widget.lyricsOn ? 1 : 0,
-        duration: Duration(milliseconds: widget.lyricsOn ? 500 : 150),
-        child: AnimatedSwitcher(
-          duration: Duration(
-            milliseconds:
-                widget.plainLyrics.isNotEmpty || widget.syncedLyrics.isNotEmpty
-                    ? widget.plainLyrics[0] == null ||
-                            widget.syncedLyrics[0] == null
-                        ? 0
-                        : 500
-                    : 500,
+      child: SizedBox(
+        key: ValueKey("${widget.plainLyrics}"),
+        width: MediaQuery.of(context).size.width,
+        child: AnimatedOpacity(
+          key: ValueKey("${widget.plainLyrics}${widget.lyricsOn}"),
+          opacity: widget.lyricsOn ? 1 : 0,
+          duration: Duration(milliseconds: widget.lyricsOn ? 500 : 150),
+          child: AnimatedSwitcher(
+            duration: Duration(
+              milliseconds: widget.plainLyrics.isNotEmpty ||
+                      widget.syncedLyrics.isNotEmpty
+                  ? widget.plainLyrics[0] == null ||
+                          widget.syncedLyrics[0] == null
+                      ? 0
+                      : 500
+                  : 500,
+            ),
+            child: !widget.useSyncedLyrics
+                ? TrackPlainLyricsPhone(
+                    key: const ValueKey(true), lyrics: widget.plainLyrics)
+                : TrackSyncLyricsPhone(
+                    key: const ValueKey(false),
+                    lyricsOn: widget.lyricsOn,
+                    lyrics: widget.syncedLyrics,
+                    syncTimeDelay: widget.syncTimeDelay,
+                  ),
           ),
-          child: !widget.useSyncedLyrics
-              ? TrackPlainLyricsPhone(
-                  key: const ValueKey(true), lyrics: widget.plainLyrics)
-              : TrackSyncLyricsPhone(
-                  key: const ValueKey(false),
-                  lyricsOn: widget.lyricsOn,
-                  lyrics: widget.syncedLyrics,
-                  syncTimeDelay: widget.syncTimeDelay,
-                ),
         ),
       ),
     );

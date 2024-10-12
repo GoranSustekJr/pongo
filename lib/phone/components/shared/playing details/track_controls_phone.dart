@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-
 import 'controls.dart';
 
 class TrackControlsPhone extends StatelessWidget {

@@ -183,8 +183,6 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
           );
         });
       } else {
-        print("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-
         final data =
             await PlaylistSpotify().getShuffle(context, widget.playlist.id);
         setState(() {
@@ -201,6 +199,7 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                 as AudioServiceHandler;
 
         for (int i = 0; i < tracks.length; i++) {
+          print("object; $i");
           final MediaItem mediaItem = MediaItem(
             id: "search.playlist:${widget.playlist.id}.${tracks[i].id}",
             title: tracks[i].name,
@@ -352,16 +351,7 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                                       widget.playlist.name,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                    ) /* marquee(
-                                        widget.playlist.name,
-                                        const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                        1,
-                                        null,
-                                      ), */
-                                        ),
+                                    )),
                                   ],
                                 ),
                                 flexibleSpace: Opacity(

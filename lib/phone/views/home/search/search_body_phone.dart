@@ -169,15 +169,6 @@ class SearchBodyPhone extends StatelessWidget {
                             future: DatabaseHelper()
                                 .favouriteTrackAlreadyExists(tracks[index].id),
                             builder: (context, snapshot) {
-                              /*   if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const SizedBox(
-                                  width: 50,
-                                  height: 20,
-                                  child: Center(
-                                      child: CircularProgressIndicator()),
-                                );
-                              } else  */
                               if (snapshot.hasError) {
                                 return const SizedBox(
                                   width: 50,

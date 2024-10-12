@@ -186,7 +186,7 @@ class RecommendedPongoPhone extends StatelessWidget {
                   left: 10,
                   right: 10,
                 ),
-                itemCount: pArtists.length >= 30 ? 30 : pArtists.length,
+                itemCount: pArtists.length >= 50 ? 50 : pArtists.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
                   return RecommendedTile(

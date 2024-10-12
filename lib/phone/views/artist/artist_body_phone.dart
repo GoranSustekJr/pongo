@@ -27,12 +27,7 @@ class ArtistBodyPhone extends StatefulWidget {
   State<ArtistBodyPhone> createState() => _ArtistBodyPhoneState();
 }
 
-class _ArtistBodyPhoneState extends State<ArtistBodyPhone>
-    with SingleTickerProviderStateMixin {
-  // Animation controller
-  late AnimationController controller;
-  late Animation<Color?> colorAnimation;
-
+class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
   // Text style
   final TextStyle suggestionHeader = TextStyle(
     fontSize: kIsDesktop
@@ -47,26 +42,6 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone>
             : FontWeight.w700,
     color: Colors.white,
   );
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    colorAnimation = ColorTween(
-      begin: Colors.white,
-      end: Colors.white.withAlpha(100),
-    ).animate(controller);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,15 +158,15 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone>
                                           stream: audioServiceHandler
                                               .audioPlayer.playingStream,
                                           builder: (context, playingStream) {
-                                            return SizedBox(
+                                            return const SizedBox(
                                               width: 20,
                                               height: 40,
-                                              child: MiniMusicVisualizer(
+                                              /*    child: MiniMusicVisualizer(
                                                 color: Colors.white,
                                                 radius: 60,
                                                 animate:
                                                     playingStream.data ?? false,
-                                              ),
+                                              ), */
                                             );
                                           })
                                       : const SizedBox();

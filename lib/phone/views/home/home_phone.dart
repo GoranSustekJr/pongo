@@ -38,6 +38,8 @@ class _HomePhoneState extends State<HomePhone> {
   void initState() {
     super.initState();
     initSearchHistory();
+    searchScreenContext.value = context;
+    print("Search screen context; ${searchScreenContext.value}");
   }
 
   // On Field Submitted Callback Function
@@ -158,6 +160,7 @@ class _HomePhoneState extends State<HomePhone> {
                     ),
                   ),
                   // 4. - Search bar
+
                   AnimatedPositioned(
                     top: showSearchBar.value ? 0 : -100,
                     width: MediaQuery.of(context).size.width,

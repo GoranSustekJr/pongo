@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/views/library/pages/favourites_phone.dart';
 
 class LibraryPhone extends StatefulWidget {
   const LibraryPhone({super.key});
@@ -54,14 +55,20 @@ class _LibraryPhoneState extends State<LibraryPhone> {
                       razh(kIsApple ? size.width / 5 : size.width / 4),
                       settingsText(AppLocalizations.of(context)!.online),
                       libraryTile(
-                          context,
-                          true,
-                          false,
-                          CupertinoIcons.heart_fill,
-                          Icons.wifi_rounded,
-                          AppLocalizations.of(context)!.favouritesongs,
-                          AppLocalizations.of(context)!.onlinefavouritesongs,
-                          () {}),
+                        context,
+                        true,
+                        false,
+                        CupertinoIcons.heart_fill,
+                        Icons.wifi_rounded,
+                        AppLocalizations.of(context)!.favouritesongs,
+                        AppLocalizations.of(context)!.onlinefavouritesongs,
+                        () {
+                          Navigations().nextScreen(
+                            context,
+                            const FavouritesPhone(),
+                          );
+                        },
+                      ),
                       libraryTile(
                           context,
                           false,

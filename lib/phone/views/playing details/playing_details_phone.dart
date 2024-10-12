@@ -41,6 +41,13 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
   String syncedLyrics = "";
   String plainLyrics = "";
 
+  // Volume controller
+  InteractiveSliderController volumeController =
+      InteractiveSliderController(VolumeManager().currentVolume);
+
+  // Volume icon
+  int iconKey = 0;
+
   @override
   void initState() {
     super.initState();
@@ -182,6 +189,37 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                         });
                       },
                     ),
+                    /*  StreamBuilder<double>(
+                        stream: volumeManager.volumeStream,
+                        initialData: volumeManager.currentVolume,
+                        builder: (context, snapshot) {
+                          double volume = snapshot.data ?? 0.0;
+
+                          if (volume != volumeController.value) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              setState(() {
+                                if (((volume - volumeController.value).abs() /
+                                                0.5)
+                                            .ceil() *
+                                        0.5 !=
+                                    0.05) {
+                                  volumeController.value = volume;
+                                }
+                                if (volume == 0) {
+                                  iconKey = 0;
+                                } else if (volume > 0 && volume <= 0.33) {
+                                  iconKey = 1;
+                                } else if (volume > 0.33 && volume <= 0.67) {
+                                  iconKey = 2;
+                                } else {
+                                  iconKey = 3;
+                                }
+                              });
+                            });
+                          }
+
+                          return const SizedBox();
+                        }), */
                     TrackControlsPhone(
                       currentMediaItem: currentMediaItem!,
                       lyricsOn: lyricsOn,
@@ -196,6 +234,20 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                           showQueue = !showQueue;
                         });
                       },
+                      /*  updateVolume: (volume) {
+                        setState(() {
+                          volumeController.value = volume;
+                          if (volume == 0) {
+                            iconKey = 0;
+                          } else if (volume > 0 && volume <= 0.33) {
+                            iconKey = 1;
+                          } else if (volume > 0.33 && volume <= 0.67) {
+                            iconKey = 2;
+                          } else {
+                            iconKey = 3;
+                          }
+                        });
+                      }, */
                       showAlbum: widget.showAlbum,
                     ),
                     TrackImagePhone(

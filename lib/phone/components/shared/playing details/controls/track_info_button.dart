@@ -79,10 +79,15 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                         color: Colors.white,
                       )),
                   PopUpMenuItem(
-                    title: AppLocalizations.of(context)!.like,
-                    image: Icon(
-                      favourite ? AppIcons.heartFill : AppIcons.heart,
-                      color: Colors.white,
+                    title: "",
+                    image: Row(
+                      children: [
+                        Text(AppLocalizations.of(context)!.like),
+                        Icon(
+                          favourite ? AppIcons.heartFill : AppIcons.heart,
+                          color: Colors.white,
+                        ),
+                      ],
                     ),
                   ),
                 ],

@@ -77,7 +77,8 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
                 },
               ),
               FutureBuilder<bool>(
-                future: favouriteStatusFuture,
+                future: DatabaseHelper()
+                    .favouriteTrackAlreadyExists(widget.trackId),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return const Center(

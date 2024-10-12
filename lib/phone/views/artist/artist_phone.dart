@@ -180,14 +180,14 @@ class _ArtistPhoneState extends State<ArtistPhone> {
                                   children: [
                                     backButton(context),
                                     Expanded(
-                                      child: marquee(
+                                      child: Text(
                                         widget.artist.name,
-                                        const TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 23,
                                           fontWeight: FontWeight.w700,
                                         ),
-                                        1,
-                                        null,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ],

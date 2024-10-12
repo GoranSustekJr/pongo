@@ -42,7 +42,7 @@ class DatabaseHelper {
     ''');
     await db.execute('''
       CREATE TABLE favourites (
-        id INTEGER,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         stid TEXT
       )
     ''');
@@ -102,7 +102,7 @@ class DatabaseHelper {
     print(oldVersion);
     await db.execute('''
       CREATE TABLE favourites (
-        id INTEGER,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         stid TEXT
       )
     ''');

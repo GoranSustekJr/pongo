@@ -49,36 +49,38 @@ class QueueBodyPhone extends StatelessWidget {
                 constraints: BoxConstraints(minHeight: size.height),
                 child: Stack(
                   children: [
-                    ReorderableListView.builder(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).padding.top + 50,
-                          bottom: 300),
-                      itemCount: queue!.length,
-                      shrinkWrap: true,
-                      onReorder: (oldIndex, newIndex) {
-                        audioServiceHandler.reorderQueue(
-                            audioServiceHandler, oldIndex, newIndex);
-                      },
-                      proxyDecorator: (child, index, animation) => Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Col.primaryCard.withAlpha(175),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                            child: child,
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: ReorderableListView.builder(
+                        key: ValueKey("$shuffleModeEnabled"),
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top + 50,
+                            bottom: 300),
+                        itemCount: queue!.length,
+                        shrinkWrap: true,
+                        onReorder: (oldIndex, newIndex) {
+                          audioServiceHandler.reorderQueue(
+                              audioServiceHandler, oldIndex, newIndex);
+                        },
+                        proxyDecorator: (child, index, animation) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Col.primaryCard.withAlpha(175),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: child,
+                            ),
                           ),
                         ),
-                      ),
-                      itemBuilder: (context, index) {
-                        int ind =
-                            shuffleModeEnabled ? shuffleIndices[index] : index;
-                        return AnimatedSwitcher(
-                          key: ValueKey(queue![index]),
-                          duration: const Duration(milliseconds: 200),
-                          child: QueueTile(
+                        itemBuilder: (context, index) {
+                          int ind = shuffleModeEnabled
+                              ? shuffleIndices[index]
+                              : index;
+                          return QueueTile(
+                            key: ValueKey(ind),
                             title: queue![ind].title,
                             artist: queue![ind].artist ?? "",
                             imageUrl: queue![ind].artUri.toString(),
@@ -95,45 +97,45 @@ class QueueBodyPhone extends StatelessWidget {
                                             duration:
                                                 Duration(milliseconds: 200),
                                             /*  child:  StreamBuilder(
-                                              key: const ValueKey(false),
-                                              stream: audioServiceHandler
-                                                  .mediaItem.stream,
-                                              builder: (context, snapshot) {
-                                                final String id =
-                                                    snapshot.data != null
-                                                        ? snapshot.data!.id
-                                                        : "";
-
-                                                return id == queue![ind].id &&
-                                                        audioServiceHandler
-                                                                .audioPlayer
-                                                                .currentIndex ==
-                                                            ind
-                                                    ? StreamBuilder(
-                                                        stream:
-                                                            audioServiceHandler
-                                                                .audioPlayer
-                                                                .playingStream,
-                                                        builder: (context,
-                                                            playingStream) {
-                                                          return SizedBox(
-                                                            width: 20,
-                                                            height: 40,
-                                                            child:
-                                                                MiniMusicVisualizer(
-                                                              color:
-                                                                  Colors.white,
-                                                              radius: 60,
-                                                              animate:
-                                                                  playingStream
-                                                                          .data ??
-                                                                      false,
-                                                            ),
-                                                          );
-                                                        })
-                                                    : const SizedBox();
-                                              },
-                                            ), */
+                                                key: const ValueKey(false),
+                                                stream: audioServiceHandler
+                                                    .mediaItem.stream,
+                                                builder: (context, snapshot) {
+                                                  final String id =
+                                                      snapshot.data != null
+                                                          ? snapshot.data!.id
+                                                          : "";
+                      
+                                                  return id == queue![ind].id &&
+                                                          audioServiceHandler
+                                                                  .audioPlayer
+                                                                  .currentIndex ==
+                                                              ind
+                                                      ? StreamBuilder(
+                                                          stream:
+                                                              audioServiceHandler
+                                                                  .audioPlayer
+                                                                  .playingStream,
+                                                          builder: (context,
+                                                              playingStream) {
+                                                            return SizedBox(
+                                                              width: 20,
+                                                              height: 40,
+                                                              child:
+                                                                  MiniMusicVisualizer(
+                                                                color:
+                                                                    Colors.white,
+                                                                radius: 60,
+                                                                animate:
+                                                                    playingStream
+                                                                            .data ??
+                                                                        false,
+                                                              ),
+                                                            );
+                                                          })
+                                                      : const SizedBox();
+                                                },
+                                              ), */
                                           ),
                                         ),
                                         razw(5),
@@ -189,9 +191,9 @@ class QueueBodyPhone extends StatelessWidget {
                                 selectQueueIndex(ind);
                               }
                             },
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                     QueueButtonPhone(
                       showQueue: showQueue,

@@ -92,22 +92,25 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
           : [];
 
       // End-user:: tracks
-      euTracks = (data["eu_tracks"]["tracks"] as List<dynamic>)
-          .map((track) => sp.Track.fromJson(track))
-          .toList();
+      try {
+        euTracks = (data["eu_tracks"]["tracks"] as List<dynamic>)
+            .map((track) => sp.Track.fromJson(track))
+            .toList();
 
-      // End-user:: artists
-      euArtists =
-          (data["eu_artists"]["artists"] as List<dynamic>).map((artist) {
-        return Artist(
-          id: artist["id"],
-          name: artist["name"],
-          image: artist["images"].isNotEmpty
-              ? calculateWantedResolution(artist["images"], 300, 300)
-              : "",
-        );
-      }).toList();
-
+        // End-user:: artists
+        euArtists =
+            (data["eu_artists"]["artists"] as List<dynamic>).map((artist) {
+          return Artist(
+            id: artist["id"],
+            name: artist["name"],
+            image: artist["images"].isNotEmpty
+                ? calculateWantedResolution(artist["images"], 300, 300)
+                : "",
+          );
+        }).toList();
+      } catch (e) {
+        print(e);
+      }
       recommendationsDisabled = pTracks.isEmpty &&
           pArtists.isEmpty &&
           pAlbums.isEmpty &&
