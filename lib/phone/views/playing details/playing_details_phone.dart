@@ -158,6 +158,11 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                           showQueue = !showQueue;
                         });
                       },
+                      changeLyricsOn: () {
+                        setState(() {
+                          lyricsOn = !lyricsOn;
+                        });
+                      },
                     ),
                     LyricsButtonPhone(
                       syncTimeDelay: syncTimeDelay,
@@ -253,6 +258,7 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                     TrackImagePhone(
                       lyricsOn: lyricsOn,
                       showQueue: showQueue,
+                      audioServiceHandler: audioServiceHandler,
                       image: currentMediaItem!.artUri.toString(),
                     ),
                   ],

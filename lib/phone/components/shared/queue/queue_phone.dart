@@ -5,11 +5,13 @@ class QueuePhone extends StatefulWidget {
   final bool showQueue;
   final bool lyricsOn;
   final Function() changeShowQueue;
+  final Function() changeLyricsOn;
   const QueuePhone({
     super.key,
     required this.showQueue,
     required this.lyricsOn,
     required this.changeShowQueue,
+    required this.changeLyricsOn,
   });
 
   @override
@@ -100,6 +102,7 @@ class _QueuePhoneState extends State<QueuePhone> {
                                   selectedQueueIndexes.clear();
                                 });
                               },
+                              changeLyricsOn: widget.changeLyricsOn,
                             ),
                           );
                         });

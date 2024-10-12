@@ -1,14 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
 class TrackImagePhone extends StatelessWidget {
   final bool lyricsOn;
   final bool showQueue;
+  final AudioServiceHandler audioServiceHandler;
   final String image;
   const TrackImagePhone({
     super.key,
     required this.lyricsOn,
     required this.image,
     required this.showQueue,
+    required this.audioServiceHandler,
   });
 
   @override
@@ -39,10 +42,50 @@ class TrackImagePhone extends StatelessWidget {
                       duration: const Duration(milliseconds: 500),
                       switchInCurve: Curves.fastOutSlowIn,
                       switchOutCurve: Curves.fastEaseInToSlowEaseOut,
-                      child: CachedNetworkImage(
-                        key: ValueKey(image),
-                        imageUrl: image,
-                      ),
+                      child: StreamBuilder<Object>(
+                          stream: audioServiceHandler.audioPlayer.playingStream,
+                          builder: (context, snapshot) {
+                            return AnimatedScale(
+                              scale: audioServiceHandler.audioPlayer.playing
+                                  ? 1.0
+                                  : 0.8,
+                              duration: Duration(
+                                  milliseconds:
+                                      !audioServiceHandler.audioPlayer.playing
+                                          ? 500
+                                          : 250),
+                              curve: audioServiceHandler.audioPlayer.playing
+                                  ? Curves.easeOutSine
+                                  : Curves.decelerate,
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (audioServiceHandler.audioPlayer.playing) {
+                                    audioServiceHandler.pause();
+                                  } else {
+                                    audioServiceHandler.play();
+                                  }
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: ColorFiltered(
+                                    colorFilter: ColorFilter.mode(
+                                      audioServiceHandler.audioPlayer.playing
+                                          ? Colors.transparent
+                                          : Colors.black.withAlpha(25),
+                                      BlendMode.srcOver,
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: CachedNetworkImage(
+                                        key: ValueKey(image),
+                                        imageUrl: image,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
                     ),
                   ),
                 ),

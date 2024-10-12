@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/alerts/audio%20player/halt_alert.dart';
 import 'package:pongo/phone/components/queue/pull%20down%20menus/queue_edit_pull_down_menu_items.dart';
 import 'package:pongo/phone/components/queue/pull%20down%20menus/queue_more_pull_down_menu_items.dart';
 
@@ -11,6 +12,7 @@ class QueueButtonPhone extends StatelessWidget {
   final Function() changeShowQueue;
   final Function() changeEditQueue;
   final Function() removeItemsFromQueue;
+  final Function() changeLyricsOn;
   const QueueButtonPhone({
     super.key,
     required this.showQueue,
@@ -19,6 +21,7 @@ class QueueButtonPhone extends StatelessWidget {
     required this.lyricsOn,
     required this.changeEditQueue,
     required this.removeItemsFromQueue,
+    required this.changeLyricsOn,
   });
 
   @override
@@ -34,6 +37,28 @@ class QueueButtonPhone extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(60),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(60),
+                    color: kIsDesktop
+                        ? const MacosColor.fromRGBO(
+                            40, 40, 40, 0.8) // Add transparency here
+                        : Col.transp,
+                  ),
+                  child: iconButton(
+                      lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
+                      Colors.white,
+                      changeLyricsOn,
+                      edgeInsets: EdgeInsets.zero),
+                ),
+              ),
+            ),
             ClipRRect(
               borderRadius: BorderRadius.circular(60),
               child: BackdropFilter(
@@ -104,6 +129,34 @@ class QueueButtonPhone extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
+                ),
+              ),
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(60),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(60),
+                    color: kIsDesktop
+                        ? const MacosColor.fromRGBO(
+                            40, 40, 40, 0.8) // Add transparency here
+                        : Col.transp,
+                  ),
+                  child: iconButton(AppIcons.halt, Colors.white, () async {
+                    CustomButton ok = await haltAlert(context);
+                    if (ok == CustomButton.positiveButton) {
+                      currentTrackHeight.value = 0;
+                      final audioServiceHandler =
+                          Provider.of<AudioHandler>(context, listen: false)
+                              as AudioServiceHandler;
+
+                      await audioServiceHandler.halt();
+                    }
+                  }, edgeInsets: EdgeInsets.zero),
                 ),
               ),
             ),

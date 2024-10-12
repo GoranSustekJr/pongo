@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/alerts/audio%20player/halt_alert.dart';
 
 trackInfoButton(context, String trackId, bool favourite, Function() download,
     Function() refreshFavourite) {
@@ -22,7 +23,7 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                 // addSongToOnlinePlaylist(context, trackId);
               },
             ),
-            const PullDownMenuDivider(),
+            const PullDownMenuDivider.large(),
             PullDownMenuItem(
               title: favourite
                   ? AppLocalizations.of(context)!.unlike
@@ -36,6 +37,28 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                 }
                 refreshFavourite();
               },
+            ),
+            const PullDownMenuDivider.large(),
+            PullDownMenuItem(
+              onTap: () async {
+                CustomButton ok = await haltAlert(context);
+                if (ok == CustomButton.positiveButton) {
+                  currentTrackHeight.value = 0;
+                  final audioServiceHandler =
+                      Provider.of<AudioHandler>(context, listen: false)
+                          as AudioServiceHandler;
+
+                  await audioServiceHandler.halt();
+                }
+              },
+              title: AppLocalizations.of(context)!.halt,
+              icon: AppIcons.halt,
+              itemTheme: const PullDownMenuItemTheme(
+                textStyle: TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  height: 1,
+                ),
+              ),
             ),
           ],
           position: PullDownMenuPosition.above,

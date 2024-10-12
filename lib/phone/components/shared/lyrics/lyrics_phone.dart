@@ -30,10 +30,10 @@ class _LyricsPhoneState extends State<LyricsPhone> {
         key: ValueKey("${widget.plainLyrics}"),
         width: MediaQuery.of(context).size.width,
         child: AnimatedOpacity(
-          key: ValueKey("${widget.plainLyrics}${widget.lyricsOn}"),
           opacity: widget.lyricsOn ? 1 : 0,
-          duration: Duration(milliseconds: widget.lyricsOn ? 500 : 150),
+          duration: Duration(milliseconds: widget.lyricsOn ? 500 : 0),
           child: AnimatedSwitcher(
+            key: ValueKey("${widget.lyricsOn}"),
             duration: Duration(
               milliseconds: widget.plainLyrics.isNotEmpty ||
                       widget.syncedLyrics.isNotEmpty

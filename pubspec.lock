@@ -640,9 +640,17 @@ packages:
   interactive_slider:
     dependency: "direct main"
     description:
+      name: interactive_slider
+      sha256: "6e005c3f7054766587f1d7cdb0835ae35ad0b35d08c15e201f31a6fe7ce7b45d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
+  interactive_slider_fork:
+    dependency: "direct main"
+    description:
       path: "."
       ref: main
-      resolved-ref: "57366b59cda77c787aa463fd906c931f26bd5613"
+      resolved-ref: "81b6c8dcf6ff2120d63f3d4bc846db71254b4300"
       url: "https://github.com/GoranSustekJr/interactive_slider.git"
     source: git
     version: "0.4.0"

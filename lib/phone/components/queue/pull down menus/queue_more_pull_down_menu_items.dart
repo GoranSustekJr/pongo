@@ -1,4 +1,5 @@
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/alerts/audio%20player/halt_alert.dart';
 import 'package:pongo/shared/functions/queue/clear_queue.dart';
 
 List<PullDownMenuEntry> queueMorePullDownMenuItems(
@@ -55,12 +56,15 @@ List<PullDownMenuEntry> queueMorePullDownMenuItems(
           const PullDownMenuDivider.large(),
           PullDownMenuItem(
             onTap: () async {
-              currentTrackHeight.value = 0;
-              final audioServiceHandler =
-                  Provider.of<AudioHandler>(context, listen: false)
-                      as AudioServiceHandler;
+              CustomButton ok = await haltAlert(context);
+              if (ok == CustomButton.positiveButton) {
+                currentTrackHeight.value = 0;
+                final audioServiceHandler =
+                    Provider.of<AudioHandler>(context, listen: false)
+                        as AudioServiceHandler;
 
-              await audioServiceHandler.halt();
+                await audioServiceHandler.halt();
+              }
             },
             title: AppLocalizations.of(context)!.halt,
             icon: AppIcons.halt,

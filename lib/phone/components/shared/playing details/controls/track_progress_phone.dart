@@ -1,7 +1,7 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart'
     as progressbutton;
 import 'package:flutter/cupertino.dart';
-import 'package:interactive_slider/interactive_slider.dart';
+import 'package:interactive_slider_fork/interactive_slider.dart' as isf;
 
 import '../../../../../exports.dart';
 
@@ -24,8 +24,8 @@ class TrackProgressPhone extends StatefulWidget {
 
 class _TrackProgressPhoneState extends State<TrackProgressPhone> {
   // Slider controller
-  InteractiveSliderController progressController =
-      InteractiveSliderController(VolumeManager().currentVolume);
+  isf.InteractiveSliderController progressController =
+      isf.InteractiveSliderController(VolumeManager().currentVolume);
 
   @override
   void initState() {
@@ -67,9 +67,9 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                 SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: 22,
-                    child: InteractiveSlider(
+                    child: isf.InteractiveSlider(
                       padding: EdgeInsets.zero,
-                      initialProgress: progress,
+                      initialProgress: 0.5,
                       controller: progressController,
                       focusedHeight: 10,
                       onProgressUpdated: (position) async {
