@@ -45,6 +45,7 @@ class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.missingTracks);
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return StreamBuilder(

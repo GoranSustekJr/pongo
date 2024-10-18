@@ -39,6 +39,9 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   bool recommendedForYou = true;
   bool recommendedPongo = true;
 
+  // Audio player
+  bool useCachingAudioSource = false;
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +70,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final recommendForYou = await Storage().getRecommendedForYou();
     final recommendPongo = await Storage().getRecommendedPongo();
     final lyricsTxtAlign = await Storage().getLyricsTextAlign();
+    final useCacheAudioSource = await Storage().getUseCachingAudioSource();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -79,6 +83,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       recommendedForYou = recommendForYou;
       recommendedPongo = recommendPongo;
       lyricsTextAlign = lyricsTxtAlign;
+      useCachingAudioSource = useCacheAudioSource;
     });
   }
 
@@ -401,6 +406,24 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                           TextAlign.justify;
                                     }
                                   });
+                                },
+                              ),
+                              razh(20),
+                              settingsText("Audio player"),
+                              settingsTileSwitcher(
+                                context,
+                                true,
+                                false,
+                                CupertinoIcons.arrow_down_doc_fill,
+                                useCachingAudioSource, // AppIcons.edit,
+                                "Audio player caching",
+                                "Let audio player cache the songs",
+                                (use) async {
+                                  setState(() {
+                                    useCachingAudioSource = use;
+                                  });
+                                  useCacheAudioSource.value = use;
+                                  Storage().writeUseCacheAudioSource(use);
                                 },
                               ),
                               razh(50),

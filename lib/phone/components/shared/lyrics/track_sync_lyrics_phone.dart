@@ -34,19 +34,27 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   bool isUserScrolling = false;
   ScrollController manualScrollController = ScrollController();
 
-  /* @override
+  Timer? _timer;
+  Duration _currentPosition = Duration.zero;
+
+  @override
   void initState() {
     super.initState();
-    if (widget.lyrics[0] != null) {
-      // If lyrics exist => get list of lyric lines
-      lyrics = widget.lyrics[0].split('\n');
-      lyrics.insert(0, "{#¶€[”„’‘¤ß÷×¤ß#}"); // Start height
-      lyrics.add("{#¶€[”„’‘¤ß÷×¤ß#˘¸}"); // end height
-    }
-
-    // Listen for manual scroll start and end
-    //   autoScrollController.addListener(autoScrollListener);
-  } */
+    // Start a timer that updates every 250 milliseconds
+    _timer = Timer.periodic(const Duration(milliseconds: 250), (timer) {
+      final audioServiceHandler =
+          Provider.of<AudioHandler>(context, listen: false)
+              as AudioServiceHandler;
+      // Fetch the current position from your audio service
+      // Assuming audioServiceHandler.positionStream is a stream of Duration
+      audioServiceHandler.positionStream.first.then((position) {
+        setState(() {
+          _currentPosition = position;
+        });
+        findCurrentLyricIndex(_currentPosition);
+      });
+    });
+  }
 
   // Parse timestamp to Duration
   Duration? parseTimestamp(String lyric) {
@@ -100,7 +108,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   @override
   void dispose() {
     autoScrollController.dispose();
-
+    _timer?.cancel();
     manualScrollController.dispose();
     super.dispose();
   }
@@ -115,14 +123,10 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
       child: StreamBuilder(
         stream: audioServiceHandler.positionStream,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
+          /*  if (!snapshot.hasData) {
+            return const Center(child: SizedBox());
           }
-          if (snapshot.hasData) {
-            Duration position = snapshot.data as Duration;
-            findCurrentLyricIndex(position);
-            //print(position);
-          }
+           */
 
           return Padding(
             padding: const EdgeInsets.only(left: 10),

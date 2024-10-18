@@ -53,149 +53,139 @@ class QueueBodyPhone extends StatelessWidget {
                   children: [
                     AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
-                      child: ReorderableListView.builder(
-                        key: ValueKey("$shuffleModeEnabled"),
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).padding.top + 50,
-                            bottom: 300),
-                        itemCount: queue!.length,
-                        shrinkWrap: true,
-                        onReorder: (oldIndex, newIndex) {
-                          audioServiceHandler.reorderQueue(
-                              audioServiceHandler, oldIndex, newIndex);
-                        },
-                        proxyDecorator: (child, index, animation) => Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Col.primaryCard.withAlpha(175),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                              child: child,
-                            ),
-                          ),
-                        ),
-                        itemBuilder: (context, index) {
-                          int ind = shuffleModeEnabled
-                              ? shuffleIndices[index]
-                              : index;
-                          return QueueTile(
-                            key: ValueKey(ind),
-                            title: queue![ind].title,
-                            artist: queue![ind].artist ?? "",
-                            imageUrl: queue![ind].artUri.toString(),
-                            trailing: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 250),
-                              child: !editQueue
-                                  ? Row(
-                                      key: const ValueKey(true),
-                                      children: [
-                                        const SizedBox(
-                                          height: 40,
-                                          width: 20,
-                                          child: AnimatedSwitcher(
-                                            duration:
-                                                Duration(milliseconds: 200),
-                                            /*  child:  StreamBuilder(
-                                                key: const ValueKey(false),
-                                                stream: audioServiceHandler
-                                                    .mediaItem.stream,
-                                                builder: (context, snapshot) {
-                                                  final String id =
-                                                      snapshot.data != null
-                                                          ? snapshot.data!.id
-                                                          : "";
-                      
-                                                  return id == queue![ind].id &&
+                      child: StreamBuilder(
+                          key: const ValueKey(false),
+                          stream: audioServiceHandler.mediaItem.stream,
+                          builder: (context, snapshot) {
+                            final String id =
+                                snapshot.data != null ? snapshot.data!.id : "";
+                            return ReorderableListView.builder(
+                              key: ValueKey("$shuffleModeEnabled"),
+                              padding: EdgeInsets.only(
+                                  top: MediaQuery.of(context).padding.top + 50,
+                                  bottom: 300),
+                              itemCount: queue!.length,
+                              shrinkWrap: true,
+                              onReorder: (oldIndex, newIndex) {
+                                audioServiceHandler.reorderQueue(
+                                    audioServiceHandler, oldIndex, newIndex);
+                              },
+                              proxyDecorator: (child, index, animation) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Col.primaryCard.withAlpha(175),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: BackdropFilter(
+                                    filter: ImageFilter.blur(
+                                        sigmaX: 10, sigmaY: 10),
+                                    child: child,
+                                  ),
+                                ),
+                              ),
+                              itemBuilder: (context, index) {
+                                int ind = shuffleModeEnabled
+                                    ? shuffleIndices[index]
+                                    : index;
+                                return QueueTile(
+                                  key: ValueKey(ind),
+                                  title: queue![ind].title,
+                                  artist: queue![ind].artist ?? "",
+                                  imageUrl: queue![ind].artUri.toString(),
+                                  trailing: AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 250),
+                                    child: !editQueue
+                                        ? Row(
+                                            key: const ValueKey(true),
+                                            children: [
+                                              SizedBox(
+                                                height: 40,
+                                                width: 20,
+                                                child: AnimatedSwitcher(
+                                                  duration: const Duration(
+                                                      milliseconds: 200),
+                                                  child: id == queue![ind].id &&
                                                           audioServiceHandler
                                                                   .audioPlayer
                                                                   .currentIndex ==
                                                               ind
-                                                      ? StreamBuilder(
-                                                          stream:
-                                                              audioServiceHandler
-                                                                  .audioPlayer
-                                                                  .playingStream,
-                                                          builder: (context,
-                                                              playingStream) {
-                                                            return SizedBox(
-                                                              width: 20,
-                                                              height: 40,
-                                                              child:
-                                                                  MiniMusicVisualizer(
-                                                                color:
-                                                                    Colors.white,
-                                                                radius: 60,
-                                                                animate:
-                                                                    playingStream
-                                                                            .data ??
-                                                                        false,
-                                                              ),
-                                                            );
-                                                          })
-                                                      : const SizedBox();
+                                                      ? const SizedBox(
+                                                          width: 40,
+                                                          height: 40,
+                                                          child: Center(
+                                                            child: Icon(
+                                                              CupertinoIcons
+                                                                  .circle_filled,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ))
+                                                      : const SizedBox(),
+                                                ),
+                                              ),
+                                              razw(5),
+                                              const Icon(
+                                                AppIcons.burger,
+                                                color: Colors.white,
+                                                size: 22.5,
+                                              ),
+                                            ],
+                                          )
+                                        : SizedBox(
+                                            key: const ValueKey(
+                                              false,
+                                            ),
+                                            width: 47.0,
+                                            height: 47.0,
+                                            child: CupertinoButton(
+                                                padding: EdgeInsets.zero,
+                                                onPressed: () {
+                                                  selectQueueIndex(ind);
                                                 },
-                                              ), */
+                                                child: Icon(
+                                                  selectedQueueIndexes
+                                                          .contains(ind)
+                                                      ? AppIcons.checkmark
+                                                      : AppIcons.uncheckmark,
+                                                  size: 25,
+                                                  color: Colors.white,
+                                                )),
                                           ),
-                                        ),
-                                        razw(5),
-                                        const Icon(
-                                          AppIcons.burger,
-                                          color: Colors.white,
-                                          size: 22.5,
-                                        ),
-                                      ],
-                                    )
-                                  : SizedBox(
-                                      key: const ValueKey(
-                                        false,
-                                      ),
-                                      width: 47.0,
-                                      height: 47.0,
-                                      child: CupertinoButton(
-                                          padding: EdgeInsets.zero,
-                                          onPressed: () {
-                                            selectQueueIndex(ind);
-                                          },
-                                          child: Icon(
-                                            selectedQueueIndexes.contains(ind)
-                                                ? AppIcons.checkmark
-                                                : AppIcons.uncheckmark,
-                                            size: 25,
-                                            color: Colors.white,
-                                          )),
-                                    ),
-                            ),
-                            onTap: () async {
-                              if (!editQueue) {
-                                bool thisPlaying =
-                                    audioServiceHandler.mediaItem.value != null
-                                        ? audioServiceHandler
-                                                    .mediaItem.value!.id ==
-                                                queue![ind].id &&
-                                            audioServiceHandler
-                                                    .audioPlayer.currentIndex ==
-                                                ind
-                                        : false;
-                                if (thisPlaying) {
-                                  if (audioServiceHandler.audioPlayer.playing) {
-                                    await audioServiceHandler.pause();
-                                  } else {
-                                    await audioServiceHandler.play();
-                                  }
-                                } else {
-                                  await audioServiceHandler
-                                      .skipToQueueItem(ind);
-                                }
-                              } else {
-                                selectQueueIndex(ind);
-                              }
-                            },
-                          );
-                        },
-                      ),
+                                  ),
+                                  onTap: () async {
+                                    if (!editQueue) {
+                                      bool thisPlaying =
+                                          audioServiceHandler.mediaItem.value !=
+                                                  null
+                                              ? audioServiceHandler.mediaItem
+                                                          .value!.id ==
+                                                      queue![ind].id &&
+                                                  audioServiceHandler
+                                                          .audioPlayer
+                                                          .currentIndex ==
+                                                      ind
+                                              : false;
+                                      if (thisPlaying) {
+                                        if (audioServiceHandler
+                                            .audioPlayer.playing) {
+                                          await audioServiceHandler.pause();
+                                        } else {
+                                          await audioServiceHandler.play();
+                                        }
+                                      } else {
+                                        await audioServiceHandler
+                                            .skipToQueueItem(ind);
+                                      }
+                                    } else {
+                                      selectQueueIndex(ind);
+                                    }
+                                  },
+                                );
+                              },
+                            );
+                          }),
                     ),
                     QueueButtonPhone(
                       showQueue: showQueue,

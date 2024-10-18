@@ -69,6 +69,8 @@ void main() async {
   numberOfSearchPlaylists.value = numSearchPlaylists;
   TextAlign curLyricsTextAlignment = await Storage().getLyricsTextAlign();
   currentLyricsTextAlignment.value = curLyricsTextAlignment;
+  bool useCache = await Storage().getUseCachingAudioSource();
+  useCacheAudioSource.value = useCache;
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();

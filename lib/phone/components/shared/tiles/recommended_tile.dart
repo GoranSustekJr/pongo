@@ -91,7 +91,7 @@ class RecommendedTile extends StatelessWidget {
                       items: searchTrackPulldownMenuItems(
                         context,
                         data,
-                        data.id,
+                        "recommended.single.",
                         isFavourite,
                         doesNotExist!,
                         doesNowExist!,

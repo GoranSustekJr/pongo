@@ -43,20 +43,15 @@ class TrackImagePhone extends StatelessWidget {
                       switchInCurve: Curves.fastOutSlowIn,
                       switchOutCurve: Curves.fastEaseInToSlowEaseOut,
                       child: StreamBuilder<Object>(
+                          key: ValueKey(image),
                           stream: audioServiceHandler.audioPlayer.playingStream,
                           builder: (context, snapshot) {
                             return AnimatedScale(
                               scale: audioServiceHandler.audioPlayer.playing
                                   ? 1.0
                                   : 0.8,
-                              duration: Duration(
-                                  milliseconds:
-                                      !audioServiceHandler.audioPlayer.playing
-                                          ? 500
-                                          : 250),
-                              curve: audioServiceHandler.audioPlayer.playing
-                                  ? Curves.easeOutSine
-                                  : Curves.decelerate,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.fastEaseInToSlowEaseOut,
                               child: GestureDetector(
                                 onTap: () {
                                   if (audioServiceHandler.audioPlayer.playing) {
@@ -77,13 +72,15 @@ class TrackImagePhone extends StatelessWidget {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(15),
                                       child: CachedNetworkImage(
-                                        key: ValueKey(image),
                                         imageUrl: image,
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
+                            );
+                            CachedNetworkImage(
+                              imageUrl: image,
                             );
                           }),
                     ),

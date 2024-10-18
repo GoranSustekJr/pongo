@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/views/library/pages/favourites_phone.dart';
+import 'package:pongo/phone/views/library/pages/favourites/favourites_phone.dart';
 
 class LibraryPhone extends StatefulWidget {
   const LibraryPhone({super.key});

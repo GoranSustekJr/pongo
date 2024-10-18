@@ -12,7 +12,7 @@ class TrackMetadata {
  */
     // Init websocket connection
     final WebSocketChannel channel = WebSocketChannel.connect(
-        Uri.parse("ws://goransustekdoo.ddns.net:9090/test"));
+        Uri.parse("${AppConstants.SERVER_URL_WSS}test"));
     final accessTokenHandler = Provider.of<AccessToken>(context, listen: false);
 
     // Send the stid
@@ -82,8 +82,8 @@ class TrackMetadata {
     //  Overlay.of(context).insert(overlayEntry);
 
     // Init websocket connection
-    final WebSocketChannel channel = WebSocketChannel.connect(
-        Uri.parse("wss://goransustekdoo.ddns.net:5002/testtest"));
+    final WebSocketChannel channel =
+        WebSocketChannel.connect(Uri.parse("wss://gogodom.ddns.net:9090/test"));
     final accessTokenHandler = Provider.of<AccessToken>(context, listen: false);
 
     // Send the stid

@@ -31,9 +31,12 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
               icon: favourite ? AppIcons.heartFill : AppIcons.heart,
               onTap: () async {
                 if (favourite) {
-                  await DatabaseHelper().removeFavouriteTrack(trackId);
+                  print("object; $trackId");
+                  await DatabaseHelper()
+                      .removeFavouriteTrack(trackId.split('.')[2]);
                 } else {
-                  await DatabaseHelper().insertFavouriteTrack(trackId);
+                  await DatabaseHelper()
+                      .insertFavouriteTrack(trackId.split('.')[2]);
                 }
                 refreshFavourite();
               },

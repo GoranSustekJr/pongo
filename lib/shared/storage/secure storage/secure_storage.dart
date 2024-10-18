@@ -24,6 +24,7 @@ class Storage {
   static String recommendedForYouKey = "RECOMMENDEDFORYOUKEY";
   static String recommendedPongoKey = "RECOMMENDEDPONGOKEY";
   static String lyricsTextAlignKey = "LYRICSTEXTALIGNKEY";
+  static String useCacheAudioSourceKey = "CACHEAUDIOSOURCEKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -263,6 +264,21 @@ class Storage {
       return TextAlign.justify;
     } else {
       return TextAlign.center;
+    }
+  }
+
+  // Use cachinga audio source
+  Future<void> writeUseCacheAudioSource(bool useCacheAudioSource) async {
+    await storage.write(
+        key: useCacheAudioSourceKey, value: useCacheAudioSource.toString());
+  }
+
+  Future<bool> getUseCachingAudioSource() async {
+    String? key = await storage.read(key: useCacheAudioSourceKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
     }
   }
 

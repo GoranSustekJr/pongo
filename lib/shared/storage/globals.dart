@@ -60,3 +60,6 @@ ValueNotifier<bool> nextScreenOn = ValueNotifier(false);
 
 // Search screen context
 ValueNotifier<BuildContext?> searchScreenContext = ValueNotifier(null);
+
+// Use caching audio sourece
+ValueNotifier<bool> useCacheAudioSource = ValueNotifier(false);

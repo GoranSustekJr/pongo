@@ -60,8 +60,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Using Camera For Playlist Images</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>No need but gettings error so trying to fix it.</string>
+	<!-- <key>NSMicrophoneUsageDescription</key>
+	<string>No need but gettings error so trying to fix it.</string> -->
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Using Photo Library For Playlist Images</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

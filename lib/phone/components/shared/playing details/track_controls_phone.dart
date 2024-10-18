@@ -21,6 +21,8 @@ class TrackControlsPhone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // double x = 1.5;
+    double x = 7.5;
     Size size = MediaQuery.of(context).size;
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
@@ -41,11 +43,109 @@ class TrackControlsPhone extends StatelessWidget {
         onPressed: () {},
         child: SizedBox(
           width: size.width,
-          height: 400, // 330
-          child: ClipRRect(
+          height: 400, //450, // 330
+          child: /* Stack(
+            children: [ */
+              /*  Positioned(
+                bottom: 0,
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
+                    child: SizedBox(
+                      width: size.width,
+                      height: 50,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
+                    child: SizedBox(
+                      width: size.width,
+                      height: 100,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
+                    child: SizedBox(
+                      width: size.width,
+                      height: 150,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
+                    child: SizedBox(
+                      width: size.width,
+                      height: 200,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
+                    child: SizedBox(
+                      width: size.width,
+                      height: 250,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
+                    child: SizedBox(
+                      width: size.width,
+                      height: 300,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
+                    child: SizedBox(
+                      width: size.width,
+                      height: 350,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: ClipRRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
+                    child: SizedBox(
+                      width: size.width,
+                      height: 400,
+                    ),
+                  ),
+                ),
+              ), */
+              ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 7.5, sigmaY: 7.5),
+              filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
               blendMode: BlendMode.src,
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -63,6 +163,7 @@ class TrackControlsPhone extends StatelessWidget {
                       builder: (context, playbackState) {
                         return Column(
                           children: [
+                            // razh(50),
                             TitleArtistVisualizerPhone(
                               name: currentMediaItem.title,
                               artist: currentMediaItem.artist!,
@@ -95,6 +196,8 @@ class TrackControlsPhone extends StatelessWidget {
               ),
             ),
           ),
+          /*   ],
+          ), */
         ),
       ),
     );

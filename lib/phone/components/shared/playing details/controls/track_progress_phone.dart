@@ -1,6 +1,7 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart'
     as progressbutton;
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:interactive_slider_fork/interactive_slider.dart' as isf;
 
 import '../../../../../exports.dart';
@@ -42,9 +43,9 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
   @override
   Widget build(BuildContext context) {
     final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+        Provider.of<AudioHandler>(context, listen: true) as AudioServiceHandler;
     return StreamBuilder(
-        stream: audioServiceHandler.positionStream,
+        stream: audioServiceHandler.audioPlayer.positionStream,
         builder: (context, position) {
           double progress = position.data != null
               ? widget.duration != null
@@ -53,12 +54,12 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                           .toString())
                   : 0.0
               : 0.0;
-          /*  return StreamBuilder(
-              stream: audioServiceHandler.bufferStream,
-              builder: (context, buffer) { */
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            updateProgress(progress);
-          });
+
+          /* print("progress; $progress");
+          print("duration; ${widget.duration}"); */
+
+          progressController.value = progress;
+          SchedulerBinding.instance.addPostFrameCallback((_) {});
 
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 15),
@@ -66,7 +67,7 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
               children: [
                 SizedBox(
                     width: MediaQuery.of(context).size.width,
-                    height: 22,
+                    height: 15,
                     child: isf.InteractiveSlider(
                       padding: EdgeInsets.zero,
                       initialProgress: 0.5,
@@ -86,7 +87,6 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                         );
                       },
                     )),
-                razh(15),
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 35,
                   child: Row(

@@ -1,9 +1,11 @@
 import 'dart:ui';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/library/favourites/play_shuffle_halt_favourites.dart';
+import 'package:pongo/phone/views/library/pages/favourites/favourites_body_phone.dart';
 import 'package:pongo/phone/widgets/library/favourites/favourites_tile.dart';
 import 'package:pongo/shared/utils/API%20requests/playlist_tracks.dart';
 import 'package:pongo/shared/utils/API%20requests/searialized_data.dart';
+import 'package:pongo/shared/utils/API%20requests/tracks.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 class FavouritesPhone extends StatefulWidget {
@@ -32,7 +34,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
   double scrollControllerOffset = 0;
 
   // Tracks
-  List missingTracks = [];
+  List<String> missingTracks = [];
   Map<String, double> existingTracks = {};
 
   // Loading shuffle
@@ -49,7 +51,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
     super.initState();
     scrollController = ScrollController();
     scrollController.addListener(scrollControllerListener);
-    initInfo();
+    initFavourites();
     pagingController.addPageRequestListener(fetchTracks);
   }
 
@@ -63,19 +65,65 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
     });
   }
 
-  void fetchTracks(int index) async {}
+  void fetchTracks(int index) async {
+    final start = 50 * (index - 1);
+    final end = (start + 50) <= favouritesSTIDS.length
+        ? (start + 50)
+        : favouritesSTIDS.length;
 
-  void initInfo() async {
+    // Ensure the indices are within valid bounds
+    if (start < 0 || start >= favouritesSTIDS.length) return;
+
+    List<String> tempStids = favouritesSTIDS
+        .map((entry) => entry["stid"].toString())
+        .toList()
+        .sublist(start, end);
+
+    final trackData = await SearializedData().tracks(
+      context,
+      tempStids,
+    );
+
+    final List<dynamic> page = trackData["tracks"];
+
+    final trackThatExist = await Tracks().getDurations(
+      context,
+      favouritesSTIDS
+          .map((entry) => entry["stid"].toString())
+          .toList()
+          .sublist(start, end),
+    );
+
+    print(trackThatExist["durations"]);
+
+    // Add tracks to favourites list and update the PagingController
+    setState(() {
+      favourites.addAll(page.map((item) => sp.Track.fromJson(item)));
+      existingTracks.addAll({
+        for (var item in trackThatExist["durations"])
+          item[0] as String: item[1] as double
+      });
+      missingTracks.addAll((trackThatExist["missing_tracks"] as List)
+          .map((item) => item.toString()));
+    });
+
+    print("missing tracks; $missingTracks");
+
+    final isLastPage = page.length < 50;
+    if (isLastPage) {
+      pagingController
+          .appendLastPage(page.map((item) => sp.Track.fromJson(item)).toList());
+    } else {
+      pagingController.appendPage(
+          page.map((item) => sp.Track.fromJson(item)).toList(), index + 1);
+    }
+  }
+
+  void initFavourites() async {
     final stids = await DatabaseHelper().queryAllFavouriteTracks();
 
-    final trackData = await SearializedData().tracks(context,
-        stids.map((entry) => entry["stid"].toString()).take(50).toList());
-    final List<dynamic> firstPage = trackData["tracks"];
-
-    print(stids);
     setState(() {
       favouritesSTIDS = stids;
-      favourites = firstPage.map((item) => sp.Track.fromJson(item)).toList();
       showBody = true;
     });
   }
@@ -89,7 +137,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
       await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
 
       // Set global id of the playlist
-      currentAlbumPlaylistId.value = "favourites";
+      currentAlbumPlaylistId.value = "library.favourites.";
 
       if (missingTracks.isNotEmpty) {
         queueAllowShuffle.value = false;
@@ -105,10 +153,10 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           //  op:${widget.opid}.$stid
-          TrackPlay().playConcenating(
+          TrackPlay().playConcenatingTrack(
             context,
             "",
-            favourites as List<Track>,
+            favourites,
             existingTracks,
             "library.favourites.",
             cancel,
@@ -145,18 +193,16 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
           );
         });
       } else {
-        final data = await SearializedData().getShuffle(
-            context,
-            favouritesSTIDS
-                .map((entry) => entry["stid"].toString())
-                .take(50)
-                .toList());
-        setState(() {
-          existingTracks = {
-            for (var item in data["durations"])
-              item[0] as String: item[1] as double
-          };
-        });
+        final data = await Tracks().getDurations(context, missingTracks);
+
+        if (data["durations"] != null) {
+          setState(() {
+            existingTracks.addAll({
+              for (var item in data["durations"])
+                item[0] as String: item[1] as double
+            });
+          });
+        }
 
         final List<MediaItem> mediaItems = [];
 
@@ -209,19 +255,15 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
       });
 
       // Set global id of the playlist
-      final data = await SearializedData().getShuffle(
-          context,
-          favouritesSTIDS
-              .map((entry) => entry["stid"].toString())
-              .take(50)
-              .toList());
-
-      setState(() {
-        existingTracks = {
-          for (var item in data["durations"])
-            item[0] as String: item[1] as double
-        };
-      });
+      final data = await Tracks().getDurations(context, missingTracks);
+      if (data["durations"] != null) {
+        setState(() {
+          existingTracks.addAll({
+            for (var item in data["durations"])
+              item[0] as String: item[1] as double
+          });
+        });
+      }
 
       final List<MediaItem> mediaItems = [];
 
@@ -273,6 +315,8 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
 
   @override
   Widget build(BuildContext context) {
+    final audioServiceHandler =
+        Provider.of<AudioHandler>(context) as AudioServiceHandler;
     Size size = MediaQuery.of(context).size;
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 400),
@@ -359,40 +403,37 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(60),
                               child: BackdropFilter(
-                                  filter:
-                                      ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                  child: const Text("Play halt shuffle")),
+                                filter:
+                                    ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                child: PlayShuffleHaltFavourites(
+                                  missingTracks: missingTracks,
+                                  loadingShuffle: loadingShuffle,
+                                  play: () {
+                                    play(index: 0);
+                                  },
+                                  shuffle: playShuffle,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
                       SliverToBoxAdapter(
-                        child: favourites.isEmpty
+                        child: favouritesSTIDS.isEmpty
                             ? Column(
                                 children: [
                                   razh(size.height / 3),
                                   const Text("Empty"),
                                 ],
                               )
-                            : Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: favourites.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      return FavouritesTile(
-                                        track: favourites[index],
-                                        first: index == 0,
-                                        last: favourites.length - 1 == index,
-                                        exists: !missingTracks
-                                            .contains(favourites[index].id),
-                                        trailing: const SizedBox(),
-                                        function: () {},
-                                      );
-                                    }),
+                            : FavouritesBodyPhone(
+                                pagingController: pagingController,
+                                favourites: favourites,
+                                missingTracks: missingTracks,
+                                loading: loading,
+                                play: (index) {
+                                  play(index: index);
+                                },
                               ),
                       ),
                     ],

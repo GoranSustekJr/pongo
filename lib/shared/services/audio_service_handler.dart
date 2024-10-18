@@ -2,12 +2,12 @@ import '../../exports.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
 
 class AudioServiceHandler extends BaseAudioHandler
-    implements AudioHandler, QueueHandler, SeekHandler {
+    implements QueueHandler, CompositeAudioHandler, SeekHandler {
   // AudioPlayer instance
   final AudioPlayer audioPlayer = AudioPlayer();
 
   // Fade in/out stream subscription
-  late StreamSubscription<Duration> positionSubscription;
+  // late StreamSubscription<Duration> positionSubscription;
 
   // Volume
   double volume = 1.0;
@@ -17,17 +17,27 @@ class AudioServiceHandler extends BaseAudioHandler
   ConcatenatingAudioSource playlist = ConcatenatingAudioSource(children: []);
 
   AudioServiceHandler() {
-    audioPlayer.playbackEventStream.listen(broadcastState);
-    audioPlayer.setAudioSource(playlist);
-    audioPlayer.processingStateStream.listen((state) async {
-      if (state == ProcessingState.completed) {
-        if (queue.value.length - 1 == audioPlayer.currentIndex) {
-          await skipToQueueItem(0);
-          pause();
-        } else {
-          skipToNext();
+    try {
+      audioPlayer.playbackEventStream.listen(broadcastState);
+      audioPlayer.setAudioSource(playlist);
+      audioPlayer.processingStateStream.listen((state) async {
+        if (state == ProcessingState.completed) {
+          if (queue.value.length - 1 == audioPlayer.currentIndex) {
+            await skipToQueueItem(0);
+            pause();
+          } else {
+            skipToNext();
+          }
         }
-      }
+      });
+    } catch (e) {
+      print("01.01: Errororororo");
+
+      print(e);
+    }
+    audioPlayer.playbackEventStream.listen((event) {},
+        onError: (Object e, StackTrace stackTrace) {
+      print('A stream error occurred: $e');
     });
   }
 
@@ -46,12 +56,20 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Create audio source from media item
   AudioSource createAudioSource(MediaItem item) {
+    print("HHHHHH; ${useCacheAudioSource.value}");
     return item.extras!["downloaded"] == "true"
         ? AudioSource.file(item.extras!["audio"]!)
-        : LockCachingAudioSource(
-            Uri.parse(
-                "${AppConstants.SERVER_URL}play_song/${item.id.split(".")[2]}"),
-          );
+        : useCacheAudioSource.value
+            ? LockCachingAudioSource(
+                Uri.parse(
+                    "${AppConstants.SERVER_URL}play_song/${item.id.split(".")[2]}"),
+                tag: item,
+              )
+            : AudioSource.uri(
+                Uri.parse(
+                    "${AppConstants.SERVER_URL}play_song/${item.id.split(".")[2]}"),
+                tag: item,
+              ) as AudioSource;
   }
 
   // Listen for changes in the current song index and update the media item
@@ -157,7 +175,7 @@ class AudioServiceHandler extends BaseAudioHandler
     });
   }
 
-  // Clear and play
+/*   // Clear and play
   Future<void> clearAndPlay({required List<MediaItem> songs}) async {
     // First clear the playlista and the mediaItem queue
     playlist.clear();
@@ -166,7 +184,7 @@ class AudioServiceHandler extends BaseAudioHandler
     // Start playing
     playlist.addAll(songs.map(createAudioSource).toList());
     queue.add(songs);
-  }
+  } */
 
   // Halt audio player
   Future<void> halt() async {
@@ -192,24 +210,17 @@ class AudioServiceHandler extends BaseAudioHandler
   // Function to initialize the songs and set up the audio player
   Future<void> initSongs({required List<MediaItem> songs}) async {
     // Add track to history
-    print(1);
     await DatabaseHelper().insertLFHTracks(songs[0].id.split(".")[2]);
-    print(2);
     // Create a list of audio sources from the provided songs
     await playlist.clear();
-    print(3);
     queue.value.clear();
-    print(4);
     await playlist.addAll(songs.map(createAudioSource).toList());
     // Set the audio source of the audio player to the concatenation of the audio sources
     // Add the songs to the queue
-    print(5);
     queue.add(songs);
-    print(6);
     //await audioPlayer.setAudioSource(playlist);
     // Listen for changes in the current song index
     listenForCurrentSongIndexChanges();
-    print(7);
 
     // Listen for processing state changes and skip to the next song when completed
   }
