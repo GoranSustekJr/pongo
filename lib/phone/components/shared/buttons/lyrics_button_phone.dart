@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
 class LyricsButtonPhone extends StatelessWidget {
+  final String stid;
   final int syncTimeDelay;
   final bool lyricsOn;
   final bool useSynced;
@@ -13,6 +14,7 @@ class LyricsButtonPhone extends StatelessWidget {
   final Function() resetSyncTimeDelay;
   const LyricsButtonPhone({
     super.key,
+    required this.stid,
     required this.syncTimeDelay,
     required this.plus,
     required this.minus,
@@ -78,15 +80,17 @@ class LyricsButtonPhone extends StatelessWidget {
                   child: Row(
                     children: [
                       if (kIsApple)
-                        CupertinoButton(
-                          padding: const EdgeInsets.only(),
-                          child: const Icon(
-                            CupertinoIcons.minus,
-                            color: Colors.white,
+                        GestureDetector(
+                          child: CupertinoButton(
+                            padding: const EdgeInsets.only(),
+                            child: const Icon(
+                              CupertinoIcons.minus,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              minus();
+                            },
                           ),
-                          onPressed: () {
-                            minus();
-                          },
                         ),
                       if (!kIsApple)
                         IconButton(
@@ -98,17 +102,30 @@ class LyricsButtonPhone extends StatelessWidget {
                       Expanded(child: Container()),
                       FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: resetSyncTimeDelay,
-                          child: Text(
-                            "${syncTimeDelay / 1000} s",
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                        child: GestureDetector(
+                          onLongPress: () async {
+                            await DatabaseHelper()
+                                .insertSyncTimeDelay(stid, syncTimeDelay);
+                            Notifications().showSpecialNotification(
+                              context,
+                              AppLocalizations.of(context)!.successful,
+                              AppLocalizations.of(context)!
+                                  .successfullysavedsynctimedelay,
+                              CupertinoIcons.time,
+                            );
+                          },
+                          child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: resetSyncTimeDelay,
+                            child: Text(
+                              "${syncTimeDelay / 1000} s",
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.fade,
                             ),
-                            overflow: TextOverflow.fade,
                           ),
                         ),
                       ),

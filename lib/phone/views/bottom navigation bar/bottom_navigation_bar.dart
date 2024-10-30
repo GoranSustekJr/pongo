@@ -14,38 +14,48 @@ class Bottom extends StatelessWidget {
           return ValueListenableBuilder(
             valueListenable: currentTrackHeight,
             builder: (context, index, child) {
-              return SizedBox(
-                key: const ValueKey(true),
-                height: kIsApple ? 155 : 170,
-                child: Stack(
-                  children: [
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 350),
-                      curve: Curves.fastEaseInToSlowEaseOut,
-                      bottom: showBottomNavBar.value
-                          ? -(currentTrackHeight.value / size.height) *
-                              (size.height / 3)
-                          : -(size.height / 3),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: const TrackInfo(),
+              return ValueListenableBuilder(
+                  valueListenable: showPlaylistHandler,
+                  builder: (context, index, child) {
+                    return SizedBox(
+                      key: const ValueKey(true),
+                      height: kIsApple ? 155 : 170,
+                      child: Stack(
+                        children: [
+                          AnimatedPositioned(
+                            duration: const Duration(milliseconds: 350),
+                            curve: Curves.fastEaseInToSlowEaseOut,
+                            bottom: showPlaylistHandler.value
+                                ? -(size.height / 3)
+                                : showBottomNavBar.value
+                                    ? -(currentTrackHeight.value /
+                                            size.height) *
+                                        (size.height / 3)
+                                    : -(size.height / 3),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: const TrackInfo(),
+                            ),
+                          ),
+                          AnimatedPositioned(
+                            duration: const Duration(milliseconds: 350),
+                            curve: Curves.fastEaseInToSlowEaseOut,
+                            bottom: showPlaylistHandler.value
+                                ? -(size.height / 3)
+                                : showBottomNavBar.value
+                                    ? -(currentTrackHeight.value /
+                                            size.height) *
+                                        (size.height / 3)
+                                    : -(size.height / 3),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: const BottomNavBar(),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 350),
-                      curve: Curves.fastEaseInToSlowEaseOut,
-                      bottom: showBottomNavBar.value
-                          ? -(currentTrackHeight.value / size.height) *
-                              (size.height / 3)
-                          : -(size.height / 3),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: const BottomNavBar(),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+                    );
+                  });
             },
           );
         });

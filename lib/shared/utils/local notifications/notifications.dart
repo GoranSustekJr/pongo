@@ -9,7 +9,7 @@ class Notifications {
 
     InAppNotification.show(
       context: context,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 5),
       child: ConstrainedBox(
         constraints: const BoxConstraints(),
         child: Padding(
@@ -32,22 +32,24 @@ class Notifications {
                         size: 25,
                       ),
                       razw(10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.warning,
-                            style: TextStyle(
-                                color: Colors.white.withAlpha(150),
-                                fontSize: 12),
-                            textAlign: TextAlign.left,
-                          ),
-                          Text(
-                            message,
-                            style: const TextStyle(),
-                            textAlign: TextAlign.left,
-                          ),
-                        ],
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.warning,
+                              style: TextStyle(
+                                  color: Colors.white.withAlpha(150),
+                                  fontSize: 12),
+                              textAlign: TextAlign.left,
+                            ),
+                            Text(
+                              message,
+                              style: const TextStyle(),
+                              textAlign: TextAlign.left,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -66,7 +68,7 @@ class Notifications {
 
     InAppNotification.show(
       context: context,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 5),
       child: ConstrainedBox(
         constraints: const BoxConstraints(),
         child: Padding(
@@ -89,22 +91,25 @@ class Notifications {
                         size: 25,
                       ),
                       razw(10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: TextStyle(
-                                color: Colors.white.withAlpha(150),
-                                fontSize: 12),
-                            textAlign: TextAlign.left,
-                          ),
-                          Text(
-                            message,
-                            style: const TextStyle(),
-                            textAlign: TextAlign.left,
-                          ),
-                        ],
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: TextStyle(
+                                  color: Colors.white.withAlpha(150),
+                                  fontSize: 12),
+                              textAlign: TextAlign.left,
+                            ),
+                            Text(
+                              message,
+                              style: const TextStyle(),
+                              textAlign: TextAlign.left,
+                              maxLines: 3,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

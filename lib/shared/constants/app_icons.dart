@@ -78,6 +78,8 @@ class AppIcons {
   static final cancel =
       kIsApple ? CupertinoIcons.xmark_circle_fill : Icons.cancel;
 
+  static const x = CupertinoIcons.xmark;
+
   static const lyricsFill = CupertinoIcons.quote_bubble_fill;
 
   static const lyrics = CupertinoIcons.quote_bubble;

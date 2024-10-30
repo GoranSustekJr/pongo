@@ -1,6 +1,7 @@
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/library/library_main_phone.dart';
 import 'package:pongo/phone/views/playing%20details/playing_details_phone.dart';
+import 'package:pongo/phone/views/playlist/online%20playlist%20handler/online_playlist_handler_phone.dart';
 import 'package:pongo/phone/views/settings/settings_main_phone.dart';
 import '../bottom navigation bar/bottom_navigation_bar.dart';
 import '../home/home_main_phone.dart';
@@ -129,6 +130,24 @@ class _BottomNavigationScreenPhoneState
                           ),
                         ),
                       ),
+                    ),
+                  );
+                },
+              ),
+              ValueListenableBuilder(
+                valueListenable: showPlaylistHandler,
+                builder: (context, value, child) {
+                  return AnimatedPositioned(
+                    duration: Duration(
+                        milliseconds: showPlaylistHandler.value ? 0 : 300),
+                    top: showPlaylistHandler.value ? 0 : size.height,
+                    curve: Curves.easeIn,
+                    child: AnimatedOpacity(
+                      duration: Duration(
+                          milliseconds: showPlaylistHandler.value ? 500 : 300),
+                      curve: Curves.fastEaseInToSlowEaseOut,
+                      opacity: showPlaylistHandler.value ? 1 : 0,
+                      child: const OnlinePlaylistHandlerPhone(),
                     ),
                   );
                 },

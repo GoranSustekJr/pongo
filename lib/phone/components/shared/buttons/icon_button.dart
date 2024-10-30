@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
 iconButton(IconData icon, Color color, Function() function,
-    {EdgeInsets? edgeInsets}) {
+    {EdgeInsets? edgeInsets, double? size}) {
   if (kIsApple) {
     return CupertinoButton(
         padding: edgeInsets,
@@ -10,6 +10,7 @@ iconButton(IconData icon, Color color, Function() function,
         child: Icon(
           icon,
           color: color,
+          size: size,
         ));
   } else {
     return SizedBox(

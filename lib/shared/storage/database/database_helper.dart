@@ -1,5 +1,7 @@
 import 'package:path/path.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/shared/storage/database/lyrics_sync_time_delay/insert.dart';
+import 'package:pongo/shared/storage/database/lyrics_sync_time_delay/query.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper databaseHelper = DatabaseHelper.internal();
@@ -19,7 +21,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 7,
+      version: 8,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -96,14 +98,21 @@ class DatabaseHelper {
         FOREIGN KEY(lpid) REFERENCES local_playlist(lpid)
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE lyrics_sync_time_delay (
+        stid TEXT,
+        sync_time_delay INTEGER
+      )
+    ''');
   }
 
   Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
     print(oldVersion);
     await db.execute('''
-      CREATE TABLE favourites (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        stid TEXT
+      CREATE TABLE lyrics_sync_time_delay (
+        stid TEXT,
+        sync_time_delay INTEGER
       )
     ''');
     print(newVersion);
@@ -369,5 +378,13 @@ class DatabaseHelper {
 
   Future<void> removeFavouriteTracks(List<String> stid) async {
     await removeFavouriteTrcks(this, stid);
+  }
+
+  Future<void> insertSyncTimeDelay(String stid, int syncTimeDelay) async {
+    await insertSyncTimeDlay(this, stid, syncTimeDelay);
+  }
+
+  Future<int?> querySyncTimeDelay(String stid) async {
+    return await querySyncTimeDlay(this, stid);
   }
 }

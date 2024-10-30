@@ -4,7 +4,7 @@ import 'package:blurhash_ffi/blurhash.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/playlist/play_shuffle_halt_playlist.dart';
-import 'package:pongo/phone/views/playlist/playlist_body_phone.dart';
+import 'package:pongo/phone/views/playlist/spotify%20playlist/playlist_body_phone.dart';
 import 'package:pongo/shared/utils/API%20requests/playlist_tracks.dart';
 
 class PlaylistPhone extends StatefulWidget {

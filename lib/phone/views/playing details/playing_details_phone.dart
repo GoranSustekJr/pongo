@@ -82,8 +82,11 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
             mediaItem.duration!.inSeconds.toDouble(),
             mediaItem.album!,
           );
+          int? syncLyrDelay = await DatabaseHelper().querySyncTimeDelay(stid!);
           int syncDelay = 0;
-          if (lyrics["duration"] != null && useSyncTimeDelay.value) {
+          if (syncLyrDelay != null) {
+            syncDelay = (syncLyrDelay / 1000).toInt();
+          } else if (lyrics["duration"] != null && useSyncTimeDelay.value) {
             final int difference = ((lyrics["duration"]) -
                     mediaItem.duration!.inSeconds.toDouble())
                 .toInt()
@@ -175,6 +178,7 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                       },
                     ),
                     LyricsButtonPhone(
+                      stid: currentMediaItem!.id.split('.')[2],
                       syncTimeDelay: syncTimeDelay,
                       lyricsOn: lyricsOn,
                       useSynced: useSynced,

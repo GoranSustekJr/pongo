@@ -145,5 +145,10 @@
     "enableusageoflyrics": "Omogući korištenje stihova",
     "audioplayer": "Audio player",
     "audioplayercaching": "Audio player predmemorija",
-    "letaudioplayercachethesongs": "Dopusti da audio player predmemorira pjesme"
+    "letaudioplayercachethesongs": "Dopusti da audio player predmemorira pjesme",
+    "playlistname": "Ime playliste",
+    "successfullysavedsynctimedelay": "Sinkronizacija vremenskog kašnjenja za tekst ove pjesme uspješno spremljena",
+    "playlistnamealreadyexists": "Istoimena playlista već postoji",
+    "pleaseallowaccesstophotogalery": "Molimo omogućite Pongu pristup fotografijama"
+
 }

@@ -160,6 +160,7 @@ class _HomePhoneState extends State<HomePhone> {
                       },
                       search: (qry) async {
                         setState(() {
+                          searchBarIsSearching.value = true;
                           searchController.value = TextEditingValue(text: qry);
                           showSearchHistory = false;
                         });

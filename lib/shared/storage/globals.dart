@@ -69,3 +69,9 @@ ValueNotifier<bool> enableLyrics = ValueNotifier(true);
 
 // Search focus node
 ValueNotifier<FocusNode> searchFocusNode = ValueNotifier(FocusNode());
+
+// Show Playlist add
+ValueNotifier<bool> showPlaylistHandler = ValueNotifier(false);
+
+// Show Playlist track to add data
+ValueNotifier<Map?> playlistTrackToAddData = ValueNotifier(null);

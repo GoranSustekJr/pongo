@@ -22,7 +22,21 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
           const PullDownMenuDivider.large(),
           PullDownMenuItem(
             onTap: () {
-              // TODO: Add download function
+              OpenPlaylist().open(
+                context,
+                id: track.id,
+                cover: calculateWantedResolutionForTrack(
+                    track.album != null
+                        ? track.album!.images
+                        : track.album!.images,
+                    150,
+                    150),
+                title: track.name,
+                artist: track.artists
+                    .map((artist) => artist.name)
+                    .toList()
+                    .join(', '),
+              );
             },
             title: AppLocalizations.of(context)!.addtoplaylist,
             icon: AppIcons.musicAlbums,

@@ -728,6 +728,25 @@
     "letaudioplayercachethesongs": "Let audio player cache the songs",
     "@letaudioplayercachethesongs": {
         "description": "letaudioplayercachethesongs"
-    }
+    },
 
+    "playlistname": "Playlist name",
+    "@playlistname": {
+        "description": "playlistname"
+    },
+    
+    "successfullysavedsynctimedelay": "Successfully saved sync time delay for this tracks lyrics",
+    "@successfullysavedsynctimedelay": {
+        "description": "successfullysavedsynctimedelay"
+    },
+    
+    "playlistnamealreadyexists": "Playlist with the same name already exists",
+    "@playlistnamealreadyexists": {
+        "description": "playlistnamealreadyexists"
+    },
+    
+    "pleaseenablepongoaccesstophotos": "Please enable Pongo access to photos",
+    "@pleaseenablepongoaccesstophotos": {
+        "description": "pleaseenablepongoaccesstophotos"
+    }
 }

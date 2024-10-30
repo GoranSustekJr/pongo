@@ -144,5 +144,10 @@
     "enableusageoflyrics": "Nutzung von Texte aktivieren",
     "audioplayer": "Audioplayer",
     "audioplayercaching": "Audioplayer-Caching",
-    "letaudioplayercachethesongs": "Audioplayer die Lieder zwischenspeichern lassen"
+    "letaudioplayercachethesongs": "Audioplayer die Lieder zwischenspeichern lassen",
+    "playlistname": "Wiedergabelistename",
+    "successfullysavedsynctimedelay": "Die Synchronisierungszeitverzögerung für den Text dieses Titels wurde erfolgreich gespeichert",
+    "playlistnamealreadyexists": "Eine Wiedergabeliste mit demselben Namen existiert bereits",
+    "pleaseenablepongoaccesstophotos": "Bitte erlauben Sie Pongo den Zugriff auf Fotos"
+
 }

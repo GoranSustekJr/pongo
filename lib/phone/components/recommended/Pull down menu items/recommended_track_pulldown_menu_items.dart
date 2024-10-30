@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/shared/functions/favourites/favourites.dart';
+import 'package:pongo/shared/functions/open%20playlist/open_playlist.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 List<Widget> recommendedTrackCupertinoContextMenuActions(
@@ -10,6 +11,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
   Function(String) doesNotExist,
   Function(String) doesNowExist,
 ) {
+  print(track.artists[0].name);
   return kIsApple
       ? [
           CupertinoContextMenuAction(
@@ -26,6 +28,22 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
           // Add to Playlist
           CupertinoContextMenuAction(
             onPressed: () {
+              print("DFHFAKJFHADK");
+              OpenPlaylist().open(
+                context,
+                id: track.id,
+                cover: calculateWantedResolutionForTrack(
+                    track.album != null
+                        ? track.album!.images
+                        : track.album!.images,
+                    55,
+                    55),
+                title: track.name,
+                artist: track.artists
+                    .map((artist) => artist.name)
+                    .toList()
+                    .join(', '),
+              );
               Navigator.of(context, rootNavigator: true).pop();
               // TODO: Add playlist function
             },
