@@ -13,7 +13,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
   final Map playlistTrackMap;
   final File? cover;
   final Uint8List? coverBytes;
-  final Future<void> Function() pickImage;
+  final Function() pickImage;
   final Function(String) onChanged;
   final Function() createPlaylistFunction;
   final Function(int) selectPlaylist;
@@ -63,10 +63,8 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                             children: [
                               if (cover != null)
                                 ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Image.memory(
-                                      coverBytes!,
-                                    ) /* FadeInImage(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: FadeInImage(
                                     width: 250,
                                     fit: BoxFit.cover,
                                     height: 250,
@@ -79,18 +77,20 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                                     image: FileImage(
                                       cover!,
                                     ),
-                                  ), */
-                                    ),
+                                  ),
+                                ),
                               Center(
+                                  child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(360),
+                                    color: Col.primaryCard.withAlpha(200)),
                                 child: iconButton(
                                   Icons.camera_alt_rounded,
                                   Colors.white,
                                   size: 30,
-                                  () async {
-                                    await pickImage();
-                                  },
+                                  pickImage,
                                 ),
-                              ),
+                              )),
                             ],
                           ),
                         ),
@@ -314,33 +314,35 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                             ),
                           ),
                           razw(10),
-                          Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              marquee(
-                                "${playlistTrackToAddData.value!["title"]}  ",
-                                const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
+                          Flexible(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                marquee(
+                                  "${playlistTrackToAddData.value!["title"]}  ",
+                                  const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  1,
+                                  null,
+                                  height: 22,
                                 ),
-                                1,
-                                null,
-                                height: 22,
-                              ),
-                              marquee(
-                                "${playlistTrackToAddData.value!["artist"]}  ",
-                                const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
+                                marquee(
+                                  "${playlistTrackToAddData.value!["artist"]}  ",
+                                  const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  1,
+                                  null,
+                                  height: 20,
                                 ),
-                                1,
-                                null,
-                                height: 20,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       )

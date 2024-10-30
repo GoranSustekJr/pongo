@@ -48,7 +48,7 @@ class TrackImagePhone extends StatelessWidget {
                             return AnimatedScale(
                               scale: audioServiceHandler.audioPlayer.playing
                                   ? 1.0
-                                  : 0.8,
+                                  : 0.85,
                               duration: const Duration(milliseconds: 500),
                               curve: Curves.fastEaseInToSlowEaseOut,
                               child: GestureDetector(

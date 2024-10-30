@@ -52,12 +52,13 @@ class TrackControlsPhone extends StatelessWidget {
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [
-                        Colors.black.withAlpha(100),
-                        Colors.black.withAlpha(100),
-                        Colors.black.withAlpha(100),
-                        Colors.black.withAlpha(100),
-                        Colors.transparent,
-                      ])
+                      Colors.black.withAlpha(100),
+                      Colors.black.withAlpha(100),
+                      Colors.black.withAlpha(100),
+                      Colors.black.withAlpha(100),
+                      Colors.transparent,
+                    ],
+                  )
                 : null,
           ),
           child: ClipRRect(

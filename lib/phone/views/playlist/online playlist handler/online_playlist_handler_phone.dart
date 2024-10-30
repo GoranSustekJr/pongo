@@ -63,19 +63,22 @@ class _OnlinePlaylistHandlerPhoneState
     });
   }
 
-  Future<void> pickImage() async {
-    dynamic pickedFile;
-    Uint8List? bytes;
+  pickImage() async {
+    XFile? pickedFile;
 
     try {
-      pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 1,
+        requestFullMetadata: false,
+      );
     } catch (e) {
       if (e.toString().contains("access_denied")) {
         Notifications().showWarningNotification(context,
             AppLocalizations.of(context)!.pleaseallowaccesstophotogalery);
       }
     }
-
+    Uint8List? bytes;
     if (pickedFile != null) {
       bytes = await File(pickedFile.path).readAsBytes();
     }
@@ -116,8 +119,12 @@ class _OnlinePlaylistHandlerPhoneState
                       playlists: playlists,
                       selectedPlaylists: selectedPlaylists,
                       coverImages: coverImages,
+                      cover: cover,
+                      coverBytes: coverBytes,
                       playlistTrackMap: playlistTrackMap,
-                      pickImage: pickImage,
+                      pickImage: () async {
+                        await pickImage();
+                      },
                       onChanged: (value) {
                         setState(() {
                           title = value.trim();

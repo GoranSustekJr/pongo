@@ -26,10 +26,10 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   RegExp regExp = RegExp(r'\[.*?\]');
 
   // Lyrics list
-  int index = 0;
+  int index = -1;
 
   // Current line index
-  int currentLyricIndex = 0;
+  int currentLyricIndex = -1;
   ValueNotifier<double> notifier = ValueNotifier(1);
 
   // Is user scrolling
@@ -42,9 +42,9 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   @override
   void initState() {
     super.initState();
-    autoScrollController.scrollToIndex(0,
+    /*  autoScrollController.scrollToIndex(0,
         duration: const Duration(milliseconds: 350),
-        preferPosition: AutoScrollPosition.middle);
+        preferPosition: AutoScrollPosition.middle); */
     // Start a timer that updates every 250 milliseconds
     _timer = Timer.periodic(const Duration(milliseconds: 250), (timer) {
       final audioServiceHandler =
@@ -220,13 +220,35 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                                     TextAlign.right
                                                 ? Alignment.centerRight
                                                 : Alignment.center,
-                                    child: AnimatedSwitcher(
+                                    child: AnimatedScale(
+                                      scale:
+                                          currentLyricIndex != index ? 0.9 : 1,
+                                      alignment: currentLyricsTextAlignment
+                                                  .value ==
+                                              TextAlign.left
+                                          ? Alignment.centerLeft
+                                          : currentLyricsTextAlignment.value ==
+                                                  TextAlign.center
+                                              ? Alignment.center
+                                              : currentLyricsTextAlignment
+                                                          .value ==
+                                                      TextAlign.right
+                                                  ? Alignment.centerRight
+                                                  : Alignment.center,
+                                      duration:
+                                          const Duration(milliseconds: 350),
+                                      curve: Curves.fastEaseInToSlowEaseOut,
+                                      child: AnimatedSwitcher(
                                         duration:
-                                            const Duration(milliseconds: 350),
+                                            const Duration(milliseconds: 250),
                                         switchInCurve: Curves.fastOutSlowIn,
-                                        switchOutCurve: Curves.fastOutSlowIn,
-                                        child: Text(
-                                            "${widget.lyrics[index].replaceAll(regExp, '')}\n"
+                                        child: Padding(
+                                          key: ValueKey(
+                                              currentLyricIndex - index),
+                                          padding:
+                                              const EdgeInsets.only(bottom: 40),
+                                          child: Text(
+                                            "${widget.lyrics[index].replaceAll(regExp, '')}"
                                                 .trimLeft(),
                                             key: ValueKey<int>(
                                                 (currentLyricIndex - index)),
@@ -248,13 +270,17 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                                                   .abs() ==
                                                               2
                                                           ? Colors.white
-                                                              .withAlpha(125)
+                                                              .withAlpha(150)
                                                           : Colors.white
-                                                              .withAlpha(75),
+                                                              .withAlpha(100),
                                               fontWeight: FontWeight.bold,
                                               fontSize: 35,
                                               height: 1,
-                                            ))).animate(
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ).animate(
                                       effects: [
                                         const FadeEffect(
                                           begin: 0,
