@@ -1,3 +1,5 @@
+import 'package:pongo/phone/alerts/audio%20player/halt_alert.dart';
+
 import '../../../exports.dart';
 
 class TrackInfo extends StatefulWidget {
@@ -98,6 +100,18 @@ class _TrackInfoState extends State<TrackInfo> {
                               ),
                               Positioned.fill(
                                 child: GestureDetector(
+                                  onLongPress: () async {
+                                    CustomButton ok = await haltAlert(context);
+                                    if (ok == CustomButton.positiveButton) {
+                                      currentTrackHeight.value = 0;
+                                      final audioServiceHandler =
+                                          Provider.of<AudioHandler>(context,
+                                                  listen: false)
+                                              as AudioServiceHandler;
+
+                                      await audioServiceHandler.halt();
+                                    }
+                                  },
                                   onVerticalDragUpdate: (details) {
                                     // Move the panel upwards/downwards
                                     currentTrackHeight.value -=

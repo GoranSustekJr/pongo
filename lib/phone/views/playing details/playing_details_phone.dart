@@ -74,33 +74,43 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
             : AppConstants().BLURHASH;
 
         currentBlurhash.value = blurHash;
-        final lyrics = await TrackMetadata().getLyrics(
-          context,
-          mediaItem.title,
-          mediaItem.artist!.split(', ')[0],
-          mediaItem.duration!.inSeconds.toDouble(),
-          mediaItem.album!,
-        );
-        int syncDelay = 0;
-        if (lyrics["duration"] != null && useSyncTimeDelay.value) {
-          final int difference =
-              ((lyrics["duration"]) - mediaItem.duration!.inSeconds.toDouble())
-                  .toInt()
-                  .abs();
-          syncDelay = difference > 2
-              ? ((lyrics["duration"]) -
-                      mediaItem.duration!.inSeconds.toDouble())
-                  .toInt()
-              : 0;
-        }
+        if (enableLyrics.value) {
+          final lyrics = await TrackMetadata().getLyrics(
+            context,
+            mediaItem.title,
+            mediaItem.artist!.split(', ')[0],
+            mediaItem.duration!.inSeconds.toDouble(),
+            mediaItem.album!,
+          );
+          int syncDelay = 0;
+          if (lyrics["duration"] != null && useSyncTimeDelay.value) {
+            final int difference = ((lyrics["duration"]) -
+                    mediaItem.duration!.inSeconds.toDouble())
+                .toInt()
+                .abs();
+            syncDelay = difference > 2
+                ? ((lyrics["duration"]) -
+                        mediaItem.duration!.inSeconds.toDouble())
+                    .toInt()
+                : 0;
+          }
 
+          setState(() {
+            syncTimeDelay = syncDelay * 1000;
+            plainLyrics = lyrics["plainLyrics"] ?? "";
+            syncedLyrics = lyrics["syncedLyrics"] ?? "";
+          });
+        } else {
+          setState(() {
+            plainLyrics = "";
+            syncedLyrics = "";
+          });
+        }
         setState(() {
           currentMediaItemId = stid;
           currentMediaItem = mediaItem;
-          syncTimeDelay = syncDelay * 1000;
+
           blurhash = blurHash;
-          plainLyrics = lyrics["plainLyrics"] ?? "";
-          syncedLyrics = lyrics["syncedLyrics"] ?? "";
         });
       }
     }

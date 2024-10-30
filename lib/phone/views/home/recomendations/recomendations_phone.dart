@@ -1,4 +1,5 @@
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/components/shared/shimmer/recommended_shimmer.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 class RecomendationsPhone extends StatefulWidget {
@@ -33,6 +34,10 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
   // Show body
   bool showBody = false;
 
+  // Show Recommendations
+  bool recommendForYou = true;
+  bool recommendedPongo = true;
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +45,14 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
   }
 
   Future<void> getRecommendations() async {
+    bool rcommendForYou = await Storage().getRecommendedForYou();
+    bool rcommendPongo = await Storage().getRecommendedPongo();
+
+    setState(() {
+      recommendForYou = rcommendForYou;
+      recommendedPongo = rcommendPongo;
+    });
+
     final data = await Recommendations().get(context);
 
     print(data.keys);
@@ -141,8 +154,12 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
                 await getRecommendations();
               },
             )
-          : const SizedBox(
-              key: ValueKey(false),
+          : SizedBox(
+              key: const ValueKey(false),
+              child: RecommendedShimmer(
+                pongo: recommendedPongo,
+                forYou: recommendForYou,
+              ),
             ),
     );
   }

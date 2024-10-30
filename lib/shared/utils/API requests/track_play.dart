@@ -223,16 +223,16 @@ class TrackPlay {
   }
 
   Future<void> playConcenatingTrack(
-    context,
-    String spid,
-    List<sp.Track> tracks,
-    Map<String, double> existingTracks,
-    String id,
-    bool cancel,
-    Function(String) addLoading,
-    Function(String) removeLoading,
-    Function(MediaItem, int i) play,
-  ) async {
+      context,
+      String spid,
+      List<sp.Track> tracks,
+      Map<String, double> existingTracks,
+      String id,
+      bool cancel,
+      Function(String) addLoading,
+      Function(String) removeLoading,
+      Function(MediaItem, int i) play,
+      {bool setPlay = true}) async {
     for (int i = 0; i < tracks.length; i++) {
       // Await playSingle to fully complete before moving to the next track
       if (!cancel) {

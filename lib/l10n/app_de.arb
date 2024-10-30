@@ -133,5 +133,16 @@
     "lyircstextalignment": "Liedtext-Ausrichtung",
     "edit": "Bearbeiten",
     "clear": "Löschen",
-    "saveasplaylist": "Als Playlist speichern"
+    "saveasplaylist": "Als Playlist speichern",
+    "successful": "Erfolgreich",
+    "trackremovedfromfavourites": "Die Titel aus Lieblingslieder entfernt",
+    "trackisnowafavourite": "Die Titel ist jetzt ein Lieblingslied",
+    "removefromfavourites": "Aus Favoriten entfernen",
+    "removefromfavouritesbody": "Möchten Sie die ausgewählten Titel aus den Favoriten entfernen?",
+    "lyricsdisabled": "Texte deaktiviert",
+    "enablelyrics": "Texte aktivieren",
+    "enableusageoflyrics": "Nutzung von Texte aktivieren",
+    "audioplayer": "Audioplayer",
+    "audioplayercaching": "Audioplayer-Caching",
+    "letaudioplayercachethesongs": "Audioplayer die Lieder zwischenspeichern lassen"
 }

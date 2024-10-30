@@ -351,6 +351,10 @@ class DatabaseHelper {
     return await queryAllFavouriteTrcks(this);
   }
 
+  Future<int> queryFavouritesLength() async {
+    return queryFvouritesLength(this);
+  }
+
   Future<int> queryAllFavouriteTracksLength() async {
     return await queryAllFavouriteTrcksLength(this);
   }
@@ -361,5 +365,9 @@ class DatabaseHelper {
 
   Future<void> removeFavouriteTrack(String stid) async {
     await removeFavouriteTrck(this, stid);
+  }
+
+  Future<void> removeFavouriteTracks(List<String> stid) async {
+    await removeFavouriteTrcks(this, stid);
   }
 }

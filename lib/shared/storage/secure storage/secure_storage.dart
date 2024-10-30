@@ -25,6 +25,7 @@ class Storage {
   static String recommendedPongoKey = "RECOMMENDEDPONGOKEY";
   static String lyricsTextAlignKey = "LYRICSTEXTALIGNKEY";
   static String useCacheAudioSourceKey = "CACHEAUDIOSOURCEKEY";
+  static String enableLyricsKey = "ENABLEYRCSKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -275,6 +276,20 @@ class Storage {
 
   Future<bool> getUseCachingAudioSource() async {
     String? key = await storage.read(key: useCacheAudioSourceKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Get enable lyrics
+  Future<void> writeEnableLyrics(bool useLyrics) async {
+    await storage.write(key: enableLyricsKey, value: useLyrics.toString());
+  }
+
+  Future<bool> getEnableLyrics() async {
+    String? key = await storage.read(key: enableLyricsKey);
     if (key == null) {
       return true;
     } else {

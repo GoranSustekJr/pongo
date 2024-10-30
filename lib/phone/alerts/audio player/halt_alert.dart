@@ -8,6 +8,5 @@ Future<CustomButton> haltAlert(context) async {
     positiveButtonTitle: AppLocalizations.of(context)!.halt,
     windowPosition: AlertWindowPosition.screenCenter,
   );
-  print("OK: $ok");
   return ok;
 }

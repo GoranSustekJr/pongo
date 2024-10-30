@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/alerts/audio%20player/halt_alert.dart';
+import 'package:pongo/shared/functions/favourites/favourites.dart';
 
 trackInfoButton(context, String trackId, bool favourite, Function() download,
     Function() refreshFavourite) {
@@ -30,14 +31,8 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                   : AppLocalizations.of(context)!.like,
               icon: favourite ? AppIcons.heartFill : AppIcons.heart,
               onTap: () async {
-                if (favourite) {
-                  print("object; $trackId");
-                  await DatabaseHelper()
-                      .removeFavouriteTrack(trackId.split('.')[2]);
-                } else {
-                  await DatabaseHelper()
-                      .insertFavouriteTrack(trackId.split('.')[2]);
-                }
+                print(trackId);
+                await Favourites().add(context, trackId.split('.')[2]);
                 refreshFavourite();
               },
             ),

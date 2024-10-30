@@ -1,3 +1,4 @@
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:pongo/exports.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -28,7 +29,8 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   int index = 0;
 
   // Current line index
-  int currentLyricIndex = -1;
+  int currentLyricIndex = 0;
+  ValueNotifier<double> notifier = ValueNotifier(1);
 
   // Is user scrolling
   bool isUserScrolling = false;
@@ -40,6 +42,9 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   @override
   void initState() {
     super.initState();
+    autoScrollController.scrollToIndex(0,
+        duration: const Duration(milliseconds: 350),
+        preferPosition: AutoScrollPosition.middle);
     // Start a timer that updates every 250 milliseconds
     _timer = Timer.periodic(const Duration(milliseconds: 250), (timer) {
       final audioServiceHandler =
@@ -97,6 +102,11 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             setState(() {
               currentLyricIndex = i;
+              if (i == 0) {
+                notifier.value = 1;
+              } else {
+                notifier.value = i.toDouble();
+              }
             });
           });
         }
@@ -129,31 +139,39 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
            */
 
           return Padding(
-            padding: const EdgeInsets.only(left: 10),
+            padding: const EdgeInsets.only(left: 0),
             child: Stack(
               children: [
                 SizedBox(
                   height: size.height,
-                  width: size.width - 20,
+                  width: size.width,
                   child: widget.lyrics.length <= 2
-                      ? Column(
-                          children: [
-                            razh(size.height / 2 -
-                                AppBar().preferredSize.height -
-                                MediaQuery.of(context).padding.top),
-                            Text(
-                              AppLocalizations.of(context)!.nosynclyrics,
-                              textAlign: currentLyricsTextAlignment.value,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w700, fontSize: 29),
+                      ? SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                              children: [
+                                razh(size.height / 2 -
+                                    AppBar().preferredSize.height -
+                                    MediaQuery.of(context).padding.top),
+                                Text(
+                                  AppLocalizations.of(context)!.nosynclyrics,
+                                  textAlign: currentLyricsTextAlignment.value,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 29),
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)!
+                                      .wanttohelpoutlyrics,
+                                  textAlign: currentLyricsTextAlignment.value,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 15),
+                                ),
+                              ],
                             ),
-                            Text(
-                              AppLocalizations.of(context)!.wanttohelpoutlyrics,
-                              textAlign: currentLyricsTextAlignment.value,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 15),
-                            ),
-                          ],
+                          ),
                         )
                       : ListView.builder(
                           padding: EdgeInsets.only(
@@ -187,8 +205,8 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                 controller: autoScrollController,
                                 index: index,
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 10),
                                   child: Align(
                                     alignment: currentLyricsTextAlignment
                                                 .value ==
@@ -203,32 +221,57 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                                 ? Alignment.centerRight
                                                 : Alignment.center,
                                     child: AnimatedSwitcher(
+                                        duration:
+                                            const Duration(milliseconds: 350),
+                                        switchInCurve: Curves.fastOutSlowIn,
+                                        switchOutCurve: Curves.fastOutSlowIn,
+                                        child: Text(
+                                            "${widget.lyrics[index].replaceAll(regExp, '')}\n"
+                                                .trimLeft(),
+                                            key: ValueKey<int>(
+                                                (currentLyricIndex - index)),
+                                            maxLines: null,
+                                            softWrap: true,
+                                            textAlign:
+                                                currentLyricsTextAlignment
+                                                    .value,
+                                            style: TextStyle(
+                                              color: currentLyricIndex == index
+                                                  ? Colors.white
+                                                  : (currentLyricIndex - index)
+                                                              .abs() ==
+                                                          1
+                                                      ? Colors.white
+                                                          .withAlpha(175)
+                                                      : (currentLyricIndex -
+                                                                      index)
+                                                                  .abs() ==
+                                                              2
+                                                          ? Colors.white
+                                                              .withAlpha(125)
+                                                          : Colors.white
+                                                              .withAlpha(75),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 35,
+                                              height: 1,
+                                            ))).animate(
+                                      effects: [
+                                        const FadeEffect(
+                                          begin: 0,
+                                          end: 1,
+                                          duration: Duration(milliseconds: 250),
+                                        )
+                                      ],
+                                    ).blurXY(
+                                      begin: 0,
+                                      end: currentLyricIndex == index
+                                          ? 0
+                                          : (currentLyricIndex - index).abs() ==
+                                                  1
+                                              ? 2
+                                              : 3,
                                       duration:
-                                          const Duration(milliseconds: 250),
-                                      child: Text(
-                                        "${widget.lyrics[index].replaceAll(regExp, '')}\n\n\n"
-                                            .trimLeft(),
-                                        key: ValueKey<int>(
-                                            currentLyricIndex == index ? 1 : 0),
-                                        maxLines: null,
-                                        softWrap: true,
-                                        textAlign:
-                                            currentLyricsTextAlignment.value,
-                                        style: currentLyricIndex == index
-                                            ? const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 35,
-                                                height: 1,
-                                              )
-                                            : TextStyle(
-                                                color:
-                                                    Colors.white.withAlpha(100),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 35,
-                                                height: 1,
-                                              ),
-                                      ),
+                                          const Duration(milliseconds: 350),
                                     ),
                                   ),
                                 ),

@@ -134,5 +134,16 @@
     "lyircstextalignment": "Poravnanje stihova pjesme",
     "edit": "Uredi",
     "clear": "Počisti",
-    "saveasplaylist": "Spremi kao playlistu"
+    "saveasplaylist": "Spremi kao playlistu",
+    "successful": "Uspješno",
+    "trackremovedfromfavourites": "Pjesma uklonjena iz omiljenih pjesama",
+    "trackisnowafavourite": "Pjesma je sada među omiljenim pjesmama",
+    "removefromfavourites": "Ukloni pjesmu iz omiljenih pjesama",
+    "removefromfavouritesbody": "Želite li ukloniti odabrane pjesme iz omiljenih pjesama",
+    "lyricsdisabled": "Stihovi onemogućeni",
+    "enablelyrics": "Omogući stihove",
+    "enableusageoflyrics": "Omogući korištenje stihova",
+    "audioplayer": "Audio player",
+    "audioplayercaching": "Audio player predmemorija",
+    "letaudioplayercachethesongs": "Dopusti da audio player predmemorira pjesme"
 }

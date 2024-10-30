@@ -37,7 +37,7 @@ class FavouritesTile extends StatelessWidget {
         child: ClipRRect(
           child: kIsApple
               ? Container(
-                  height: 65,
+                  height: 85,
                   width: MediaQuery.of(context).size.width - 20,
                   decoration: BoxDecoration(
                     borderRadius: borderRadius,
@@ -49,6 +49,8 @@ class FavouritesTile extends StatelessWidget {
                       function();
                     },
                     child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         if (!first)
@@ -57,37 +59,39 @@ class FavouritesTile extends StatelessWidget {
                             width: MediaQuery.of(context).size.width - 100,
                             color: Col.onIcon.withAlpha(50),
                           ),
+                        Expanded(child: Container()),
                         Row(
                           children: [
-                            Padding(
+                            /* Padding(
                               padding: const EdgeInsets.only(top: 10),
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(7.5),
-                                  color: Col.realBackground.withAlpha(150),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(7.5),
-                                  child: track.album ==
-                                          null //!track["track"].keys.contains("album")
-                                      ? Center(
-                                          child: Icon(AppIcons.blankTrack,
-                                              color: Colors.white),
-                                        )
-                                      : CachedNetworkImage(
-                                          imageUrl:
-                                              calculateWantedResolutionForTrack(
-                                            track.album!.images,
-                                            100,
-                                            100,
-                                          ),
-                                          fit: BoxFit.cover,
+                              child: */
+                            Container(
+                              width: 65,
+                              height: 65,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(7.5),
+                                color: Col.realBackground.withAlpha(150),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(7.5),
+                                child: track.album ==
+                                        null //!track["track"].keys.contains("album")
+                                    ? Center(
+                                        child: Icon(AppIcons.blankTrack,
+                                            color: Colors.white),
+                                      )
+                                    : CachedNetworkImage(
+                                        imageUrl:
+                                            calculateWantedResolutionForTrack(
+                                          track.album!.images,
+                                          100,
+                                          100,
                                         ),
-                                ),
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
+                            //  ),
                             razw(12.5),
                             Expanded(
                               child: Column(
@@ -126,6 +130,7 @@ class FavouritesTile extends StatelessWidget {
                             ),
                           ],
                         ),
+                        Expanded(child: Container()),
                       ],
                     ),
                   ),

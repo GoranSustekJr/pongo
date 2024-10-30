@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
 class TrackImagePhone extends StatelessWidget {
@@ -78,9 +77,6 @@ class TrackImagePhone extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            );
-                            CachedNetworkImage(
-                              imageUrl: image,
                             );
                           }),
                     ),

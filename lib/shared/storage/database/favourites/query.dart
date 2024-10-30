@@ -12,6 +12,13 @@ Future<int> queryAllFavouriteTrcksLength(DatabaseHelper dbHelper) async {
   return Sqflite.firstIntValue(result) ?? 0;
 }
 
+// Query length
+Future<int> queryFvouritesLength(DatabaseHelper dbHelper) async {
+  Database db = await dbHelper.database;
+  final result = await db.rawQuery('SELECT COUNT(*) FROM favourites');
+  return Sqflite.firstIntValue(result) ?? 0;
+}
+
 Future<bool> favouriteTrckAlreadyExists(
     DatabaseHelper dbHelper, String stid) async {
   Database db = await dbHelper.database;

@@ -30,122 +30,41 @@ class TrackControlsPhone extends StatelessWidget {
       duration: const Duration(milliseconds: 750),
       curve: Curves.decelerate,
       bottom: lyricsOn || showQueue
-          ? -50 - 50
+          ? -50 - 50 - 30
           : (size.height -
                       (size.width - 60) -
                       380 -
-                      MediaQuery.of(context).padding.top) /
+                      MediaQuery.of(context).padding.top -
+                      30) /
                   2 -
               70,
       child: CupertinoButton(
         padding: EdgeInsets.zero,
         pressedOpacity: 1,
         onPressed: () {},
-        child: SizedBox(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 350),
           width: size.width,
-          height: 400, //450, // 330
-          child: /* Stack(
-            children: [ */
-              /*  Positioned(
-                bottom: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
-                    child: SizedBox(
-                      width: size.width,
-                      height: 50,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
-                    child: SizedBox(
-                      width: size.width,
-                      height: 100,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
-                    child: SizedBox(
-                      width: size.width,
-                      height: 150,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
-                    child: SizedBox(
-                      width: size.width,
-                      height: 200,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
-                    child: SizedBox(
-                      width: size.width,
-                      height: 250,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
-                    child: SizedBox(
-                      width: size.width,
-                      height: 300,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
-                    child: SizedBox(
-                      width: size.width,
-                      height: 350,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
-                    child: SizedBox(
-                      width: size.width,
-                      height: 400,
-                    ),
-                  ),
-                ),
-              ), */
-              ClipRRect(
+          height: 400,
+          decoration: BoxDecoration(
+            gradient: lyricsOn
+                ? LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                        Colors.black.withAlpha(100),
+                        Colors.black.withAlpha(100),
+                        Colors.black.withAlpha(100),
+                        Colors.black.withAlpha(100),
+                        Colors.transparent,
+                      ])
+                : null,
+          ),
+          child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: x, sigmaY: x),
+              filter: ImageFilter.blur(
+                  sigmaX: lyricsOn ? 0.1 : x, sigmaY: lyricsOn ? 0.1 : x),
               blendMode: BlendMode.src,
               child: Padding(
                 padding: const EdgeInsets.only(

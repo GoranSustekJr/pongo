@@ -20,6 +20,8 @@ export 'package:pongo/shared/utils/API%20requests/recommendations.dart';
 export 'package:pongo/shared/functions/queue/add_to_queue.dart';
 export 'package:pongo/shared/utils/API%20requests/track_metadata.dart';
 export 'package:pongo/shared/utils/local%20notifications/notifications.dart';
+export 'package:pongo/phone/components/shared/other/trailing.dart';
+export 'package:pongo/phone/alerts/audio%20player/halt_alert.dart';
 
 export 'shared/api/api.dart';
 export 'shared/components/components.dart';
@@ -30,6 +32,7 @@ export 'shared/models/models.dart';
 export 'shared/functions/calculate_image_resolution.dart';
 export 'shared/services/cache_manager.dart';
 export 'package:pongo/shared/utils/API%20requests/album_tracks.dart';
+export 'package:pongo/shared/components/other/shimmer_container.dart';
 
 export 'package:pongo/phone/components/shared/tiles/recommended_tile.dart';
 export 'package:pongo/phone/views/album/album_phone.dart';

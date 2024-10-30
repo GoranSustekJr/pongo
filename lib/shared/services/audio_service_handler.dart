@@ -13,7 +13,7 @@ class AudioServiceHandler extends BaseAudioHandler
   double volume = 1.0;
   double tempVolume = 1.0;
 
-  // TODO:
+  // Playlist
   ConcatenatingAudioSource playlist = ConcatenatingAudioSource(children: []);
 
   AudioServiceHandler() {
@@ -31,38 +31,18 @@ class AudioServiceHandler extends BaseAudioHandler
         }
       });
     } catch (e) {
-      print("01.01: Errororororo");
-
       print(e);
-    }
-    audioPlayer.playbackEventStream.listen((event) {},
-        onError: (Object e, StackTrace stackTrace) {
-      print('A stream error occurred: $e');
-    });
-  }
-
-  exists(MediaItem item) async {
-    File file = File(item.artHeaders!["audio"]!);
-
-    // Check if the file exists
-    bool fileExists = await file.exists();
-
-    if (fileExists) {
-      print('File exists!');
-    } else {
-      print('File does not exist!');
     }
   }
 
   // Create audio source from media item
   AudioSource createAudioSource(MediaItem item) {
-    print("HHHHHH; ${useCacheAudioSource.value}");
     return item.extras!["downloaded"] == "true"
         ? AudioSource.file(item.extras!["audio"]!)
         : useCacheAudioSource.value
             ? LockCachingAudioSource(
                 Uri.parse(
-                    "${AppConstants.SERVER_URL}play_song/${item.id.split(".")[2]}"),
+                    "${AppConstants.SERVER_URL}play_song_caching/${item.id.split(".")[2]}"),
                 tag: item,
               )
             : AudioSource.uri(
@@ -95,7 +75,6 @@ class AudioServiceHandler extends BaseAudioHandler
       return; // Exit if indices are out of bounds
     }
 
-    print("$oldIndex; $newIndex");
     // Remove the item from the old index
     final itemToMove = currentQueue.removeAt(oldIndex);
 

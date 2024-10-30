@@ -26,6 +26,9 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   // Synced lyrics
   bool syncedLyrics = false;
 
+  // Enable lyrics
+  bool enbleLyrics = false;
+
   // Lyrics text align
   TextAlign lyricsTextAlign = TextAlign.center;
 
@@ -71,6 +74,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final recommendPongo = await Storage().getRecommendedPongo();
     final lyricsTxtAlign = await Storage().getLyricsTextAlign();
     final useCacheAudioSource = await Storage().getUseCachingAudioSource();
+    final enblLyrics = await Storage().getEnableLyrics();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -84,6 +88,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       recommendedPongo = recommendPongo;
       lyricsTextAlign = lyricsTxtAlign;
       useCachingAudioSource = useCacheAudioSource;
+      enbleLyrics = enblLyrics;
     });
   }
 
@@ -301,6 +306,24 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 context,
                                 true,
                                 false,
+                                AppIcons.lyrics,
+                                enbleLyrics,
+                                AppLocalizations.of(context)!.enablelyrics,
+                                AppLocalizations.of(context)!
+                                    .enableusageoflyrics,
+                                (enable) async {
+                                  setState(() {
+                                    enbleLyrics = enable;
+                                  });
+                                  await Storage().writeEnableLyrics(enable);
+                                  enableLyrics.value = enable;
+                                  print(enableLyrics.value);
+                                },
+                              ),
+                              settingsTileSwitcher(
+                                context,
+                                false,
+                                false,
                                 CupertinoIcons.hourglass,
                                 syncTimeDelay, // AppIcons.edit,
                                 AppLocalizations.of(context)!.synctimedelay,
@@ -409,15 +432,18 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 },
                               ),
                               razh(20),
-                              settingsText("Audio player"),
+                              settingsText(
+                                  AppLocalizations.of(context)!.audioplayer),
                               settingsTileSwitcher(
                                 context,
                                 true,
                                 false,
                                 CupertinoIcons.arrow_down_doc_fill,
                                 useCachingAudioSource, // AppIcons.edit,
-                                "Audio player caching",
-                                "Let audio player cache the songs",
+                                AppLocalizations.of(context)!
+                                    .audioplayercaching,
+                                AppLocalizations.of(context)!
+                                    .letaudioplayercachethesongs,
                                 (use) async {
                                   setState(() {
                                     useCachingAudioSource = use;

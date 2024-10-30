@@ -39,6 +39,7 @@ class _HomePhoneState extends State<HomePhone> {
     super.initState();
     initSearchHistory();
     searchScreenContext.value = context;
+    searchFocusNode.value = focusNode;
     print("Search screen context; ${searchScreenContext.value}");
   }
 
@@ -85,9 +86,14 @@ class _HomePhoneState extends State<HomePhone> {
                 children: [
                   // 1. - home screen recomendations
                   AnimatedOpacity(
-                    opacity: searchBarIsSearching.value ? 1 : 0,
+                    opacity: (searchBarIsSearching.value || focusNode.hasFocus)
+                        ? 1
+                        : 0,
                     duration: Duration(
-                        milliseconds: searchBarIsSearching.value ? 350 : 250),
+                        milliseconds:
+                            searchBarIsSearching.value || focusNode.hasFocus
+                                ? 350
+                                : 250),
                     child: SearchPhone(
                       query: query,
                     ),
@@ -95,11 +101,14 @@ class _HomePhoneState extends State<HomePhone> {
                   // 2. - search screen
                   AnimatedPositioned(
                     duration: Duration(
-                        milliseconds: searchBarIsSearching.value ? 400 : 350),
-                    curve: searchBarIsSearching.value
+                        milliseconds:
+                            searchBarIsSearching.value || focusNode.hasFocus
+                                ? 400
+                                : 350),
+                    curve: searchBarIsSearching.value || focusNode.hasFocus
                         ? Curves.easeInOut
                         : Curves.fastEaseInToSlowEaseOut,
-                    top: searchBarIsSearching.value
+                    top: (searchBarIsSearching.value || focusNode.hasFocus)
                         ? MediaQuery.of(context).size.height
                         : 0,
                     child: const RecomendationsPhone(),
@@ -119,13 +128,18 @@ class _HomePhoneState extends State<HomePhone> {
                   /*  : const SizedBox(),
                   ), */
                   // ),
-                  AnimatedPositioned(
+                  /* AnimatedPositioned(
                     top: showSearchHistory
                         ? 0
                         : -MediaQuery.of(context).size.height,
                     curve: Curves.fastEaseInToSlowEaseOut,
                     duration:
                         Duration(milliseconds: showSearchHistory ? 400 : 350),
+                    child: */
+                  Positioned(
+                    top: showSearchHistory
+                        ? 0
+                        : -MediaQuery.of(context).size.height,
                     child: SearchHistoryPhone(
                       showSearchHistory: showSearchHistory,
                       clear: clear,
@@ -159,6 +173,7 @@ class _HomePhoneState extends State<HomePhone> {
                       },
                     ),
                   ),
+                  /*  ), */
                   // 4. - Search bar
 
                   AnimatedPositioned(

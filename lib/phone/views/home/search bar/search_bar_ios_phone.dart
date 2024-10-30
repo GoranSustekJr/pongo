@@ -93,12 +93,12 @@ class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
                 ),
               ),
             ),
-            if (searchBarIsSearching.value)
+            if (searchBarIsSearching.value || widget.focusNode.hasFocus)
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () {
                   print("object");
-                  if (searchBarIsSearching.value) {
+                  if (searchBarIsSearching.value || widget.focusNode.hasFocus) {
                     setState(() {
                       searching = false;
                       searchBarIsSearching.value = false;

@@ -3,14 +3,24 @@ import '../../../../exports.dart';
 class PlayShuffleHaltFavourites extends StatefulWidget {
   final List missingTracks;
   final bool loadingShuffle;
+  final bool edit;
+  final Widget frontWidget;
+  final Widget endWidget;
   final Function() play;
   final Function() shuffle;
+  final Function() stopEdit;
+  final Function() unfavourite;
   const PlayShuffleHaltFavourites({
     super.key,
     required this.missingTracks,
     required this.loadingShuffle,
+    required this.edit,
+    required this.frontWidget,
+    required this.endWidget,
     required this.play,
     required this.shuffle,
+    required this.stopEdit,
+    required this.unfavourite,
   });
 
   @override
@@ -19,33 +29,8 @@ class PlayShuffleHaltFavourites extends StatefulWidget {
 }
 
 class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
-  // Pulsating shuffle icon
-  /*  late AnimationController controller;
-  late Animation<Color?> colorAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    colorAnimation = ColorTween(
-      begin: Colors.white,
-      end: Colors.white.withAlpha(100),
-    ).animate(controller);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  } */
-
   @override
   Widget build(BuildContext context) {
-    print(widget.missingTracks);
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return StreamBuilder(
@@ -57,69 +42,116 @@ class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
                   '${mediaItemStream.data!.id.split('.')[0]}.${mediaItemStream.data!.id.split('.')[1]}';
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-            child: showPlay
+            switchInCurve: Curves.fastOutSlowIn,
+            switchOutCurve: Curves.fastOutSlowIn,
+            child: widget.edit
                 ? Row(
+                    key: const ValueKey(true),
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      iconTextButton(
-                        AppIcons.play,
-                        "Play",
-                        TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: !showPlay || widget.loadingShuffle
-                              ? Colors.white.withAlpha(125)
-                              : Colors.white,
-                        ),
-                        widget.play,
-                        !showPlay || widget.loadingShuffle
-                            ? Colors.white.withAlpha(125)
-                            : Colors.white,
-                        padding: EdgeInsets.zero,
+                      iconButton(
+                        AppIcons.download,
+                        Colors.white,
+                        () {},
+                        edgeInsets: EdgeInsets.zero,
                       ),
-                      iconTextButton(
-                        AppIcons.shuffle,
-                        " Shuffle",
-                        TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: widget.missingTracks.isNotEmpty
-                              ? Colors.white.withAlpha(125)
-                              : widget.loadingShuffle
-                                  ? Colors.white.withAlpha(125)
-                                  : Colors.white,
-                        ),
-                        widget.shuffle,
-                        widget.missingTracks.isNotEmpty
-                            ? Colors.white.withAlpha(125)
-                            : widget.loadingShuffle
-                                ? Colors.white.withAlpha(125)
-                                : Colors.white,
-                        padding: EdgeInsets.zero,
+                      iconButton(
+                        AppIcons.musicAlbums,
+                        Colors.white,
+                        () {},
+                        edgeInsets: EdgeInsets.zero,
+                      ),
+                      iconButton(
+                        AppIcons.heartSlash,
+                        Colors.white,
+                        () {
+                          widget.unfavourite();
+                        },
+                        edgeInsets: EdgeInsets.zero,
+                      ),
+                      iconButton(
+                        AppIcons.cancel,
+                        Colors.white,
+                        widget.stopEdit,
+                        edgeInsets: EdgeInsets.zero,
                       ),
                     ],
                   )
-                : Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                : AnimatedSwitcher(
                     key: const ValueKey(false),
-                    children: [
-                      iconTextButton(
-                        AppIcons.halt,
-                        " Halt",
-                        const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                        () async {
-                          await audioServiceHandler.halt();
-                        },
-                        Colors.white,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
+                    duration: const Duration(milliseconds: 300),
+                    switchInCurve: Curves.fastOutSlowIn,
+                    switchOutCurve: Curves.fastOutSlowIn,
+                    child: showPlay
+                        ? Row(
+                            key: const ValueKey(true),
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              widget.frontWidget,
+                              iconTextButton(
+                                AppIcons.play,
+                                "Play",
+                                TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: !showPlay || widget.loadingShuffle
+                                      ? Colors.white.withAlpha(125)
+                                      : Colors.white,
+                                ),
+                                widget.play,
+                                !showPlay || widget.loadingShuffle
+                                    ? Colors.white.withAlpha(125)
+                                    : Colors.white,
+                                padding: EdgeInsets.zero,
+                              ),
+                              iconTextButton(
+                                AppIcons.shuffle,
+                                " Shuffle",
+                                TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: widget.missingTracks.isNotEmpty
+                                      ? Colors.white.withAlpha(125)
+                                      : widget.loadingShuffle
+                                          ? Colors.white.withAlpha(125)
+                                          : Colors.white,
+                                ),
+                                widget.shuffle,
+                                widget.missingTracks.isNotEmpty
+                                    ? Colors.white.withAlpha(125)
+                                    : widget.loadingShuffle
+                                        ? Colors.white.withAlpha(125)
+                                        : Colors.white,
+                                padding: EdgeInsets.zero,
+                              ),
+                              widget.endWidget
+                            ],
+                          )
+                        : Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            key: const ValueKey(false),
+                            children: [
+                              widget.frontWidget,
+                              iconTextButton(
+                                AppIcons.halt,
+                                " Halt",
+                                const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white,
+                                ),
+                                () async {
+                                  await audioServiceHandler.halt();
+                                },
+                                Colors.white,
+                                padding: EdgeInsets.zero,
+                              ),
+                              widget.endWidget,
+                            ],
+                          ),
                   ),
           );
         });

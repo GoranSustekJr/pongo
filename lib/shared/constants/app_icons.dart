@@ -39,6 +39,8 @@ class AppIcons {
 
   static const heartFill = CupertinoIcons.heart_fill;
 
+  static const heartSlash = CupertinoIcons.heart_slash;
+
   static const play = CupertinoIcons.play_fill;
 
   static const shuffle = CupertinoIcons.shuffle;

@@ -63,3 +63,9 @@ ValueNotifier<BuildContext?> searchScreenContext = ValueNotifier(null);
 
 // Use caching audio sourece
 ValueNotifier<bool> useCacheAudioSource = ValueNotifier(false);
+
+// Enable lyris
+ValueNotifier<bool> enableLyrics = ValueNotifier(true);
+
+// Search focus node
+ValueNotifier<FocusNode> searchFocusNode = ValueNotifier(FocusNode());

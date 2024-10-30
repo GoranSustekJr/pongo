@@ -46,6 +46,7 @@ class SearchBodyPhone extends StatelessWidget {
             // bottom: MediaQuery.of(context).padding.bottom,
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               if (artists.isNotEmpty)
                 searchResultText(
@@ -58,6 +59,7 @@ class SearchBodyPhone extends StatelessWidget {
                       ? numberOfSearchArtists.value
                       : artists.length,
                   shrinkWrap: true,
+                  addAutomaticKeepAlives: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return SearchResultTile(
@@ -87,6 +89,7 @@ class SearchBodyPhone extends StatelessWidget {
                       ? numberOfSearchAlbums.value
                       : albums.length,
                   shrinkWrap: true,
+                  addAutomaticKeepAlives: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return SearchResultTile(
@@ -116,6 +119,7 @@ class SearchBodyPhone extends StatelessWidget {
                       ? numberOfSearchTracks.value
                       : tracks.length,
                   shrinkWrap: true,
+                  addAutomaticKeepAlives: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return SearchResultTile(
@@ -237,6 +241,7 @@ class SearchBodyPhone extends StatelessWidget {
                       ? numberOfSearchPlaylists.value
                       : playlists.length,
                   shrinkWrap: true,
+                  addAutomaticKeepAlives: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return SearchResultTile(

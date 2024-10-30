@@ -9,6 +9,8 @@ PODS:
     - Flutter
   - audio_session (0.0.1):
     - Flutter
+  - background_fetch (1.3.7):
+    - Flutter
   - blurhash_ffi (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
@@ -67,6 +69,7 @@ PODS:
 DEPENDENCIES:
   - audio_service (from `.symlinks/plugins/audio_service/ios`)
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
+  - background_fetch (from `.symlinks/plugins/background_fetch/ios`)
   - blurhash_ffi (from `.symlinks/plugins/blurhash_ffi/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -98,6 +101,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audio_service/ios"
   audio_session:
     :path: ".symlinks/plugins/audio_session/ios"
+  background_fetch:
+    :path: ".symlinks/plugins/background_fetch/ios"
   blurhash_ffi:
     :path: ".symlinks/plugins/blurhash_ffi/ios"
   connectivity_plus:
@@ -137,6 +142,7 @@ SPEC CHECKSUMS:
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
   audio_service: f509d65da41b9521a61f1c404dd58651f265a567
   audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
+  background_fetch: 39f11371c0dce04b001c4bfd5e782bcccb0a85e2
   blurhash_ffi: 4831b96320d4273876c9a2fd3f7d50b8a3a53509
   connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d

@@ -1,11 +1,9 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 
 class FadingNetworkImage extends StatefulWidget {
   final String imageUrl;
 
-  const FadingNetworkImage({Key? key, required this.imageUrl})
-      : super(key: key);
+  const FadingNetworkImage({super.key, required this.imageUrl});
 
   @override
   _FadingNetworkImageState createState() => _FadingNetworkImageState();

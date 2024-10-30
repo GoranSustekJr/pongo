@@ -1,5 +1,3 @@
-import 'package:audio_video_progress_bar/audio_video_progress_bar.dart'
-    as progressbutton;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:interactive_slider_fork/interactive_slider.dart' as isf;
@@ -72,7 +70,7 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                       padding: EdgeInsets.zero,
                       initialProgress: 0.5,
                       controller: progressController,
-                      focusedHeight: 10,
+                      focusedHeight: 11.5,
                       onProgressUpdated: (position) async {
                         updateProgress(position);
                         await audioServiceHandler.seek(
@@ -89,6 +87,7 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                     )),
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 35,
+                  height: 30,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

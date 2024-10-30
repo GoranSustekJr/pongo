@@ -82,10 +82,7 @@ class RecommendedTile extends StatelessWidget {
                 onLongPressStart: (LongPressStartDetails details) async {
                   bool isFavourite = await DatabaseHelper()
                       .favouriteTrackAlreadyExists(data.id);
-                  print(size.width);
-                  print(isFavourite);
                   if (type == TileType.track) {
-                    print(details.globalPosition.dx);
                     showPullDownMenu(
                       context: context,
                       items: searchTrackPulldownMenuItems(

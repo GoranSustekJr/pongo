@@ -25,7 +25,7 @@ libraryTile(
     child: ClipRRect(
       child: kIsApple
           ? Container(
-              height: 45,
+              height: 50,
               width: MediaQuery.of(context).size.width - 20,
               decoration: BoxDecoration(
                 borderRadius: borderRadius,
@@ -53,8 +53,8 @@ libraryTile(
                       children: [
                         SizedBox(
                             width: 58,
-                            height: 40,
-                            child: Icon(icon, color: Col.onIcon, size: 22.5)),
+                            height: 48,
+                            child: Icon(icon, color: Col.onIcon, size: 27.5)),
                         Expanded(
                             child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,9 +63,9 @@ libraryTile(
                               title,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Col.onIcon,
-                                  fontWeight: FontWeight.w600),
+                                fontSize: 13,
+                                color: Colors.white,
+                              ),
                             ),
                             if (subtitle != null)
                               Text(
@@ -96,7 +96,7 @@ libraryTile(
                           ),
                         ),
                         const SizedBox(
-                          width: 30,
+                          width: 15,
                         )
                       ],
                     ),

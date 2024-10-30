@@ -1,3 +1,4 @@
+import 'package:background_fetch/background_fetch.dart';
 import 'package:pongo/exports.dart';
 
 Future<void> configureMacosWindowUtils() async {
@@ -71,6 +72,9 @@ void main() async {
   currentLyricsTextAlignment.value = curLyricsTextAlignment;
   bool useCache = await Storage().getUseCachingAudioSource();
   useCacheAudioSource.value = useCache;
+  bool enblLyrics = await Storage().getEnableLyrics();
+  enableLyrics.value = enblLyrics;
+  print("Enable Lyrics; $enblLyrics");
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();

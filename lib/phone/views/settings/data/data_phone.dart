@@ -88,7 +88,6 @@ class _DataPhoneState extends State<DataPhone> {
                       AppLocalizations.of(context)!.clearaudioplayercache,
                       AppLocalizations.of(context)!.clearyouraudioplayercache,
                       () async {
-                        //TODO:
                         await AudioPlayer.clearAssetCache();
                       },
                     ),
@@ -101,7 +100,6 @@ class _DataPhoneState extends State<DataPhone> {
                         AppLocalizations.of(context)!.clearimagecache,
                         AppLocalizations.of(context)!.clearyourassetimagecache,
                         () async {
-                      //TODO:
                       await DefaultCacheManager().emptyCache();
                     }),
                     settingsTile(
@@ -113,7 +111,6 @@ class _DataPhoneState extends State<DataPhone> {
                       AppLocalizations.of(context)!.clearallcache,
                       AppLocalizations.of(context)!.clearallappcache,
                       () async {
-                        //TODO:
                         await AudioPlayer.clearAssetCache();
                         await DefaultCacheManager().emptyCache();
                       },

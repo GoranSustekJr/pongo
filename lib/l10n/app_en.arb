@@ -673,6 +673,61 @@
     "saveasplaylist": "Save as playlist",
     "@saveasplaylist": {
         "description": "saveasplaylist"
+    },
+
+    "successful": "Successful",
+    "@successful": {
+        "description": "successful"
+    },
+
+    "trackremovedfromfavourites": "Track removed from favourites",
+    "@trackremovedfromfavourites": {
+        "description": "trackremovedfromfavourites"
+    },
+
+    "trackisnowafavourite": "Track is now a favourite",
+    "@trackisnowafavourite": {
+        "description": "trackisnowafavourite"
+    },
+    
+    "removefromfavourites": "Remove from favourites",
+    "@removefromfavourites": {
+        "description": "removefromfavourites"
+    },
+
+    "removefromfavouritesbody": "Do you want to remove selected tracks from favourites?",
+    "@removefromfavouritesbody": {
+        "description": "removefromfavouritesbody"
+    },
+
+    "lyricsdisabled": "Lyrics disabled",
+    "@lyricsdisabled": {
+        "description": "lyricsdisabled"
+    },
+
+    "enablelyrics": "Enable lyrics",
+    "@enablelyrics": {
+        "description": "enablelyrics"
+    },
+
+    "enableusageoflyrics": "Enable usage of lyrics",
+    "@enableusageoflyrics": {
+        "description": "enableusageoflyrics"
+    },
+
+    "audioplayer": "Audio player",
+    "@audioplayer": {
+        "description": "audioplayer"
+    },
+
+    "audioplayercaching": "Audio player caching",
+    "@audioplayercaching": {
+        "description": "audioplayercaching"
+    },
+
+    "letaudioplayercachethesongs": "Let audio player cache the songs",
+    "@letaudioplayercachethesongs": {
+        "description": "letaudioplayercachethesongs"
     }
 
 }

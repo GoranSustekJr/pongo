@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/shared/functions/favourites/favourites.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 List<Widget> recommendedTrackCupertinoContextMenuActions(
@@ -66,7 +67,6 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
             future: DatabaseHelper().favouriteTrackAlreadyExists(track.id),
             builder: (context, snapshot) {
               final isFavorite = snapshot.data ?? false;
-              print(isFavorite);
 
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return CupertinoContextMenuAction(
@@ -81,13 +81,11 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
 
               return CupertinoContextMenuAction(
                 onPressed: () async {
-                  if (isFavorite) {
-                    await DatabaseHelper().removeFavouriteTrack(track.id);
-                    doesNowExist("");
-                  } else {
-                    await DatabaseHelper().insertFavouriteTrack(track.id);
-                    doesNowExist("");
-                  }
+                  await Favourites().add(context, track.id);
+                  doesNowExist("");
+
+                  doesNowExist("");
+
                   Navigator.of(context, rootNavigator: true).pop();
                 },
                 trailingIcon: isFavorite ? AppIcons.heartFill : AppIcons.heart,

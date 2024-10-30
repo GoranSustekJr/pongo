@@ -1,4 +1,5 @@
 import 'package:pongo/exports.dart';
+import 'package:pongo/shared/functions/favourites/favourites.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 List<PullDownMenuEntry> searchTrackPulldownMenuItems(
@@ -62,16 +63,13 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
               ),
             ),
           ),
-          const PullDownMenuDivider(),
+          const PullDownMenuDivider.large(),
           PullDownMenuItem(
             onTap: () async {
-              if (favourite) {
-                await DatabaseHelper().removeFavouriteTrack(track.id);
-                doesNotExist("");
-              } else {
-                await DatabaseHelper().insertFavouriteTrack(track.id);
-                doesNowExist("");
-              }
+              await Favourites().add(context, track.id);
+              doesNotExist("");
+              doesNowExist("");
+
               // The UI will not auto-refresh since there is no stateful management here
               // You may need to manually update the parent widget's state
             },

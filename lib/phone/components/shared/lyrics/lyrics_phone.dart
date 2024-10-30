@@ -27,13 +27,12 @@ class _LyricsPhoneState extends State<LyricsPhone> {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 350),
       child: SizedBox(
-        key: ValueKey("${widget.plainLyrics}"),
+        key: ValueKey("${widget.plainLyrics}${enableLyrics.value}"),
         width: MediaQuery.of(context).size.width,
         child: AnimatedOpacity(
           opacity: widget.lyricsOn ? 1 : 0,
-          duration: Duration(milliseconds: widget.lyricsOn ? 500 : 0),
+          duration: Duration(milliseconds: widget.lyricsOn ? 500 : 200),
           child: AnimatedSwitcher(
-            key: ValueKey("${widget.lyricsOn}"),
             duration: Duration(
               milliseconds: widget.plainLyrics.isNotEmpty ||
                       widget.syncedLyrics.isNotEmpty
@@ -43,15 +42,25 @@ class _LyricsPhoneState extends State<LyricsPhone> {
                       : 500
                   : 500,
             ),
-            child: !widget.useSyncedLyrics
-                ? TrackPlainLyricsPhone(
-                    key: const ValueKey(true), lyrics: widget.plainLyrics)
-                : TrackSyncLyricsPhone(
-                    key: const ValueKey(false),
-                    lyricsOn: widget.lyricsOn,
-                    lyrics: widget.syncedLyrics,
-                    syncTimeDelay: widget.syncTimeDelay,
-                  ),
+            child: !enableLyrics.value
+                ? Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.lyricsdisabled,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 25),
+                    ),
+                  )
+                : !widget.useSyncedLyrics
+                    ? TrackPlainLyricsPhone(
+                        key: const ValueKey(true), lyrics: widget.plainLyrics)
+                    : TrackSyncLyricsPhone(
+                        key: const ValueKey(false),
+                        lyricsOn: widget.lyricsOn,
+                        lyrics: widget.syncedLyrics,
+                        syncTimeDelay: widget.syncTimeDelay,
+                      ),
           ),
         ),
       ),

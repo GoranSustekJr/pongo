@@ -58,10 +58,10 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>FLTEnableImpeller</key>
+	<true />
 	<key>NSCameraUsageDescription</key>
 	<string>Using Camera For Playlist Images</string>
-	<!-- <key>NSMicrophoneUsageDescription</key>
-	<string>No need but gettings error so trying to fix it.</string> -->
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Using Photo Library For Playlist Images</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -71,6 +71,7 @@
 		<string>audio</string>
 		<string>fetch</string>
 		<string>processing</string>
+		<string>background-processing</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
