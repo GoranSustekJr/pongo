@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/playing%20details/controls.dart';
 import 'package:pongo/phone/views/playlist/online%20playlist%20handler/online_playlist_handler_body_phone.dart';
+import 'package:http/http.dart' as http;
 
 class OnlinePlaylistHandlerPhone extends StatefulWidget {
   const OnlinePlaylistHandlerPhone({super.key});
@@ -20,7 +21,7 @@ class _OnlinePlaylistHandlerPhoneState
   bool createPlaylist = false;
 
   // New playlist
-  String title = "";
+  TextEditingController titleController = TextEditingController();
   File? cover;
   Uint8List? coverBytes;
   bool redIt = false;
@@ -141,7 +142,7 @@ class _OnlinePlaylistHandlerPhoneState
                     extendBody: true,
                     appBar: AppBar(),
                     body: OnlinePlaylistHandlerBodyPhone(
-                      title: title,
+                      titleController: titleController,
                       redIt: redIt,
                       createPlaylist: createPlaylist,
                       playlists: playlists,
@@ -154,28 +155,56 @@ class _OnlinePlaylistHandlerPhoneState
                         await pickImage();
                       },
                       onChanged: (value) {
-                        setState(() {
-                          title = value.trim();
-                        });
+                        /* setState(() {
+                          titleController.value = value.trim();
+                        }); */
                       },
                       createPlaylistFunction: () async {
-                        print("object");
-                        if (title != "") {
+                        if (titleController.value.text.trim() != "") {
                           List<String> titles = playlists
                               .map((playlist) => playlist["title"] as String)
                               .toList();
-                          if (!titles.contains(title)) {
-                            await DatabaseHelper()
-                                .insertOnlinePlaylist(title, coverBytes);
-
-                            initPlaylists();
-                            setState(() {
-                              redIt = false;
-                              createPlaylist = false;
-                            });
-                            if (createPlaylist ||
-                                playlistTrackToAddData.value == null) {
+                          if (!titles
+                              .contains(titleController.value.text.trim())) {
+                            if (playlistTrackToAddData.value != null
+                                ? playlistTrackToAddData.value!["playlist"] !=
+                                    null
+                                : true) {
+                              dynamic bytes;
+                              if (playlistTrackToAddData.value!["cover"] !=
+                                  null) {
+                                bytes = await http.get(Uri.parse(
+                                    playlistTrackToAddData.value!["cover"]));
+                              }
+                              int opid = await DatabaseHelper()
+                                  .insertOnlinePlaylist(
+                                      titleController.value.text.trim(),
+                                      bytes.bodyBytes);
+                              initPlaylists();
+                              setState(() {
+                                redIt = false;
+                                createPlaylist = false;
+                              });
                               showPlaylistHandler.value = false;
+                              for (String stid in playlistTrackToAddData
+                                  .value!["playlist"]) {
+                                await DatabaseHelper()
+                                    .insertOnlineTrackId(opid, stid);
+                              }
+                            } else {
+                              await DatabaseHelper().insertOnlinePlaylist(
+                                  titleController.value.text.trim(),
+                                  coverBytes);
+
+                              initPlaylists();
+                              setState(() {
+                                redIt = false;
+                                createPlaylist = false;
+                              });
+                              if (createPlaylist ||
+                                  playlistTrackToAddData.value == null) {
+                                showPlaylistHandler.value = false;
+                              }
                             }
                           } else {
                             setState(() {
@@ -187,6 +216,7 @@ class _OnlinePlaylistHandlerPhoneState
                                     .playlistnamealreadyexists);
                           }
                         } else {
+                          print("object; ${titleController.value.text}");
                           setState(() {
                             redIt = true;
                           });

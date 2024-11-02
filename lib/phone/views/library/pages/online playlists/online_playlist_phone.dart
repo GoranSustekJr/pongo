@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/library/online%20playlist/play_shuffle_halt_online_playlist.dart';
+import 'package:pongo/phone/components/shared/buttons/back_like_button.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/online_playlist_body_phone.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
@@ -106,8 +107,6 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
   }
 
   getTrackData() async {
-    print(stids);
-
     final trackData = await SearializedData().tracks(
       context,
       stids,
@@ -125,7 +124,6 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
 
     setState(() {
       tracks = newTracks;
-      print(newTracks);
       existingTracks = ({
         for (var item in tracksThatExist["durations"])
           item[0] as String: item[1] as double
@@ -181,18 +179,13 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
               }
             },
             (mediaItem, i) async {
-              print("YEAAH; $i");
               if (i == 0) {
-                print("HMMM; $i");
                 await audioServiceHandler.initSongs(songs: [mediaItem]);
                 audioServiceHandler.play();
               } else {
-                print("HMMMAAAAAAAA; $i");
                 audioServiceHandler.queue.value.add(mediaItem);
-                print("AAAAAAAAA");
                 await audioServiceHandler.playlist
                     .add(audioServiceHandler.createAudioSource(mediaItem));
-                print("BBBBBBBBBBBB");
               }
               if (i == tracks.length - 1) {
                 queueAllowShuffle.value = true;
@@ -368,6 +361,41 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                   Expanded(
                                     child: Container(),
                                   ),
+                                  backLikeButton(context, AppIcons.edit,
+                                      () async {
+                                    final audioServiceHandler =
+                                        Provider.of<AudioHandler>(context,
+                                                listen: false)
+                                            as AudioServiceHandler;
+                                    if (audioServiceHandler.mediaItem.value !=
+                                        null) {
+                                      if ("library.onlineplaylist:${widget.opid}" ==
+                                          '${audioServiceHandler.mediaItem.value!.id.split('.')[0]}.${audioServiceHandler.mediaItem.value!.id.split('.')[1]}') {
+                                        CustomButton ok =
+                                            await haltAlert(context);
+                                        if (ok == CustomButton.positiveButton) {
+                                          currentTrackHeight.value = 0;
+                                          final audioServiceHandler =
+                                              Provider.of<AudioHandler>(context,
+                                                      listen: false)
+                                                  as AudioServiceHandler;
+
+                                          await audioServiceHandler.halt();
+                                          setState(() {
+                                            edit = true;
+                                          });
+                                        }
+                                      } else {
+                                        setState(() {
+                                          edit = true;
+                                        });
+                                      }
+                                    } else {
+                                      setState(() {
+                                        edit = true;
+                                      });
+                                    }
+                                  }),
                                 ],
                               ),
                               flexibleSpace: FlexibleSpaceBar(
@@ -469,61 +497,8 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                         missingTracks: missingTracks,
                                         loadingShuffle: loadingShuffle,
                                         edit: edit,
-                                        frontWidget: iconButton(
-                                          AppIcons.heart,
-                                          Colors.white,
-                                          () {
-                                            navigationBarIndex.value = 0;
-                                            searchFocusNode.value
-                                                .requestFocus();
-                                          },
-                                          edgeInsets: EdgeInsets.zero,
-                                        ),
-                                        endWidget: iconButton(
-                                          AppIcons.edit,
-                                          Colors.white,
-                                          () async {
-                                            final audioServiceHandler =
-                                                Provider.of<AudioHandler>(
-                                                        context,
-                                                        listen: false)
-                                                    as AudioServiceHandler;
-                                            if (audioServiceHandler
-                                                    .mediaItem.value !=
-                                                null) {
-                                              if ("library.favourites" ==
-                                                  '${audioServiceHandler.mediaItem.value!.id.split('.')[0]}.${audioServiceHandler.mediaItem.value!.id.split('.')[1]}') {
-                                                CustomButton ok =
-                                                    await haltAlert(context);
-                                                if (ok ==
-                                                    CustomButton
-                                                        .positiveButton) {
-                                                  currentTrackHeight.value = 0;
-                                                  final audioServiceHandler =
-                                                      Provider.of<AudioHandler>(
-                                                              context,
-                                                              listen: false)
-                                                          as AudioServiceHandler;
-
-                                                  await audioServiceHandler
-                                                      .halt();
-                                                  setState(() {
-                                                    edit = true;
-                                                  });
-                                                }
-                                              } else {
-                                                setState(() {
-                                                  edit = true;
-                                                });
-                                              }
-                                            } else {
-                                              setState(() {
-                                                edit = true;
-                                              });
-                                            }
-                                          },
-                                          edgeInsets: EdgeInsets.zero,
-                                        ),
+                                        frontWidget: const SizedBox(),
+                                        endWidget: const SizedBox(),
                                         play: () {
                                           play(index: 0);
                                         },
@@ -534,7 +509,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                             selectedStids.clear();
                                           });
                                         },
-                                        unfavourite: () async {
+                                        remove: () async {
                                           if (selectedStids.isNotEmpty) {
                                             CustomButton ok =
                                                 await removeFavouriteAlert(
@@ -542,12 +517,13 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                             if (ok ==
                                                 CustomButton.positiveButton) {
                                               await DatabaseHelper()
-                                                  .removeFavouriteTracks(
+                                                  .removeTracksFromOnlinePlaylist(
                                                       selectedStids);
 
                                               setState(() {
                                                 tracks.clear();
                                                 selectedStids.clear();
+                                                edit = false;
                                               });
 
                                               getTracks();

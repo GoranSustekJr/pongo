@@ -61,6 +61,42 @@ class RecommendationsForYouPhone extends StatelessWidget {
                   },
                   doesNotExist: loadingAdd,
                   doesNowExist: loadingRemove,
+                  trailing: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: pTrackLoading.contains(euTracks[index].id)
+                        ? const CircularProgressIndicator.adaptive(
+                            key: ValueKey(true),
+                          )
+                        : StreamBuilder(
+                            key: const ValueKey(false),
+                            stream: audioServiceHandler.mediaItem.stream,
+                            builder: (context, snapshot) {
+                              final String id = snapshot.data != null
+                                  ? snapshot.data!.id.split(".")[2]
+                                  : "";
+
+                              return id == euTracks[index].id
+                                  ? StreamBuilder(
+                                      stream: audioServiceHandler
+                                          .audioPlayer.playingStream,
+                                      builder: (context, playingStream) {
+                                        return Trailing(
+                                          show: !pTrackLoading
+                                              .contains(euTracks[index].id),
+                                          showThis: id == euTracks[index].id,
+                                          trailing: const Padding(
+                                            padding: EdgeInsets.only(right: 10),
+                                            child: CircularProgressIndicator
+                                                .adaptive(
+                                              key: ValueKey(true),
+                                            ),
+                                          ),
+                                        );
+                                      })
+                                  : const SizedBox();
+                            },
+                          ),
+                  ),
                 );
               },
             ),
@@ -90,6 +126,43 @@ class RecommendationsForYouPhone extends StatelessWidget {
                   },
                   doesNotExist: loadingAdd,
                   doesNowExist: loadingRemove,
+                  trailing: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: pTrackLoading.contains(euTracks[25 + index].id)
+                        ? const CircularProgressIndicator.adaptive(
+                            key: ValueKey(true),
+                          )
+                        : StreamBuilder(
+                            key: const ValueKey(false),
+                            stream: audioServiceHandler.mediaItem.stream,
+                            builder: (context, snapshot) {
+                              final String id = snapshot.data != null
+                                  ? snapshot.data!.id.split(".")[2]
+                                  : "";
+
+                              return id == euTracks[25 + index].id
+                                  ? StreamBuilder(
+                                      stream: audioServiceHandler
+                                          .audioPlayer.playingStream,
+                                      builder: (context, playingStream) {
+                                        return Trailing(
+                                          show: !pTrackLoading.contains(
+                                              euTracks[25 + index].id),
+                                          showThis:
+                                              id == euTracks[25 + index].id,
+                                          trailing: const Padding(
+                                            padding: EdgeInsets.only(right: 10),
+                                            child: CircularProgressIndicator
+                                                .adaptive(
+                                              key: ValueKey(true),
+                                            ),
+                                          ),
+                                        );
+                                      })
+                                  : const SizedBox();
+                            },
+                          ),
+                  ),
                 );
               },
             ),

@@ -62,6 +62,42 @@ class RecommendedPongoPhone extends StatelessWidget {
                   },
                   doesNotExist: loadingAdd,
                   doesNowExist: loadingRemove,
+                  trailing: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: pTrackLoading.contains(pTracks[index].id)
+                        ? const CircularProgressIndicator.adaptive(
+                            key: ValueKey(true),
+                          )
+                        : StreamBuilder(
+                            key: const ValueKey(false),
+                            stream: audioServiceHandler.mediaItem.stream,
+                            builder: (context, snapshot) {
+                              final String id = snapshot.data != null
+                                  ? snapshot.data!.id.split(".")[2]
+                                  : "";
+
+                              return id == pTracks[index].id
+                                  ? StreamBuilder(
+                                      stream: audioServiceHandler
+                                          .audioPlayer.playingStream,
+                                      builder: (context, playingStream) {
+                                        return Trailing(
+                                          show: !pTrackLoading
+                                              .contains(pTracks[index].id),
+                                          showThis: id == pTracks[index].id,
+                                          trailing: const Padding(
+                                            padding: EdgeInsets.only(right: 10),
+                                            child: CircularProgressIndicator
+                                                .adaptive(
+                                              key: ValueKey(true),
+                                            ),
+                                          ),
+                                        );
+                                      })
+                                  : const SizedBox();
+                            },
+                          ),
+                  ),
                 );
               },
             ),
@@ -91,6 +127,43 @@ class RecommendedPongoPhone extends StatelessWidget {
                   },
                   doesNotExist: loadingAdd,
                   doesNowExist: loadingRemove,
+                  trailing: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: pTrackLoading.contains(pTracks[25 + index].id)
+                        ? const CircularProgressIndicator.adaptive(
+                            key: ValueKey(true),
+                          )
+                        : StreamBuilder(
+                            key: const ValueKey(false),
+                            stream: audioServiceHandler.mediaItem.stream,
+                            builder: (context, snapshot) {
+                              final String id = snapshot.data != null
+                                  ? snapshot.data!.id.split(".")[2]
+                                  : "";
+
+                              return id == pTracks[25 + index].id
+                                  ? StreamBuilder(
+                                      stream: audioServiceHandler
+                                          .audioPlayer.playingStream,
+                                      builder: (context, playingStream) {
+                                        return Trailing(
+                                          show: !pTrackLoading
+                                              .contains(pTracks[25 + index].id),
+                                          showThis:
+                                              id == pTracks[25 + index].id,
+                                          trailing: const Padding(
+                                            padding: EdgeInsets.only(right: 10),
+                                            child: CircularProgressIndicator
+                                                .adaptive(
+                                              key: ValueKey(true),
+                                            ),
+                                          ),
+                                        );
+                                      })
+                                  : const SizedBox();
+                            },
+                          ),
+                  ),
                 );
               },
             ),

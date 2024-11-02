@@ -18,6 +18,17 @@ Future<void> removeTrackFromOnPlaylist(
   );
 }
 
+Future<void> removeTracksFromOnPlaylist(
+    DatabaseHelper dbHelper, List<String> stids) async {
+  Database db = await dbHelper.database;
+
+  await db.delete(
+    'opid_track_id',
+    where: 'track_id IN (${List.filled(stids.length, '?').join(', ')})',
+    whereArgs: stids,
+  );
+}
+
 Future<void> removeOnPlaylist(DatabaseHelper dbHelper, int opid) async {
   Database db = await dbHelper.database;
 

@@ -110,69 +110,86 @@ class RecommendedTile extends StatelessWidget {
                   }
                 },
                 child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: onTap,
-                    child: Column(
-                      crossAxisAlignment: type == TileType.artist
-                          ? CrossAxisAlignment.center
-                          : CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          height: 120,
-                          width: 120,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                                type == TileType.artist ? 360 : 7.5),
-                            color: Col.realBackground.withAlpha(150),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                                type == TileType.artist ? 360 : 7.5),
-                            child: imageUrl == ""
-                                ? Center(
-                                    child: Icon(noImage, color: Colors.white),
-                                  )
-                                : SizedBox(
-                                    child: CachedNetworkImage(
-                                      imageUrl: imageUrl,
-                                      fit: BoxFit.cover,
+                  padding: EdgeInsets.zero,
+                  onPressed: onTap,
+                  child: Column(
+                    crossAxisAlignment: type == TileType.artist
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 120,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                              type == TileType.artist ? 360 : 7.5),
+                          color: Col.realBackground.withAlpha(150),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              type == TileType.artist ? 360 : 7.5),
+                          child: imageUrl == ""
+                              ? Center(
+                                  child: Icon(noImage, color: Colors.white),
+                                )
+                              : SizedBox(
+                                  child: CachedNetworkImage(
+                                    imageUrl: imageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      razh(2.5),
+                      Flexible(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 18,
+                                    //   width: 120,
+                                    child: Text(
+                                      title,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: kIsApple ? 14 : 15,
+                                        fontWeight: kIsApple
+                                            ? FontWeight.w500
+                                            : FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                      textAlign: TextAlign.left,
                                     ),
                                   ),
-                          ),
-                        ),
-                        razh(2.5),
-                        SizedBox(
-                          height: 18,
-                          //   width: 120,
-                          child: Text(
-                            title,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: kIsApple ? 14 : 15,
-                              fontWeight:
-                                  kIsApple ? FontWeight.w500 : FontWeight.w600,
-                              color: Colors.white,
+                                  SizedBox(
+                                    height: 17,
+                                    // width: 120,
+                                    child: Text(
+                                      subtitle,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: kIsApple ? 12 : 13,
+                                        fontWeight: kIsApple
+                                            ? FontWeight.w400
+                                            : FontWeight.w500,
+                                        color: Colors.white.withAlpha(175),
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            textAlign: TextAlign.left,
-                          ),
+                            if (trailing != null) trailing!,
+                          ],
                         ),
-                        SizedBox(
-                          height: 17,
-                          // width: 120,
-                          child: Text(
-                            subtitle,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: kIsApple ? 12 : 13,
-                              fontWeight:
-                                  kIsApple ? FontWeight.w400 : FontWeight.w500,
-                              color: Colors.white.withAlpha(175),
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ],
-                    )),
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           )

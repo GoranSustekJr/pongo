@@ -5,7 +5,7 @@ import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/playlist/online%20playlist%20handler/selected_tracks_phone.dart';
 
 class OnlinePlaylistHandlerBodyPhone extends StatefulWidget {
-  final String title;
+  final TextEditingController titleController;
   final bool redIt;
   final bool createPlaylist;
   final List playlists;
@@ -22,7 +22,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatefulWidget {
   final Function() addTracksToPlalists;
   const OnlinePlaylistHandlerBodyPhone(
       {super.key,
-      required this.title,
+      required this.titleController,
       required this.redIt,
       required this.createPlaylist,
       required this.playlists,
@@ -54,7 +54,11 @@ class _OnlinePlaylistHandlerBodyPhoneState
       children: [
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 350),
-          child: widget.createPlaylist || playlistTrackToAddData.value == null
+          child: widget.createPlaylist ||
+                  playlistTrackToAddData.value == null ||
+                  (playlistTrackToAddData.value != null
+                      ? playlistTrackToAddData.value!["playlist"] != null
+                      : true)
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -71,7 +75,18 @@ class _OnlinePlaylistHandlerBodyPhoneState
                           ),
                           child: Stack(
                             children: [
-                              if (widget.cover != null)
+                              if (widget.cover != null ||
+                                  (playlistTrackToAddData.value != null
+                                      ? playlistTrackToAddData
+                                                  .value!["playlist"] !=
+                                              null
+                                          ? playlistTrackToAddData
+                                                      .value!["cover"] !=
+                                                  null
+                                              ? true
+                                              : false
+                                          : false
+                                      : false))
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
                                   child: FadeInImage(
@@ -84,9 +99,25 @@ class _OnlinePlaylistHandlerBodyPhoneState
                                         const Duration(milliseconds: 200),
                                     fadeOutDuration:
                                         const Duration(milliseconds: 200),
-                                    image: FileImage(
-                                      widget.cover!,
-                                    ),
+                                    image: widget.cover == null ||
+                                            (playlistTrackToAddData.value !=
+                                                    null
+                                                ? playlistTrackToAddData.value![
+                                                            "playlist"] !=
+                                                        null
+                                                    ? playlistTrackToAddData
+                                                                    .value![
+                                                                "cover"] !=
+                                                            null
+                                                        ? true
+                                                        : false
+                                                    : false
+                                                : false)
+                                        ? NetworkImage(playlistTrackToAddData
+                                            .value!["cover"])
+                                        : FileImage(
+                                            widget.cover!,
+                                          ),
                                   ),
                                 ),
                               Center(
@@ -110,25 +141,35 @@ class _OnlinePlaylistHandlerBodyPhoneState
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
+                              controller: widget.titleController,
                               onChanged: widget.onChanged,
                               decoration: InputDecoration(
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: widget.redIt && widget.title.isEmpty
+                                    color: widget.redIt &&
+                                            widget.titleController.value.text
+                                                    .trim() ==
+                                                ""
                                         ? Colors.red
                                         : Colors.white,
                                   ),
                                 ),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: widget.redIt && widget.title.isEmpty
+                                    color: widget.redIt &&
+                                            widget.titleController.value.text
+                                                    .trim() ==
+                                                ""
                                         ? Colors.red
                                         : Colors.white,
                                   ),
                                 ),
                                 disabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: widget.redIt && widget.title.isEmpty
+                                    color: widget.redIt &&
+                                            widget.titleController.value.text
+                                                    .trim() ==
+                                                ""
                                         ? Colors.red
                                         : Colors.white,
                                   ),
@@ -257,7 +298,12 @@ class _OnlinePlaylistHandlerBodyPhoneState
                       children: [
                         iconButton(
                           widget.createPlaylist ||
-                                  playlistTrackToAddData.value == null
+                                  playlistTrackToAddData.value == null ||
+                                  (playlistTrackToAddData.value != null
+                                      ? playlistTrackToAddData
+                                              .value!["playlist"] !=
+                                          null
+                                      : true)
                               ? AppIcons.x
                               : AppIcons.addToQueue,
                           Colors.white,
@@ -279,7 +325,12 @@ class _OnlinePlaylistHandlerBodyPhoneState
                           duration: const Duration(milliseconds: 350),
                           curve: Curves.fastEaseInToSlowEaseOut,
                           width: widget.createPlaylist ||
-                                  playlistTrackToAddData.value == null
+                                  playlistTrackToAddData.value == null ||
+                                  (playlistTrackToAddData.value != null
+                                      ? playlistTrackToAddData
+                                              .value!["playlist"] !=
+                                          null
+                                      : true)
                               ? 0
                               : 65,
                           child: Row(
@@ -309,7 +360,11 @@ class _OnlinePlaylistHandlerBodyPhoneState
         ),
         SelectedTracksPhone(
           height: height,
-          createPlaylist: widget.createPlaylist,
+          createPlaylist: widget.createPlaylist ||
+              playlistTrackToAddData.value == null ||
+              (playlistTrackToAddData.value != null
+                  ? playlistTrackToAddData.value!["playlist"] != null
+                  : true),
           size: size,
           onVerticalDragEnd: (details) {
             // Set a threshold for the drag distance

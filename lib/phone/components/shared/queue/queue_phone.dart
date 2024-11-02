@@ -104,6 +104,15 @@ class _QueuePhoneState extends State<QueuePhone> {
                                 });
                               },
                               changeLyricsOn: widget.changeLyricsOn,
+                              saveAsPlaylist: () {
+                                if (queue != null) {
+                                  OpenPlaylist().open(
+                                    context,
+                                    playlist:
+                                        queue.map((track) => track.id).toList(),
+                                  );
+                                }
+                              },
                             ),
                           );
                         });

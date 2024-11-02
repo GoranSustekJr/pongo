@@ -60,7 +60,7 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
           return ListView.builder(
             padding: EdgeInsets.only(
               top: 35,
-              bottom: MediaQuery.of(context).padding.bottom,
+              bottom: MediaQuery.of(context).padding.bottom + 15,
             ),
             itemCount: widget.tracks.length,
             shrinkWrap: true,
@@ -78,28 +78,20 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
                     child: Row(
                       children: [
                         SizedBox(
-                            height: 40,
-                            width: 20,
-                            child: Trailing(
-                              show: !widget.loading
-                                  .contains(widget.tracks[index].id),
-                              showThis: id ==
-                                      "library.onlineplaylist:${widget.opid}.${widget.tracks[index].id}" &&
-                                  audioServiceHandler
-                                          .audioPlayer.currentIndex ==
-                                      index,
-                              trailing:
-                                  const CircularProgressIndicator.adaptive(
-                                key: ValueKey(true),
-                              ),
-                            ) /* AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: widget.loading.contains(widget.favourites[index].id)
-                                  ? const CircularProgressIndicator.adaptive(
-                                      key: ValueKey(true),
-                                    )
-                                  : const SizedBox()), */
+                          height: 40,
+                          width: 20,
+                          child: Trailing(
+                            show: !widget.loading
+                                .contains(widget.tracks[index].id),
+                            showThis: id ==
+                                    "library.onlineplaylist:${widget.opid}.${widget.tracks[index].id}" &&
+                                audioServiceHandler.audioPlayer.currentIndex ==
+                                    index,
+                            trailing: const CircularProgressIndicator.adaptive(
+                              key: ValueKey(true),
                             ),
+                          ),
+                        ),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           width: widget.edit ? 40 : 0,

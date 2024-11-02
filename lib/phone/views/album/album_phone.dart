@@ -1,7 +1,9 @@
 import 'dart:ui';
 import 'package:blurhash_ffi/blurhash.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/components/shared/buttons/back_like_button.dart';
 import 'album_body_phone.dart';
 
 class AlbumPhone extends StatefulWidget {
@@ -326,6 +328,20 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                                 backButton(context),
                                 Expanded(
                                   child: Container(),
+                                ),
+                                backLikeButton(
+                                  context,
+                                  AppIcons.playlist,
+                                  () {
+                                    OpenPlaylist().open(
+                                      context,
+                                      title: widget.album.name,
+                                      cover: widget.album.image,
+                                      playlist: tracks
+                                          .map((track) => track.id)
+                                          .toList(),
+                                    );
+                                  },
                                 ),
                               ],
                             ),

@@ -30,7 +30,7 @@ List<PullDownMenuEntry> queueMorePullDownMenuItems(
           ),
           const PullDownMenuDivider.large(),
           PullDownMenuItem(
-            onTap: () async {},
+            onTap: saveAsPlaylist,
             title: AppLocalizations.of(context)!.saveasplaylist,
             icon: AppIcons.playlist,
             itemTheme: const PullDownMenuItemTheme(

@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/alerts/audio%20player/halt_alert.dart';
 import 'package:pongo/phone/components/queue/pull%20down%20menus/queue_edit_pull_down_menu_items.dart';
 import 'package:pongo/phone/components/queue/pull%20down%20menus/queue_more_pull_down_menu_items.dart';
 
@@ -13,6 +12,7 @@ class QueueButtonPhone extends StatelessWidget {
   final Function() changeEditQueue;
   final Function() removeItemsFromQueue;
   final Function() changeLyricsOn;
+  final Function() saveAsPlaylist;
   const QueueButtonPhone({
     super.key,
     required this.showQueue,
@@ -22,6 +22,7 @@ class QueueButtonPhone extends StatelessWidget {
     required this.changeEditQueue,
     required this.removeItemsFromQueue,
     required this.changeLyricsOn,
+    required this.saveAsPlaylist,
   });
 
   @override
@@ -187,7 +188,7 @@ class QueueButtonPhone extends StatelessWidget {
                         : queueMorePullDownMenuItems(
                             context,
                             changeEditQueue,
-                            () {},
+                            saveAsPlaylist,
                             () {},
                           ),
                     buttonBuilder: (context, showMenu) => CupertinoButton(

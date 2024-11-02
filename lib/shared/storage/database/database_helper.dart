@@ -159,6 +159,10 @@ class DatabaseHelper {
     removeTrackFromOnPlaylist(this, opid, trackId, ordNum);
   }
 
+  Future<void> removeTracksFromOnlinePlaylist(List<String> stid) async {
+    await removeTracksFromOnPlaylist(this, stid);
+  }
+
   Future<void> removeOnlinePlaylist(int opid) async {
     await removeOnPlaylist(this, opid);
   }

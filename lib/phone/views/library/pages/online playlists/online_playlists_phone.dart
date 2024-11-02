@@ -3,6 +3,7 @@ import 'package:blurhash_ffi/blurhash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/action%20sheets/continue_cancel_action_sheet.dart';
+import 'package:pongo/phone/components/shared/buttons/back_like_button.dart';
 import 'package:pongo/phone/components/shared/tiles/playlist_tile.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/online_playlist_phone.dart';
 
@@ -95,66 +96,13 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                           Expanded(
                             child: Container(),
                           ),
-                          kIsApple
-                              ? CupertinoButton(
-                                  onPressed: () {
-                                    OpenPlaylist().open(context);
-                                  },
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(60),
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                          sigmaX: 10, sigmaY: 10),
-                                      child: Container(
-                                        height: 50,
-                                        width: 50,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(60),
-                                          color: Colors.black.withAlpha(20),
-                                        ),
-                                        child: const Stack(
-                                          children: [
-                                            Positioned(
-                                              left: 9,
-                                              top: 11,
-                                              child: Icon(
-                                                CupertinoIcons.add,
-                                                size: 27.5,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(60),
-                                    color: Col.primaryCard.withAlpha(150),
-                                  ),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      OpenPlaylist().open(context);
-                                    },
-                                    icon: const Stack(
-                                      children: [
-                                        Positioned(
-                                          left: 2,
-                                          top: 3,
-                                          child: Icon(
-                                            CupertinoIcons.add,
-                                            size: 27.5,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                          backLikeButton(
+                            context,
+                            CupertinoIcons.add,
+                            () {
+                              OpenPlaylist().open(context);
+                            },
+                          ),
                         ],
                       ),
                       flexibleSpace: ClipRRect(

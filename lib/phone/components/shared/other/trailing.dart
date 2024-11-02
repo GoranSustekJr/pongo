@@ -20,7 +20,7 @@ class Trailing extends StatelessWidget {
               duration: const Duration(milliseconds: 200),
               child: showThis
                   ? const SizedBox(
-                      width: 40,
+                      width: 20,
                       height: 40,
                       child: Center(
                         child: Icon(

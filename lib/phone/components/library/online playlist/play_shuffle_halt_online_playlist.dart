@@ -10,7 +10,7 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
   final Function() play;
   final Function() shuffle;
   final Function() stopEdit;
-  final Function() unfavourite;
+  final Function() remove;
   const PlayShuffleHaltOnlinePlaylist({
     super.key,
     required this.opid,
@@ -22,7 +22,7 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
     required this.play,
     required this.shuffle,
     required this.stopEdit,
-    required this.unfavourite,
+    required this.remove,
   });
 
   @override
@@ -66,10 +66,10 @@ class _PlayShuffleHaltOnlinePlaylistState
                         edgeInsets: EdgeInsets.zero,
                       ),
                       iconButton(
-                        AppIcons.heartSlash,
+                        AppIcons.trash,
                         Colors.white,
                         () {
-                          widget.unfavourite();
+                          widget.remove();
                         },
                         edgeInsets: EdgeInsets.zero,
                       ),

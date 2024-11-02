@@ -16,6 +16,7 @@ class QueueBodyPhone extends StatelessWidget {
   final Function() changeEditQueue;
   final Function() removeItemsFromQueue;
   final Function() changeLyricsOn;
+  final Function() saveAsPlaylist;
   const QueueBodyPhone({
     super.key,
     required this.queue,
@@ -30,6 +31,7 @@ class QueueBodyPhone extends StatelessWidget {
     required this.changeEditQueue,
     required this.removeItemsFromQueue,
     required this.changeLyricsOn,
+    required this.saveAsPlaylist,
   });
 
   @override
@@ -204,6 +206,7 @@ class QueueBodyPhone extends StatelessWidget {
                       changeEditQueue: changeEditQueue,
                       removeItemsFromQueue: removeItemsFromQueue,
                       changeLyricsOn: changeLyricsOn,
+                      saveAsPlaylist: saveAsPlaylist,
                     ),
                   ],
                 ),
