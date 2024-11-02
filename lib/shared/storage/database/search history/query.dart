@@ -52,7 +52,7 @@ Future<List<String>> queryLFHTrcksBy5(DatabaseHelper dbHelper) async {
   Database db = await dbHelper.database;
   // Query the max order for the given opid
   final List<Map<String, dynamic>> maps = await db.query('lfh_tracks',
-      columns: ['stid'], orderBy: 'id DESC', limit: 5);
+      columns: ['stid'], orderBy: 'RANDOM()', limit: 5);
 
   // Convert the results to a list of strings
   return List.generate(maps.length, (i) {
