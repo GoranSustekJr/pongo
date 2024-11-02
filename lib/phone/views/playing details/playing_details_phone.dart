@@ -212,6 +212,7 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                       currentMediaItem: currentMediaItem!,
                       lyricsOn: lyricsOn,
                       showQueue: showQueue,
+                      syncLyrics: useSynced,
                       changeLyricsOn: () {
                         setState(() {
                           lyricsOn = !lyricsOn;

@@ -132,12 +132,12 @@ class SearchBodyPhone extends StatelessWidget {
                             height: 40,
                             width: 20,
                             child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 200),
-                                child: loading.contains(tracks[index].id)
-                                    ? const CircularProgressIndicator.adaptive(
-                                        key: ValueKey(true),
-                                      )
-                                    : const SizedBox() /* StreamBuilder(
+                              duration: const Duration(milliseconds: 200),
+                              child: loading.contains(tracks[index].id)
+                                  ? const CircularProgressIndicator.adaptive(
+                                      key: ValueKey(true),
+                                    )
+                                  : StreamBuilder(
                                       key: const ValueKey(false),
                                       stream:
                                           audioServiceHandler.mediaItem.stream,
@@ -152,22 +152,26 @@ class SearchBodyPhone extends StatelessWidget {
                                                     .audioPlayer.playingStream,
                                                 builder:
                                                     (context, playingStream) {
-                                                  return SizedBox(
-                                                    width: 20,
-                                                    height: 40,
-                                                    child: MiniMusicVisualizer(
-                                                      color: Colors.white,
-                                                      radius: 60,
-                                                      animate:
-                                                          playingStream.data ??
-                                                              false,
+                                                  return Trailing(
+                                                    show: !loading.contains(
+                                                        tracks[index].id),
+                                                    showThis:
+                                                        id == tracks[index].id,
+                                                    trailing: const Padding(
+                                                      padding: EdgeInsets.only(
+                                                          right: 10),
+                                                      child:
+                                                          CircularProgressIndicator
+                                                              .adaptive(
+                                                        key: ValueKey(true),
+                                                      ),
                                                     ),
                                                   );
                                                 })
                                             : const SizedBox();
                                       },
-                                    ), */
-                                ),
+                                    ),
+                            ),
                           ),
                           FutureBuilder<bool>(
                             future: DatabaseHelper()

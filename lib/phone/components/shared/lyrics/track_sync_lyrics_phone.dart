@@ -260,14 +260,11 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                             style: TextStyle(
                                               color: currentLyricIndex == index
                                                   ? Colors.white
-                                                  : (currentLyricIndex - index)
-                                                              .abs() ==
+                                                  : (index - currentLyricIndex) ==
                                                           1
                                                       ? Colors.white
                                                           .withAlpha(175)
-                                                      : (currentLyricIndex -
-                                                                      index)
-                                                                  .abs() ==
+                                                      : (index - currentLyricIndex) ==
                                                               2
                                                           ? Colors.white
                                                               .withAlpha(150)

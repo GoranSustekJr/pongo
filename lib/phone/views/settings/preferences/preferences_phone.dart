@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/phone/components/settings/preferences/apple_lyrics_text_align_picker.dart';
 import 'package:pongo/phone/components/settings/preferences/apple_number_picker.dart';
@@ -124,21 +126,27 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                           ),
                         ],
                       ),
-                      flexibleSpace: FlexibleSpaceBar(
-                        centerTitle: true,
-                        title: Text(
-                          AppLocalizations.of(context)!.preferences,
-                          style: TextStyle(
-                            fontSize: kIsApple ? 25 : 30,
-                            fontWeight:
-                                kIsApple ? FontWeight.w700 : FontWeight.w800,
+                      flexibleSpace: ClipRRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          child: FlexibleSpaceBar(
+                            centerTitle: true,
+                            title: Text(
+                              AppLocalizations.of(context)!.preferences,
+                              style: TextStyle(
+                                fontSize: kIsApple ? 25 : 30,
+                                fontWeight: kIsApple
+                                    ? FontWeight.w700
+                                    : FontWeight.w800,
+                              ),
+                            ),
+                            stretchModes: const [
+                              StretchMode.zoomBackground,
+                              StretchMode.blurBackground,
+                              StretchMode.fadeTitle,
+                            ],
                           ),
                         ),
-                        stretchModes: const [
-                          StretchMode.zoomBackground,
-                          StretchMode.blurBackground,
-                          StretchMode.fadeTitle,
-                        ],
                       ),
                     ),
                     SliverList(

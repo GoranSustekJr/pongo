@@ -9,7 +9,8 @@ class AppIcons {
 
   static final mail = kIsApple ? CupertinoIcons.mail : Icons.mail;
 
-  static const playlist = Icons.queue_music_rounded;
+  static final playlist =
+      kIsApple ? CupertinoIcons.music_albums : Icons.queue_music_rounded;
 
   static final premium =
       kIsApple ? CupertinoIcons.checkmark_circle : Icons.verified_rounded;

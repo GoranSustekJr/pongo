@@ -141,7 +141,9 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                 )
               : ListView.builder(
                   key: const ValueKey(false),
-                  padding: const EdgeInsets.only(top: kToolbarHeight * 2 + 10),
+                  padding: const EdgeInsets.only(
+                      top: kToolbarHeight * 2 + 10,
+                      bottom: kBottomNavigationBarHeight * 2),
                   itemCount: playlists.length,
                   itemBuilder: (context, index) {
                     return Padding(
@@ -192,20 +194,6 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             SizedBox(
-                              width: 50,
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 200),
-                                child: selectedPlaylists
-                                        .contains(playlists[index]['opid'])
-                                    ? const Icon(
-                                        key: ValueKey(true),
-                                        CupertinoIcons.checkmark_circle)
-                                    : const Icon(
-                                        key: ValueKey(false),
-                                        CupertinoIcons.circle),
-                              ),
-                            ),
-                            SizedBox(
                               width: 15,
                               child: AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 200),
@@ -218,6 +206,21 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                                         key: ValueKey(true),
                                         CupertinoIcons.bookmark_fill)
                                     : null,
+                              ),
+                            ),
+                            razw(7.5),
+                            SizedBox(
+                              width: 10,
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 200),
+                                child: selectedPlaylists
+                                        .contains(playlists[index]['opid'])
+                                    ? const Icon(
+                                        key: ValueKey(true),
+                                        CupertinoIcons.checkmark_circle)
+                                    : const Icon(
+                                        key: ValueKey(false),
+                                        CupertinoIcons.circle),
                               ),
                             ),
                           ],
@@ -237,59 +240,70 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
               borderRadius: BorderRadius.circular(60),
               child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      iconButton(
-                        createPlaylist ? AppIcons.x : AppIcons.addToQueue,
-                        Colors.white,
-                        changeCreatePlaylist,
-                      ),
-                      Container(
-                        width: 1,
-                        height: 20,
-                        color: Colors.white,
-                      ),
-                      textButton(
-                        AppLocalizations.of(context)!.cancel,
-                        () {
-                          showPlaylistHandler.value = false;
-                        },
-                        const TextStyle(color: Colors.white),
-                      ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 350),
-                        curve: Curves.fastEaseInToSlowEaseOut,
-                        width: createPlaylist ? 0 : 65,
-                        child: Row(
-                          children: [
-                            Flexible(
-                              child: Container(
-                                width: 1,
-                                height: 20,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Flexible(
-                              child: iconButton(
-                                CupertinoIcons.plus,
-                                Colors.white,
-                                addTracksToPlalists,
-                              ),
-                            ),
-                          ],
+                  child: Container(
+                    color: Colors.black.withAlpha(50),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        iconButton(
+                          createPlaylist || playlistTrackToAddData.value == null
+                              ? AppIcons.x
+                              : AppIcons.addToQueue,
+                          Colors.white,
+                          changeCreatePlaylist,
                         ),
-                      ),
-                    ],
+                        Container(
+                          width: 1,
+                          height: 20,
+                          color: Colors.white,
+                        ),
+                        textButton(
+                          AppLocalizations.of(context)!.cancel,
+                          () {
+                            showPlaylistHandler.value = false;
+                          },
+                          const TextStyle(color: Colors.white),
+                        ),
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 350),
+                          curve: Curves.fastEaseInToSlowEaseOut,
+                          width: createPlaylist ||
+                                  playlistTrackToAddData.value == null
+                              ? 0
+                              : 65,
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Container(
+                                  width: 1,
+                                  height: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Flexible(
+                                child: iconButton(
+                                  CupertinoIcons.plus,
+                                  Colors.white,
+                                  addTracksToPlalists,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   )),
             ),
           ),
         ),
         AnimatedPositioned(
           duration: const Duration(milliseconds: 350),
-          curve:
-              createPlaylist ? Curves.easeIn : Curves.fastEaseInToSlowEaseOut,
-          top: createPlaylist ? -300 : kToolbarHeight,
+          curve: createPlaylist || playlistTrackToAddData.value == null
+              ? Curves.easeIn
+              : Curves.fastEaseInToSlowEaseOut,
+          top: createPlaylist || playlistTrackToAddData.value == null
+              ? -300
+              : kToolbarHeight,
           left: 0,
           right: 0,
           child: ClipRRect(

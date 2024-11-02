@@ -748,5 +748,15 @@
     "pleaseenablepongoaccesstophotos": "Please enable Pongo access to photos",
     "@pleaseenablepongoaccesstophotos": {
         "description": "pleaseenablepongoaccesstophotos"
+    },
+
+    "onlineplaylist": "Online playlist",
+    "@onlineplaylist": {
+        "description": "onlineplaylist"
+    },
+
+    "cropimage": "Crop image",
+    "@cropimage": {
+        "description": "cropimage"
     }
 }

@@ -51,7 +51,7 @@ class TrackPlainLyricsPhone extends StatelessWidget {
                           itemCount: lyrics.length,
                           itemBuilder: (context, index) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 0),
+                              padding: const EdgeInsets.symmetric(vertical: 15),
                               child: Column(
                                 children: [
                                   Row(
@@ -62,16 +62,14 @@ class TrackPlainLyricsPhone extends StatelessWidget {
                                         child: SizedBox(
                                           width: size.width - 20,
                                           child: Text(
-                                            "${lyrics[index]}\n\n",
+                                            "${lyrics[index]}",
                                             style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: lyrics[index] == " \n"
-                                                    ? 15
-                                                    : 35,
-                                                height: lyrics[index] == " "
-                                                    ? 0.5
-                                                    : 1.5),
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: lyrics[index] == " \n"
+                                                  ? 15
+                                                  : 35,
+                                            ),
                                             maxLines: null,
                                             softWrap: true,
                                             textAlign: currentLyricsTextAlignment

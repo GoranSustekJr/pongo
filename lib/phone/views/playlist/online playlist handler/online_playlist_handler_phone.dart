@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/playing%20details/controls.dart';
@@ -69,25 +69,53 @@ class _OnlinePlaylistHandlerPhoneState
     try {
       pickedFile = await ImagePicker().pickImage(
         source: ImageSource.gallery,
-        imageQuality: 1,
         requestFullMetadata: false,
       );
     } catch (e) {
       if (e.toString().contains("access_denied")) {
-        Notifications().showWarningNotification(context,
-            AppLocalizations.of(context)!.pleaseallowaccesstophotogalery);
+        Notifications().showWarningNotification(
+          context,
+          AppLocalizations.of(context)!.pleaseallowaccesstophotogalery,
+        );
+        return;
       }
     }
-    Uint8List? bytes;
+
     if (pickedFile != null) {
-      bytes = await File(pickedFile.path).readAsBytes();
-    }
-    setState(() {
-      if (pickedFile != null) {
-        cover = File(pickedFile.path);
-        coverBytes = bytes!;
+      // Crop the image to a square
+      CroppedFile? croppedFile = await ImageCropper().cropImage(
+        sourcePath: pickedFile.path,
+        maxHeight: 500,
+        maxWidth: 500,
+        aspectRatio: const CropAspectRatio(
+          ratioX: 1,
+          ratioY: 1,
+        ), // Square aspect ratio
+
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: AppLocalizations.of(context)!.cropimage,
+            toolbarColor: Colors.black,
+            toolbarWidgetColor: Colors.white,
+            hideBottomControls: true,
+          ),
+          IOSUiSettings(
+            title: AppLocalizations.of(context)!.cropimage,
+            cancelButtonTitle: AppLocalizations.of(context)!.cancel,
+            doneButtonTitle: AppLocalizations.of(context)!.okey,
+          ),
+        ],
+      );
+
+      if (croppedFile != null) {
+        Uint8List bytes = await File(croppedFile.path).readAsBytes();
+
+        setState(() {
+          cover = File(croppedFile.path);
+          coverBytes = bytes;
+        });
       }
-    });
+    }
   }
 
   @override
@@ -145,6 +173,10 @@ class _OnlinePlaylistHandlerPhoneState
                               redIt = false;
                               createPlaylist = false;
                             });
+                            if (createPlaylist ||
+                                playlistTrackToAddData.value == null) {
+                              showPlaylistHandler.value = false;
+                            }
                           } else {
                             setState(() {
                               redIt = true;

@@ -8,7 +8,7 @@ songTileSchimmer(context, bool first, bool last) {
     baseColor: Col.onIcon,
     highlightColor: Col.background.withAlpha(50),
     child: SizedBox(
-      height: 85,
+      height: 65,
       width: MediaQuery.of(context).size.width - 20,
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -27,13 +27,13 @@ songTileSchimmer(context, bool first, bool last) {
               Padding(
                 padding: const EdgeInsets.only(left: 15),
                 child: Container(
-                  width: 65,
-                  height: 65,
+                  width: 50,
+                  height: 50,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(7.5),
                     color: Col.realBackground.withAlpha(150),
                   ),
-                  child: shimmContainer(65, 65, radius),
+                  child: shimmContainer(50, 50, radius),
                 ),
               ),
               razw(12.5),

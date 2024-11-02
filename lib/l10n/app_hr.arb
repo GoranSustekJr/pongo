@@ -149,6 +149,8 @@
     "playlistname": "Ime playliste",
     "successfullysavedsynctimedelay": "Sinkronizacija vremenskog kašnjenja za tekst ove pjesme uspješno spremljena",
     "playlistnamealreadyexists": "Istoimena playlista već postoji",
-    "pleaseallowaccesstophotogalery": "Molimo omogućite Pongu pristup fotografijama"
+    "pleaseallowaccesstophotogalery": "Molimo omogućite Pongu pristup fotografijama",
+    "onlineplaylist": "Online playlisa",
+    "cropimage": "Izreži sliku"
 
 }

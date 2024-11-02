@@ -28,6 +28,83 @@ class PlaylistSongTile extends StatelessWidget {
       bottomRight: last ? Radius.circular(radius) : Radius.zero,
     );
 
+    final Widget child = Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (!first)
+          Container(
+            height: 1,
+            width: MediaQuery.of(context).size.width - 75,
+            color: Col.onIcon.withAlpha(50),
+          ),
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(7.5),
+                  color: Col.realBackground.withAlpha(150),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(7.5),
+                  child: track.album ==
+                          null //!track["track"].keys.contains("album")
+                      ? Center(
+                          child: Icon(AppIcons.blankTrack, color: Colors.white),
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: calculateWantedResolutionForTrack(
+                            track.album!.images,
+                            100,
+                            100,
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+            ),
+            razw(12.5),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    track.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 16.5,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  razh(2.5),
+                  Text(
+                    track.artists.map((artist) => artist.name).join(', '),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white.withAlpha(200),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              child: trailing,
+            ),
+          ],
+        ),
+      ],
+    );
+
     return Padding(
       padding: EdgeInsets.zero,
       child: AnimatedOpacity(
@@ -47,86 +124,7 @@ class PlaylistSongTile extends StatelessWidget {
                     onPressed: () {
                       function();
                     },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        if (!first)
-                          Container(
-                            height: 1,
-                            width: MediaQuery.of(context).size.width - 100,
-                            color: Col.onIcon.withAlpha(50),
-                          ),
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(7.5),
-                                  color: Col.realBackground.withAlpha(150),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(7.5),
-                                  child: track.album ==
-                                          null //!track["track"].keys.contains("album")
-                                      ? Center(
-                                          child: Icon(AppIcons.blankTrack,
-                                              color: Colors.white),
-                                        )
-                                      : CachedNetworkImage(
-                                          imageUrl:
-                                              calculateWantedResolutionForTrack(
-                                            track.album!.images,
-                                            100,
-                                            100,
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
-                              ),
-                            ),
-                            razw(12.5),
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    track.name,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 16.5,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  razh(2.5),
-                                  Text(
-                                    track.artists
-                                        .map((artist) => artist.name)
-                                        .join(', '),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 12.5,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white.withAlpha(200),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              child: trailing,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                    child: child,
                   ),
                 )
               : InkWell(
@@ -142,75 +140,7 @@ class PlaylistSongTile extends StatelessWidget {
                       borderRadius: borderRadius,
                       color: Col.primaryCard.withAlpha(200),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: 55,
-                          height: 55,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(7.5),
-                            color: Col.realBackground.withAlpha(150),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(7.5),
-                            child: track.album == null
-                                ? Center(
-                                    child: Icon(AppIcons.blankTrack,
-                                        color: Colors.white),
-                                  )
-                                : CachedNetworkImage(
-                                    imageUrl: calculateWantedResolutionForTrack(
-                                      track.album!.images,
-                                      100,
-                                      100,
-                                    ),
-                                    fit: BoxFit.cover,
-                                  ),
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            razw(12.5),
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    track.name,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 18.5,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  razh(2.5),
-                                  Text(
-                                    track.artists
-                                        .map((artist) => artist.name)
-                                        .join(', '),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.white.withAlpha(200),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              child: trailing,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                    child: child,
                   ),
                 ),
         ),

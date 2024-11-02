@@ -45,7 +45,8 @@ class _QueuePhoneState extends State<QueuePhone> {
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
     return AnimatedPositioned(
-      duration: const Duration(milliseconds: 0),
+      duration: Duration(
+          milliseconds: widget.showQueue && !widget.lyricsOn ? 0 : 250),
       top: widget.showQueue && !widget.lyricsOn ? 0 : size.height,
       child: AnimatedOpacity(
         opacity: widget.showQueue && !widget.lyricsOn ? 1 : 0,

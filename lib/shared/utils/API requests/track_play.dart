@@ -93,7 +93,6 @@ class TrackPlay {
 
   Future<void> playConcenating(
     context,
-    String spid,
     List<Track> tracks,
     Map<String, double> existingTracks,
     String id,
@@ -224,7 +223,6 @@ class TrackPlay {
 
   Future<void> playConcenatingTrack(
       context,
-      String spid,
       List<sp.Track> tracks,
       Map<String, double> existingTracks,
       String id,

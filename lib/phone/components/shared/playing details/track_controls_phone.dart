@@ -6,6 +6,7 @@ class TrackControlsPhone extends StatelessWidget {
   final MediaItem currentMediaItem;
   final bool lyricsOn;
   final bool showQueue;
+  final bool syncLyrics;
   final Function() changeLyricsOn;
   final Function() changeShowQueue;
   final Function(String) showAlbum;
@@ -17,6 +18,7 @@ class TrackControlsPhone extends StatelessWidget {
     required this.showQueue,
     required this.changeShowQueue,
     required this.showAlbum,
+    required this.syncLyrics,
   });
 
   @override
@@ -47,7 +49,7 @@ class TrackControlsPhone extends StatelessWidget {
           width: size.width,
           height: 400,
           decoration: BoxDecoration(
-            gradient: lyricsOn
+            gradient: lyricsOn && syncLyrics
                 ? LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
@@ -65,7 +67,8 @@ class TrackControlsPhone extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
               filter: ImageFilter.blur(
-                  sigmaX: lyricsOn ? 0.1 : x, sigmaY: lyricsOn ? 0.1 : x),
+                  sigmaX: lyricsOn && syncLyrics ? 0.1 : x,
+                  sigmaY: lyricsOn && syncLyrics ? 0.1 : x),
               blendMode: BlendMode.src,
               child: Padding(
                 padding: const EdgeInsets.only(

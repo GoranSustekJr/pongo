@@ -1,12 +1,5 @@
 import 'dart:ui';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/alerts/audio%20player/halt_alert.dart';
-import 'package:pongo/phone/alerts/favourites/favourites.dart';
-import 'package:pongo/phone/components/library/favourites/play_shuffle_halt_favourites.dart';
-import 'package:pongo/phone/components/shared/shimmer/song_shimmer.dart';
-import 'package:pongo/phone/views/library/pages/favourites/favourites_body_phone.dart';
-import 'package:pongo/shared/utils/API%20requests/searialized_data.dart';
-import 'package:pongo/shared/utils/API%20requests/tracks.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 class FavouritesPhone extends StatefulWidget {
@@ -143,7 +136,6 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
             //  op:${widget.opid}.$stid
             TrackPlay().playConcenatingTrack(
               context,
-              "",
               newTracks,
               existingTracks,
               "library.favourites.",
@@ -268,7 +260,6 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
             //  op:${widget.opid}.$stid
             TrackPlay().playConcenatingTrack(
               context,
-              "",
               favourites,
               existingTracks,
               "library.favourites.",
@@ -447,12 +438,13 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                     controller: scrollController,
                     slivers: [
                       SliverAppBar(
-                        snap: false,
-                        collapsedHeight: kToolbarHeight,
-                        expandedHeight: size.height / 3,
-                        floating: false,
+                        snap: true,
+                        floating: true,
                         pinned: true,
                         stretch: true,
+                        automaticallyImplyLeading: false,
+                        expandedHeight:
+                            kIsApple ? size.height / 5 : size.height / 4,
                         title: Row(
                           children: [
                             backButton(context),
@@ -461,48 +453,27 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                             ),
                           ],
                         ),
-                        automaticallyImplyLeading: false,
-                        flexibleSpace: FlexibleSpaceBar(
-                          titlePadding: EdgeInsets.zero,
-                          centerTitle: true,
-                          title: AppBar(
-                            automaticallyImplyLeading: false,
-                            title: Row(
-                              children: [
-                                backButton(context),
-                                Expanded(
-                                    child: Text(
-                                  AppLocalizations.of(context)!.favouritesongs,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                              ],
-                            ),
-                            flexibleSpace: Opacity(
-                              opacity: size.height / 3 <= scrollControllerOffset
-                                  ? 1
-                                  : scrollControllerOffset / (size.height / 3),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 10,
-                                  sigmaY: 10,
-                                ),
-                                child: Container(),
-                              ),
-                            ),
-                          ),
-                          background: Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: size.height / 9),
-                              child: Text(
+                        flexibleSpace: ClipRRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: FlexibleSpaceBar(
+                              centerTitle: true,
+                              title: Text(
                                 AppLocalizations.of(context)!.favouritesongs,
                                 style: TextStyle(
-                                  fontSize: kIsApple ? 30 : 40,
+                                  fontSize: kIsApple ? 25 : 30,
                                   fontWeight: kIsApple
                                       ? FontWeight.w700
                                       : FontWeight.w800,
                                 ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
                               ),
+                              stretchModes: const [
+                                StretchMode.zoomBackground,
+                                StretchMode.blurBackground,
+                                StretchMode.fadeTitle,
+                              ],
                             ),
                           ),
                         ),
@@ -609,61 +580,61 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                         ),
                       ),
                       SliverToBoxAdapter(
-                          child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 300),
-                              child: favourites.isNotEmpty
-                                  ? SizedBox(
-                                      key: const ValueKey(true),
-                                      child: favouritesSTIDS.isEmpty
-                                          ? Column(
-                                              children: [
-                                                razh(size.height / 3),
-                                                const Text("Empty"),
-                                              ],
-                                            )
-                                          : FavouritesBodyPhone(
-                                              favourites: favourites,
-                                              numberOfSTIDS:
-                                                  favouritesSTIDS.length,
-                                              missingTracks: missingTracks,
-                                              loading: loading,
-                                              edit: edit,
-                                              play: (index) {
-                                                play(index: index);
-                                              },
-                                              selectedTracks: selectedTracks,
-                                              select: (stid) {
-                                                setState(() {
-                                                  if (selectedTracks
-                                                      .contains(stid)) {
-                                                    selectedTracks.remove(stid);
-                                                  } else {
-                                                    selectedTracks.add(stid);
-                                                  }
-                                                });
-                                              },
-                                            ),
-                                    )
-                                  : SingleChildScrollView(
-                                      key: const ValueKey(false),
-                                      child: Column(
-                                        children: [
-                                          ListView.builder(
-                                            itemCount: lengthOfFavourites,
-                                            shrinkWrap: true,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            itemBuilder: (context, index) {
-                                              return songTileSchimmer(
-                                                  context,
-                                                  index == 0,
-                                                  index ==
-                                                      lengthOfFavourites--);
-                                            },
-                                          ),
-                                        ],
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: favourites.isNotEmpty
+                              ? SizedBox(
+                                  key: const ValueKey(true),
+                                  child: favouritesSTIDS.isEmpty
+                                      ? Column(
+                                          children: [
+                                            razh(size.height / 3),
+                                            const Text("Empty"),
+                                          ],
+                                        )
+                                      : FavouritesBodyPhone(
+                                          favourites: favourites,
+                                          numberOfSTIDS: favouritesSTIDS.length,
+                                          missingTracks: missingTracks,
+                                          loading: loading,
+                                          edit: edit,
+                                          play: (index) {
+                                            play(index: index);
+                                          },
+                                          selectedTracks: selectedTracks,
+                                          select: (stid) {
+                                            setState(() {
+                                              if (selectedTracks
+                                                  .contains(stid)) {
+                                                selectedTracks.remove(stid);
+                                              } else {
+                                                selectedTracks.add(stid);
+                                              }
+                                            });
+                                          },
+                                        ),
+                                )
+                              : SingleChildScrollView(
+                                  key: const ValueKey(false),
+                                  child: Column(
+                                    children: [
+                                      ListView.builder(
+                                        itemCount: lengthOfFavourites,
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          return songTileSchimmer(
+                                              context,
+                                              index == 0,
+                                              index == lengthOfFavourites--);
+                                        },
                                       ),
-                                    ))),
+                                    ],
+                                  ),
+                                ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

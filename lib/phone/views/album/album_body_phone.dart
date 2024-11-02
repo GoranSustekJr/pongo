@@ -52,7 +52,7 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
         padding: const EdgeInsets.only(
           top: 35,
           left: 15,
-          right: 15,
+          right: 0,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -97,43 +97,44 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
                       }
                     }
                   },
-                  trailing: SizedBox(
-                    height: 40,
-                    width: 20,
-                    child: AnimatedSwitcher(
+                  trailing: Padding(
+                    padding: const EdgeInsets.only(right: 15),
+                    child: SizedBox(
+                      height: 40,
+                      width: 20,
+                      child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
                         child: widget.loading.contains(widget.tracks[index].id)
                             ? const CircularProgressIndicator.adaptive(
                                 key: ValueKey(true),
                               )
-                            : const SizedBox() /* StreamBuilder(
-                              key: const ValueKey(false),
-                              stream: audioServiceHandler.mediaItem.stream,
-                              builder: (context, snapshot) {
-                                final String id = snapshot.data != null
-                                    ? snapshot.data!.id.split(".")[2]
-                                    : "";
+                            : StreamBuilder(
+                                key: const ValueKey(false),
+                                stream: audioServiceHandler.mediaItem.stream,
+                                builder: (context, snapshot) {
+                                  final String id = snapshot.data != null
+                                      ? snapshot.data!.id
+                                      : "";
 
-                                return id == widget.tracks[index].id
-                                    ? StreamBuilder(
-                                        stream: audioServiceHandler
-                                            .audioPlayer.playingStream,
-                                        builder: (context, playingStream) {
-                                          return SizedBox(
-                                            width: 20,
-                                            height: 40,
-                                            child: MiniMusicVisualizer(
-                                              color: Colors.white,
-                                              radius: 60,
-                                              animate:
-                                                  playingStream.data ?? false,
-                                            ),
-                                          );
-                                        })
-                                    : const SizedBox();
-                              },
-                            ), */
-                        ),
+                                  return Trailing(
+                                    show: !widget.loading
+                                        .contains(widget.tracks[index].id),
+                                    showThis: id ==
+                                            "search.album:${widget.album.id}.${widget.tracks[index].id}" &&
+                                        audioServiceHandler
+                                                .audioPlayer.currentIndex ==
+                                            index,
+                                    trailing: const Padding(
+                                      padding: EdgeInsets.only(right: 10),
+                                      child: CircularProgressIndicator.adaptive(
+                                        key: ValueKey(true),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                      ),
+                    ),
                   ),
                 );
               },

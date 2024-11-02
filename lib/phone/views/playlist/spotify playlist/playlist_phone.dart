@@ -145,7 +145,6 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
           //  op:${widget.opid}.$stid
           TrackPlay().playConcenating(
             widget.context,
-            widget.playlist.id,
             tracks,
             existingTracks,
             "search.playlist:${widget.playlist.id}.",

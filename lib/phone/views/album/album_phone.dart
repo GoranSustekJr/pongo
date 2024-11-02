@@ -132,7 +132,6 @@ class _AlbumPhoneState extends State<AlbumPhone> {
           //  op:${widget.opid}.$stid
           TrackPlay().playConcenating(
             widget.context,
-            widget.album.id,
             tracks,
             existingTracks,
             "search.album:${widget.album.id}.",
