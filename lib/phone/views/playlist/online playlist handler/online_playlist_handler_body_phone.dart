@@ -2,8 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/views/playlist/online%20playlist%20handler/selected_tracks_phone.dart';
 
-class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
+class OnlinePlaylistHandlerBodyPhone extends StatefulWidget {
   final String title;
   final bool redIt;
   final bool createPlaylist;
@@ -38,13 +39,22 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
       required this.addTracksToPlalists});
 
   @override
+  State<OnlinePlaylistHandlerBodyPhone> createState() =>
+      _OnlinePlaylistHandlerBodyPhoneState();
+}
+
+class _OnlinePlaylistHandlerBodyPhoneState
+    extends State<OnlinePlaylistHandlerBodyPhone> {
+  // Height of the multiple track shower
+  double height = 0;
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Stack(
       children: [
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 350),
-          child: createPlaylist || playlistTrackToAddData.value == null
+          child: widget.createPlaylist || playlistTrackToAddData.value == null
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -61,7 +71,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                           ),
                           child: Stack(
                             children: [
-                              if (cover != null)
+                              if (widget.cover != null)
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(15),
                                   child: FadeInImage(
@@ -75,7 +85,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                                     fadeOutDuration:
                                         const Duration(milliseconds: 200),
                                     image: FileImage(
-                                      cover!,
+                                      widget.cover!,
                                     ),
                                   ),
                                 ),
@@ -88,7 +98,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                                   Icons.camera_alt_rounded,
                                   Colors.white,
                                   size: 30,
-                                  pickImage,
+                                  widget.pickImage,
                                 ),
                               )),
                             ],
@@ -100,25 +110,25 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: TextFormField(
-                              onChanged: onChanged,
+                              onChanged: widget.onChanged,
                               decoration: InputDecoration(
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: redIt && title.isEmpty
+                                    color: widget.redIt && widget.title.isEmpty
                                         ? Colors.red
                                         : Colors.white,
                                   ),
                                 ),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: redIt && title.isEmpty
+                                    color: widget.redIt && widget.title.isEmpty
                                         ? Colors.red
                                         : Colors.white,
                                   ),
                                 ),
                                 disabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: redIt && title.isEmpty
+                                    color: widget.redIt && widget.title.isEmpty
                                         ? Colors.red
                                         : Colors.white,
                                   ),
@@ -132,7 +142,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                         razh(25),
                         textButton(
                           AppLocalizations.of(context)!.create,
-                          createPlaylistFunction,
+                          widget.createPlaylistFunction,
                           const TextStyle(color: Colors.white),
                         ),
                       ],
@@ -144,13 +154,13 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                   padding: const EdgeInsets.only(
                       top: kToolbarHeight * 2 + 10,
                       bottom: kBottomNavigationBarHeight * 2),
-                  itemCount: playlists.length,
+                  itemCount: widget.playlists.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 5),
                       child: ListTile(
                         onTap: () {
-                          selectPlaylist(index);
+                          widget.selectPlaylist(index);
                         },
                         leading: Container(
                           height: 55,
@@ -159,7 +169,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                             color: Col.primaryCard.withAlpha(125),
                             borderRadius: BorderRadius.circular(7.5),
                           ),
-                          child: coverImages[index] != null
+                          child: widget.coverImages[index] != null
                               ? ClipRRect(
                                   borderRadius: BorderRadius.circular(7.5),
                                   child: FadeInImage(
@@ -173,7 +183,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                                     fadeOutDuration:
                                         const Duration(milliseconds: 200),
                                     image: MemoryImage(
-                                      coverImages[index]!.bytes,
+                                      widget.coverImages[index]!.bytes,
                                     ),
                                   ), /* Image.memory(
                                                     coverImages[index]!.bytes,
@@ -185,7 +195,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                                 ),
                         ),
                         title: Text(
-                          playlists[index]["title"],
+                          widget.playlists[index]["title"],
                           style: const TextStyle(fontSize: 16),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -197,8 +207,8 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                               width: 15,
                               child: AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 200),
-                                child: (playlistTrackMap[playlists[index]
-                                                ['opid']]
+                                child: (widget.playlistTrackMap[
+                                                widget.playlists[index]['opid']]
                                             .map((entry) => entry["track_id"]))
                                         .contains(
                                             playlistTrackToAddData.value!["id"])
@@ -213,8 +223,8 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                               width: 10,
                               child: AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 200),
-                                child: selectedPlaylists
-                                        .contains(playlists[index]['opid'])
+                                child: widget.selectedPlaylists.contains(
+                                        widget.playlists[index]['opid'])
                                     ? const Icon(
                                         key: ValueKey(true),
                                         CupertinoIcons.checkmark_circle)
@@ -246,11 +256,12 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         iconButton(
-                          createPlaylist || playlistTrackToAddData.value == null
+                          widget.createPlaylist ||
+                                  playlistTrackToAddData.value == null
                               ? AppIcons.x
                               : AppIcons.addToQueue,
                           Colors.white,
-                          changeCreatePlaylist,
+                          widget.changeCreatePlaylist,
                         ),
                         Container(
                           width: 1,
@@ -267,7 +278,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 350),
                           curve: Curves.fastEaseInToSlowEaseOut,
-                          width: createPlaylist ||
+                          width: widget.createPlaylist ||
                                   playlistTrackToAddData.value == null
                               ? 0
                               : 65,
@@ -284,7 +295,7 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
                                 child: iconButton(
                                   CupertinoIcons.plus,
                                   Colors.white,
-                                  addTracksToPlalists,
+                                  widget.addTracksToPlalists,
                                 ),
                               ),
                             ],
@@ -296,78 +307,44 @@ class OnlinePlaylistHandlerBodyPhone extends StatelessWidget {
             ),
           ),
         ),
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 350),
-          curve: createPlaylist || playlistTrackToAddData.value == null
-              ? Curves.easeIn
-              : Curves.fastEaseInToSlowEaseOut,
-          top: createPlaylist || playlistTrackToAddData.value == null
-              ? -300
-              : kToolbarHeight,
-          left: 0,
-          right: 0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(60),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                child: playlistTrackToAddData.value != null
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(7.5),
-                            child: CachedNetworkImage(
-                              imageUrl: playlistTrackToAddData.value!["cover"]
-                                  .toString(),
-                              width: 55,
-                              height: 55,
-                            ),
-                          ),
-                          razw(10),
-                          Flexible(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                marquee(
-                                  "${playlistTrackToAddData.value!["title"]}  ",
-                                  const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                  1,
-                                  null,
-                                  height: 22,
-                                ),
-                                marquee(
-                                  "${playlistTrackToAddData.value!["artist"]}  ",
-                                  const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  1,
-                                  null,
-                                  height: 20,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    : const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [Text("-")],
-                      ),
-              ),
-            ),
-          ),
+        SelectedTracksPhone(
+          height: height,
+          createPlaylist: widget.createPlaylist,
+          size: size,
+          onVerticalDragEnd: (details) {
+            // Set a threshold for the drag distance
+            const dragThreshold = 10;
+
+            setState(() {
+              // Check if the drag distance exceeds the threshold
+              if (details.primaryVelocity != null &&
+                  details.primaryVelocity! < -dragThreshold) {
+                // If dragged up, snap to full height
+                height = 0;
+              } else if (details.primaryVelocity != null &&
+                  details.primaryVelocity! < dragThreshold) {
+                // If dragged down, snap back to bottom
+                height = size.height / 2.5;
+              } else {
+                // If not enough velocity, check current height to decide snap
+                if (height > dragThreshold) {
+                  height = size.height / 2.5; // Snap to full height
+                } else {
+                  height = 0; // Snap to bottom
+                }
+              }
+            });
+          },
+          onVerticalDragUpdate: (details) {
+            setState(() {
+              height += details.delta.dy;
+              if (height > size.height / 2.5) {
+                height = size.height / 2.5;
+              } else if (height < 0) {
+                height = 0;
+              }
+            });
+          },
         ),
       ],
     );

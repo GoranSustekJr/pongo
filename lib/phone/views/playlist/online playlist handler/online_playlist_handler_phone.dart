@@ -213,8 +213,16 @@ class _OnlinePlaylistHandlerPhoneState
                       },
                       addTracksToPlalists: () async {
                         for (int opid in selectedPlaylists) {
-                          await DatabaseHelper().insertOnlineTrackId(
-                              opid, playlistTrackToAddData.value!["id"]);
+                          if (playlistTrackToAddData.value!["id"] != null) {
+                            await DatabaseHelper().insertOnlineTrackId(
+                                opid, playlistTrackToAddData.value!["id"]);
+                          } else {
+                            for (var track
+                                in playlistTrackToAddData.value!["tracks"]) {
+                              await DatabaseHelper()
+                                  .insertOnlineTrackId(opid, track["id"]);
+                            }
+                          }
                         }
                         initPlaylists();
                         setState(() {

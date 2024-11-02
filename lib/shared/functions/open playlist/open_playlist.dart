@@ -2,14 +2,19 @@ import '../../../exports.dart';
 
 class OpenPlaylist {
   void open(context,
-      {String? id, String? cover, String? title, String? artist}) {
+      {String? id,
+      String? cover,
+      String? title,
+      String? artist,
+      List<Map>? tracks}) {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
     final MediaItem? mediaItem = audioServiceHandler.mediaItem.value;
     showPlaylistHandler.value = true;
-    playlistTrackToAddData.value =
-        (id != null && cover != null && title != null && artist != null)
+    playlistTrackToAddData.value = tracks != null
+        ? {"tracks": tracks}
+        : (id != null && cover != null && title != null && artist != null)
             ? {
                 "id": id,
                 "cover": cover,

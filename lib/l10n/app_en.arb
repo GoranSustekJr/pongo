@@ -758,5 +758,10 @@
     "cropimage": "Crop image",
     "@cropimage": {
         "description": "cropimage"
+    },
+
+    "plustracks": "songs",
+    "@plustracks": {
+        "description": "plustracks"
     }
 }

@@ -573,6 +573,34 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                       }
                                     }
                                   },
+                                  addToPlaylist: () {
+                                    OpenPlaylist().open(context,
+                                        tracks: selectedTracks.map(
+                                          (stid) {
+                                            final favourite = favourites
+                                                .where((favourite) =>
+                                                    favourite.id == stid)
+                                                .toList()[0];
+                                            return {
+                                              "id": favourite.id,
+                                              "cover":
+                                                  calculateWantedResolutionForTrack(
+                                                      favourite.album != null
+                                                          ? favourite
+                                                              .album!.images
+                                                          : favourite
+                                                              .album!.images,
+                                                      150,
+                                                      150),
+                                              "title": favourite.name,
+                                              "artist": favourite.artists
+                                                  .map((artist) => artist.name)
+                                                  .toList()
+                                                  .join(', '),
+                                            };
+                                          },
+                                        ).toList());
+                                  },
                                 ),
                               ),
                             ),
