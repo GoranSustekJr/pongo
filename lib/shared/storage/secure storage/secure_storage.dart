@@ -256,7 +256,7 @@ class Storage {
   Future<TextAlign> getLyricsTextAlign() async {
     String? key = await storage.read(key: lyricsTextAlignKey);
     if (key == null) {
-      return TextAlign.center;
+      return TextAlign.left;
     } else if (key == "TextAlign.left") {
       return TextAlign.left;
     } else if (key == "TextAlign.right") {
@@ -277,7 +277,7 @@ class Storage {
   Future<bool> getUseCachingAudioSource() async {
     String? key = await storage.read(key: useCacheAudioSourceKey);
     if (key == null) {
-      return true;
+      return false;
     } else {
       return key == "true";
     }

@@ -124,7 +124,7 @@ class DatabaseHelper {
   }
 
   // Insert track id into online playlist
-  Future<int> insertOnlineTrackId(int opid, String stid) async {
+  Future insertOnlineTrackId(int opid, String stid) async {
     return insertOnTrackId(
       this,
       opid,

@@ -530,6 +530,35 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                             }
                                           }
                                         },
+                                        addToPlaylist: () {
+                                          OpenPlaylist().open(context,
+                                              tracks: selectedStids.map(
+                                                (stid) {
+                                                  final track = tracks
+                                                      .where((favourite) =>
+                                                          favourite.id == stid)
+                                                      .toList()[0];
+                                                  return {
+                                                    "id": track.id,
+                                                    "cover":
+                                                        calculateWantedResolutionForTrack(
+                                                            track.album != null
+                                                                ? track.album!
+                                                                    .images
+                                                                : track.album!
+                                                                    .images,
+                                                            150,
+                                                            150),
+                                                    "title": track.name,
+                                                    "artist": track.artists
+                                                        .map((artist) =>
+                                                            artist.name)
+                                                        .toList()
+                                                        .join(', '),
+                                                  };
+                                                },
+                                              ).toList());
+                                        },
                                       ),
                                     ),
                                   ),
@@ -578,7 +607,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                         child: Column(
                                           children: [
                                             ListView.builder(
-                                              itemCount: tracks.length,
+                                              itemCount: listLength,
                                               shrinkWrap: true,
                                               physics:
                                                   const NeverScrollableScrollPhysics(),
@@ -586,7 +615,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                                 return songTileSchimmer(
                                                   context,
                                                   index == 0,
-                                                  index == tracks.length--,
+                                                  index == listLength--,
                                                 );
                                               },
                                             ),

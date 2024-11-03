@@ -11,6 +11,7 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
   final Function() shuffle;
   final Function() stopEdit;
   final Function() remove;
+  final Function() addToPlaylist;
   const PlayShuffleHaltOnlinePlaylist({
     super.key,
     required this.opid,
@@ -23,6 +24,7 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
     required this.shuffle,
     required this.stopEdit,
     required this.remove,
+    required this.addToPlaylist,
   });
 
   @override
@@ -62,7 +64,9 @@ class _PlayShuffleHaltOnlinePlaylistState
                       iconButton(
                         AppIcons.musicAlbums,
                         Colors.white,
-                        () {},
+                        () {
+                          widget.addToPlaylist();
+                        },
                         edgeInsets: EdgeInsets.zero,
                       ),
                       iconButton(

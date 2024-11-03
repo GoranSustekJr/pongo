@@ -11,7 +11,6 @@ class SearializedData {
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
 
-        print(accessTokenHandler.accessToken);
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_serialized_tracks"),
           body: jsonEncode(
@@ -24,7 +23,6 @@ class SearializedData {
 
         if (response.statusCode == 200) {
           Map<String, dynamic> data = jsonDecode(response.body);
-          print(jsonDecode(response.body).runtimeType);
           return data;
         } else if (response.statusCode == 401) {
           if (tries < 2) {
@@ -53,7 +51,6 @@ class SearializedData {
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
 
-        print(accessTokenHandler.accessToken);
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_serialized_shuffle"),
           body: jsonEncode(

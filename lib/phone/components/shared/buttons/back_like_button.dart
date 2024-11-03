@@ -7,6 +7,7 @@ backLikeButton(context, IconData icon, Function() function) {
   return kIsApple
       ? CupertinoButton(
           onPressed: function,
+          padding: EdgeInsets.zero,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(60),
             child: BackdropFilter(

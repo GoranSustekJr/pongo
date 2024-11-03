@@ -11,7 +11,6 @@ class Tracks {
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
 
-        print(accessTokenHandler.accessToken);
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_serialized_shuffle"),
           body: jsonEncode(

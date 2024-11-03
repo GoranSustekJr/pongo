@@ -11,9 +11,25 @@ Future<int> insertOnPlaylist(
   return await db.insert('online_playlist', row);
 }
 
-Future<int> insertOnTrackId(
+Future<int?> insertOnTrackId(
     DatabaseHelper dbHelper, int opid, String stid) async {
   Database db = await dbHelper.database;
+
+  // Check the current number of tracks in the playlist
+  int trackCount = Sqflite.firstIntValue(await db.rawQuery(
+        'SELECT COUNT(*) FROM opid_track_id WHERE opid = ?',
+        [opid],
+      )) ??
+      0;
+
+  // Ensure the playlist has fewer than 150 tracks
+  if (trackCount >= 150) {
+    print("Playlist already has the maximum number of tracks.");
+    Notifications().showWarningNotification(searchScreenContext.value,
+        "Playlist has exceeded the maximum number of tracks, 150");
+    return null; // Or return a value indicating the insertion was skipped
+  }
+
   // Get the current order count for the given opid
   int currentOrder = await queryOrderForOpid(dbHelper, opid);
 
@@ -22,5 +38,6 @@ Future<int> insertOnTrackId(
     'track_id': stid,
     'order_number': currentOrder + 1, // Increment order by 1
   };
+
   return await db.insert('opid_track_id', row);
 }
