@@ -161,8 +161,10 @@ class _OnlinePlaylistHandlerPhoneState
                       },
                       createPlaylistFunction: () async {
                         if (titleController.value.text.trim() != "") {
-                          List<String> titles = playlists
-                              .map((playlist) => playlist["title"] as String)
+                          List<Map> titless = await DatabaseHelper()
+                              .queryAllOnlinePlaylistsTitles();
+                          List<String> titles = titless
+                              .map((title) => title["title"] as String)
                               .toList();
                           if (!titles
                               .contains(titleController.value.text.trim())) {
@@ -176,10 +178,15 @@ class _OnlinePlaylistHandlerPhoneState
                                 bytes = await http.get(Uri.parse(
                                     playlistTrackToAddData.value!["cover"]));
                               }
+                              Uint8List? img;
+                              if (bytes != null) {
+                                img = bytes.bodyBytes;
+                              } else if (coverBytes != null) {
+                                img = coverBytes;
+                              }
                               int opid = await DatabaseHelper()
                                   .insertOnlinePlaylist(
-                                      titleController.value.text.trim(),
-                                      bytes.bodyBytes);
+                                      titleController.value.text.trim(), img);
                               initPlaylists();
                               setState(() {
                                 redIt = false;

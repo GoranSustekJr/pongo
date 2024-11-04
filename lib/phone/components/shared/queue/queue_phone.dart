@@ -108,8 +108,10 @@ class _QueuePhoneState extends State<QueuePhone> {
                                 if (queue != null) {
                                   OpenPlaylist().open(
                                     context,
-                                    playlist:
-                                        queue.map((track) => track.id).toList(),
+                                    playlist: queue.map((track) {
+                                      print(track.id);
+                                      return track.id.split('.')[2];
+                                    }).toList(),
                                   );
                                 }
                               },

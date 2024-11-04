@@ -1,5 +1,6 @@
 import 'package:blurhash_ffi/blurhash.dart';
 import 'package:pongo/exports.dart';
+import 'package:http/http.dart' as http;
 
 class PlayingDetailsPhone extends StatefulWidget {
   final Function(String) showAlbum;
@@ -48,6 +49,10 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
   // Volume icon
   int iconKey = 0;
 
+  // Experimental visualizer
+  List freqs = [50, 120, 210, 320, 400, 480];
+  List<dynamic> frequencies = [];
+
   @override
   void initState() {
     super.initState();
@@ -63,6 +68,26 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
     // Function to update the current media item safely
     void newMediaItem(String? stid, MediaItem? mediaItem) async {
       if (currentMediaItemId != stid) {
+        /*   final response = await http.post(
+          Uri.parse("https://gogodom.ddns.net:9090/get_visualizer_data"),
+        );
+
+        if (response.statusCode == 200) {
+          List<dynamic> data = jsonDecode(response.body);
+
+          // Check if the data is not empty and contains valid frequency data
+          if (data.isNotEmpty) {
+            // Extract the last result and convert it to a List<double>
+
+            // Ensure to convert each value to double explicitly
+            print(freqs[0]);
+            setState(() {
+              frequencies = data;
+            });
+          }
+        } else {
+          throw Exception('Failed to load visualizer data');
+        } */
         final String blurHash = mediaItem!.artUri != null
             ? await BlurhashFFI.encode(
                 NetworkImage(
@@ -228,9 +253,49 @@ class _PlayingDetailsPhoneState extends State<PlayingDetailsPhone> {
                     TrackImagePhone(
                       lyricsOn: lyricsOn,
                       showQueue: showQueue,
+                      frequency: frequencies,
                       audioServiceHandler: audioServiceHandler,
                       image: currentMediaItem!.artUri.toString(),
                     ),
+                    /* Positioned(
+                      top: 40,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: StreamBuilder(
+                          stream: audioServiceHandler.positionStream,
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const SizedBox();
+                            }
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ...freqs.asMap().entries.map((entry) {
+                                  final hm = frequencies[
+                                      (snapshot.data!.inMilliseconds / 200)
+                                          .toInt()];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 1, right: 1),
+                                    child: AnimatedContainer(
+                                      duration:
+                                          const Duration(milliseconds: 200),
+                                      curve: Curves.bounceInOut,
+                                      height: hm["${entry.value}"] *
+                                          1, // Height based on the frequency value
+                                      width: 5,
+                                      decoration: BoxDecoration(
+                                          color: Colors.blue,
+                                          borderRadius:
+                                              BorderRadius.circular(600)),
+                                    ),
+                                  );
+                                }),
+                              ],
+                            );
+                          }),
+                    ) */
                   ],
                 )
               : const SizedBox();

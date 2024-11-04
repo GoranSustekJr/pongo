@@ -214,7 +214,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                         ? Alignment.centerLeft
                                         : currentLyricsTextAlignment.value ==
                                                 TextAlign.center
-                                            ? Alignment.center
+                                            ? Alignment.centerLeft
                                             : currentLyricsTextAlignment
                                                         .value ==
                                                     TextAlign.right
