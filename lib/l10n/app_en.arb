@@ -763,5 +763,10 @@
     "plustracks": "songs",
     "@plustracks": {
         "description": "plustracks"
+    },
+
+    "changename": "Change name",
+    "@changename": {
+        "description": "changename"
     }
 }

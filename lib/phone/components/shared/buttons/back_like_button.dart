@@ -21,9 +21,7 @@ backLikeButton(context, IconData icon, Function() function) {
                 ),
                 child: Stack(
                   children: [
-                    Positioned(
-                      left: 9,
-                      top: 11,
+                    Center(
                       child: Icon(
                         icon,
                         size: 27.5,

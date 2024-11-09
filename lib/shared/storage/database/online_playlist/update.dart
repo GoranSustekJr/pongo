@@ -1,35 +1,32 @@
 import 'package:pongo/exports.dart';
 
-Future<void> updateOnPlaylistOrder(DatabaseHelper dbHelper, int opid,
-    int oldOrder, int newOrder, String trackId) async {
+Future<void> updateOnPlaylistOrder(
+    DatabaseHelper dbHelper, int opid, List<String> newTrackOrder) async {
   Database db = await dbHelper.database;
-  print("START;");
-  print(await DatabaseHelper().queryOnlineTrackIdsForPlaylist(opid));
 
+  // Start a transaction to ensure atomicity
   await db.transaction((txn) async {
-    print("OLD; $oldOrder, NEW; $newOrder");
-    if (newOrder < oldOrder) {
-      // Moving up
-      await txn.rawUpdate(
-        "UPDATE opid_track_id SET order_number = order_number + 1 WHERE opid = ? AND order_number >= ? AND order_number < ? AND track_id != ?",
-        [opid, newOrder, oldOrder, trackId],
-      );
-    } else if (newOrder > oldOrder) {
-      // Moving down
-      await txn.rawUpdate(
-        "UPDATE opid_track_id SET order_number = order_number - 1 WHERE opid = ? AND order_number > ? AND order_number <= ? AND track_id != ?",
-        [opid, oldOrder, newOrder, trackId],
+    // Delete all existing order numbers for the given opid
+    await txn.rawDelete(
+      "DELETE FROM opid_track_id WHERE opid = ?",
+      [opid],
+    );
+
+    // Insert the tracks with the new order
+    for (int i = 0; i < newTrackOrder.length; i++) {
+      await txn.rawInsert(
+        "INSERT INTO opid_track_id (opid, track_id, order_number) VALUES (?, ?, ?)",
+        [
+          opid,
+          newTrackOrder[i],
+          i + 1
+        ], // `i + 1` to set the order starting from 1
       );
     }
-
-    // update the order number of the moved item
-    await txn.rawUpdate(
-      "UPDATE opid_track_id SET order_number = ? WHERE opid = ? AND order_number = ? AND track_id = ?",
-      [newOrder, opid, oldOrder, trackId],
-    );
   });
-  print("END;");
-  print(await DatabaseHelper().queryOnlineTrackIdsForPlaylist(opid));
+
+/*  
+  print(await DatabaseHelper().queryOnlineTrackIdsForPlaylist(opid)); */
 }
 
 Future<void> updateOnPlaylistName(

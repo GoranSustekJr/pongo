@@ -333,8 +333,20 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                             title: Row(
                               children: [
                                 backButton(context),
-                                Expanded(
-                                  child: Container(),
+                                Flexible(
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Text(
+                                        widget.playlist.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 backLikeButton(
                                   context,
@@ -358,7 +370,7 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                               centerTitle: true,
                               title: AppBar(
                                 automaticallyImplyLeading: false,
-                                title: Row(
+                                /* title: Row(
                                   children: [
                                     backButton(context),
                                     Expanded(
@@ -368,7 +380,7 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                                       overflow: TextOverflow.ellipsis,
                                     )),
                                   ],
-                                ),
+                                ), */
                                 flexibleSpace: Opacity(
                                   opacity: MediaQuery.of(context).size.height /
                                               2 <=

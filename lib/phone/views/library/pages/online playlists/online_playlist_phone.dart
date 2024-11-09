@@ -1,7 +1,12 @@
 import 'dart:ui';
+import 'package:blurhash_ffi/blurhash.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/library/online%20playlist/play_shuffle_halt_online_playlist.dart';
 import 'package:pongo/phone/components/shared/buttons/back_like_button.dart';
+import 'package:pongo/phone/views/library/pages/online%20playlists/change_online_playlist_name_phone.dart';
+import 'package:pongo/phone/views/library/pages/online%20playlists/online_playlist_app_bar_phone.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/online_playlist_body_phone.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
@@ -10,12 +15,16 @@ class OnlinePlaylistPhone extends StatefulWidget {
   final String title;
   final MemoryImage? cover;
   final String blurhash;
+  final Function(MemoryImage) updateCover;
+  final Function(String) updateTitle;
   const OnlinePlaylistPhone({
     super.key,
     required this.opid,
     required this.title,
     this.cover,
     required this.blurhash,
+    required this.updateCover,
+    required this.updateTitle,
   });
 
   @override
@@ -25,6 +34,11 @@ class OnlinePlaylistPhone extends StatefulWidget {
 class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
   // Track stids
   List<String> stids = [];
+
+  // Playlist data
+  MemoryImage? cover;
+  String title = "";
+  String blurhash = "";
 
   // Show body
   bool showBody = false;
@@ -69,6 +83,9 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
   @override
   void initState() {
     super.initState();
+    cover = widget.cover;
+    title = widget.title;
+    blurhash = widget.blurhash;
     scrollController = ScrollController();
     scrollController.addListener(scrollControllerListener);
     getTracks();
@@ -307,6 +324,12 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
     }
   }
 
+  Future<void> move<T>(List<T> list, int currentIndex, int newIndex) async {
+    if (currentIndex == newIndex) return;
+    final item = list.removeAt(currentIndex);
+    list.insert(newIndex, item);
+  }
+
   @override
   void dispose() {
     cancel = true;
@@ -329,7 +352,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
               child: Stack(
                 children: [
                   Blurhash(
-                    blurhash: widget.blurhash,
+                    blurhash: blurhash,
                     sigmaX: 10,
                     sigmaY: 10,
                     child: Container(),
@@ -346,46 +369,107 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                         child: CustomScrollView(
                           controller: scrollController,
                           slivers: [
-                            SliverAppBar(
-                              snap: false,
-                              collapsedHeight: kToolbarHeight,
-                              expandedHeight:
-                                  MediaQuery.of(context).size.height / 2,
-                              floating: false,
-                              pinned: true,
-                              stretch: true,
-                              automaticallyImplyLeading: false,
-                              title: Row(
-                                children: [
-                                  backButton(context),
-                                  Expanded(
-                                    child: Container(),
-                                  ),
-                                  backLikeButton(context, AppIcons.edit,
-                                      () async {
-                                    final audioServiceHandler =
-                                        Provider.of<AudioHandler>(context,
-                                                listen: false)
-                                            as AudioServiceHandler;
-                                    if (audioServiceHandler.mediaItem.value !=
-                                        null) {
-                                      if ("library.onlineplaylist:${widget.opid}" ==
-                                          '${audioServiceHandler.mediaItem.value!.id.split('.')[0]}.${audioServiceHandler.mediaItem.value!.id.split('.')[1]}') {
-                                        CustomButton ok =
-                                            await haltAlert(context);
-                                        if (ok == CustomButton.positiveButton) {
-                                          currentTrackHeight.value = 0;
-                                          final audioServiceHandler =
-                                              Provider.of<AudioHandler>(context,
-                                                      listen: false)
-                                                  as AudioServiceHandler;
+                            OnlinePlaylistAppBarPhone(
+                              title: title,
+                              cover: cover,
+                              edit: edit,
+                              scrollControllerOffset: scrollControllerOffset,
+                              changeCover: () async {
+                                if (edit) {
+                                  XFile? pickedFile;
 
-                                          await audioServiceHandler.halt();
-                                          setState(() {
-                                            edit = true;
-                                          });
-                                        }
-                                      } else {
+                                  try {
+                                    pickedFile = await ImagePicker().pickImage(
+                                      source: ImageSource.gallery,
+                                      requestFullMetadata: false,
+                                    );
+                                  } catch (e) {
+                                    if (e
+                                        .toString()
+                                        .contains("access_denied")) {
+                                      Notifications().showWarningNotification(
+                                        context,
+                                        AppLocalizations.of(context)!
+                                            .pleaseallowaccesstophotogalery,
+                                      );
+                                      return;
+                                    }
+                                  }
+                                  Uint8List? bytes;
+
+                                  if (pickedFile != null) {
+                                    // Crop the image to a square
+                                    CroppedFile? croppedFile =
+                                        await ImageCropper().cropImage(
+                                      sourcePath: pickedFile.path,
+                                      maxHeight: 500,
+                                      maxWidth: 500,
+                                      aspectRatio: const CropAspectRatio(
+                                        ratioX: 1,
+                                        ratioY: 1,
+                                      ), // Square aspect ratio
+
+                                      uiSettings: [
+                                        AndroidUiSettings(
+                                          toolbarTitle:
+                                              AppLocalizations.of(context)!
+                                                  .cropimage,
+                                          toolbarColor: Colors.black,
+                                          toolbarWidgetColor: Colors.white,
+                                          hideBottomControls: true,
+                                        ),
+                                        IOSUiSettings(
+                                          title: AppLocalizations.of(context)!
+                                              .cropimage,
+                                          cancelButtonTitle:
+                                              AppLocalizations.of(context)!
+                                                  .cancel,
+                                          doneButtonTitle:
+                                              AppLocalizations.of(context)!
+                                                  .okey,
+                                        ),
+                                      ],
+                                    );
+
+                                    if (croppedFile != null) {
+                                      bytes = await File(croppedFile.path)
+                                          .readAsBytes();
+                                      if (bytes.isNotEmpty) {
+                                        await DatabaseHelper()
+                                            .updateOnlinePlaylistCover(
+                                                widget.opid, bytes);
+                                        final String blurHash =
+                                            await BlurhashFFI.encode(
+                                          MemoryImage(bytes),
+                                          componentX: 3,
+                                          componentY: 3,
+                                        );
+                                        setState(() {
+                                          cover = MemoryImage(bytes!);
+                                          blurhash = blurHash;
+                                        });
+                                        widget.updateCover(MemoryImage(bytes));
+                                      }
+                                    }
+                                  }
+                                } else {
+                                  final audioServiceHandler =
+                                      Provider.of<AudioHandler>(context,
+                                          listen: false) as AudioServiceHandler;
+                                  if (audioServiceHandler.mediaItem.value !=
+                                      null) {
+                                    if ("library.onlineplaylist:${widget.opid}" ==
+                                        '${audioServiceHandler.mediaItem.value!.id.split('.')[0]}.${audioServiceHandler.mediaItem.value!.id.split('.')[1]}') {
+                                      CustomButton ok =
+                                          await haltAlert(context);
+                                      if (ok == CustomButton.positiveButton) {
+                                        currentTrackHeight.value = 0;
+                                        final audioServiceHandler =
+                                            Provider.of<AudioHandler>(context,
+                                                    listen: false)
+                                                as AudioServiceHandler;
+
+                                        await audioServiceHandler.halt();
                                         setState(() {
                                           edit = true;
                                         });
@@ -395,89 +479,25 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                         edit = true;
                                       });
                                     }
-                                  }),
-                                ],
-                              ),
-                              flexibleSpace: FlexibleSpaceBar(
-                                titlePadding: EdgeInsets.zero,
-                                centerTitle: true,
-                                title: AppBar(
-                                  automaticallyImplyLeading: false,
-                                  title: Row(
-                                    children: [
-                                      backButton(context),
-                                      Expanded(
-                                          child: Text(
-                                        widget.title,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      )),
-                                    ],
-                                  ),
-                                  flexibleSpace: Opacity(
-                                    opacity:
-                                        MediaQuery.of(context).size.height /
-                                                    2 <=
-                                                scrollControllerOffset
-                                            ? 1
-                                            : scrollControllerOffset /
-                                                (MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    2),
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                        sigmaX: 10,
-                                        sigmaY: 10,
-                                      ),
-                                      child: Container(),
-                                    ),
-                                  ),
-                                ),
-                                background: Stack(
-                                  children: [
-                                    Center(
-                                      child: SizedBox(
-                                        width: size.width - 60,
-                                        height: size.width - 60,
-                                        child: Center(
-                                          child: Padding(
-                                            padding: EdgeInsets.only(
-                                              top: MediaQuery.of(context)
-                                                  .padding
-                                                  .top,
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              child: widget.cover != null
-                                                  ? Image.memory(
-                                                      widget.cover!.bytes)
-                                                  : Container(
-                                                      width: size.width - 60,
-                                                      height: size.width - 60,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(15),
-                                                        color: Col.primaryCard
-                                                            .withAlpha(200),
-                                                      ),
-                                                      child: const Center(
-                                                        child: Icon(
-                                                          AppIcons.blankAlbum,
-                                                          size: 50,
-                                                        ),
-                                                      ),
-                                                    ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                  } else {
+                                    setState(() {
+                                      edit = true;
+                                    });
+                                  }
+                                }
+                              },
+                              changeTitle: () async {
+                                newPlaylistTitle(
+                                  context,
+                                  widget.opid,
+                                  (newTitle) {
+                                    setState(() {
+                                      title = newTitle;
+                                    });
+                                    widget.updateTitle(newTitle);
+                                  },
+                                );
+                              },
                             ),
                             SliverPersistentHeader(
                               pinned: true,
@@ -598,6 +618,32 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                                     } else {
                                                       selectedStids.add(stid);
                                                     }
+                                                  });
+                                                },
+                                                move: (oldIndex, newIndex) {
+                                                  if (oldIndex == newIndex ||
+                                                      !edit) return;
+                                                  setState(() {
+                                                    final item = tracks
+                                                        .removeAt(oldIndex);
+                                                    tracks.insert(
+                                                      oldIndex < newIndex
+                                                          ? newIndex - 1
+                                                          : newIndex,
+                                                      item,
+                                                    );
+
+                                                    final stid = stids
+                                                        .removeAt(oldIndex);
+                                                    stids.insert(
+                                                      oldIndex < newIndex
+                                                          ? newIndex - 1
+                                                          : newIndex,
+                                                      stid,
+                                                    );
+                                                    DatabaseHelper()
+                                                        .updateOnlinePlaylistOrder(
+                                                            widget.opid, stids);
                                                   });
                                                 },
                                               ),

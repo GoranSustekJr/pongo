@@ -326,8 +326,20 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                             title: Row(
                               children: [
                                 backButton(context),
-                                Expanded(
-                                  child: Container(),
+                                Flexible(
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Text(
+                                        widget.album.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 backLikeButton(
                                   context,
@@ -350,26 +362,6 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                               centerTitle: true,
                               title: AppBar(
                                 automaticallyImplyLeading: false,
-                                title: Row(
-                                  children: [
-                                    backButton(context),
-                                    Expanded(
-                                        child: Text(
-                                      widget.album.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ) /*  marquee(
-                                        widget.album.name,
-                                        const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                        1,
-                                        null,
-                                      ), */
-                                        ),
-                                  ],
-                                ),
                                 flexibleSpace: Opacity(
                                   opacity: MediaQuery.of(context).size.height /
                                               2 <=

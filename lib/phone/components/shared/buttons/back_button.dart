@@ -11,6 +11,7 @@ backButton(context) {
             showBottomNavBar.value = true;
             showSearchBar.value = true;
           },
+          padding: EdgeInsets.zero,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(60),
             child: BackdropFilter(

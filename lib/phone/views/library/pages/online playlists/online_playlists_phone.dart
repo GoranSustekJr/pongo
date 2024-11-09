@@ -145,7 +145,7 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                           child: PlaylistTile(
                             first: index == 0,
                             last: index == playlists.length - 1,
-                            cover: playlists[index]["cover"],
+                            cover: coverImages[index]?.bytes,
                             title: playlists[index]["title"],
                             subtitle:
                                 AppLocalizations.of(context)!.onlineplaylist,
@@ -165,20 +165,15 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                                     title: playlists[index]["title"],
                                     cover: coverImages[index],
                                     blurhash: blurHash,
-                                  ));
-                              /*   Navigations().nextScreen(
-                                  context,
-                                  OnlinePlaylistScreen(
-                                    title: playlists[index]["title"],
-                                    opid: playlists[index]["opid"],
-                                    cover: playlists[index]["cover"],
-                                    deletePlaylist: () {
+                                    updateCover: (playlistCover) {
                                       setState(() {
-                                        showBody = false;
+                                        coverImages[index] = playlistCover;
                                       });
+                                    },
+                                    updateTitle: (newTitle) {
                                       initPlaylists();
                                     },
-                                  )); */
+                                  ));
                             },
                             removePlaylist: () {
                               continueCancelActionSheet(

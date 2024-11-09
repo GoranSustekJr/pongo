@@ -170,8 +170,8 @@ class DatabaseHelper {
   // Update online playlist
 
   Future<void> updateOnlinePlaylistOrder(
-      int opid, int oldOrder, int newOrder, String trackId) async {
-    await updateOnPlaylistOrder(this, opid, oldOrder, newOrder, trackId);
+      int opid, List<String> newTrackOrder) async {
+    await updateOnPlaylistOrder(this, opid, newTrackOrder);
   }
 
   Future<void> updateOnlinePlaylistName(int opid, String title) async {

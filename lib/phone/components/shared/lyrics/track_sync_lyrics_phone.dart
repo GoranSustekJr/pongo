@@ -42,11 +42,9 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   @override
   void initState() {
     super.initState();
-    /*  autoScrollController.scrollToIndex(0,
-        duration: const Duration(milliseconds: 350),
-        preferPosition: AutoScrollPosition.middle); */
+
     // Start a timer that updates every 250 milliseconds
-    _timer = Timer.periodic(const Duration(milliseconds: 250), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
       final audioServiceHandler =
           Provider.of<AudioHandler>(context, listen: false)
               as AudioServiceHandler;
@@ -56,7 +54,10 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
         setState(() {
           _currentPosition = position;
         });
-        findCurrentLyricIndex(_currentPosition);
+        if (WidgetsBinding.instance.lifecycleState ==
+            AppLifecycleState.resumed) {
+          findCurrentLyricIndex(_currentPosition);
+        }
       });
     });
   }
@@ -99,6 +100,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
           autoScrollController.scrollToIndex(i,
               duration: const Duration(milliseconds: 350),
               preferPosition: AutoScrollPosition.middle);
+
           WidgetsBinding.instance.addPostFrameCallback((_) {
             setState(() {
               currentLyricIndex = i;

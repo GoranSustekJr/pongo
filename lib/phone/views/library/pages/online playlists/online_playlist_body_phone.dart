@@ -12,6 +12,7 @@ class OnlinePlaylistBodyPhone extends StatefulWidget {
   final List<String> selectedTracks;
   final Function(int) play;
   final Function(String) select;
+  final Function(int, int) move;
   const OnlinePlaylistBodyPhone({
     super.key,
     required this.opid,
@@ -23,6 +24,7 @@ class OnlinePlaylistBodyPhone extends StatefulWidget {
     required this.selectedTracks,
     required this.play,
     required this.select,
+    required this.move,
   });
 
   @override
@@ -57,7 +59,7 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
         builder: (context, snapshot) {
           final String id = snapshot.data != null ? snapshot.data!.id : "";
 
-          return ListView.builder(
+          return ReorderableListView.builder(
             padding: EdgeInsets.only(
               top: 35,
               bottom: MediaQuery.of(context).padding.bottom + 15,
@@ -65,9 +67,14 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
             itemCount: widget.tracks.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
+            onReorder: (oldIndex, newIndex) {
+              if (widget.edit) {}
+              widget.move(oldIndex, newIndex);
+            },
             itemBuilder: (context, index) {
               print(widget.missingTracks);
               return FavouritesTile(
+                key: ValueKey(index),
                 track: widget.tracks[index],
                 first: index == 0,
                 last: widget.tracks.length - 1 == index,
