@@ -10,17 +10,14 @@ class Artist {
   });
 }
 
-class ArtistFull {
-  final String id;
-  final String name;
-  final String image;
+class ArtistFull extends Artist {
   final String genres;
   final int followers;
 
   ArtistFull({
-    required this.id,
-    required this.name,
-    required this.image,
+    required super.id,
+    required super.name,
+    required super.image,
     required this.genres,
     required this.followers,
   });

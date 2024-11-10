@@ -117,7 +117,7 @@ class SearchResultTile extends StatelessWidget {
                       ),
                     ),
                     razw(12.5),
-                    Expanded(
+                    Flexible(
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -133,7 +133,7 @@ class SearchResultTile extends StatelessWidget {
                               color: Colors.white,
                             ),
                           ),
-                          razh(2.5),
+                          razh(2),
                           Text(
                             subtitle,
                             maxLines: 1,

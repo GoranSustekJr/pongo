@@ -25,7 +25,7 @@ Future<int?> insertOnTrackId(
   // Ensure the playlist has fewer than 150 tracks
   if (trackCount >= 150) {
     print("Playlist already has the maximum number of tracks.");
-    Notifications().showWarningNotification(searchScreenContext.value,
+    Notifications().showWarningNotification(searchScreenContext.value!,
         "Playlist has exceeded the maximum number of tracks, 150");
     return null; // Or return a value indicating the insertion was skipped
   }

@@ -1162,10 +1162,11 @@ packages:
   scroll_to_index:
     dependency: "direct main"
     description:
-      name: scroll_to_index
-      sha256: b707546e7500d9f070d63e5acf74fd437ec7eeeb68d3412ef7b0afada0b4f176
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: dc1d518e351a72ee167074099232cc2d375e725f
+      url: "https://github.com/GoranSustekJr/scroll-to-index.git"
+    source: git
     version: "3.0.1"
   settings_ui:
     dependency: "direct main"

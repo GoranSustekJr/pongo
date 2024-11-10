@@ -97,9 +97,15 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
             position.inMilliseconds >=
                 currentTimestamp.inMilliseconds - 250 - widget.syncTimeDelay &&
             !isUserScrolling) {
-          autoScrollController.scrollToIndex(i,
-              duration: const Duration(milliseconds: 350),
-              preferPosition: AutoScrollPosition.middle);
+          autoScrollController.scrollToIndex(
+            i,
+            duration: const Duration(milliseconds: 350),
+            preferPosition: 1 -
+                (((MediaQuery.of(context).size.height - 370)) /
+                    MediaQuery.of(context)
+                        .size
+                        .height), // 200 / MediaQuery.of(context).size.height
+          );
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             setState(() {
@@ -265,7 +271,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                                   : (index - currentLyricIndex) ==
                                                           1
                                                       ? Colors.white
-                                                          .withAlpha(175)
+                                                          .withAlpha(200)
                                                       : (index - currentLyricIndex) ==
                                                               2
                                                           ? Colors.white
@@ -291,10 +297,11 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                       begin: 0,
                                       end: currentLyricIndex == index
                                           ? 0
-                                          : (currentLyricIndex - index).abs() ==
-                                                  1
-                                              ? 2
-                                              : 3,
+                                          : (currentLyricIndex - index) == -1
+                                              ? 2.25
+                                              : (currentLyricIndex - index) == 1
+                                                  ? 2.75
+                                                  : 3.25,
                                       duration:
                                           const Duration(milliseconds: 350),
                                     ),
