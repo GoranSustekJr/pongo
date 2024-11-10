@@ -576,7 +576,39 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                     }
                                   },
                                   addToPlaylist: () {
-                                    OpenPlaylist().open(context,
+                                    OpenPlaylist().show(
+                                      context,
+                                      PlaylistHandler(
+                                          type: PlaylistHandlerType.online,
+                                          function: PlaylistHandlerFunction
+                                              .addToPlaylist,
+                                          track: selectedTracks.map((stid) {
+                                            final favourite = favourites
+                                                .where((favourite) =>
+                                                    favourite.id == stid)
+                                                .toList()[0];
+                                            return PlaylistHandlerOnlineTrack(
+                                              id: favourite.id,
+                                              name: favourite.name,
+                                              artist: favourite.artists
+                                                  .map((artist) => artist.name)
+                                                  .toList()
+                                                  .join(', '),
+                                              cover:
+                                                  calculateWantedResolutionForTrack(
+                                                      favourite.album != null
+                                                          ? favourite
+                                                              .album!.images
+                                                          : favourite
+                                                              .album!.images,
+                                                      150,
+                                                      150),
+                                              playlistHandlerCoverType:
+                                                  PlaylistHandlerCoverType.url,
+                                            );
+                                          }).toList()),
+                                    );
+                                    /* OpenPlaylist().open(context,
                                         tracks: selectedTracks.map(
                                           (stid) {
                                             final favourite = favourites
@@ -601,7 +633,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                                   .join(', '),
                                             };
                                           },
-                                        ).toList());
+                                        ).toList()); */
                                   },
                                 ),
                               ),

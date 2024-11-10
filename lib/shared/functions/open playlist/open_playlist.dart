@@ -39,4 +39,11 @@ class OpenPlaylist {
                       }
                     : null;
   }
+
+  void show(
+    context,
+    PlaylistHandler playlistHandlers,
+  ) {
+    playlistHandler.value = playlistHandlers;
+  }
 }

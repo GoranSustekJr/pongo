@@ -117,7 +117,7 @@ class SearchResultTile extends StatelessWidget {
                       ),
                     ),
                     razw(12.5),
-                    Flexible(
+                    Expanded(
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,

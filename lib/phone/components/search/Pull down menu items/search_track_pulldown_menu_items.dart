@@ -22,7 +22,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
           const PullDownMenuDivider.large(),
           PullDownMenuItem(
             onTap: () {
-              OpenPlaylist().open(
+              /* OpenPlaylist().open(
                 context,
                 id: track.id,
                 cover: calculateWantedResolutionForTrack(
@@ -36,7 +36,30 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
                     .map((artist) => artist.name)
                     .toList()
                     .join(', '),
-              );
+              ); */
+              OpenPlaylist().show(
+                  context,
+                  PlaylistHandler(
+                    type: PlaylistHandlerType.online,
+                    function: PlaylistHandlerFunction.addToPlaylist,
+                    track: [
+                      PlaylistHandlerOnlineTrack(
+                        id: track.id,
+                        name: track.name,
+                        artist: track.artists
+                            .map((artist) => artist.name)
+                            .toList()
+                            .join(', '),
+                        cover: calculateWantedResolutionForTrack(
+                            track.album != null
+                                ? track.album!.images
+                                : track.album!.images,
+                            150,
+                            150),
+                        playlistHandlerCoverType: PlaylistHandlerCoverType.url,
+                      )
+                    ],
+                  ));
             },
             title: AppLocalizations.of(context)!.addtoplaylist,
             icon: AppIcons.musicAlbums,

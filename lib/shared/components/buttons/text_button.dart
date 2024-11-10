@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
-textButton(String txt, Function() function, TextStyle style) {
+textButton(String txt, Function() function, TextStyle style,
+    {EdgeInsets? edgeInsets}) {
   return kIsApple
       ? CupertinoButton(
           onPressed: function,
+          padding: edgeInsets,
           child: Text(
             txt,
             style: style,

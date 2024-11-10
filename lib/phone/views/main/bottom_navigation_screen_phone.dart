@@ -1,7 +1,8 @@
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/library/library_main_phone.dart';
 import 'package:pongo/phone/views/playing%20details/playing_details_phone.dart';
-import 'package:pongo/phone/views/playlist/online%20playlist%20handler/online_playlist_handler_phone.dart';
+import 'package:pongo/phone/views/playlist/playlist%20handler/old%20online%20handler/online_playlist_handler_phone.dart';
+import 'package:pongo/phone/views/playlist/playlist%20handler/playlist_handler_phone.dart';
 import 'package:pongo/phone/views/settings/settings_main_phone.dart';
 import '../bottom navigation bar/bottom_navigation_bar.dart';
 import '../home/home_main_phone.dart';
@@ -135,19 +136,30 @@ class _BottomNavigationScreenPhoneState
                 },
               ),
               ValueListenableBuilder(
-                valueListenable: showPlaylistHandler,
+                valueListenable: playlistHandler,
                 builder: (context, value, child) {
                   return AnimatedPositioned(
                     duration: Duration(
-                        milliseconds: showPlaylistHandler.value ? 0 : 300),
-                    top: showPlaylistHandler.value ? 0 : size.height,
+                        milliseconds: playlistHandler.value != null ? 0 : 300),
+                    top: playlistHandler.value != null ? 0 : size.height,
                     curve: Curves.easeIn,
                     child: AnimatedOpacity(
                       duration: Duration(
-                          milliseconds: showPlaylistHandler.value ? 500 : 300),
+                          milliseconds:
+                              playlistHandler.value != null ? 500 : 300),
                       curve: Curves.fastEaseInToSlowEaseOut,
-                      opacity: showPlaylistHandler.value ? 1 : 0,
-                      child: const OnlinePlaylistHandlerPhone(),
+                      opacity: playlistHandler.value != null ? 1 : 0,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 350),
+                        child: playlistHandler.value != null
+                            ? PlaylistHandlerPhone(
+                                key: const ValueKey(true),
+                                playlistHandler: playlistHandler.value!,
+                              )
+                            : const SizedBox(
+                                key: ValueKey(false),
+                              ),
+                      ),
                     ),
                   );
                 },

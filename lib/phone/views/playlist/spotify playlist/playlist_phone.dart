@@ -352,13 +352,37 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                                   context,
                                   AppIcons.playlist,
                                   () {
-                                    OpenPlaylist().open(
+                                    OpenPlaylist().show(
                                       context,
-                                      title: widget.playlist.name,
-                                      cover: widget.playlist.image,
-                                      playlist: tracks
-                                          .map((track) => track.id)
-                                          .toList(),
+                                      PlaylistHandler(
+                                        type: PlaylistHandlerType.online,
+                                        function: PlaylistHandlerFunction
+                                            .createPlaylist,
+                                        track: tracks
+                                            .map((track) =>
+                                                PlaylistHandlerOnlineTrack(
+                                                  id: track.id,
+                                                  name: track.name,
+                                                  artist: track.artists
+                                                      .map((artist) =>
+                                                          artist.name)
+                                                      .toList()
+                                                      .join(', '),
+                                                  cover:
+                                                      calculateWantedResolutionForTrack(
+                                                          track.album != null
+                                                              ? track
+                                                                  .album!.images
+                                                              : track.album!
+                                                                  .images,
+                                                          150,
+                                                          150),
+                                                  playlistHandlerCoverType:
+                                                      PlaylistHandlerCoverType
+                                                          .url,
+                                                ))
+                                            .toList(),
+                                      ),
                                     );
                                   },
                                 ),

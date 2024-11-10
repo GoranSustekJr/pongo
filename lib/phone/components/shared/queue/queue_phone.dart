@@ -46,11 +46,12 @@ class _QueuePhoneState extends State<QueuePhone> {
             as AudioServiceHandler;
     return AnimatedPositioned(
       duration: Duration(
-          milliseconds: widget.showQueue && !widget.lyricsOn ? 0 : 250),
+          milliseconds: widget.showQueue && !widget.lyricsOn ? 0 : 750),
       top: widget.showQueue && !widget.lyricsOn ? 0 : size.height,
       child: AnimatedOpacity(
         opacity: widget.showQueue && !widget.lyricsOn ? 1 : 0,
-        duration: Duration(milliseconds: widget.lyricsOn ? 500 : 150),
+        duration: Duration(
+            milliseconds: widget.lyricsOn || !widget.showQueue ? 150 : 400),
         child: StreamBuilder(
             stream: audioServiceHandler.queue.stream,
             builder: (context, snapshot) {
@@ -106,12 +107,33 @@ class _QueuePhoneState extends State<QueuePhone> {
                               changeLyricsOn: widget.changeLyricsOn,
                               saveAsPlaylist: () {
                                 if (queue != null) {
-                                  OpenPlaylist().open(
+                                  /*   OpenPlaylist().open(
                                     context,
                                     playlist: queue.map((track) {
                                       print(track.id);
                                       return track.id.split('.')[2];
                                     }).toList(),
+                                  ); */
+                                  print("object");
+                                  OpenPlaylist().show(
+                                    context,
+                                    PlaylistHandler(
+                                      type: PlaylistHandlerType.online,
+                                      function: PlaylistHandlerFunction
+                                          .createPlaylist,
+                                      track: queue
+                                          .map((track) =>
+                                              PlaylistHandlerOnlineTrack(
+                                                id: track.id.split('.')[2],
+                                                name: track.title,
+                                                artist: track.artist ?? "",
+                                                cover: track.artUri.toString(),
+                                                playlistHandlerCoverType:
+                                                    PlaylistHandlerCoverType
+                                                        .url,
+                                              ))
+                                          .toList(),
+                                    ),
                                   );
                                 }
                               },

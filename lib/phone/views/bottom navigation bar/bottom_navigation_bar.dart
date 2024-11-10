@@ -15,7 +15,7 @@ class Bottom extends StatelessWidget {
             valueListenable: currentTrackHeight,
             builder: (context, index, child) {
               return ValueListenableBuilder(
-                  valueListenable: showPlaylistHandler,
+                  valueListenable: playlistHandler,
                   builder: (context, index, child) {
                     return SizedBox(
                       key: const ValueKey(true),
@@ -25,7 +25,7 @@ class Bottom extends StatelessWidget {
                           AnimatedPositioned(
                             duration: const Duration(milliseconds: 350),
                             curve: Curves.fastEaseInToSlowEaseOut,
-                            bottom: showPlaylistHandler.value
+                            bottom: playlistHandler.value != null
                                 ? -(size.height / 3)
                                 : showBottomNavBar.value
                                     ? -(currentTrackHeight.value /
@@ -40,7 +40,7 @@ class Bottom extends StatelessWidget {
                           AnimatedPositioned(
                             duration: const Duration(milliseconds: 350),
                             curve: Curves.fastEaseInToSlowEaseOut,
-                            bottom: showPlaylistHandler.value
+                            bottom: playlistHandler.value != null
                                 ? -(size.height / 3)
                                 : showBottomNavBar.value
                                     ? -(currentTrackHeight.value /

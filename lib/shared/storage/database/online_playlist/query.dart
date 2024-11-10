@@ -3,13 +3,14 @@ import 'package:pongo/exports.dart';
 Future<List<Map<String, dynamic>>> queryAllOnPlaylists(
     DatabaseHelper dbHelper) async {
   Database db = await dbHelper.database;
-  return await db.query('online_playlist');
+  return await db.query('online_playlist', orderBy: 'opid DESC');
 }
 
 Future<List<Map<String, dynamic>>> queryAllOnPlaylistsTitles(
     DatabaseHelper dbHelper) async {
   Database db = await dbHelper.database;
-  return await db.rawQuery("SELECT opid, title FROM online_playlist");
+  return await db
+      .rawQuery("SELECT opid, title FROM online_playlist ORDER BY opid DESC");
 }
 
 Future<List<Map<String, dynamic>>> queryOnTrackIdsForPlaylist(

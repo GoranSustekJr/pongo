@@ -75,3 +75,6 @@ ValueNotifier<bool> showPlaylistHandler = ValueNotifier(false);
 
 // Show Playlist track to add data
 ValueNotifier<Map?> playlistTrackToAddData = ValueNotifier(null);
+
+// Playlist handler
+ValueNotifier<PlaylistHandler?> playlistHandler = ValueNotifier(null);
