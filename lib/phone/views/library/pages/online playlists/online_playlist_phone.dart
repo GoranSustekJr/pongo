@@ -4,7 +4,6 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/library/online%20playlist/play_shuffle_halt_online_playlist.dart';
-import 'package:pongo/phone/components/shared/buttons/back_like_button.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/change_online_playlist_name_phone.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/online_playlist_app_bar_phone.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/online_playlist_body_phone.dart';
@@ -39,6 +38,9 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
   MemoryImage? cover;
   String title = "";
   String blurhash = "";
+
+  // Hidden songs
+  Map<String, bool> hidden = {};
 
   // Show body
   bool showBody = false;
@@ -109,13 +111,17 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
     });
     List<Map<String, dynamic>> stidss =
         await DatabaseHelper().queryOnlineTrackIdsForPlaylist(widget.opid);
+
     List<String> stidList = [];
+    Map<String, bool> hiddn = {};
 
     for (var stid in stidss) {
       stidList.add(stid['track_id']);
+      hiddn[stid['track_id']] = (stid['hidden'] == 1);
     }
     setState(() {
       stids = stidList;
+      hidden = hiddn;
       showBody = true;
     });
 
@@ -158,6 +164,10 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
       // Set shuffle mode
       await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
 
+      // Not hiddent tracks
+      List<sp.Track> shownTracks =
+          tracks.where((track) => hidden[track.id] != true).toList();
+
       // Set global id of the album
       currentAlbumPlaylistId.value = "onlineplaylist:${widget.opid}";
       if (missingTracks.isNotEmpty) {
@@ -174,7 +184,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
           //  op:${widget.opid}.$stid
           TrackPlay().playConcenatingTrack(
             context,
-            tracks,
+            shownTracks,
             existingTracks,
             "library.onlineplaylist:${widget.opid}.",
             cancel,
@@ -204,49 +214,41 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                 await audioServiceHandler.playlist
                     .add(audioServiceHandler.createAudioSource(mediaItem));
               }
-              if (i == tracks.length - 1) {
+              if (i == shownTracks.length - 1) {
                 queueAllowShuffle.value = true;
               }
             },
           );
         });
       } else {
-        final data = await Tracks().getDurations(context, missingTracks);
-
-        if (data["durations"] != null) {
-          setState(() {
-            existingTracks.addAll({
-              for (var item in data["durations"])
-                item[0] as String: item[1] as double
-            });
-          });
-        }
-
         final List<MediaItem> mediaItems = [];
 
         final audioServiceHandler =
             Provider.of<AudioHandler>(context, listen: false)
                 as AudioServiceHandler;
 
-        for (int i = 0; i < tracks.length; i++) {
+        for (int i = 0; i < shownTracks.length; i++) {
           final MediaItem mediaItem = MediaItem(
-            id: "library.onlineplaylist:${widget.opid}.${tracks[i].id}",
-            title: tracks[i].name,
-            artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-            album: tracks[i].album != null
-                ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+            id: "library.onlineplaylist:${widget.opid}.${shownTracks[i].id}",
+            title: shownTracks[i].name,
+            artist:
+                shownTracks[i].artists.map((artist) => artist.name).join(', '),
+            album: shownTracks[i].album != null
+                ? "${shownTracks[i].album!.id}..Ææ..${shownTracks[i].album!.name}"
                 : "..Ææ..",
             duration: Duration(
-                milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
+                milliseconds:
+                    (existingTracks[shownTracks[i].id]! * 1000).toInt()),
             artUri: Uri.parse(
-              tracks[i].album != null
-                  ? calculateBestImageForTrack(tracks[i].album!.images)
+              shownTracks[i].album != null
+                  ? calculateBestImageForTrack(shownTracks[i].album!.images)
                   : '',
             ),
             extras: {
               //"blurhash": blurHash,
-              "released":
-                  tracks[i].album != null ? tracks[i].album!.releaseDate : "",
+              "released": shownTracks[i].album != null
+                  ? shownTracks[i].album!.releaseDate
+                  : "",
             },
           );
           mediaItems.add(mediaItem);
@@ -268,19 +270,12 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
         loadingShuffle = true;
       });
 
+      // Not hiddent tracks
+      List<sp.Track> shownTracks =
+          tracks.where((track) => hidden[track.id] != true).toList();
+
       // Set global id of the album
       currentAlbumPlaylistId.value = "onlineplaylist:${widget.opid}";
-
-      final data = await Tracks().getDurations(context, missingTracks);
-
-      if (data["durations"] != null) {
-        setState(() {
-          existingTracks.addAll({
-            for (var item in data["durations"])
-              item[0] as String: item[1] as double
-          });
-        });
-      }
 
       final List<MediaItem> mediaItems = [];
 
@@ -290,25 +285,27 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
 
       await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);
 
-      for (int i = 0; i < tracks.length; i++) {
+      for (int i = 0; i < shownTracks.length; i++) {
         final MediaItem mediaItem = MediaItem(
-          id: "library.onlineplaylist:${widget.opid}.${tracks[i].id}",
-          title: tracks[i].name,
-          artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-          album: tracks[i].album != null
-              ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+          id: "library.onlineplaylist:${widget.opid}.${shownTracks[i].id}",
+          title: shownTracks[i].name,
+          artist:
+              shownTracks[i].artists.map((artist) => artist.name).join(', '),
+          album: shownTracks[i].album != null
+              ? "${shownTracks[i].album!.id}..Ææ..${shownTracks[i].album!.name}"
               : "..Ææ..",
           duration: Duration(
-              milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
+              milliseconds:
+                  (existingTracks[shownTracks[i].id]! * 1000).toInt()),
           artUri: Uri.parse(
-            tracks[i].album != null
-                ? calculateBestImageForTrack(tracks[i].album!.images)
+            shownTracks[i].album != null
+                ? calculateBestImageForTrack(shownTracks[i].album!.images)
                 : '',
           ),
           extras: {
-            //"blurhash": blurHash,
-            "released":
-                tracks[i].album != null ? tracks[i].album!.releaseDate : "",
+            "released": shownTracks[i].album != null
+                ? shownTracks[i].album!.releaseDate
+                : "",
           },
         );
         mediaItems.add(mediaItem);
@@ -543,6 +540,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                               setState(() {
                                                 tracks.clear();
                                                 selectedStids.clear();
+                                                hidden.clear();
                                                 edit = false;
                                               });
 
@@ -551,33 +549,74 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                           }
                                         },
                                         addToPlaylist: () {
-                                          OpenPlaylist().open(context,
-                                              tracks: selectedStids.map(
-                                                (stid) {
-                                                  final track = tracks
-                                                      .where((favourite) =>
-                                                          favourite.id == stid)
-                                                      .toList()[0];
-                                                  return {
-                                                    "id": track.id,
-                                                    "cover":
-                                                        calculateWantedResolutionForTrack(
-                                                            track.album != null
-                                                                ? track.album!
-                                                                    .images
-                                                                : track.album!
-                                                                    .images,
-                                                            150,
-                                                            150),
-                                                    "title": track.name,
-                                                    "artist": track.artists
-                                                        .map((artist) =>
-                                                            artist.name)
-                                                        .toList()
-                                                        .join(', '),
-                                                  };
-                                                },
-                                              ).toList());
+                                          OpenPlaylist().show(
+                                              context,
+                                              PlaylistHandler(
+                                                  type: PlaylistHandlerType
+                                                      .online,
+                                                  function:
+                                                      PlaylistHandlerFunction
+                                                          .addToPlaylist,
+                                                  track:
+                                                      selectedStids.map((stid) {
+                                                    final track = tracks
+                                                        .where((track) =>
+                                                            track.id == stid)
+                                                        .toList()[0];
+                                                    return PlaylistHandlerOnlineTrack(
+                                                      id: track.id,
+                                                      name: track.name,
+                                                      artist: track.artists
+                                                          .map((artist) =>
+                                                              artist.name)
+                                                          .toList()
+                                                          .join(', '),
+                                                      cover:
+                                                          calculateWantedResolutionForTrack(
+                                                              track.album !=
+                                                                      null
+                                                                  ? track.album!
+                                                                      .images
+                                                                  : track.album!
+                                                                      .images,
+                                                              150,
+                                                              150),
+                                                      playlistHandlerCoverType:
+                                                          PlaylistHandlerCoverType
+                                                              .url,
+                                                    );
+                                                  }).toList()));
+                                        },
+                                        show: () async {
+                                          await DatabaseHelper()
+                                              .updateOnlinePlaylistShow(
+                                                  widget.opid, selectedStids);
+                                          setState(() {
+                                            // Remove from hidden
+                                            for (var key in hidden.keys) {
+                                              if (selectedStids.contains(key)) {
+                                                hidden[key] = false;
+                                              }
+                                            }
+                                            selectedStids.clear();
+                                            edit = false;
+                                          });
+                                        },
+                                        hide: () async {
+                                          await DatabaseHelper()
+                                              .updateOnlinePlaylistHide(
+                                                  widget.opid, selectedStids);
+                                          setState(() {
+                                            // Remove from hidden
+
+                                            for (var key in hidden.keys) {
+                                              if (selectedStids.contains(key)) {
+                                                hidden[key] = true;
+                                              }
+                                            }
+                                            selectedStids.clear();
+                                            edit = false;
+                                          });
                                         },
                                       ),
                                     ),
@@ -604,6 +643,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                                 missingTracks: missingTracks,
                                                 loading: loading,
                                                 numberOfSTIDS: stids.length,
+                                                hidden: hidden,
                                                 edit: edit,
                                                 play: (index) {
                                                   play(index: index);

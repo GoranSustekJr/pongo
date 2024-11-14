@@ -21,7 +21,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 8,
+      version: 11,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -39,6 +39,7 @@ class DatabaseHelper {
         opid INTEGER,
         track_id TEXT,
         order_number INT,
+        hidden BOOLEAN,
         FOREIGN KEY(opid) REFERENCES online_playlist(opid)
       )
     ''');
@@ -95,6 +96,7 @@ class DatabaseHelper {
         lpid INTEGER,
         track_id TEXT,
         order_number INT,
+        hidden BOOLEAN,
         FOREIGN KEY(lpid) REFERENCES local_playlist(lpid)
       )
     ''');
@@ -108,13 +110,18 @@ class DatabaseHelper {
   }
 
   Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
-    print(oldVersion);
-    await db.execute('''
-      CREATE TABLE lyrics_sync_time_delay (
-        stid TEXT,
-        sync_time_delay INTEGER
-      )
+    print("JEEEEEEEE; $oldVersion");
+    /*   await db.execute('''
+      ALTER TABLE opid_track_id ADD COLUMN hidden BOOLEAN DEFAULT FALSE;
     ''');
+
+    await db.execute('''
+      UPDATE opid_track_id SET hidden = false;
+    ''');
+
+    await db.execute('''
+      ALTER TABLE lpid_track_id ADD COLUMN hidden BOOLEAN DEFAULT FALSE;
+    '''); */
     print(newVersion);
   }
 
@@ -180,6 +187,14 @@ class DatabaseHelper {
 
   Future<void> updateOnlinePlaylistCover(int opid, Uint8List cover) async {
     await updateOnPlaylistCover(this, opid, cover);
+  }
+
+  Future<void> updateOnlinePlaylistShow(int opid, List<String> stids) async {
+    await updateOnPlaylistShow(this, opid, stids);
+  }
+
+  Future<void> updateOnlinePlaylistHide(int opid, List<String> stids) async {
+    await updateOnPlaylistHide(this, opid, stids);
   }
 
   Future<void> insertSearchHistorySearch(String query) async {

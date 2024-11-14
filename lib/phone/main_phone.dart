@@ -25,6 +25,7 @@ class _MyAppPhoneState extends State<MyAppPhone> {
   @override
   void initState() {
     super.initState();
+    mainContext.value = context;
     getLocale();
   }
 

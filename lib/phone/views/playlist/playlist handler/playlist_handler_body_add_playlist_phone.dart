@@ -2,7 +2,6 @@ import 'package:pongo/exports.dart';
 
 class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
   final dynamic cover;
-
   final TextEditingController titleController;
   final Function() pickImage;
   final Function() createPlaylistFunction;

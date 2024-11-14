@@ -37,17 +37,27 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Create audio source from media item
   AudioSource createAudioSource(MediaItem item) {
+    /* final accessTokenHandler =
+        Provider.of<AccessToken>(searchScreenContext.value!, listen: false); */
     return item.extras!["downloaded"] == "true"
         ? AudioSource.file(item.extras!["audio"]!)
         : useCacheAudioSource.value
             ? LockCachingAudioSource(
                 Uri.parse(
                     "${AppConstants.SERVER_URL}play_song_caching/${item.id.split(".")[2]}"),
+                /* headers: {
+                  "Authorization": "${accessTokenHandler.accessToken}",
+                  "Content-Type": "application/json",
+                }, */
                 tag: item,
               )
             : AudioSource.uri(
                 Uri.parse(
                     "${AppConstants.SERVER_URL}play_song/${item.id.split(".")[2]}"),
+                /*  headers: {
+                  "Authorization": "${accessTokenHandler.accessToken}",
+                  "Content-Type": "application/json",
+                }, */
                 tag: item,
               ) as AudioSource;
   }

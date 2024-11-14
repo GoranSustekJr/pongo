@@ -91,4 +91,10 @@ class AppIcons {
 
   static const firstToQueue = CupertinoIcons.rectangle_on_rectangle_angled;
   static const lastToQueue = CupertinoIcons.rectangle_on_rectangle;
+
+  static const hide = CupertinoIcons.eye_slash;
+
+  static const hideFill = CupertinoIcons.eye_slash_fill;
+
+  static const unhideFill = CupertinoIcons.eye_fill;
 }

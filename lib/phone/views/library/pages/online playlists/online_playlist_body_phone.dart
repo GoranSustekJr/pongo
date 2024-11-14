@@ -10,6 +10,7 @@ class OnlinePlaylistBodyPhone extends StatefulWidget {
   final int numberOfSTIDS;
   final bool edit;
   final List<String> selectedTracks;
+  final Map<String, bool> hidden;
   final Function(int) play;
   final Function(String) select;
   final Function(int, int) move;
@@ -25,6 +26,7 @@ class OnlinePlaylistBodyPhone extends StatefulWidget {
     required this.play,
     required this.select,
     required this.move,
+    required this.hidden,
   });
 
   @override
@@ -49,8 +51,14 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
 
   @override
   Widget build(BuildContext context) {
+    // Not hiddent tracks
+    List<sp.Track> shownTracks = widget.tracks
+        .where((track) => widget.hidden[track.id] != true || widget.edit)
+        .toList();
+
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
+
     return Padding(
       padding: const EdgeInsets.only(left: 15),
       child: StreamBuilder(
@@ -64,7 +72,7 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
               top: 35,
               bottom: MediaQuery.of(context).padding.bottom + 15,
             ),
-            itemCount: widget.tracks.length,
+            itemCount: shownTracks.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             onReorder: (oldIndex, newIndex) {
@@ -75,10 +83,10 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
               print(widget.missingTracks);
               return FavouritesTile(
                 key: ValueKey(index),
-                track: widget.tracks[index],
+                track: shownTracks[index],
                 first: index == 0,
-                last: widget.tracks.length - 1 == index,
-                exists: !widget.missingTracks.contains(widget.tracks[index].id),
+                last: shownTracks.length - 1 == index,
+                exists: !widget.missingTracks.contains(shownTracks[index].id),
                 trailing: Padding(
                   padding: const EdgeInsets.only(right: 15),
                   child: SizedBox(
@@ -88,10 +96,10 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
                           height: 40,
                           width: 20,
                           child: Trailing(
-                            show: !widget.loading
-                                .contains(widget.tracks[index].id),
+                            show:
+                                !widget.loading.contains(shownTracks[index].id),
                             showThis: id ==
-                                    "library.onlineplaylist:${widget.opid}.${widget.tracks[index].id}" &&
+                                    "library.onlineplaylist:${widget.opid}.${shownTracks[index].id}" &&
                                 audioServiceHandler.audioPlayer.currentIndex ==
                                     index,
                             trailing: const CircularProgressIndicator.adaptive(
@@ -99,6 +107,16 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
                             ),
                           ),
                         ),
+                        if (widget.edit &&
+                            widget.hidden[shownTracks[index].id] == true)
+                          const SizedBox(
+                            height: 40,
+                            width: 20,
+                            child: Icon(
+                              AppIcons.hide,
+                              color: Colors.white,
+                            ),
+                          ),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           width: widget.edit ? 40 : 0,
@@ -107,12 +125,12 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
                             padding: const EdgeInsets.only(left: 15),
                             child: iconButton(
                               widget.selectedTracks
-                                      .contains(widget.tracks[index].id)
+                                      .contains(shownTracks[index].id)
                                   ? AppIcons.checkmark
                                   : AppIcons.uncheckmark,
                               Colors.white,
                               () {
-                                widget.select(widget.tracks[index].id);
+                                widget.select(shownTracks[index].id);
                               },
                               edgeInsets: EdgeInsets.zero,
                             ),
@@ -124,7 +142,7 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
                 ),
                 function: widget.edit
                     ? () {
-                        widget.select(widget.tracks[index].id);
+                        widget.select(shownTracks[index].id);
                       }
                     : () async {
                         final playNew = audioServiceHandler.mediaItem.value !=
@@ -137,7 +155,7 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
                             audioServiceHandler.mediaItem.value != null
                                 ? audioServiceHandler.mediaItem.value!.id
                                         .split(".")[2] !=
-                                    widget.tracks[index].id
+                                    shownTracks[index].id
                                 : false;
 
                         if (playNew) {

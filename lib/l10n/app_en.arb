@@ -768,5 +768,15 @@
     "changename": "Change name",
     "@changename": {
         "description": "changename"
+    },
+
+    "hide": "hide",
+    "@hide": {
+        "description": "hide"
+    },
+
+    "show": "show",
+    "@show": {
+        "description": "show"
     }
 }

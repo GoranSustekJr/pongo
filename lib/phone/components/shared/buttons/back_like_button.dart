@@ -8,29 +8,30 @@ backLikeButton(context, IconData icon, Function() function) {
       ? CupertinoButton(
           onPressed: function,
           padding: EdgeInsets.zero,
-          child: ClipRRect(
+          child: /* ClipRRect(
             borderRadius: BorderRadius.circular(60),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Container(
-                height: 50,
-                width: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(60),
-                  color: Colors.black.withAlpha(20),
+              child: */
+              Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(60),
+              color: Colors.black.withAlpha(100),
+            ),
+            child: Stack(
+              children: [
+                Center(
+                  child: Icon(
+                    icon,
+                    size: 27.5,
+                    color: Colors.white,
+                  ),
                 ),
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Icon(
-                        icon,
-                        size: 27.5,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              ],
+              /*    ),
+              ), */
             ),
           ),
         )

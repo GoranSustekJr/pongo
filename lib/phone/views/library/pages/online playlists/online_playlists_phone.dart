@@ -100,7 +100,13 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                             context,
                             CupertinoIcons.add,
                             () {
-                              OpenPlaylist().open(context);
+                              OpenPlaylist().show(
+                                  context,
+                                  PlaylistHandler(
+                                      type: PlaylistHandlerType.online,
+                                      function: PlaylistHandlerFunction
+                                          .createPlaylist,
+                                      track: []));
                             },
                           ),
                         ],
@@ -187,6 +193,7 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                                 setState(() {
                                   playlistsLength--;
                                   playlists.removeAt(index);
+                                  coverImages.removeAt(index);
                                 });
                               });
                             },

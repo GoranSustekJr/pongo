@@ -153,6 +153,8 @@
     "onlineplaylist": "Online playlisa",
     "cropimage": "Izreži sliku",
     "plustracks": "pjesama",
-    "changename": "Promjeni ime"
+    "changename": "Promjeni ime",
+    "hide": "Sakri",
+    "show": "Prikaži"
 
 }

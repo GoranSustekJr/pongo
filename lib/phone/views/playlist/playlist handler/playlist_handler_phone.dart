@@ -121,7 +121,10 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
   void initNewPlaylist() {
     setState(() {
       if (widget.playlistHandler.track != null) {
-        newPlaylistCover = widget.playlistHandler.track![0].cover;
+        if (widget.playlistHandler.track!.isNotEmpty) {
+          print("Dubre; ${widget.playlistHandler.track}");
+          newPlaylistCover = widget.playlistHandler.track![0].cover;
+        }
       }
     });
   }
@@ -218,15 +221,22 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                             : null;
                         int opid = await DatabaseHelper().insertOnlinePlaylist(
                             titleController.value.text.trim(), bytes);
-                        int i = 0;
-                        for (int i = 0;
-                            i < widget.playlistHandler.track!.length;
-                            i++) {
-                          await DatabaseHelper().insertOnlineTrackId(
-                              opid, widget.playlistHandler.track![i].id);
-                          if (i == widget.playlistHandler.track!.length - 1) {
-                            print("object");
+
+                        if (widget.playlistHandler.track != null) {
+                          if (widget.playlistHandler.track!.isEmpty) {
                             playlistHandler.value = null;
+                          } else {
+                            for (int i = 0;
+                                i < widget.playlistHandler.track!.length;
+                                i++) {
+                              await DatabaseHelper().insertOnlineTrackId(
+                                  opid, widget.playlistHandler.track![i].id);
+                              if (i ==
+                                  widget.playlistHandler.track!.length - 1) {
+                                print("object");
+                                playlistHandler.value = null;
+                              }
+                            }
                           }
                         }
                       }

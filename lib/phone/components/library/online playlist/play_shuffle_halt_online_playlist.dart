@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../../../../exports.dart';
 
 class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
@@ -12,6 +14,8 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
   final Function() stopEdit;
   final Function() remove;
   final Function() addToPlaylist;
+  final Function() show;
+  final Function() hide;
   const PlayShuffleHaltOnlinePlaylist({
     super.key,
     required this.opid,
@@ -25,6 +29,8 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
     required this.stopEdit,
     required this.remove,
     required this.addToPlaylist,
+    required this.show,
+    required this.hide,
   });
 
   @override
@@ -68,6 +74,32 @@ class _PlayShuffleHaltOnlinePlaylistState
                           widget.addToPlaylist();
                         },
                         edgeInsets: EdgeInsets.zero,
+                      ),
+                      PullDownButton(
+                        itemBuilder: (context) {
+                          return [
+                            PullDownMenuItem(
+                              onTap: widget.show,
+                              title: AppLocalizations.of(context)!.show,
+                              icon: AppIcons.unhideFill,
+                            ),
+                            const PullDownMenuDivider(),
+                            PullDownMenuItem(
+                              onTap: widget.hide,
+                              title: AppLocalizations.of(context)!.hide,
+                              icon: AppIcons.hideFill,
+                            ),
+                          ];
+                        },
+                        position: PullDownMenuPosition.above,
+                        buttonBuilder: (context, showMenu) => CupertinoButton(
+                          onPressed: showMenu,
+                          padding: EdgeInsets.zero,
+                          child: const Icon(
+                            AppIcons.hide,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                       iconButton(
                         AppIcons.trash,

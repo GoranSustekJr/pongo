@@ -50,3 +50,24 @@ Future<void> updateOnPlaylistCover(
     whereArgs: [opid],
   );
 }
+
+Future<void> updateOnPlaylistShow(
+    DatabaseHelper dHelper, int opid, List<String> stids) async {
+  Database db = await dHelper.database;
+  final placeholders = List.filled(stids.length, '?').join(', ');
+
+  await db.rawUpdate(
+    'UPDATE opid_track_id SET hidden = ? WHERE opid = ? AND track_id IN ($placeholders)',
+    [false, opid, ...stids],
+  );
+}
+
+Future<void> updateOnPlaylistHide(
+    DatabaseHelper dHelper, int opid, List<String> stids) async {
+  Database db = await dHelper.database;
+  final placeholders = List.filled(stids.length, '?').join(', ');
+
+  await db.rawUpdate(
+      'UPDATE opid_track_id SET hidden = ? WHERE opid = ? AND track_id IN ($placeholders)',
+      [true, opid, ...stids]);
+}

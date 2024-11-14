@@ -152,5 +152,7 @@
     "onlineplaylist": "Online Playlist",
     "cropimage": "Bild zuschneiden",
     "plustracks": "Lieder",
-    "changename": "Namen ändern"
+    "changename": "Namen ändern",
+    "hide": "Verberg",
+    "show": "Zeig"
 }

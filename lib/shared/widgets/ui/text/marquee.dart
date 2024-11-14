@@ -5,8 +5,7 @@ LayoutBuilder marquee(
     {double height = 28}) {
   return LayoutBuilder(
     builder: (context, constraints) {
-      final textSpan =
-          TextSpan(text: HtmlUnescape().convert(text), style: style);
+      final textSpan = TextSpan(text: (text), style: style);
 
       final textPainter = TextPainter(
         text: textSpan,
@@ -18,7 +17,7 @@ LayoutBuilder marquee(
 
       bool isOverflowing = textPainter.didExceedMaxLines;
 
-      return isOverflowing
+      return /*  isOverflowing
           ? SizedBox(
               height: height,
               child: Marquee(
@@ -29,12 +28,13 @@ LayoutBuilder marquee(
                 velocity: 30,
               ),
             )
-          : Text(
-              HtmlUnescape().convert(text),
-              style: style,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            );
+          :  */
+          Text(
+        (text),
+        style: style,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      );
     },
   );
 }

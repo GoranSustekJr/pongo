@@ -166,8 +166,17 @@ class _ArtistPhoneState extends State<ArtistPhone> {
                             title: Row(
                               children: [
                                 backButton(context),
+                                razw(15),
                                 Expanded(
-                                  child: Container(),
+                                  child: Text(
+                                    widget.artist.name,
+                                    style: const TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ],
                             ),
@@ -176,22 +185,6 @@ class _ArtistPhoneState extends State<ArtistPhone> {
                               centerTitle: true,
                               title: AppBar(
                                 automaticallyImplyLeading: false,
-                                title: Row(
-                                  children: [
-                                    backButton(context),
-                                    Expanded(
-                                      child: Text(
-                                        widget.artist.name,
-                                        style: const TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
                                 flexibleSpace: Opacity(
                                   opacity: MediaQuery.of(context).size.height /
                                               2 <=

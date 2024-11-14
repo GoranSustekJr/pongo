@@ -29,8 +29,8 @@ Future<int> queryOnPlaylistsLength(DatabaseHelper dbHelper) async {
 Future<int> queryOnTrackIdsForPlaylistLength(
     DatabaseHelper dbHelper, int opid) async {
   Database db = await dbHelper.database;
-  final result = await db
-      .rawQuery('SELECT COUNT(*) FROM opid_track_id WHERE opid = $opid');
+  final result = await db.rawQuery(
+      'SELECT COUNT(*) FROM opid_track_id WHERE opid = $opid AND hidden = ${false}');
   return Sqflite.firstIntValue(result) ?? 0;
 }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/shared/functions/favourites/favourites.dart';
-import 'package:pongo/shared/functions/open%20playlist/open_playlist.dart';
 
 trackInfoButton(context, String trackId, bool favourite, Function() download,
     Function() refreshFavourite) {
@@ -21,7 +20,31 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
               title: AppLocalizations.of(context)!.addtoplaylist,
               icon: AppIcons.musicAlbums,
               onTap: () {
-                OpenPlaylist().open(context);
+                final audioServiceHandler =
+                    Provider.of<AudioHandler>(context, listen: false)
+                        as AudioServiceHandler;
+                final MediaItem? mediaItem =
+                    audioServiceHandler.mediaItem.value;
+
+                if (mediaItem != null) {
+                  OpenPlaylist().show(
+                    context,
+                    PlaylistHandler(
+                      type: PlaylistHandlerType.online,
+                      function: PlaylistHandlerFunction.addToPlaylist,
+                      track: [
+                        PlaylistHandlerOnlineTrack(
+                          id: mediaItem.id.split('.')[2],
+                          name: mediaItem.title,
+                          artist: mediaItem.artist ?? "",
+                          cover: mediaItem.artUri.toString(),
+                          playlistHandlerCoverType:
+                              PlaylistHandlerCoverType.url,
+                        )
+                      ],
+                    ),
+                  );
+                }
               },
             ),
             const PullDownMenuDivider.large(),
