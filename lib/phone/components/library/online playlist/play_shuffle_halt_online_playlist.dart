@@ -75,32 +75,33 @@ class _PlayShuffleHaltOnlinePlaylistState
                         },
                         edgeInsets: EdgeInsets.zero,
                       ),
-                      PullDownButton(
-                        itemBuilder: (context) {
-                          return [
-                            PullDownMenuItem(
-                              onTap: widget.show,
-                              title: AppLocalizations.of(context)!.show,
-                              icon: AppIcons.unhideFill,
+                      if (kIsApple)
+                        PullDownButton(
+                          itemBuilder: (context) {
+                            return [
+                              PullDownMenuItem(
+                                onTap: widget.show,
+                                title: AppLocalizations.of(context)!.show,
+                                icon: AppIcons.unhideFill,
+                              ),
+                              const PullDownMenuDivider(),
+                              PullDownMenuItem(
+                                onTap: widget.hide,
+                                title: AppLocalizations.of(context)!.hide,
+                                icon: AppIcons.hideFill,
+                              ),
+                            ];
+                          },
+                          position: PullDownMenuPosition.automatic,
+                          buttonBuilder: (context, showMenu) => CupertinoButton(
+                            onPressed: showMenu,
+                            padding: EdgeInsets.zero,
+                            child: const Icon(
+                              AppIcons.hide,
+                              color: Colors.white,
                             ),
-                            const PullDownMenuDivider(),
-                            PullDownMenuItem(
-                              onTap: widget.hide,
-                              title: AppLocalizations.of(context)!.hide,
-                              icon: AppIcons.hideFill,
-                            ),
-                          ];
-                        },
-                        position: PullDownMenuPosition.above,
-                        buttonBuilder: (context, showMenu) => CupertinoButton(
-                          onPressed: showMenu,
-                          padding: EdgeInsets.zero,
-                          child: const Icon(
-                            AppIcons.hide,
-                            color: Colors.white,
                           ),
                         ),
-                      ),
                       iconButton(
                         AppIcons.trash,
                         Colors.white,

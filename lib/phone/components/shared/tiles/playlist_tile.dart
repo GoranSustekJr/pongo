@@ -49,7 +49,7 @@ class PlaylistTile extends StatelessWidget {
         width: MediaQuery.of(context).size.width - 20,
         decoration: BoxDecoration(
           borderRadius: borderRadius,
-          color: Col.primaryCard.withAlpha(200),
+          color: Col.primaryCard.withAlpha(150),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -549,74 +549,80 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                           }
                                         },
                                         addToPlaylist: () {
-                                          OpenPlaylist().show(
-                                              context,
-                                              PlaylistHandler(
-                                                  type: PlaylistHandlerType
-                                                      .online,
-                                                  function:
-                                                      PlaylistHandlerFunction
-                                                          .addToPlaylist,
-                                                  track:
-                                                      selectedStids.map((stid) {
-                                                    final track = tracks
-                                                        .where((track) =>
-                                                            track.id == stid)
-                                                        .toList()[0];
-                                                    return PlaylistHandlerOnlineTrack(
-                                                      id: track.id,
-                                                      name: track.name,
-                                                      artist: track.artists
-                                                          .map((artist) =>
-                                                              artist.name)
-                                                          .toList()
-                                                          .join(', '),
-                                                      cover:
-                                                          calculateWantedResolutionForTrack(
-                                                              track.album !=
-                                                                      null
-                                                                  ? track.album!
-                                                                      .images
-                                                                  : track.album!
-                                                                      .images,
-                                                              150,
-                                                              150),
-                                                      playlistHandlerCoverType:
-                                                          PlaylistHandlerCoverType
-                                                              .url,
-                                                    );
-                                                  }).toList()));
+                                          if (selectedStids.isNotEmpty) {
+                                            OpenPlaylist().show(
+                                                context,
+                                                PlaylistHandler(
+                                                    type: PlaylistHandlerType
+                                                        .online,
+                                                    function:
+                                                        PlaylistHandlerFunction
+                                                            .addToPlaylist,
+                                                    track: selectedStids
+                                                        .map((stid) {
+                                                      final track = tracks
+                                                          .where((track) =>
+                                                              track.id == stid)
+                                                          .toList()[0];
+                                                      return PlaylistHandlerOnlineTrack(
+                                                        id: track.id,
+                                                        name: track.name,
+                                                        artist: track.artists
+                                                            .map((artist) =>
+                                                                artist.name)
+                                                            .toList()
+                                                            .join(', '),
+                                                        cover: calculateWantedResolutionForTrack(
+                                                            track.album != null
+                                                                ? track.album!
+                                                                    .images
+                                                                : track.album!
+                                                                    .images,
+                                                            150,
+                                                            150),
+                                                        playlistHandlerCoverType:
+                                                            PlaylistHandlerCoverType
+                                                                .url,
+                                                      );
+                                                    }).toList()));
+                                          }
                                         },
                                         show: () async {
-                                          await DatabaseHelper()
-                                              .updateOnlinePlaylistShow(
-                                                  widget.opid, selectedStids);
-                                          setState(() {
-                                            // Remove from hidden
-                                            for (var key in hidden.keys) {
-                                              if (selectedStids.contains(key)) {
-                                                hidden[key] = false;
+                                          if (selectedStids.isNotEmpty) {
+                                            await DatabaseHelper()
+                                                .updateOnlinePlaylistShow(
+                                                    widget.opid, selectedStids);
+                                            setState(() {
+                                              // Remove from hidden
+                                              for (var key in hidden.keys) {
+                                                if (selectedStids
+                                                    .contains(key)) {
+                                                  hidden[key] = false;
+                                                }
                                               }
-                                            }
-                                            selectedStids.clear();
-                                            edit = false;
-                                          });
+                                              selectedStids.clear();
+                                              edit = false;
+                                            });
+                                          }
                                         },
                                         hide: () async {
-                                          await DatabaseHelper()
-                                              .updateOnlinePlaylistHide(
-                                                  widget.opid, selectedStids);
-                                          setState(() {
-                                            // Remove from hidden
+                                          if (selectedStids.isNotEmpty) {
+                                            await DatabaseHelper()
+                                                .updateOnlinePlaylistHide(
+                                                    widget.opid, selectedStids);
+                                            setState(() {
+                                              // Remove from hidden
 
-                                            for (var key in hidden.keys) {
-                                              if (selectedStids.contains(key)) {
-                                                hidden[key] = true;
+                                              for (var key in hidden.keys) {
+                                                if (selectedStids
+                                                    .contains(key)) {
+                                                  hidden[key] = true;
+                                                }
                                               }
-                                            }
-                                            selectedStids.clear();
-                                            edit = false;
-                                          });
+                                              selectedStids.clear();
+                                              edit = false;
+                                            });
+                                          }
                                         },
                                       ),
                                     ),

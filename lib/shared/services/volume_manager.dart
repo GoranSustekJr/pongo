@@ -32,7 +32,6 @@ class VolumeManager {
     VolumeController().listener((volume) {
       _currentVolume = volume;
       _volumeController.add(_currentVolume);
-      print('Volume changed to: $volume');
     });
   }
 

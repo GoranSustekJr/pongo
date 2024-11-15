@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:interactive_slider_fork/interactive_slider.dart' as isf;
-
+import 'package:interactive_slider_path/interactive_slider.dart' as isf;
 import '../../../../../exports.dart';
 
 class TrackProgressPhone extends StatefulWidget {

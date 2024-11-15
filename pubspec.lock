@@ -749,12 +749,12 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.0"
-  interactive_slider_fork:
+  interactive_slider_path:
     dependency: "direct main"
     description:
       path: "."
       ref: main
-      resolved-ref: "81b6c8dcf6ff2120d63f3d4bc846db71254b4300"
+      resolved-ref: e2b977607835c27522be8f79d762e79ae49b0a47
       url: "https://github.com/GoranSustekJr/interactive_slider.git"
     source: git
     version: "0.4.0"

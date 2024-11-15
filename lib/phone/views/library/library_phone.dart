@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/library/pages/favourites/favourites_phone.dart';
+import 'package:pongo/phone/views/library/pages/locals/locals_phone.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/online_playlists_phone.dart';
 
 class LibraryPhone extends StatefulWidget {
@@ -99,6 +100,10 @@ class _LibraryPhoneState extends State<LibraryPhone> {
                         AppLocalizations.of(context)!.songs,
                         AppLocalizations.of(context)!.offlinesongs,
                         () {
+                          Navigations().nextScreen(
+                            context,
+                            const LocalsPhone(),
+                          );
                           /*    Navigations()
                               .nextScreen(context, AllDownloadedSongsPhone()); */
                         },
