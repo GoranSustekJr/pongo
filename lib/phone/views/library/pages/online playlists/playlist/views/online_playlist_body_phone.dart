@@ -1,10 +1,11 @@
+import 'dart:ui';
+
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/widgets/library/favourites/favourites_tile.dart';
-import 'package:spotify_api/spotify_api.dart' as sp;
 
 class OnlinePlaylistBodyPhone extends StatefulWidget {
   final int opid;
-  final List<sp.Track> tracks;
+  final List<Track> tracks;
   final List missingTracks;
   final List<String> loading;
   final int numberOfSTIDS;
@@ -52,7 +53,7 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
   @override
   Widget build(BuildContext context) {
     // Not hiddent tracks
-    List<sp.Track> shownTracks = widget.tracks
+    List<Track> shownTracks = widget.tracks
         .where((track) => widget.hidden[track.id] != true || widget.edit)
         .toList();
 
@@ -79,8 +80,20 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
               if (widget.edit) {}
               widget.move(oldIndex, newIndex);
             },
+            proxyDecorator: (child, index, animation) => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Col.primaryCard.withAlpha(175),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: child,
+                ),
+              ),
+            ),
             itemBuilder: (context, index) {
-              print(widget.missingTracks);
               return FavouritesTile(
                 key: ValueKey(index),
                 track: shownTracks[index],
@@ -96,16 +109,18 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
                           height: 40,
                           width: 20,
                           child: Trailing(
-                            show:
-                                !widget.loading.contains(shownTracks[index].id),
-                            showThis: id ==
-                                    "library.onlineplaylist:${widget.opid}.${shownTracks[index].id}" &&
-                                audioServiceHandler.audioPlayer.currentIndex ==
-                                    index,
-                            trailing: const CircularProgressIndicator.adaptive(
-                              key: ValueKey(true),
-                            ),
-                          ),
+                              show: !widget.loading
+                                  .contains(shownTracks[index].id),
+                              showThis: id ==
+                                      "online.playlist:${widget.opid}.${shownTracks[index].id}" &&
+                                  audioServiceHandler
+                                          .audioPlayer.currentIndex ==
+                                      index,
+                              trailing: const Icon(
+                                key: ValueKey(true),
+                                AppIcons.loading,
+                                color: Colors.white,
+                              )),
                         ),
                         if (widget.edit &&
                             widget.hidden[shownTracks[index].id] == true)
@@ -148,7 +163,7 @@ class _OnlinePlaylistBodyPhoneState extends State<OnlinePlaylistBodyPhone> {
                         final playNew = audioServiceHandler.mediaItem.value !=
                                 null
                             ? "${audioServiceHandler.mediaItem.value!.id.split(".")[0]}.${audioServiceHandler.mediaItem.value!.id.split(".")[1]}" !=
-                                "library.onlineplaylist:${widget.opid}"
+                                "online.playlist:${widget.opid}"
                             : true;
 
                         final skipTo =

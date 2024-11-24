@@ -1,7 +1,4 @@
 import 'dart:ui';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/playing%20details/controls.dart';
 import 'package:pongo/phone/views/playlist/playlist%20handler/old%20online%20handler/online_playlist_handler_body_phone.dart';

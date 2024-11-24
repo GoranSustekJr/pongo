@@ -21,7 +21,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 11,
+      version: 14,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -79,8 +79,7 @@ class DatabaseHelper {
           artists TEXT,
           title TEXT,
           duration INT,
-          blurhash TEXT,
-          image BLOB,
+          image TEXT,
           lyrics_sync TEXT,
           lyrics_plain TEXT
         )
@@ -122,6 +121,11 @@ class DatabaseHelper {
     await db.execute('''
       ALTER TABLE lpid_track_id ADD COLUMN hidden BOOLEAN DEFAULT FALSE;
     '''); */
+
+    /* await db.execute('''
+      ALTER TABLE downloaded_tracks DROP COLUMN blurhash;
+    '''); */
+
     print(newVersion);
   }
 
@@ -243,11 +247,10 @@ class DatabaseHelper {
     List<Map<String, dynamic>> artists,
     String title,
     int duration,
-    String blurhash,
-    Uint8List? image,
+    String? image,
   ) async {
     await insertDownloadedTrck(
-        this, stid, audio, artists, title, duration, blurhash, image);
+        this, stid, audio, artists, title, duration, image);
   }
 
   Future<List<Map<String, dynamic>>> queryAllDownloadedTracks() async {

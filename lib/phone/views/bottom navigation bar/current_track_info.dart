@@ -222,15 +222,20 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                               .artUri
                                                                               .toString() !=
                                                                           ""
-                                                                      ? CachedNetworkImage(
-                                                                          imageUrl: currentMediaItem
+                                                                      ? currentMediaItem
                                                                               .artUri
-                                                                              .toString(),
-                                                                          width:
-                                                                              40,
-                                                                          height:
-                                                                              40,
-                                                                        )
+                                                                              .toString()
+                                                                              .contains("file:///")
+                                                                          ? Image.file(
+                                                                              File.fromUri(currentMediaItem.artUri!),
+                                                                              width: 40,
+                                                                              height: 40,
+                                                                            )
+                                                                          : CachedNetworkImage(
+                                                                              imageUrl: currentMediaItem.artUri.toString(),
+                                                                              width: 40,
+                                                                              height: 40,
+                                                                            )
                                                                       : SizedBox(
                                                                           height:
                                                                               40,

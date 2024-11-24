@@ -97,4 +97,6 @@ class AppIcons {
   static const hideFill = CupertinoIcons.eye_slash_fill;
 
   static const unhideFill = CupertinoIcons.eye_fill;
+
+  static const loading = CupertinoIcons.timelapse;
 }

@@ -21,30 +21,6 @@ class PlayShuffleHaltPlaylist extends StatefulWidget {
 }
 
 class _PlayShuffleHaltPlaylistState extends State<PlayShuffleHaltPlaylist> {
-  // Pulsating shuffle icon
-  /*  late AnimationController controller;
-  late Animation<Color?> colorAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    colorAnimation = ColorTween(
-      begin: Colors.white,
-      end: Colors.white.withAlpha(100),
-    ).animate(controller);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  } */
-
   @override
   Widget build(BuildContext context) {
     final audioServiceHandler =
@@ -54,7 +30,7 @@ class _PlayShuffleHaltPlaylistState extends State<PlayShuffleHaltPlaylist> {
         builder: (context, mediaItemStream) {
           bool showPlay = mediaItemStream.data == null
               ? true
-              : "search.playlist:${widget.playlist.id}" !=
+              : "online.playlist:${widget.playlist.id}" !=
                   '${mediaItemStream.data!.id.split('.')[0]}.${mediaItemStream.data!.id.split('.')[1]}';
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),

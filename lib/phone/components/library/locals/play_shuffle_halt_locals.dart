@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
-
 import '../../../../exports.dart';
 
-class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
-  final int opid;
+class PlayShuffleHaltLocals extends StatefulWidget {
   final List missingTracks;
   final bool loadingShuffle;
   final bool edit;
@@ -12,13 +9,10 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
   final Function() play;
   final Function() shuffle;
   final Function() stopEdit;
-  final Function() remove;
+  final Function() unfavourite;
   final Function() addToPlaylist;
-  final Function() show;
-  final Function() hide;
-  const PlayShuffleHaltOnlinePlaylist({
+  const PlayShuffleHaltLocals({
     super.key,
-    required this.opid,
     required this.missingTracks,
     required this.loadingShuffle,
     required this.edit,
@@ -27,19 +21,15 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
     required this.play,
     required this.shuffle,
     required this.stopEdit,
-    required this.remove,
+    required this.unfavourite,
     required this.addToPlaylist,
-    required this.show,
-    required this.hide,
   });
 
   @override
-  State<PlayShuffleHaltOnlinePlaylist> createState() =>
-      _PlayShuffleHaltOnlinePlaylistState();
+  State<PlayShuffleHaltLocals> createState() => _PlayShuffleHaltLocalsState();
 }
 
-class _PlayShuffleHaltOnlinePlaylistState
-    extends State<PlayShuffleHaltOnlinePlaylist> {
+class _PlayShuffleHaltLocalsState extends State<PlayShuffleHaltLocals> {
   @override
   Widget build(BuildContext context) {
     final audioServiceHandler =
@@ -49,7 +39,7 @@ class _PlayShuffleHaltOnlinePlaylistState
         builder: (context, mediaItemStream) {
           bool showPlay = mediaItemStream.data == null
               ? true
-              : "online.playlist:${widget.opid}" !=
+              : "library.locals" !=
                   '${mediaItemStream.data!.id.split('.')[0]}.${mediaItemStream.data!.id.split('.')[1]}';
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
@@ -75,38 +65,11 @@ class _PlayShuffleHaltOnlinePlaylistState
                         },
                         edgeInsets: EdgeInsets.zero,
                       ),
-                      if (kIsApple)
-                        PullDownButton(
-                          itemBuilder: (context) {
-                            return [
-                              PullDownMenuItem(
-                                onTap: widget.show,
-                                title: AppLocalizations.of(context)!.show,
-                                icon: AppIcons.unhideFill,
-                              ),
-                              const PullDownMenuDivider(),
-                              PullDownMenuItem(
-                                onTap: widget.hide,
-                                title: AppLocalizations.of(context)!.hide,
-                                icon: AppIcons.hideFill,
-                              ),
-                            ];
-                          },
-                          position: PullDownMenuPosition.automatic,
-                          buttonBuilder: (context, showMenu) => CupertinoButton(
-                            onPressed: showMenu,
-                            padding: EdgeInsets.zero,
-                            child: const Icon(
-                              AppIcons.hide,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
                       iconButton(
-                        AppIcons.trash,
+                        AppIcons.heartSlash,
                         Colors.white,
                         () {
-                          widget.remove();
+                          widget.unfavourite();
                         },
                         edgeInsets: EdgeInsets.zero,
                       ),

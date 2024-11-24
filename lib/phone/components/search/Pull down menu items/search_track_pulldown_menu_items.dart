@@ -1,5 +1,6 @@
 import 'package:pongo/exports.dart';
 import 'package:pongo/shared/functions/favourites/favourites.dart';
+import 'package:pongo/shared/utils/API%20requests/download.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 List<PullDownMenuEntry> searchTrackPulldownMenuItems(
@@ -13,8 +14,9 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
   return kIsApple
       ? [
           PullDownMenuItem(
-            onTap: () {
-              // TODO: Add download function
+            onTap: () async {
+              print("DFHAKJFHDAJKFHKA");
+              await Download().single(track);
             },
             title: AppLocalizations.of(context)!.download,
             icon: AppIcons.download,

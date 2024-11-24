@@ -141,4 +141,60 @@ class PlayMultiple {
       }
     }
   }
+
+  Future<void> offlineTrack(
+    String baseId,
+    List<Track> tracks,
+    Map<String, int> durations, {
+    int? index,
+    bool shuffle = false,
+    bool online = false,
+  }) async {
+    final audioServiceHandler =
+        Provider.of<AudioHandler>(mainContext.value!, listen: false)
+            as AudioServiceHandler;
+
+    // All songs already exist
+    final List<MediaItem> mediaItems = [];
+
+    // Add each track as a MediaItem
+    for (int i = 0; i < tracks.length; i++) {
+      print(tracks[i].image != null ? Uri.file(tracks[i].image!.path) : null);
+      final MediaItem mediaItem = MediaItem(
+        id: "$baseId.${tracks[i].id}",
+        title: tracks[i].name,
+        artist: tracks[i].artists.map((artist) => artist.name).join(', '),
+        album: tracks[i].album != null
+            ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+            : "..Ææ..",
+        duration: Duration(milliseconds: (durations[tracks[i].id]!)),
+        artUri:
+            tracks[i].image != null ? Uri.file(tracks[i].image!.path) : null,
+        extras: {
+          "online": online,
+          "released":
+              tracks[i].album != null ? tracks[i].album!.releaseDate : "",
+        },
+      );
+      mediaItems.add(mediaItem);
+    }
+
+    // Start the queue
+    await audioServiceHandler.initSongs(
+        songs: mediaItems); // Init the MediaItems
+
+    if (index != null || shuffle) {
+      await audioServiceHandler.skipToQueueItem(index ??
+          audioServiceHandler.audioPlayer
+              .shuffleIndices![0]); // Skip to the wanted index in the queue
+    }
+
+    audioServiceHandler.play(); // Play
+
+    queueAllowShuffle.value = true;
+
+    if (shuffle) {
+      await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);
+    }
+  }
 }

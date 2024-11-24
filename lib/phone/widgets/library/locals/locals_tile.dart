@@ -2,21 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
-class FavouritesTile extends StatelessWidget {
+class LocalsTile extends StatelessWidget {
   final Track track;
   final bool first;
   final bool last;
-  final bool exists;
   final Function() function;
   final Widget? trailing;
-  const FavouritesTile({
+  const LocalsTile({
     super.key,
     required this.track,
     required this.first,
     required this.last,
     required this.function,
     this.trailing,
-    required this.exists,
   });
 
   @override
@@ -56,18 +54,22 @@ class FavouritesTile extends StatelessWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7.5),
-                  child: track.album ==
+                  child: track.image ==
                           null //!track["track"].keys.contains("album")
                       ? Center(
                           child: Icon(AppIcons.blankTrack, color: Colors.white),
                         )
-                      : CachedNetworkImage(
-                          imageUrl: calculateWantedResolutionForTrack(
-                            track.album!.images,
-                            100,
-                            100,
-                          ),
+                      : FadeInImage(
+                          width: 250,
                           fit: BoxFit.cover,
+                          height: 250,
+                          placeholder:
+                              const AssetImage('assets/images/placeholder.png'),
+                          fadeInDuration: const Duration(milliseconds: 200),
+                          fadeOutDuration: const Duration(milliseconds: 200),
+                          image: FileImage(
+                            File(track.image!.path),
+                          ),
                         ),
                 ),
               ),
@@ -118,7 +120,7 @@ class FavouritesTile extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 300),
-        opacity: exists ? 1 : 0.5,
+        opacity: 1,
         child: ClipRRect(
           child: kIsApple
               ? Container(

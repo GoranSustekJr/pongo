@@ -114,28 +114,7 @@ class QueueBodyPhone extends StatelessWidget {
                                                                   .currentIndex ==
                                                               ind,
                                                       trailing:
-                                                          const SizedBox()) /* AnimatedSwitcher(
-                                                  duration: const Duration(
-                                                      milliseconds: 200),
-                                                  child: id == queue![ind].id &&
-                                                          audioServiceHandler
-                                                                  .audioPlayer
-                                                                  .currentIndex ==
-                                                              ind
-                                                      ? const SizedBox(
-                                                          width: 40,
-                                                          height: 40,
-                                                          child: Center(
-                                                            child: Icon(
-                                                              CupertinoIcons
-                                                                  .circle_filled,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ))
-                                                      : const SizedBox(),
-                                                ), */
-                                                  ),
+                                                          const SizedBox())),
                                               razw(5),
                                               const Icon(
                                                 AppIcons.burger,

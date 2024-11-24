@@ -1,4 +1,3 @@
-import 'package:blurhash_ffi/blurhash.dart';
 import 'package:pongo/exports.dart';
 
 class MediaItemManager with ChangeNotifier {
@@ -52,10 +51,13 @@ class MediaItemManager with ChangeNotifier {
       plainLyrics = "";
       syncedLyrics = "";
     }
-
     blurhash = mediaItem.artUri != null
-        ? await BlurhashFFI.encode(NetworkImage(mediaItem.artUri.toString()),
-            componentX: 3, componentY: 3)
+        ? await BlurhashFFI.encode(
+            currentMediaItem!.artUri.toString().contains("file:///")
+                ? FileImage(File(currentMediaItem!.artUri!.toFilePath()))
+                : NetworkImage(currentMediaItem!.artUri.toString()),
+            componentX: 3,
+            componentY: 3)
         : AppConstants().BLURHASH;
     currentBlurhash.value = blurhash;
 

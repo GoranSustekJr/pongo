@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/shared/functions/favourites/favourites.dart';
-import 'package:pongo/shared/functions/open%20playlist/open_playlist.dart';
-import 'package:spotify_api/spotify_api.dart' as sp;
+import 'package:pongo/shared/utils/API%20requests/download.dart';
 
 List<Widget> recommendedTrackCupertinoContextMenuActions(
   BuildContext context,
@@ -11,13 +10,12 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
   Function(String) doesNotExist,
   Function(String) doesNowExist,
 ) {
-  print(track.artists[0].name);
   return kIsApple
       ? [
           CupertinoContextMenuAction(
-            onPressed: () {
+            onPressed: () async {
+              await Download().single(track);
               Navigator.of(context, rootNavigator: true).pop();
-              // TODO: Add download function
             },
             trailingIcon: AppIcons.download,
             child: Text(
@@ -45,7 +43,6 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
                     .join(', '),
               );
               Navigator.of(context, rootNavigator: true).pop();
-              // TODO: Add playlist function
             },
             trailingIcon: AppIcons.musicAlbums,
             child: Text(

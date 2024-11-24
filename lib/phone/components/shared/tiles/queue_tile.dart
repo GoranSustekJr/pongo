@@ -41,10 +41,15 @@ class QueueTile extends StatelessWidget {
                                 child: Icon(AppIcons.blankTrack,
                                     color: Colors.white),
                               )
-                            : CachedNetworkImage(
-                                imageUrl: imageUrl,
-                                fit: BoxFit.cover,
-                              ),
+                            : imageUrl.toString().contains("file:///")
+                                ? Image.file(
+                                    File.fromUri(Uri.parse(imageUrl)),
+                                    fit: BoxFit.cover,
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: imageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
                       ),
                     ),
                     razw(12.5),

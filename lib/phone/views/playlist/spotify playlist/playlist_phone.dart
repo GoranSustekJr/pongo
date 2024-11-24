@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:blurhash_ffi/blurhash.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/components/shared/sliver/sliver_app_bar.dart';
 
 class PlaylistPhone extends StatefulWidget {
   final BuildContext context;
@@ -19,7 +20,7 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
 
   // Tracks
   List<Track> tracks = [];
-  List missingTracks = [];
+  List<String> missingTracks = [];
   Map<String, double> existingTracks = {};
 
   // Blurhash
@@ -59,10 +60,10 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
   }
 
   void getTracks() async {
+    // Get the album tracks, missing tracks and durations
     final data = await PlaylistSpotify().get(context, widget.playlist.id);
 
-    print("durations; ${data["durations"]}");
-
+    // Get the blurhash from the cover image
     final blurHash = widget.playlist.image != ""
         ? await BlurhashFFI.encode(
             NetworkImage(
@@ -73,190 +74,83 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
           )
         : AppConstants().BLURHASH;
 
+    // init track list - data
     final List<dynamic> dta = [];
+
+    // Add tracks to dta var
     for (var track in data["items"]) {
       dta.add(track["track"]);
     }
 
+    // Set state for the statefullwidget
     setState(() {
+      blurhash = blurHash;
+
       existingTracks = {
         for (var item in data["durations"]) item[0] as String: item[1] as double
-      };
-      tracks = Track.fromMapList(dta);
-      missingTracks = data["missing_tracks"];
-      blurhash = blurHash;
-      showBody = true;
+      }; // existing tracks durations, runtimetype Map<String, double>
+
+      tracks = Track.fromMapList(dta); // Tracks, runntimetype List<Track>
+
+      missingTracks = (data["missing_tracks"] as List<dynamic>)
+          .cast<String>(); // Missing tracks stids
+
+      showBody = true; // Show the body
     });
   }
 
-  play({int? index}) async {
-    if (!loadingShuffle) {
-      final audioServiceHandler =
-          Provider.of<AudioHandler>(context, listen: false)
-              as AudioServiceHandler;
-      // Set shuffle mode
-      await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
-
-      // Set global id of the playlist
-      currentAlbumPlaylistId.value = "playlist:${widget.playlist.id}";
-
-      if (missingTracks.isNotEmpty) {
-        queueAllowShuffle.value = false;
-
-        print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-        setState(() {
-          cancel = true;
-        });
-        await audioServiceHandler.halt();
-        setState(() {
-          cancel = false;
-        });
-
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          //  op:${widget.opid}.$stid
-          TrackPlay().playConcenating(
-            widget.context,
-            tracks,
-            existingTracks,
-            "search.playlist:${widget.playlist.id}.",
-            cancel,
-            (stid) {
-              if (mounted) {
-                setState(() {
-                  if (!loading.contains(stid)) {
-                    loading.add(stid);
-                  }
-                });
-              }
-            },
-            (stid) {
-              if (mounted) {
-                setState(() {
-                  loading.remove(stid);
-                  missingTracks.remove(stid);
-                });
-              }
-            },
-            (mediaItem, i) async {
-              if (i == 0) {
-                await audioServiceHandler.initSongs(songs: [mediaItem]);
-                audioServiceHandler.play();
-              } else {
-                await audioServiceHandler.playlist
-                    .add(audioServiceHandler.createAudioSource(mediaItem));
-                audioServiceHandler.queue.value.add(mediaItem);
-              }
-              if (i == tracks.length - 1) {
-                queueAllowShuffle.value = true;
-              }
-            },
-          );
-        });
-      } else {
-        final data =
-            await PlaylistSpotify().getShuffle(context, widget.playlist.id);
-        setState(() {
-          existingTracks = {
-            for (var item in data["durations"])
-              item[0] as String: item[1] as double
-          };
-        });
-
-        final List<MediaItem> mediaItems = [];
-
-        final audioServiceHandler =
-            Provider.of<AudioHandler>(context, listen: false)
-                as AudioServiceHandler;
-
-        for (int i = 0; i < tracks.length; i++) {
-          print("object; $i");
-          final MediaItem mediaItem = MediaItem(
-            id: "search.playlist:${widget.playlist.id}.${tracks[i].id}",
-            title: tracks[i].name,
-            artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-            album: tracks[i].album != null
-                ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
-                : "..Ææ..",
-            duration: Duration(
-                milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
-            artUri: Uri.parse(
-              tracks[i].album != null
-                  ? calculateBestImageForTrack(tracks[i].album!.images)
-                  : '',
-            ),
-            extras: {
-              //"blurhash": blurHash,
-              "released":
-                  tracks[i].album != null ? tracks[i].album!.releaseDate : "",
-            },
-          );
-          mediaItems.add(mediaItem);
-        }
-
-        await audioServiceHandler.initSongs(songs: mediaItems);
-        print("INDEX; $index");
-        await audioServiceHandler.skipToQueueItem(index!);
-        audioServiceHandler.play();
-      }
+  void addLoading(String stid) {
+    if (mounted) {
+      setState(() {
+        loading.add(stid);
+      });
     }
   }
 
-  playShuffle() async {
+  void removeLoading(String stid) {
+    if (mounted) {
+      setState(() {
+        loading.remove(stid);
+      });
+    }
+  }
+
+  void addDuration(String stid, double duration) {
+    if (mounted) {
+      setState(() {
+        missingTracks.remove(stid);
+        existingTracks[stid] = duration;
+      });
+    }
+  }
+
+  play({int index = 0}) async {
+    if (!loadingShuffle) {
+      PlayMultiple().onlineTrack(
+        "online.playlist:${widget.playlist.id}",
+        tracks,
+        missingTracks,
+        existingTracks,
+        addLoading,
+        removeLoading,
+        addDuration,
+        index: index,
+      );
+    }
+  }
+
+  void playShuffle() {
     if (!loadingShuffle && missingTracks.isEmpty) {
-      queueAllowShuffle.value = true;
-
-      setState(() {
-        loadingShuffle = true;
-      });
-
-      // Set global id of the playlist
-      final data =
-          await PlaylistSpotify().getShuffle(context, widget.playlist.id);
-
-      setState(() {
-        existingTracks = {
-          for (var item in data["durations"])
-            item[0] as String: item[1] as double
-        };
-      });
-
-      final List<MediaItem> mediaItems = [];
-
-      final audioServiceHandler =
-          Provider.of<AudioHandler>(context, listen: false)
-              as AudioServiceHandler;
-      await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);
-
-      for (int i = 0; i < tracks.length; i++) {
-        final MediaItem mediaItem = MediaItem(
-          id: "search.playlist:${widget.playlist.id}.${tracks[i].id}",
-          title: tracks[i].name,
-          artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-          album: tracks[i].album != null
-              ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
-              : "..Ææ..",
-          duration: Duration(
-              milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
-          artUri: Uri.parse(
-            tracks[i].album != null
-                ? calculateBestImageForTrack(tracks[i].album!.images)
-                : '',
-          ),
-          extras: {
-            "released":
-                tracks[i].album != null ? tracks[i].album!.releaseDate : "",
-          },
-        );
-        mediaItems.add(mediaItem);
-      }
-
-      await audioServiceHandler.initSongs(songs: mediaItems);
-      await audioServiceHandler
-          .skipToQueueItem(audioServiceHandler.audioPlayer.shuffleIndices![0]);
-      audioServiceHandler.play();
-      setState(() {
-        loadingShuffle = false;
-      });
+      PlayMultiple().onlineTrack(
+        "online.playlist:${widget.playlist.id}",
+        tracks,
+        missingTracks,
+        existingTracks,
+        addLoading,
+        removeLoading,
+        addDuration,
+        shuffle: true,
+      );
     }
   }
 
@@ -291,128 +185,11 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                       child: CustomScrollView(
                         controller: scrollController,
                         slivers: <Widget>[
-                          SliverAppBar(
-                            snap: false,
-                            collapsedHeight: kToolbarHeight,
-                            expandedHeight:
-                                MediaQuery.of(context).size.height / 2,
-                            floating: false,
-                            pinned: true,
-                            stretch: true,
-                            title: Row(
-                              children: [
-                                backButton(context),
-                                Flexible(
-                                  child: SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      child: Text(
-                                        widget.playlist.name,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                backLikeButton(
-                                  context,
-                                  AppIcons.playlist,
-                                  () {
-                                    OpenPlaylist().show(
-                                      context,
-                                      PlaylistHandler(
-                                        type: PlaylistHandlerType.online,
-                                        function: PlaylistHandlerFunction
-                                            .createPlaylist,
-                                        track: tracks
-                                            .map((track) =>
-                                                PlaylistHandlerOnlineTrack(
-                                                  id: track.id,
-                                                  name: track.name,
-                                                  artist: track.artists
-                                                      .map((artist) =>
-                                                          artist.name)
-                                                      .toList()
-                                                      .join(', '),
-                                                  cover:
-                                                      calculateWantedResolutionForTrack(
-                                                          track.album != null
-                                                              ? track
-                                                                  .album!.images
-                                                              : track.album!
-                                                                  .images,
-                                                          150,
-                                                          150),
-                                                  playlistHandlerCoverType:
-                                                      PlaylistHandlerCoverType
-                                                          .url,
-                                                ))
-                                            .toList(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                            automaticallyImplyLeading: false,
-                            flexibleSpace: FlexibleSpaceBar(
-                              titlePadding: EdgeInsets.zero,
-                              centerTitle: true,
-                              title: AppBar(
-                                automaticallyImplyLeading: false,
-                                /* title: Row(
-                                  children: [
-                                    backButton(context),
-                                    Expanded(
-                                        child: Text(
-                                      widget.playlist.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    )),
-                                  ],
-                                ), */
-                                flexibleSpace: Opacity(
-                                  opacity: MediaQuery.of(context).size.height /
-                                              2 <=
-                                          scrollControllerOffset
-                                      ? 1
-                                      : scrollControllerOffset /
-                                          (MediaQuery.of(context).size.height /
-                                              2),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                      sigmaX: 10,
-                                      sigmaY: 10,
-                                    ),
-                                    child: Container(),
-                                  ),
-                                ),
-                              ),
-                              background: Center(
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width - 60,
-                                  height:
-                                      MediaQuery.of(context).size.width - 60,
-                                  child: Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                        top: MediaQuery.of(context).padding.top,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
-                                        child: CachedNetworkImage(
-                                          imageUrl: widget.playlist.image,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                          SliverAppBarPhone(
+                              name: widget.playlist.name,
+                              tracks: tracks,
+                              scrollControllerOffset: scrollControllerOffset,
+                              image: widget.playlist.image),
                           SliverPersistentHeader(
                             pinned: true,
                             delegate: StickyHeaderDelegate(
@@ -447,8 +224,6 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                               missingTracks: missingTracks,
                               loading: loading,
                               play: (index) {
-                                print("object");
-                                print("Index, $index");
                                 play(index: index);
                               },
                             ),

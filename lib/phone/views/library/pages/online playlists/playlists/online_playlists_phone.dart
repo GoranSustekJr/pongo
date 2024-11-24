@@ -5,7 +5,7 @@ import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/action%20sheets/continue_cancel_action_sheet.dart';
 import 'package:pongo/phone/components/shared/buttons/back_like_button.dart';
 import 'package:pongo/phone/components/shared/tiles/playlist_tile.dart';
-import 'package:pongo/phone/views/library/pages/online%20playlists/online_playlist_phone.dart';
+import 'package:pongo/phone/views/library/pages/online%20playlists/playlist/views/online_playlist_phone.dart';
 
 class OnlinePlaylistsPhone extends StatefulWidget {
   const OnlinePlaylistsPhone({super.key});

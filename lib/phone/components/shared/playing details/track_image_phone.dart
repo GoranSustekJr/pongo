@@ -74,9 +74,14 @@ class TrackImagePhone extends StatelessWidget {
                                           duration: const Duration(
                                               milliseconds: 1000),
                                           child: image != ""
-                                              ? CachedNetworkImage(
-                                                  imageUrl: image,
-                                                )
+                                              ? image.contains("file:///")
+                                                  ? Image.file(
+                                                      File.fromUri(
+                                                          Uri.parse(image)),
+                                                    )
+                                                  : CachedNetworkImage(
+                                                      imageUrl: image,
+                                                    )
                                               : SizedBox(
                                                   height: size.width,
                                                   child: Center(

@@ -1,14 +1,21 @@
+import 'package:pongo/exports.dart';
+
+enum TrackType { online, offline }
+
 class Track {
   final String id;
   final String name;
   final List<ArtistTrack> artists;
   final AlbumTrack? album;
-
+  final LocalImage? image;
+  final TrackType type;
   Track({
     required this.id,
     required this.name,
     required this.artists,
     required this.album,
+    this.image,
+    this.type = TrackType.online,
   });
 
   // Creata a Track from a Map
@@ -30,6 +37,27 @@ class Track {
         .map((map) => Track.fromMap(map as Map<String, dynamic>))
         .toList();
   }
+
+  // Convert local track to a Track object
+  factory Track.fromMapLocal(Map<String, dynamic> map) {
+    return Track(
+      id: map["stid"],
+      name: map["title"],
+      artists: (jsonDecode(map["artists"]) as List<dynamic>)
+          .map((artist) => ArtistTrack.fromMap(artist))
+          .toList(),
+      album: null,
+      type: TrackType.offline,
+      image: map["image"] != null ? LocalImage(path: map["image"]) : null,
+    );
+  }
+
+  // Convert a list of local tracks to List of Track objects
+  static List<Track> fromMapListLocal(List<dynamic> list) {
+    return list
+        .map((map) => Track.fromMapLocal(map as Map<String, dynamic>))
+        .toList();
+  }
 }
 
 class ArtistTrack {
@@ -47,6 +75,14 @@ class ArtistTrack {
       id: map["id"],
       name: map["name"],
     );
+  }
+
+  // To json
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
   }
 }
 
@@ -95,4 +131,12 @@ class AlbumImagesTrack {
       width: map["width"],
     );
   }
+}
+
+class LocalImage {
+  final String path;
+
+  LocalImage({
+    required this.path,
+  });
 }

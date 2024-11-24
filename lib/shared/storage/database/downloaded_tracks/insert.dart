@@ -7,8 +7,7 @@ Future<void> insertDownloadedTrck(
   List<Map<String, dynamic>> artists,
   String title,
   int duration,
-  String blurhash,
-  Uint8List? image,
+  String? image,
 ) async {
   Database db = await dbHelper.database;
 
@@ -21,7 +20,6 @@ Future<void> insertDownloadedTrck(
       'artists': jsonEncode(artists),
       'title': title,
       'duration': duration,
-      'blurhash': blurhash,
       'image': image,
     };
 

@@ -1,33 +1,17 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/widgets/library/favourites/favourites_tile.dart';
-import 'package:spotify_api/spotify_api.dart' as sp;
+import 'package:pongo/phone/views/library/pages/locals/data/locals_data_manager.dart';
+import 'package:pongo/phone/widgets/library/locals/locals_tile.dart';
 
-class FavouritesBodyPhone extends StatefulWidget {
-  final List<Track> favourites;
-  final List missingTracks;
-  final List<String> loading;
-  final int numberOfSTIDS;
-  final bool edit;
-  final List<String> selectedTracks;
-  final Function(int) play;
-  final Function(String) select;
-  const FavouritesBodyPhone({
-    super.key,
-    required this.favourites,
-    required this.missingTracks,
-    required this.loading,
-    required this.play,
-    required this.numberOfSTIDS,
-    required this.edit,
-    required this.select,
-    required this.selectedTracks,
-  });
+class LocalsBodyPhone extends StatefulWidget {
+  final LocalsDataManager localsDataManager;
+
+  const LocalsBodyPhone({super.key, required this.localsDataManager});
 
   @override
-  State<FavouritesBodyPhone> createState() => _FavouritesBodyPhoneState();
+  State<LocalsBodyPhone> createState() => _LocalsBodyPhoneState();
 }
 
-class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
+class _LocalsBodyPhoneState extends State<LocalsBodyPhone> {
   // Scroll controller
   ScrollController controller = ScrollController();
 
@@ -46,6 +30,7 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
   Widget build(BuildContext context) {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
+
     return Padding(
       padding: const EdgeInsets.only(left: 15),
       child: StreamBuilder(
@@ -57,19 +42,12 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
               controller: controller,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.favourites.length + 1,
+              itemCount: widget.localsDataManager.tracks.length,
               itemBuilder: (context, index) {
-                if (index == widget.favourites.length) {
-                  return widget.numberOfSTIDS != index
-                      ? const CircularProgressIndicator.adaptive()
-                      : const SizedBox();
-                }
-                return FavouritesTile(
-                  track: widget.favourites[index],
+                return LocalsTile(
+                  track: widget.localsDataManager.tracks[index],
                   first: index == 0,
-                  last: widget.favourites.length - 1 == index,
-                  exists: !widget.missingTracks
-                      .contains(widget.favourites[index].id),
+                  last: widget.localsDataManager.tracks.length - 1 == index,
                   trailing: Padding(
                     padding: const EdgeInsets.only(right: 15),
                     child: SizedBox(
@@ -79,39 +57,32 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
                               height: 40,
                               width: 20,
                               child: Trailing(
-                                show: !widget.loading
-                                    .contains(widget.favourites[index].id),
+                                show: false,
                                 showThis: id ==
-                                        "library.favourites.${widget.favourites[index].id}" &&
+                                        "library.locals.${widget.localsDataManager.tracks[index].id}" &&
                                     audioServiceHandler
                                             .audioPlayer.currentIndex ==
                                         index,
-                                trailing:
-                                    const CircularProgressIndicator.adaptive(
+                                trailing: const SizedBox(
                                   key: ValueKey(true),
                                 ),
-                              ) /* AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: widget.loading.contains(widget.favourites[index].id)
-                                  ? const CircularProgressIndicator.adaptive(
-                                      key: ValueKey(true),
-                                    )
-                                  : const SizedBox()), */
-                              ),
+                              )),
                           AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
-                            width: widget.edit ? 40 : 0,
+                            width: widget.localsDataManager.edit ? 40 : 0,
                             height: 40,
                             child: Padding(
                               padding: const EdgeInsets.only(left: 15),
                               child: iconButton(
-                                widget.selectedTracks
-                                        .contains(widget.favourites[index].id)
+                                widget.localsDataManager.selectedTracks
+                                        .contains(widget
+                                            .localsDataManager.tracks[index].id)
                                     ? AppIcons.checkmark
                                     : AppIcons.uncheckmark,
                                 Colors.white,
                                 () {
-                                  widget.select(widget.favourites[index].id);
+                                  widget.localsDataManager.select(widget
+                                      .localsDataManager.tracks[index].id);
                                 },
                                 edgeInsets: EdgeInsets.zero,
                               ),
@@ -121,28 +92,29 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
                       ),
                     ),
                   ),
-                  function: widget.edit
+                  function: widget.localsDataManager.edit
                       ? () {
-                          widget.select(widget.favourites[index].id);
+                          widget.localsDataManager.select(
+                              widget.localsDataManager.tracks[index].id);
                         }
                       : () async {
                           final playNew = audioServiceHandler.mediaItem.value !=
                                   null
                               ? "${audioServiceHandler.mediaItem.value!.id.split(".")[0]}.${audioServiceHandler.mediaItem.value!.id.split(".")[1]}" !=
-                                  "library.favourites"
+                                  "library.locals"
                               : true;
 
                           final skipTo =
                               audioServiceHandler.mediaItem.value != null
                                   ? audioServiceHandler.mediaItem.value!.id
                                           .split(".")[2] !=
-                                      widget.favourites[index].id
+                                      widget.localsDataManager.tracks[index].id
                                   : false;
 
                           if (playNew) {
-                            print("play; $index");
                             changeTrackOnTap.value = true;
-                            widget.play(index);
+                            print("object");
+                            widget.localsDataManager.play(index: index);
                           } else if (skipTo &&
                               (audioServiceHandler.playlist.length - 1) >=
                                   index &&

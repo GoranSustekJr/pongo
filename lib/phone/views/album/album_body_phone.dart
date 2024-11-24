@@ -20,29 +20,6 @@ class AlbumBodyPhone extends StatefulWidget {
 }
 
 class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
-  /* late AnimationController controller;
-  late Animation<Color?> colorAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    colorAnimation = ColorTween(
-      begin: Colors.white,
-      end: Colors.white.withAlpha(100),
-    ).animate(controller);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  } */
-
   @override
   Widget build(BuildContext context) {
     final audioServiceHandler =
@@ -104,35 +81,39 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
                       width: 20,
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
-                        child: /*  widget.loading.contains(widget.tracks[index].id)
-                            ? const CircularProgressIndicator.adaptive(
+                        child: widget.loading.contains(widget.tracks[index].id)
+                            ? const Icon(
                                 key: ValueKey(true),
+                                AppIcons.loading,
+                                color: Colors.white,
                               )
-                            : */
-                            StreamBuilder(
-                          key: const ValueKey(false),
-                          stream: audioServiceHandler.mediaItem.stream,
-                          builder: (context, snapshot) {
-                            final String id =
-                                snapshot.data != null ? snapshot.data!.id : "";
+                            : StreamBuilder(
+                                key: const ValueKey(false),
+                                stream: audioServiceHandler.mediaItem.stream,
+                                builder: (context, snapshot) {
+                                  final String id = snapshot.data != null
+                                      ? snapshot.data!.id
+                                      : "";
 
-                            return Trailing(
-                              show: !widget.loading
-                                  .contains(widget.tracks[index].id),
-                              showThis: id ==
-                                      "online.album:${widget.album.id}.${widget.tracks[index].id}" &&
-                                  audioServiceHandler
-                                          .audioPlayer.currentIndex ==
-                                      index,
-                              trailing: const Padding(
-                                padding: EdgeInsets.only(right: 10),
-                                /*  child: CircularProgressIndicator.adaptive(
-                                  key: ValueKey(true),
-                                ), */
+                                  return Trailing(
+                                    show: !widget.loading
+                                        .contains(widget.tracks[index].id),
+                                    showThis: id ==
+                                            "online.album:${widget.album.id}.${widget.tracks[index].id}" &&
+                                        audioServiceHandler
+                                                .audioPlayer.currentIndex ==
+                                            index,
+                                    trailing: const Padding(
+                                      padding: EdgeInsets.only(right: 10),
+                                      child: Icon(
+                                        key: ValueKey(true),
+                                        AppIcons.loading,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ),
                     ),
                   ),

@@ -20,29 +20,6 @@ class PlaylistBodyPhone extends StatefulWidget {
 }
 
 class _PlaylistBodyPhoneState extends State<PlaylistBodyPhone> {
-  /*  late AnimationController controller;
-  late Animation<Color?> colorAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    colorAnimation = ColorTween(
-      begin: Colors.white,
-      end: Colors.white.withAlpha(100),
-    ).animate(controller);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  } */
-
   @override
   Widget build(BuildContext context) {
     final audioServiceHandler =
@@ -73,7 +50,7 @@ class _PlaylistBodyPhoneState extends State<PlaylistBodyPhone> {
                   function: () async {
                     final playNew = audioServiceHandler.mediaItem.value != null
                         ? "${audioServiceHandler.mediaItem.value!.id.split(".")[0]}.${audioServiceHandler.mediaItem.value!.id.split(".")[1]}" !=
-                            "search.playlist:${widget.playlist.id}"
+                            "online.playlist:${widget.playlist.id}"
                         : true;
 
                     final skipTo = audioServiceHandler.mediaItem.value != null
@@ -106,8 +83,10 @@ class _PlaylistBodyPhoneState extends State<PlaylistBodyPhone> {
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
                         child: widget.loading.contains(widget.tracks[index].id)
-                            ? const CircularProgressIndicator.adaptive(
+                            ? const Icon(
                                 key: ValueKey(true),
+                                AppIcons.loading,
+                                color: Colors.white,
                               )
                             : StreamBuilder(
                                 key: const ValueKey(false),
@@ -121,13 +100,14 @@ class _PlaylistBodyPhoneState extends State<PlaylistBodyPhone> {
                                     show: !widget.loading
                                         .contains(widget.tracks[index].id),
                                     showThis: id ==
-                                            "search.playlist:${widget.playlist.id}.${widget.tracks[index].id}" &&
+                                            "online.playlist:${widget.playlist.id}.${widget.tracks[index].id}" &&
                                         audioServiceHandler
                                                 .audioPlayer.currentIndex ==
                                             index,
-                                    trailing: const CircularProgressIndicator
-                                        .adaptive(
+                                    trailing: const Icon(
                                       key: ValueKey(true),
+                                      AppIcons.loading,
+                                      color: Colors.white,
                                     ),
                                   );
                                 },
