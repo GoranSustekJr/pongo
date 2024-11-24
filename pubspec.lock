@@ -801,12 +801,11 @@ packages:
   just_audio:
     dependency: "direct main"
     description:
-      path: just_audio
-      ref: "555e945d219be8c91dcdda198c0a2a495f6e9f1a"
-      resolved-ref: "555e945d219be8c91dcdda198c0a2a495f6e9f1a"
-      url: "https://github.com/appinteractive/just_audio.git"
-    source: git
-    version: "0.9.37"
+      name: just_audio
+      sha256: a49e7120b95600bd357f37a2bb04cd1e88252f7cdea8f3368803779b925b1049
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.42"
   just_audio_platform_interface:
     dependency: transitive
     description:

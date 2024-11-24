@@ -16,7 +16,7 @@ class _SearchPhoneState extends State<SearchPhone> {
   String query = "";
 
   // Tracks
-  List<sp.Track> tracks = [];
+  List<Track> tracks = [];
 
   // Artist
   List<Artist> artists = [];
@@ -55,7 +55,7 @@ class _SearchPhoneState extends State<SearchPhone> {
     setState(() {
       // Track
       final List<dynamic> trackItems = result["tracks"]["items"];
-      tracks = trackItems.map((item) => sp.Track.fromJson(item)).toList();
+      tracks = Track.fromMapList(trackItems);
 
       // Artist
       final List<dynamic> artistItems = result["artists"]["items"];
@@ -63,46 +63,14 @@ class _SearchPhoneState extends State<SearchPhone> {
       // Playlists
       final List<dynamic> playlistsItems = result["playlists"]["items"];
 
-      artists = artistItems.isNotEmpty
-          ? artistItems.map((item) {
-              return Artist(
-                id: item["id"],
-                name: item["name"],
-                image: item["images"].isNotEmpty
-                    ? calculateWantedResolution(item["images"], 300, 300)
-                    : "",
-              );
-            }).toList()
-          : [];
+      artists = artistItems.isNotEmpty ? Artist.fromMapList(artistItems) : [];
 
       // Albums
       final List<dynamic> albumItems = result["albums"]["items"];
-      albums = albumItems.isNotEmpty
-          ? albumItems.map((item) {
-              return Album(
-                id: item["id"],
-                name: item["name"],
-                type: item["album_type"],
-                artists: item["artists"].map((artist) {
-                  return artist["name"]; //{artist["id"]: artist["name"]};
-                }).toList(),
-                image: calculateWantedResolution(item["images"], 300, 300),
-              );
-            }).toList()
-          : [];
+      albums = albumItems.isNotEmpty ? Album.fromMapList(albumItems) : [];
 
-      playlists = playlistsItems.isNotEmpty
-          ? playlistsItems.map((item) {
-              return Playlist(
-                id: item["id"],
-                name: item["name"],
-                image: item["images"].isNotEmpty
-                    ? calculateWantedResolution(item["images"], 300, 300)
-                    : "",
-                description: item["description"],
-              );
-            }).toList()
-          : [];
+      playlists =
+          playlistsItems.isNotEmpty ? Playlist.fromMapList(playlistsItems) : [];
     });
   }
 

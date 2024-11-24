@@ -2,11 +2,11 @@ import 'package:spotify_api/spotify_api.dart' as sp;
 import 'package:pongo/exports.dart';
 
 class RecommendationsForYouPhone extends StatelessWidget {
-  final List<sp.Track> pTracks;
+  final List<Track> pTracks;
   final List<Artist> pArtists;
   final List<Album> pAlbums;
   final List<Playlist> pPlaylists;
-  final List<sp.Track> euTracks;
+  final List<Track> euTracks;
   final List<Artist> euArtists;
   final List<String> pTrackLoading;
   final TextStyle suggestionHeader;
@@ -50,7 +50,7 @@ class RecommendationsForYouPhone extends StatelessWidget {
                   showLoading: pTrackLoading.contains(euTracks[index].id),
                   type: TileType.track,
                   onTap: () async {
-                    await Play().onlineTrack(
+                    await PlaySingle().onlineTrack(
                       context,
                       audioServiceHandler,
                       "recommended.single.",
@@ -116,7 +116,7 @@ class RecommendationsForYouPhone extends StatelessWidget {
                   showLoading: pTrackLoading.contains(euTracks[25 + index].id),
                   type: TileType.track,
                   onTap: () async {
-                    await Play().onlineTrack(
+                    await PlaySingle().onlineTrack(
                         context,
                         audioServiceHandler,
                         "recommended.single.",

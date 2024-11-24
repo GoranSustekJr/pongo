@@ -35,7 +35,8 @@ class OAuth2 {
         // Send it to my server
         print("great");
         final response = await http.post(
-          Uri.parse("${AppConstants.SERVER_URL}signin"),
+          Uri.parse(
+              "${AppConstants.SERVER_URL}bed1684d6d16802154bba513a5f0980dd3dc4b612aeb6a05433c28f55936ca7d"),
           body: jsonEncode(
               {"id_token": idToken, "platform": kIsApple ? "ios" : kPlatform}),
         );

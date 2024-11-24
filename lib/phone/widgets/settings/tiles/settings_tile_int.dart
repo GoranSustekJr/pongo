@@ -20,7 +20,7 @@ settingsTileInt(context, bool first, bool last, IconData icon, int trailingNum,
               width: MediaQuery.of(context).size.width - 20,
               decoration: BoxDecoration(
                 borderRadius: borderRadius,
-                color: Col.primaryCard.withAlpha(200),
+                color: Col.primaryCard.withAlpha(150),
               ),
               child: CupertinoButton(
                 padding: EdgeInsets.zero,

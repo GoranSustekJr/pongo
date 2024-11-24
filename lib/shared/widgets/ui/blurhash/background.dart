@@ -31,9 +31,11 @@ class Background extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
             ),
-            /*   const  BlurHashWidget(
-              hash: r'L03[fE,t|H$Q712s2swd{}{}OD{}',
-              imageFit: BoxFit.cover,
+            /* Blurhash(
+              blurhash: AppConstants().BLURHASH,
+              sigmaX: 0,
+              sigmaY: 0,
+              child: const SizedBox(),
             ), */
             Positioned.fill(
               child: BackdropFilter(

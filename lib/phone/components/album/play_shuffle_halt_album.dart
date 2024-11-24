@@ -53,7 +53,7 @@ class _PlayShuffleHaltAlbumState extends State<PlayShuffleHaltAlbum> {
         builder: (context, mediaItemStream) {
           bool showPlay = mediaItemStream.data == null
               ? true
-              : "search.album:${widget.album.id}" !=
+              : "online.album:${widget.album.id}" !=
                   '${mediaItemStream.data!.id.split('.')[0]}.${mediaItemStream.data!.id.split('.')[1]}';
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),

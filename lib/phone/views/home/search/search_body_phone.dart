@@ -4,7 +4,7 @@ import 'package:pongo/phone/components/search/Pull%20down%20menu%20items/search_
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 class SearchBodyPhone extends StatelessWidget {
-  final List<sp.Track> tracks;
+  final List<Track> tracks;
   final List<Artist> artists;
   final List<Album> albums;
   final List<Playlist> playlists;
@@ -220,7 +220,7 @@ class SearchBodyPhone extends StatelessWidget {
                         ],
                       ),
                       onTap: () async {
-                        await Play().onlineTrack(
+                        await PlaySingle().onlineTrack(
                           context,
                           audioServiceHandler,
                           "search.single.",
@@ -253,7 +253,6 @@ class SearchBodyPhone extends StatelessWidget {
                       data: playlists[index],
                       type: TileType.playlist,
                       onTap: () {
-                        print(playlists[index].id);
                         Navigations().nextScreen(
                             context,
                             PlaylistPhone(

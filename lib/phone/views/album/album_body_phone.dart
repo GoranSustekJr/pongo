@@ -73,7 +73,7 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
                   function: () async {
                     final playNew = audioServiceHandler.mediaItem.value != null
                         ? "${audioServiceHandler.mediaItem.value!.id.split(".")[0]}.${audioServiceHandler.mediaItem.value!.id.split(".")[1]}" !=
-                            "search.album:${widget.album.id}"
+                            "online.album:${widget.album.id}"
                         : true;
 
                     final skipTo = audioServiceHandler.mediaItem.value != null
@@ -104,35 +104,35 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
                       width: 20,
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
-                        child: widget.loading.contains(widget.tracks[index].id)
+                        child: /*  widget.loading.contains(widget.tracks[index].id)
                             ? const CircularProgressIndicator.adaptive(
                                 key: ValueKey(true),
                               )
-                            : StreamBuilder(
-                                key: const ValueKey(false),
-                                stream: audioServiceHandler.mediaItem.stream,
-                                builder: (context, snapshot) {
-                                  final String id = snapshot.data != null
-                                      ? snapshot.data!.id
-                                      : "";
+                            : */
+                            StreamBuilder(
+                          key: const ValueKey(false),
+                          stream: audioServiceHandler.mediaItem.stream,
+                          builder: (context, snapshot) {
+                            final String id =
+                                snapshot.data != null ? snapshot.data!.id : "";
 
-                                  return Trailing(
-                                    show: !widget.loading
-                                        .contains(widget.tracks[index].id),
-                                    showThis: id ==
-                                            "search.album:${widget.album.id}.${widget.tracks[index].id}" &&
-                                        audioServiceHandler
-                                                .audioPlayer.currentIndex ==
-                                            index,
-                                    trailing: const Padding(
-                                      padding: EdgeInsets.only(right: 10),
-                                      child: CircularProgressIndicator.adaptive(
-                                        key: ValueKey(true),
-                                      ),
-                                    ),
-                                  );
-                                },
+                            return Trailing(
+                              show: !widget.loading
+                                  .contains(widget.tracks[index].id),
+                              showThis: id ==
+                                      "online.album:${widget.album.id}.${widget.tracks[index].id}" &&
+                                  audioServiceHandler
+                                          .audioPlayer.currentIndex ==
+                                      index,
+                              trailing: const Padding(
+                                padding: EdgeInsets.only(right: 10),
+                                /*  child: CircularProgressIndicator.adaptive(
+                                  key: ValueKey(true),
+                                ), */
                               ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),

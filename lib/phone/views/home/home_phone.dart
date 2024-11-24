@@ -40,21 +40,15 @@ class _HomePhoneState extends State<HomePhone> {
     initSearchHistory();
     searchScreenContext.value = context;
     searchFocusNode.value = focusNode;
-    print("Search screen context; ${searchScreenContext.value}");
   }
 
   // On Field Submitted Callback Function
   void onFieldSubmitted(String qry) async {
-    print(qry);
     if (qry != "") {
-      print(2);
       await DatabaseHelper().insertSearchHistorySearch(qry.trim());
       await initSearchHistory();
-      print(3);
       setState(() {
-        print(4);
         query = qry.trim();
-        print(5);
       });
     }
   }
@@ -68,7 +62,6 @@ class _HomePhoneState extends State<HomePhone> {
     setState(() {
       searchHistory = data;
     });
-    print("SEARCH HISTORY: $data");
   }
 
   @override

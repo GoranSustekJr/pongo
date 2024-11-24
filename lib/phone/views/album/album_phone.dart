@@ -1,9 +1,7 @@
 import 'dart:ui';
 import 'package:blurhash_ffi/blurhash.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/components/shared/buttons/back_like_button.dart';
 import 'album_body_phone.dart';
 
 class AlbumPhone extends StatefulWidget {
@@ -21,7 +19,7 @@ class _AlbumPhoneState extends State<AlbumPhone> {
 
   // Tracks
   List<Track> tracks = [];
-  List missingTracks = [];
+  List<String> missingTracks = [];
   Map<String, double> existingTracks = {};
 
   // Blurhash
@@ -62,8 +60,10 @@ class _AlbumPhoneState extends State<AlbumPhone> {
   }
 
   void getTracks() async {
+    // Get the album tracks, missing tracks and durations
     final data = await AlbumSpotify().getTracks(context, widget.album.id);
 
+    // Get the blurhash from the cover image
     final blurHash = widget.album.image != ""
         ? await BlurhashFFI.encode(
             NetworkImage(
@@ -73,213 +73,94 @@ class _AlbumPhoneState extends State<AlbumPhone> {
             componentY: 3,
           )
         : AppConstants().BLURHASH;
+
+    // init track list - data
+    final List<dynamic> dta = [];
+
+    // Add tracks to dta var
+    for (var track in data["items"]) {
+      track["album"] = {
+        "id": widget.album.id,
+        "name": widget.album.name,
+        "images": [
+          {"url": widget.album.image, "height": null, "width": null}
+        ],
+        "release_date": "",
+      };
+
+      dta.add(track);
+    }
+
+    // Set state for the statefullwidget
     setState(() {
       blurhash = blurHash;
-      final List<dynamic> dta = data["items"];
+
       existingTracks = {
         for (var item in data["durations"]) item[0] as String: item[1] as double
-      };
-      tracks = dta
-          .map<Track>(
-            (track) => Track(
-              id: track["id"],
-              name: track["name"],
-              artists: (track["artists"] as List<dynamic>)
-                  .map((artist) => ArtistTrack(
-                        id: artist["id"] as String,
-                        name: artist["name"] as String,
-                      ))
-                  .toList(),
-              album: AlbumTrack(
-                id: widget.album.id,
-                name: widget.album.name,
-                releaseDate: widget.album.name,
-                images: [
-                  AlbumImagesTrack(
-                    url: widget.album.image,
-                    height: null,
-                    width: null,
-                  )
-                ],
-              ),
-            ),
-          )
-          .toList();
-      missingTracks = data["missing_tracks"];
-      showBody = true;
+      }; // existing tracks durations, runtimetype Map<String, double>
+
+      tracks = Track.fromMapList(dta); // Tracks, runntimetype List<Track>
+
+      print(data["missing_tracks"].runtimeType);
+      missingTracks = (data["missing_tracks"] as List<dynamic>)
+          .cast<String>(); // Missing tracks stids
+
+      showBody = true; // Show the body
     });
   }
 
-  play({int? index}) async {
-    if (!loadingShuffle) {
-      final audioServiceHandler =
-          Provider.of<AudioHandler>(context, listen: false)
-              as AudioServiceHandler;
-      // Set shuffle mode
-      await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
-
-      // Set global id of the album
-      currentAlbumPlaylistId.value = "album:${widget.album.id}";
-      if (missingTracks.isNotEmpty) {
-        queueAllowShuffle.value = false;
-        setState(() {
-          cancel = true;
-        });
-        await audioServiceHandler.halt();
-        setState(() {
-          cancel = false;
-        });
-        await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          //  op:${widget.opid}.$stid
-          TrackPlay().playConcenating(
-            widget.context,
-            tracks,
-            existingTracks,
-            "search.album:${widget.album.id}.",
-            cancel,
-            (stid) {
-              if (mounted) {
-                setState(() {
-                  if (!loading.contains(stid)) {
-                    loading.add(stid);
-                  }
-                });
-              }
-            },
-            (stid) {
-              if (mounted) {
-                setState(() {
-                  loading.remove(stid);
-                  missingTracks.remove(stid);
-                });
-              }
-            },
-            (mediaItem, i) async {
-              print("YEAAH; $i");
-              if (i == 0) {
-                print("HMMM; $i");
-                await audioServiceHandler.initSongs(songs: [mediaItem]);
-                audioServiceHandler.play();
-              } else {
-                print("HMMMAAAAAAAA; $i");
-                audioServiceHandler.queue.value.add(mediaItem);
-                print("AAAAAAAAA");
-                await audioServiceHandler.playlist
-                    .add(audioServiceHandler.createAudioSource(mediaItem));
-                print("BBBBBBBBBBBB");
-              }
-              if (i == tracks.length - 1) {
-                queueAllowShuffle.value = true;
-              }
-            },
-          );
-        });
-      } else {
-        final data = await AlbumSpotify().getShuffle(context, widget.album.id);
-        setState(() {
-          existingTracks = {
-            for (var item in data["durations"])
-              item[0] as String: item[1] as double
-          };
-        });
-
-        final List<MediaItem> mediaItems = [];
-
-        final audioServiceHandler =
-            Provider.of<AudioHandler>(context, listen: false)
-                as AudioServiceHandler;
-
-        for (int i = 0; i < tracks.length; i++) {
-          final MediaItem mediaItem = MediaItem(
-            id: "search.album:${widget.album.id}.${tracks[i].id}",
-            title: tracks[i].name,
-            artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-            album: tracks[i].album != null
-                ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
-                : "..Ææ..",
-            duration: Duration(
-                milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
-            artUri: Uri.parse(
-              tracks[i].album != null
-                  ? calculateBestImageForTrack(tracks[i].album!.images)
-                  : '',
-            ),
-            extras: {
-              //"blurhash": blurHash,
-              "released":
-                  tracks[i].album != null ? tracks[i].album!.releaseDate : "",
-            },
-          );
-          mediaItems.add(mediaItem);
-        }
-
-        await audioServiceHandler.initSongs(songs: mediaItems);
-        await audioServiceHandler.skipToQueueItem(index!);
-        audioServiceHandler.play();
-      }
-      queueAllowShuffle.value = true;
+  void addLoading(String stid) {
+    if (mounted) {
+      setState(() {
+        loading.add(stid);
+      });
     }
   }
 
-  playShuffle() async {
+  void removeLoading(String stid) {
+    if (mounted) {
+      setState(() {
+        loading.remove(stid);
+      });
+    }
+  }
+
+  void addDuration(String stid, double duration) {
+    if (mounted) {
+      setState(() {
+        missingTracks.remove(stid);
+        existingTracks[stid] = duration;
+      });
+    }
+  }
+
+  play({int index = 0}) async {
+    if (!loadingShuffle) {
+      PlayMultiple().onlineTrack(
+        "online.album:${widget.album.id}",
+        tracks,
+        missingTracks,
+        existingTracks,
+        addLoading,
+        removeLoading,
+        addDuration,
+        index: index,
+      );
+    }
+  }
+
+  void playShuffle() {
     if (!loadingShuffle && missingTracks.isEmpty) {
-      queueAllowShuffle.value = true;
-
-      setState(() {
-        loadingShuffle = true;
-      });
-
-      // Set global id of the album
-      currentAlbumPlaylistId.value = "album:${widget.album.id}";
-
-      final data = await AlbumSpotify().getShuffle(context, widget.album.id);
-      setState(() {
-        existingTracks = {
-          for (var item in data["durations"])
-            item[0] as String: item[1] as double
-        };
-      });
-
-      final List<MediaItem> mediaItems = [];
-
-      final audioServiceHandler =
-          Provider.of<AudioHandler>(context, listen: false)
-              as AudioServiceHandler;
-
-      await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);
-
-      for (int i = 0; i < tracks.length; i++) {
-        final MediaItem mediaItem = MediaItem(
-          id: "search.album:${widget.album.id}.${tracks[i].id}",
-          title: tracks[i].name,
-          artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-          album: tracks[i].album != null
-              ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
-              : "..Ææ..",
-          duration: Duration(
-              milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
-          artUri: Uri.parse(
-            tracks[i].album != null
-                ? calculateBestImageForTrack(tracks[i].album!.images)
-                : '',
-          ),
-          extras: {
-            //"blurhash": blurHash,
-            "released":
-                tracks[i].album != null ? tracks[i].album!.releaseDate : "",
-          },
-        );
-        mediaItems.add(mediaItem);
-      }
-
-      await audioServiceHandler.initSongs(songs: mediaItems);
-      await audioServiceHandler
-          .skipToQueueItem(audioServiceHandler.audioPlayer.shuffleIndices![0]);
-      //audioServiceHandler.play();
-      setState(() {
-        loadingShuffle = false;
-      });
+      PlayMultiple().onlineTrack(
+        "online.album:${widget.album.id}",
+        tracks,
+        missingTracks,
+        existingTracks,
+        addLoading,
+        removeLoading,
+        addDuration,
+        shuffle: true,
+      );
     }
   }
 

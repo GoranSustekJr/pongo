@@ -32,36 +32,25 @@ class _LyricsPhoneState extends State<LyricsPhone> {
         child: AnimatedOpacity(
           opacity: widget.lyricsOn ? 1 : 0,
           duration: Duration(milliseconds: widget.lyricsOn ? 500 : 200),
-          child: AnimatedSwitcher(
-            duration: Duration(
-              milliseconds: widget.plainLyrics.isNotEmpty ||
-                      widget.syncedLyrics.isNotEmpty
-                  ? widget.plainLyrics[0] == null ||
-                          widget.syncedLyrics[0] == null
-                      ? 0
-                      : 500
-                  : 500,
-            ),
-            child: !enableLyrics.value
-                ? Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.lyricsdisabled,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 25),
+          child: !enableLyrics.value
+              ? Center(
+                  child: Text(
+                    AppLocalizations.of(context)!.lyricsdisabled,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 25),
+                  ),
+                )
+              : !widget.useSyncedLyrics
+                  ? TrackPlainLyricsPhone(
+                      key: const ValueKey(true), lyrics: widget.plainLyrics)
+                  : TrackSyncLyricsPhone(
+                      key: const ValueKey(false),
+                      lyricsOn: widget.lyricsOn,
+                      lyrics: widget.syncedLyrics,
+                      syncTimeDelay: widget.syncTimeDelay,
                     ),
-                  )
-                : !widget.useSyncedLyrics
-                    ? TrackPlainLyricsPhone(
-                        key: const ValueKey(true), lyrics: widget.plainLyrics)
-                    : TrackSyncLyricsPhone(
-                        key: const ValueKey(false),
-                        lyricsOn: widget.lyricsOn,
-                        lyrics: widget.syncedLyrics,
-                        syncTimeDelay: widget.syncTimeDelay,
-                      ),
-          ),
         ),
       ),
     );

@@ -2,11 +2,11 @@ import 'package:spotify_api/spotify_api.dart' as sp;
 import 'package:pongo/exports.dart';
 
 class RecommendationsBodyPhone extends StatefulWidget {
-  final List<sp.Track> pTracks;
+  final List<Track> pTracks;
   final List<Artist> pArtists;
   final List<Album> pAlbums;
   final List<Playlist> pPlaylists;
-  final List<sp.Track> euTracks;
+  final List<Track> euTracks;
   final List<Artist> euArtists;
   final bool recommendationsDisabled;
   final Future<void> Function() onRefresh;

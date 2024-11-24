@@ -72,42 +72,17 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
             componentY: 3,
           )
         : AppConstants().BLURHASH;
+
+    final List<dynamic> dta = [];
+    for (var track in data["items"]) {
+      dta.add(track["track"]);
+    }
+
     setState(() {
-      print(data);
-      final List<dynamic> dta = data["items"];
       existingTracks = {
         for (var item in data["durations"]) item[0] as String: item[1] as double
       };
-      tracks = dta
-          .map<Track>(
-            (track) => Track(
-              id: track["track"]["id"],
-              name: track["track"]["name"],
-              artists: (track["track"]["artists"] as List<dynamic>)
-                  .map((artist) => ArtistTrack(
-                        id: artist["id"] as String,
-                        name: artist["name"] as String,
-                      ))
-                  .toList(),
-              album: track["track"]["album"] != null
-                  ? AlbumTrack(
-                      id: track["track"]["album"]["id"],
-                      name: track["track"]["album"]["name"] as String,
-                      releaseDate:
-                          track["track"]["album"]["release_date"] as String,
-                      images:
-                          (track["track"]["album"]["images"] as List<dynamic>)
-                              .map((image) => AlbumImagesTrack(
-                                    url: image["url"] as String,
-                                    height: image["height"] as int?,
-                                    width: image["width"] as int?,
-                                  ))
-                              .toList(),
-                    )
-                  : null,
-            ),
-          )
-          .toList();
+      tracks = Track.fromMapList(dta);
       missingTracks = data["missing_tracks"];
       blurhash = blurHash;
       showBody = true;

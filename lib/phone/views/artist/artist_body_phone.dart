@@ -175,7 +175,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                       ),
                     ),
                     onTap: () async {
-                      Play().onlineTrackTypteTrack(
+                      PlaySingle().onlineTrack(
                           context,
                           audioServiceHandler,
                           "search.single.",

@@ -4,7 +4,7 @@ import 'package:spotify_api/spotify_api.dart' as sp;
 
 List<PullDownMenuEntry> searchTrackPulldownMenuItems(
   BuildContext context,
-  sp.Track track,
+  Track track,
   String id,
   bool favourite,
   Function(String) doesNotExist,
@@ -73,8 +73,8 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
           const PullDownMenuDivider.large(),
           PullDownMenuItem(
             onTap: () async {
-              await AddToQueue()
-                  .addFirst(context, track, id, doesNotExist, doesNowExist);
+              await AddToQueue().addTypeTrackFirst(
+                  context, track, id, doesNotExist, doesNowExist);
             },
             title: AppLocalizations.of(context)!.firsttoqueue,
             icon: AppIcons.firstToQueue,
@@ -88,8 +88,8 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
           const PullDownMenuDivider(),
           PullDownMenuItem(
             onTap: () async {
-              await AddToQueue()
-                  .addLast(context, track, id, doesNotExist, doesNowExist);
+              await AddToQueue().addTypeTrackLast(
+                  context, track, id, doesNotExist, doesNowExist);
             },
             title: AppLocalizations.of(context)!.lasttoqueue,
             icon: AppIcons.lastToQueue,

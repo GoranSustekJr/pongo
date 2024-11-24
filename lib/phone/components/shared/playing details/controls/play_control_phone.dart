@@ -4,11 +4,9 @@ import 'package:pongo/exports.dart';
 class PlayControlPhone extends StatefulWidget {
   final AsyncSnapshot<PlaybackState> playbackState;
   final MediaItem mediaItem;
-  final Function(bool) onTap;
   const PlayControlPhone({
     super.key,
     required this.mediaItem,
-    required this.onTap,
     required this.playbackState,
   });
 

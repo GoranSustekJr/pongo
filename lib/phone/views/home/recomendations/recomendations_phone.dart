@@ -11,7 +11,7 @@ class RecomendationsPhone extends StatefulWidget {
 
 class _RecomendationsPhoneState extends State<RecomendationsPhone> {
   // Pongo:: tracks
-  List<sp.Track> pTracks = [];
+  List<Track> pTracks = [];
 
   // Pongo:: artists
   List<Artist> pArtists = [];
@@ -23,7 +23,7 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
   List<Playlist> pPlaylists = [];
 
   // End-user:: tracks
-  List<sp.Track> euTracks = [];
+  List<Track> euTracks = [];
 
   // End-user:: artists
   List<Artist> euArtists = [];
@@ -59,9 +59,7 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
     setState(() {
       // Pongo:: tracks
 
-      pTracks = (data["tracks"]["tracks"] as List<dynamic>)
-          .map((track) => sp.Track.fromJson(track))
-          .toList();
+      pTracks = Track.fromMapList(data["tracks"]["tracks"]);
 
       // Pongo:: artists
       pArtists = (data["artists"]["artists"] as List<dynamic>).map((artist) {
@@ -106,9 +104,7 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
 
       // End-user:: tracks
       try {
-        euTracks = (data["eu_tracks"]["tracks"] as List<dynamic>)
-            .map((track) => sp.Track.fromJson(track))
-            .toList();
+        euTracks = Track.fromMapList(data["eu_tracks"]["tracks"]);
 
         // End-user:: artists
         euArtists =

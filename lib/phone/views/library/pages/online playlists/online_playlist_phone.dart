@@ -399,8 +399,8 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                     CroppedFile? croppedFile =
                                         await ImageCropper().cropImage(
                                       sourcePath: pickedFile.path,
-                                      maxHeight: 500,
-                                      maxWidth: 500,
+                                      maxHeight: 600,
+                                      maxWidth: 600,
                                       aspectRatio: const CropAspectRatio(
                                         ratioX: 1,
                                         ratioY: 1,
@@ -443,6 +443,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                         );
                                         setState(() {
                                           cover = MemoryImage(bytes!);
+                                          print(blurHash);
                                           blurhash = blurHash;
                                         });
                                         widget.updateCover(MemoryImage(bytes));

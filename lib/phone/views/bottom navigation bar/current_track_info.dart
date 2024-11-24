@@ -218,14 +218,32 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                       BorderRadius
                                                                           .circular(
                                                                               7.5),
-                                                                  child:
-                                                                      CachedNetworkImage(
-                                                                    imageUrl: currentMediaItem
-                                                                        .artUri
-                                                                        .toString(),
-                                                                    width: 40,
-                                                                    height: 40,
-                                                                  ),
+                                                                  child: currentMediaItem
+                                                                              .artUri
+                                                                              .toString() !=
+                                                                          ""
+                                                                      ? CachedNetworkImage(
+                                                                          imageUrl: currentMediaItem
+                                                                              .artUri
+                                                                              .toString(),
+                                                                          width:
+                                                                              40,
+                                                                          height:
+                                                                              40,
+                                                                        )
+                                                                      : SizedBox(
+                                                                          height:
+                                                                              40,
+                                                                          width:
+                                                                              40,
+                                                                          child:
+                                                                              Center(
+                                                                            child:
+                                                                                Icon(
+                                                                              AppIcons.blankTrack,
+                                                                            ),
+                                                                          ),
+                                                                        ),
                                                                 ),
                                                               ),
                                                               const SizedBox(

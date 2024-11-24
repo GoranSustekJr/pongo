@@ -6,7 +6,7 @@ import 'package:spotify_api/spotify_api.dart' as sp;
 
 List<Widget> recommendedTrackCupertinoContextMenuActions(
   BuildContext context,
-  sp.Track track,
+  Track track,
   String id,
   Function(String) doesNotExist,
   Function(String) doesNowExist,
@@ -57,8 +57,8 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
           // Add First to Queue
           CupertinoContextMenuAction(
             onPressed: () async {
-              await AddToQueue()
-                  .addFirst(context, track, id, doesNotExist, doesNowExist);
+              await AddToQueue().addTypeTrackFirst(
+                  context, track, id, doesNotExist, doesNowExist);
               Navigator.of(context, rootNavigator: true).pop();
             },
             trailingIcon: AppIcons.firstToQueue,
@@ -70,8 +70,8 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
           // Add Last to Queue
           CupertinoContextMenuAction(
             onPressed: () async {
-              await AddToQueue()
-                  .addLast(context, track, id, doesNotExist, doesNowExist);
+              await AddToQueue().addTypeTrackLast(
+                  context, track, id, doesNotExist, doesNowExist);
               Navigator.of(context, rootNavigator: true).pop();
             },
             trailingIcon: AppIcons.lastToQueue,

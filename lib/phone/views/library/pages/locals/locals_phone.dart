@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:pongo/exports.dart';
 
 class LocalsPhone extends StatefulWidget {
   const LocalsPhone({super.key});
@@ -8,8 +8,18 @@ class LocalsPhone extends StatefulWidget {
 }
 
 class _LocalsPhoneState extends State<LocalsPhone> {
+  // Show body
+  bool showBody = false;
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 400),
+      child: showBody
+          ? const Center(
+              child: Text("Offline songs"),
+            )
+          : loadingScaffold(context, const ValueKey(false)),
+    );
   }
 }

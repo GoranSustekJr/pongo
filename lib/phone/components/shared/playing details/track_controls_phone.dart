@@ -101,7 +101,6 @@ class TrackControlsPhone extends StatelessWidget {
                             PlayControlPhone(
                               mediaItem: currentMediaItem,
                               playbackState: playbackState,
-                              onTap: (_) {},
                             ),
                             const VolumeControlPhone(),
                             OtherControlsPhone(

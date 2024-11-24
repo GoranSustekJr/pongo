@@ -74,17 +74,8 @@ class _ArtistPhoneState extends State<ArtistPhone> {
           )
         : AppConstants().BLURHASH;
 
-    final List<Album> allAlbums = (data["albums"] as List<dynamic>)
-        .map((album) => Album(
-              id: album["id"],
-              type: album["album_group"],
-              name: album["name"],
-              artists: (album["artists"] as List<dynamic>)
-                  .map((artist) => artist["name"])
-                  .toList(),
-              image: calculateWantedResolution(album["images"], 300, 300),
-            ))
-        .toList();
+    final List<Album> allAlbums =
+        Album.fromMapList(data["albums"] as List<dynamic>);
 
     print("All albums length; ${allAlbums.length}");
 
@@ -92,42 +83,8 @@ class _ArtistPhoneState extends State<ArtistPhone> {
       blurhash = blurHash;
       albums = allAlbums.where((album) => album.type == "album").toList();
       otherAlbums = allAlbums.where((album) => album.type != "album").toList();
-      tracks = (data["tracks"] as List<dynamic>)
-          .map(
-            (track) => Track(
-              album: AlbumTrack(
-                id: track["album"]["id"],
-                name: track["album"]["name"],
-                images: (track["album"]["images"] as List<dynamic>)
-                    .map((image) => AlbumImagesTrack(
-                        url: image["url"],
-                        height: image["height"],
-                        width: image["width"]))
-                    .toList(),
-                releaseDate: track["album"]["release_date"],
-              ),
-              id: track["id"],
-              name: track["name"],
-              artists: (track["artists"] as List<dynamic>)
-                  .map((artist) =>
-                      ArtistTrack(id: artist["id"], name: artist["name"]))
-                  .toList(),
-            ),
-          )
-          .toList();
-      artists = (data["artists"] as List<dynamic>)
-          .map((artist) => Artist(
-                id: artist["id"],
-                name: artist["name"],
-                image: calculateBestImageForTrack(
-                    (artist["images"] as List<dynamic>)
-                        .map((image) => AlbumImagesTrack(
-                            url: image["url"],
-                            height: image["height"],
-                            width: image["width"]))
-                        .toList()),
-              ))
-          .toList();
+      tracks = Track.fromMapList(data["tracks"] as List<dynamic>);
+      artists = Artist.fromMapList(data["artists"] as List<dynamic>);
       showBody = true;
     });
 
