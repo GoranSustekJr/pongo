@@ -82,4 +82,5 @@ ValueNotifier<Map?> playlistTrackToAddData = ValueNotifier(null);
 // Playlist handler
 ValueNotifier<PlaylistHandler?> playlistHandler = ValueNotifier(null);
 
-// Volume
+// Notifications context
+ValueNotifier<BuildContext?> notificationsContext = ValueNotifier(null);

@@ -60,8 +60,10 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
                 widget.changeLyricsOn,
               ),
               iconButton(
-                CupertinoIcons.repeat,
-                audioServiceHandler.audioPlayer.loopMode.name != "all"
+                audioServiceHandler.audioPlayer.loopMode.name == "one"
+                    ? AppIcons.repeatOne
+                    : AppIcons.repeat,
+                audioServiceHandler.audioPlayer.loopMode.name == "off"
                     ? Colors.white.withAlpha(150)
                     : Colors.white,
                 () {
@@ -70,6 +72,9 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
                         .setRepeatMode(AudioServiceRepeatMode.none);
                   } else if (audioServiceHandler.audioPlayer.loopMode.name ==
                       "off") {
+                    audioServiceHandler
+                        .setRepeatMode(AudioServiceRepeatMode.one);
+                  } else {
                     audioServiceHandler
                         .setRepeatMode(AudioServiceRepeatMode.all);
                   }

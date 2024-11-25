@@ -99,4 +99,8 @@ class AppIcons {
   static const unhideFill = CupertinoIcons.eye_fill;
 
   static const loading = CupertinoIcons.timelapse;
+
+  static const repeat = CupertinoIcons.repeat;
+
+  static const repeatOne = CupertinoIcons.repeat_1;
 }

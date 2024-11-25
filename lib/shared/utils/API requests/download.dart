@@ -73,9 +73,11 @@ class Download {
                 );
 
                 Notifications().showSpecialNotification(
-                    searchScreenContext.value!,
-                    "Success",
-                    "Successfully donwloaded the track",
+                    notificationsContext.value!,
+                    AppLocalizations.of(notificationsContext.value!)!
+                        .successful,
+                    AppLocalizations.of(notificationsContext.value!)!
+                        .successfullydownloadedthetrack,
                     AppIcons.download);
 
                 tries++;
@@ -98,8 +100,12 @@ class Download {
         },
       );
     } else {
-      Notifications().showSpecialNotification(searchScreenContext.value!,
-          "Notification", "Already downloaded", AppIcons.download);
+      Notifications().showSpecialNotification(
+          notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!)!.notification,
+          AppLocalizations.of(notificationsContext.value!)!
+              .trackalreadydownloaded,
+          AppIcons.download);
     }
   }
 }

@@ -778,5 +778,35 @@
     "show": "show",
     "@show": {
         "description": "show"
+    },
+
+    "notification": "Notification",
+    "@notification": {
+        "description": "notification"
+    },
+
+    "trackalreadydownloaded": "Track is already downloaded",
+    "@trackalreadydownloaded": {
+        "description": "trackalreadydownloaded"
+    },
+
+    "successfullydownloadedthetrack": "Successfully downloaded the track",
+    "@successfullydownloadedthetrack": {
+        "description": "successfullydownloadedthetrack"
+    },
+
+    "repeatoff": "Repeat is off",
+    "@repeatoff": {
+        "description": "repeatoff"
+    },
+
+    "repeatthissong": "Repet one song",
+    "@repeatthissong": {
+        "description": "repeatthissong"
+    },
+
+    "repeatthequeue": "Repeat the queue",
+    "@repeatthequeue": {
+        "description": "repeatthequeue"
     }
 }

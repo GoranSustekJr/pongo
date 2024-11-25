@@ -30,6 +30,8 @@ class _BottomNavigationScreenPhoneState
   @override
   void initState() {
     super.initState();
+    notificationsContext.value = context;
+    print(notificationsContext.value);
     pages = [
       HomeMainPhone(homeNavigatorKey: homeNavigatorKey),
       LibraryMainPhone(libraryHomeNavigatorKey: libraryHomeNavigatorKey),

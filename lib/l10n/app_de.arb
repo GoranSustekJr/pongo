@@ -154,5 +154,11 @@
     "plustracks": "Lieder",
     "changename": "Namen ändern",
     "hide": "Verberg",
-    "show": "Zeig"
+    "show": "Zeig",
+    "notification": "Benachrichtigung",
+    "trackalreadydownloaded": "Titel ist bereits heruntergeladen",
+    "successfullydownloadedthetrack": "Titel wurde erfolgreich heruntergeladen",
+    "repeatoff": "Wiederholung ist aus",
+    "repeatthissong": "Ein Lied wiederholen",
+    "repeatthequeue": "Warteschlange wiederholen"
 }

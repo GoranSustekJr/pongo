@@ -155,6 +155,12 @@
     "plustracks": "pjesama",
     "changename": "Promjeni ime",
     "hide": "Sakri",
-    "show": "Prikaži"
+    "show": "Prikaži",
+    "notification": "Obavijest",
+    "trackalreadydownloaded": "Pjesma je već preuzeta",
+    "successfullydownloadedthetrack": "Pjesma je uspješno preuzeta",
+    "repeatoff": "Ponavljanje je isključeno",
+    "repeatthissong": "Ponovi ovu pjesmu",
+    "repeatthequeue": "Ponovi red čekanja"
 
 }

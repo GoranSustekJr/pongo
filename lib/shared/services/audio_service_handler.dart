@@ -269,11 +269,31 @@ class AudioServiceHandler extends BaseAudioHandler
     switch (repeatMode) {
       case AudioServiceRepeatMode.none:
         audioPlayer.setLoopMode(LoopMode.off);
+        Notifications().showSpecialNotification(
+          notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!)!.successful,
+          AppLocalizations.of(notificationsContext.value!)!.repeatoff,
+          AppIcons.repeat,
+          iconColor: Colors.white.withAlpha(150),
+        );
         break;
       case AudioServiceRepeatMode.one:
+        audioPlayer.setLoopMode(LoopMode.one);
+        Notifications().showSpecialNotification(
+          notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!)!.successful,
+          AppLocalizations.of(notificationsContext.value!)!.repeatthissong,
+          AppIcons.repeatOne,
+        );
       case AudioServiceRepeatMode.group:
       case AudioServiceRepeatMode.all:
         audioPlayer.setLoopMode(LoopMode.all);
+        Notifications().showSpecialNotification(
+          notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!)!.successful,
+          AppLocalizations.of(notificationsContext.value!)!.repeatthequeue,
+          AppIcons.repeat,
+        );
         break;
     }
   }

@@ -12,6 +12,7 @@ class Notifications {
     Color backgroundColor = Colors.black54, // Default background color
     int durationInSeconds = 5, // Default duration
     int maxLines = 3, // Max lines for text
+    Color iconColor = Colors.white, // Default
   }) {
     InAppNotification.show(
       context: context,
@@ -26,7 +27,7 @@ class Notifications {
               filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: backgroundColor.withAlpha(50),
+                  color: backgroundColor.withAlpha(100),
                   borderRadius: BorderRadius.circular(16.0),
                 ),
                 child: Padding(
@@ -36,6 +37,7 @@ class Notifications {
                       Icon(
                         icon,
                         size: 25,
+                        color: iconColor,
                       ),
                       razw(10),
                       Flexible(
@@ -84,7 +86,8 @@ class Notifications {
 
   // Show custom notification with title and icon
   void showSpecialNotification(
-      BuildContext context, String title, String message, IconData icon) {
+      BuildContext context, String title, String message, IconData icon,
+      {Color iconColor = Colors.white}) {
     showNotification(
       context: context,
       title: title,
@@ -92,6 +95,7 @@ class Notifications {
       icon: icon,
       backgroundColor: Col.primaryCard,
       durationInSeconds: 5,
+      iconColor: iconColor,
     );
   }
 }
