@@ -84,7 +84,7 @@ class _ArtistPhoneState extends State<ArtistPhone> {
       albums = allAlbums.where((album) => album.type == "album").toList();
       otherAlbums = allAlbums.where((album) => album.type != "album").toList();
       tracks = Track.fromMapList(data["tracks"] as List<dynamic>);
-      artists = Artist.fromMapList(data["artists"] as List<dynamic>);
+      //artists = Artist.fromMapList(data["artists"] as List<dynamic>);
       showBody = true;
     });
 

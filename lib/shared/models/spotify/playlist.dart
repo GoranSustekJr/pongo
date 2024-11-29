@@ -20,7 +20,16 @@ class Playlist {
 
   // Convert a List of Maps to a List of Playlist objects
   static List<Playlist> fromMapList(List<dynamic> list) {
+    for (var item in list) {
+      if (item == null) {
+        print("Found null in playlist list");
+      } else if (item is! Map<String, dynamic>) {
+        print("Unexpected type: ${item.runtimeType} - $item");
+      }
+    }
+
     return list
+        .where((item) => item != null && item is Map<String, dynamic>)
         .map((map) => Playlist.fromMap(map as Map<String, dynamic>))
         .toList();
   }

@@ -41,10 +41,10 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
   @override
   void initState() {
     super.initState();
-    getRecommendations();
+    // getRecommendations();
   }
 
-  Future<void> getRecommendations() async {
+  /*  Future<void> getRecommendations() async {
     bool rcommendForYou = await Storage().getRecommendedForYou();
     bool rcommendPongo = await Storage().getRecommendedPongo();
 
@@ -131,12 +131,12 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
       showBody = true;
     });
   }
-
+ */
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 250),
-      child: showBody
+      child: /* showBody
           ? RecommendationsBodyPhone(
               key: const ValueKey(true),
               pTracks: pTracks,
@@ -150,13 +150,18 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
                 await getRecommendations();
               },
             )
-          : SizedBox(
+          : */
+          SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               key: const ValueKey(false),
-              child: RecommendedShimmer(
-                pongo: recommendedPongo,
-                forYou: recommendForYou,
+              child: const Center(
+                child: Text("Fick spotify API"),
+              ) /*  RecommendedShimmer(
+          pongo: recommendedPongo,
+          forYou: recommendForYou,
+        ), */
               ),
-            ),
     );
   }
 }
