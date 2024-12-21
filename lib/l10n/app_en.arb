@@ -808,5 +808,26 @@
     "repeatthequeue": "Repeat the queue",
     "@repeatthequeue": {
         "description": "repeatthequeue"
+    },
+
+    "removefromdownloaded": "Remove from downloaded",
+    "@removefromdownloaded": {
+        "description": "removefromdownloaded"
+    },
+
+    "removefromdownloadedbody": "Do you want to remove selected tracks from downloaded?",
+    "@removefromdownloadedbody": {
+        "description": "removefromdownloadedbody"
+    },
+
+    "lastlistenedto": "lastlistenedto",
+    "@lastlistenedto": {
+        "description": "lastlistenedto"
+    },
+    
+    "explore": "Explore",
+    "@explore": {
+        "description": "explore"
     }
+
 }

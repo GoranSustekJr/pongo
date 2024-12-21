@@ -199,10 +199,14 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
   }
 
   play({int index = 0}) async {
+    for (Track track in tracks) {
+      print(track.id);
+    }
+
     if (!loadingShuffle) {
       PlayMultiple().onlineTrack(
         "online.playlist:${widget.opid}",
-        tracks,
+        tracks.where((track) => hidden[track.id] == false).toList(),
         missingTracks,
         existingTracks,
         addLoading,
@@ -217,7 +221,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
     if (!loadingShuffle && missingTracks.isEmpty) {
       PlayMultiple().onlineTrack(
         "online.playlist:${widget.opid}",
-        tracks,
+        tracks.where((track) => hidden[track.id] == false).toList(),
         missingTracks,
         existingTracks,
         addLoading,

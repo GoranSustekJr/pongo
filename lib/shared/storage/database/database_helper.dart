@@ -21,7 +21,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 14,
+      version: 18,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -81,8 +81,7 @@ class DatabaseHelper {
           duration INT,
           image TEXT,
           lyrics_sync TEXT,
-          lyrics_plain TEXT
-        )
+          lyrics_plain TEXT        )
       ''');
     await db.execute('''
       CREATE TABLE local_playlist (
@@ -121,10 +120,15 @@ class DatabaseHelper {
     await db.execute('''
       ALTER TABLE lpid_track_id ADD COLUMN hidden BOOLEAN DEFAULT FALSE;
     '''); */
-
     /* await db.execute('''
-      ALTER TABLE downloaded_tracks DROP COLUMN blurhash;
+      ALTER TABLE favourites DROP COLUMN time_added;
     '''); */
+    /* await db.execute('''
+      ALTER TABLE downloaded_tracks ADD COLUMN time_added TEXT;
+    '''); */
+    await db.execute('''
+      ALTER TABLE downloaded_tracks DROP COLUMN time_added;
+    ''');
 
     print(newVersion);
   }
@@ -229,6 +233,10 @@ class DatabaseHelper {
     return await queryTrackHist(this);
   }
 
+  Future<List<String>> queryTrackHistoryNum(int num) async {
+    return await queryTrackHistNum(this, num);
+  }
+
   Future<List<String>> queryArtistHistory() async {
     return await queryArtistHist(this);
   }
@@ -267,6 +275,10 @@ class DatabaseHelper {
 
   Future<void> removeDownloadedTrack(String stid, int id) async {
     await removeDownloadedTrck(this, stid, id);
+  }
+
+  Future<void> removeDownloadedTracks(List<String> stids) async {
+    await removeDownloadedTrcks(this, stids);
   }
 
   // Downloaded playlist insert

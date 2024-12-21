@@ -1,5 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/views/library/pages/locals/data/locals_data_manager.dart';
 import 'package:pongo/phone/widgets/library/locals/locals_tile.dart';
 
 class LocalsBodyPhone extends StatefulWidget {

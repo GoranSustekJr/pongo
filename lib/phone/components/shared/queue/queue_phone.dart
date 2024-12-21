@@ -73,60 +73,63 @@ class _QueuePhoneState extends State<QueuePhone> {
 
                     return Padding(
                       padding: const EdgeInsets.only(left: 10),
-                      child: QueueBodyPhone(
-                        shuffleModeEnabled: shuffleModeEnabled,
-                        editQueue: editQueue,
-                        showQueue: widget.showQueue,
-                        lyricsOn: widget.lyricsOn,
-                        queue: queue ?? [],
-                        shuffleIndices: shuffleIndices ?? [],
-                        selectedQueueIndexes: selectedQueueIndexes,
-                        selectQueueIndex: selectQueueIndex,
-                        changeShowQueue: widget.changeShowQueue,
-                        changeEditQueue: () {
-                          setState(() {
-                            editQueue = !editQueue;
-                          });
-                        },
-                        removeItemsFromQueue: () async {
-                          final selectedIndexes = selectedQueueIndexes;
-                          for (int index in selectedIndexes) {
-                            if (audioServiceHandler.audioPlayer.currentIndex !=
-                                index) {
-                              audioServiceHandler.queue.value.removeAt(index);
-                              await audioServiceHandler.playlist
-                                  .removeAt(index);
+                      child: RepaintBoundary(
+                        child: QueueBodyPhone(
+                          shuffleModeEnabled: shuffleModeEnabled,
+                          editQueue: editQueue,
+                          showQueue: widget.showQueue,
+                          lyricsOn: widget.lyricsOn,
+                          queue: queue ?? [],
+                          shuffleIndices: shuffleIndices ?? [],
+                          selectedQueueIndexes: selectedQueueIndexes,
+                          selectQueueIndex: selectQueueIndex,
+                          changeShowQueue: widget.changeShowQueue,
+                          changeEditQueue: () {
+                            setState(() {
+                              editQueue = !editQueue;
+                            });
+                          },
+                          removeItemsFromQueue: () async {
+                            final selectedIndexes = selectedQueueIndexes;
+                            for (int index in selectedIndexes) {
+                              if (audioServiceHandler
+                                      .audioPlayer.currentIndex !=
+                                  index) {
+                                audioServiceHandler.queue.value.removeAt(index);
+                                await audioServiceHandler.playlist
+                                    .removeAt(index);
+                              }
+                              changeTrackOnTap.value = false;
                             }
-                            changeTrackOnTap.value = false;
-                          }
-                          setState(() {
-                            editQueue = false;
-                            selectedQueueIndexes.clear();
-                          });
-                        },
-                        changeLyricsOn: widget.changeLyricsOn,
-                        saveAsPlaylist: () {
-                          if (queue != null) {
-                            OpenPlaylist().show(
-                              context,
-                              PlaylistHandler(
-                                type: PlaylistHandlerType.online,
-                                function:
-                                    PlaylistHandlerFunction.createPlaylist,
-                                track: queue.map((track) {
-                                  return PlaylistHandlerOnlineTrack(
-                                    id: track.id.split('.')[2],
-                                    name: track.title,
-                                    artist: track.artist ?? "",
-                                    cover: track.artUri.toString(),
-                                    playlistHandlerCoverType:
-                                        PlaylistHandlerCoverType.url,
-                                  );
-                                }).toList(),
-                              ),
-                            );
-                          }
-                        },
+                            setState(() {
+                              editQueue = false;
+                              selectedQueueIndexes.clear();
+                            });
+                          },
+                          changeLyricsOn: widget.changeLyricsOn,
+                          saveAsPlaylist: () {
+                            if (queue != null) {
+                              OpenPlaylist().show(
+                                context,
+                                PlaylistHandler(
+                                  type: PlaylistHandlerType.online,
+                                  function:
+                                      PlaylistHandlerFunction.createPlaylist,
+                                  track: queue.map((track) {
+                                    return PlaylistHandlerOnlineTrack(
+                                      id: track.id.split('.')[2],
+                                      name: track.title,
+                                      artist: track.artist ?? "",
+                                      cover: track.artUri.toString(),
+                                      playlistHandlerCoverType:
+                                          PlaylistHandlerCoverType.url,
+                                    );
+                                  }).toList(),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                       ),
                     );
                   },

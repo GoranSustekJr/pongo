@@ -4,8 +4,8 @@ import 'package:pongo/shared/utils/managers/media_item_manager.dart';
 class PlayingDetailsPhone extends StatelessWidget {
   final Function(String) showAlbum;
 
-  PlayingDetailsPhone({super.key, required this.showAlbum});
-  final GlobalKey<State<QueuePhone>> queueKey = GlobalKey<State<QueuePhone>>();
+  const PlayingDetailsPhone({super.key, required this.showAlbum});
+  //final GlobalKey<State<QueuePhone>> queueKey = GlobalKey<State<QueuePhone>>();
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class PlayingDetailsPhone extends StatelessWidget {
                       syncTimeDelay: mediaItemManager.syncTimeDelay,
                     ),
                     QueuePhone(
-                      key: queueKey,
+                      //  key: queueKey,
                       showQueue: mediaItemManager.showQueue,
                       lyricsOn: mediaItemManager.lyricsOn,
                       changeShowQueue: mediaItemManager.toggleShowQueue,

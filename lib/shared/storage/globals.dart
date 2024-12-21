@@ -84,3 +84,6 @@ ValueNotifier<PlaylistHandler?> playlistHandler = ValueNotifier(null);
 
 // Notifications context
 ValueNotifier<BuildContext?> notificationsContext = ValueNotifier(null);
+
+// Search data manager
+ValueNotifier<SearchDataManager?> searchDataManagr = ValueNotifier(null);

@@ -30,6 +30,20 @@ Future<int?> insertOnTrackId(
     return null; // Or return a value indicating the insertion was skipped
   }
 
+  final List<Map<String, dynamic>> existingRows = await db.query(
+    'opid_track_id',
+    where: 'opid = ? AND track_id = ?',
+    whereArgs: [opid, stid],
+  );
+
+  // Ensure that the playlist does not contains this track
+  if (existingRows.isNotEmpty) {
+    Notifications().showWarningNotification(
+        searchScreenContext.value!, "Playlist already contains this track");
+
+    return null;
+  }
+
   // Get the current order count for the given opid
   int currentOrder = await queryOrderForOpid(dbHelper, opid);
 

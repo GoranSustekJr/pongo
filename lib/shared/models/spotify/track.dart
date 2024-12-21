@@ -20,7 +20,6 @@ class Track {
 
   // Creata a Track from a Map
   factory Track.fromMap(Map<String, dynamic> map) {
-    print(map);
     return Track(
       id: map["id"],
       name: map["name"],

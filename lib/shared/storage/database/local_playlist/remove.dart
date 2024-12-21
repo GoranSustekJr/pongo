@@ -38,5 +38,3 @@ Future<void> removeLoclPlaylist(DatabaseHelper dbHelper, int lpid) async {
     );
   });
 }
-
-//TODO: HAPTIC update!

@@ -26,6 +26,11 @@ class Storage {
   static String lyricsTextAlignKey = "LYRICSTEXTALIGNKEY";
   static String useCacheAudioSourceKey = "CACHEAUDIOSOURCEKEY";
   static String enableLyricsKey = "ENABLEYRCSKEY";
+  static String loopModeKey = "LOOPMODEKEY";
+  static String shuffleModeKey = "SHUFFLEMODEKEY";
+  static String enableHistoryKey = "ENABLEHISTORYKEY";
+  static String enableCategoriesKey = "ENABLECATEGORIESKEY";
+  static String numOfCategoriesKey = "NUMOFCATEGORIESKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -294,6 +299,81 @@ class Storage {
       return true;
     } else {
       return key == "true";
+    }
+  }
+
+  // Get loop
+  Future<void> writeLoopMode(LoopMode loopMode) async {
+    await storage.write(key: loopModeKey, value: loopMode.toString());
+  }
+
+  Future<AudioServiceRepeatMode> getLoopMode() async {
+    String? key = await storage.read(key: loopModeKey);
+    print("key; $key");
+    if (key == "LoopMode.off") {
+      return AudioServiceRepeatMode.none;
+    } else if (key == "LoopMode.one") {
+      return AudioServiceRepeatMode.one;
+    } else {
+      return AudioServiceRepeatMode.all;
+    }
+  }
+
+  // Get shuffle
+  Future<void> writeShuffleMode(AudioServiceShuffleMode shuffleMode) async {
+    await storage.write(key: shuffleModeKey, value: shuffleMode.toString());
+  }
+
+  Future<AudioServiceShuffleMode> getShuffleMode() async {
+    String? key = await storage.read(key: shuffleModeKey);
+    if (key == "AudioServiceShuffleMode.all") {
+      return AudioServiceShuffleMode.all;
+    } else {
+      return AudioServiceShuffleMode.none;
+    }
+  }
+
+  // Get enable history
+  Future<void> writeEnableHistory(bool enableHistory) async {
+    await storage.write(key: enableHistoryKey, value: enableHistory.toString());
+  }
+
+  Future<bool> getEnableHistory() async {
+    String? key = await storage.read(key: enableHistoryKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Get enable categories
+  Future<void> writeEnableCategories(bool enableCategories) async {
+    await storage.write(
+        key: enableCategoriesKey, value: enableCategories.toString());
+  }
+
+  Future<bool> getEnableCategories() async {
+    String? key = await storage.read(key: enableCategoriesKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Num of categories
+  Future<void> writeNumOfCategories(int numOfCategories) async {
+    await storage.write(
+        key: numOfCategoriesKey, value: numOfCategories.toString());
+  }
+
+  Future<int> getNumOfCategories() async {
+    String? key = await storage.read(key: numOfCategoriesKey);
+    if (key == null) {
+      return 50;
+    } else {
+      return int.parse(key);
     }
   }
 

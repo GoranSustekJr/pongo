@@ -1,5 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/shared/functions/queue/clear_queue.dart';
 
 List<PullDownMenuEntry> queueMorePullDownMenuItems(
   BuildContext context,
@@ -15,7 +14,7 @@ List<PullDownMenuEntry> queueMorePullDownMenuItems(
             icon: AppIcons.edit,
           ),
           const PullDownMenuDivider.large(),
-          PullDownMenuItem(
+          /* PullDownMenuItem(
             onTap: () async {
               await ClearQueue().clear(context);
             },
@@ -28,7 +27,7 @@ List<PullDownMenuEntry> queueMorePullDownMenuItems(
               ),
             ),
           ),
-          const PullDownMenuDivider.large(),
+          const PullDownMenuDivider.large(), */
           PullDownMenuItem(
             onTap: saveAsPlaylist,
             title: AppLocalizations.of(context)!.saveasplaylist,

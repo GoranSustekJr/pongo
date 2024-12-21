@@ -1,4 +1,3 @@
-import 'package:background_fetch/background_fetch.dart';
 import 'package:pongo/exports.dart';
 
 Future<void> configureMacosWindowUtils() async {
@@ -56,25 +55,30 @@ void main() async {
   isUserSignedIn.value = signedIn;
 
   // Preferences
-  bool syncTimeDelay = await Storage().getSyncDelay();
+  bool syncTimeDelay = await Storage().getSyncDelay(); // use sync delay
   useSyncTimeDelay.value = syncTimeDelay;
-  bool syncedLyircs = await Storage().getUseSyncedLyrics();
+  bool syncedLyircs = await Storage().getUseSyncedLyrics(); // use synced lyrics
   useSyncedLyrics.value = syncedLyircs;
-  int numSearchArtists = await Storage().getNumOfSearchArtists();
+  int numSearchArtists =
+      await Storage().getNumOfSearchArtists(); // Num of search artists
   numberOfSearchArtists.value = numSearchArtists;
-  int numSearchAlbums = await Storage().getNumOfSearchAlbums();
+  int numSearchAlbums =
+      await Storage().getNumOfSearchAlbums(); // Num of search albums
   numberOfSearchAlbums.value = numSearchAlbums;
-  int numSearchTracks = await Storage().getNumOfSearchTracks();
+  int numSearchTracks =
+      await Storage().getNumOfSearchTracks(); // Num of search tracks
   numberOfSearchTracks.value = numSearchTracks;
-  int numSearchPlaylists = await Storage().getNumOfSearchPlaylists();
+  int numSearchPlaylists =
+      await Storage().getNumOfSearchPlaylists(); // Num of search playlists
   numberOfSearchPlaylists.value = numSearchPlaylists;
-  TextAlign curLyricsTextAlignment = await Storage().getLyricsTextAlign();
+  TextAlign curLyricsTextAlignment =
+      await Storage().getLyricsTextAlign(); // Lyrics alignment
   currentLyricsTextAlignment.value = curLyricsTextAlignment;
-  bool useCache = await Storage().getUseCachingAudioSource();
+  bool useCache =
+      await Storage().getUseCachingAudioSource(); // Audio source type
   useCacheAudioSource.value = useCache;
-  bool enblLyrics = await Storage().getEnableLyrics();
+  bool enblLyrics = await Storage().getEnableLyrics(); // Enable lyrics
   enableLyrics.value = enblLyrics;
-  print("Enable Lyrics; $enblLyrics");
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();

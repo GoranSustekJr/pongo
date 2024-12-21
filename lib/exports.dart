@@ -28,6 +28,10 @@ export 'package:pongo/phone/components/shared/shimmer/song_shimmer.dart';
 export 'package:pongo/phone/views/library/pages/favourites/favourites_body_phone.dart';
 export 'package:pongo/shared/utils/API%20requests/searialized_data.dart';
 export 'package:pongo/shared/utils/API%20requests/tracks.dart';
+export 'package:pongo/phone/components/library/locals/play_shuffle_halt_locals.dart';
+export 'package:pongo/phone/views/library/pages/locals/data/locals_data_manager.dart';
+export 'package:pongo/phone/views/library/pages/locals/views/locals_body_phone.dart';
+export 'package:pongo/phone/views/home/search/search_data_manager.dart';
 
 export 'shared/api/api.dart';
 export 'shared/components/components.dart';

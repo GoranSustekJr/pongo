@@ -1,5 +1,6 @@
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/shimmer/recommended_shimmer.dart';
+import 'package:pongo/phone/views/home/recomendations/recommendations_data_manager.dart';
 import 'package:spotify_api/spotify_api.dart' as sp;
 
 class RecomendationsPhone extends StatefulWidget {
@@ -10,7 +11,7 @@ class RecomendationsPhone extends StatefulWidget {
 }
 
 class _RecomendationsPhoneState extends State<RecomendationsPhone> {
-  // Pongo:: tracks
+  /* // Pongo:: tracks
   List<Track> pTracks = [];
 
   // Pongo:: artists
@@ -28,21 +29,38 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
   // End-user:: artists
   List<Artist> euArtists = [];
 
-  // Bool recomendations disabled
   bool recommendationsDisabled = false;
 
   // Show body
   bool showBody = false;
 
   // Show Recommendations
-  bool recommendForYou = true;
-  bool recommendedPongo = true;
+  /* bool recommendForYou = true;
+  bool recommendedPongo = true; */
+  bool historyEnabled = true;
+  bool categoriesEnabled = true;
 
   @override
   void initState() {
     super.initState();
-    // getRecommendations();
+    getRecommendations();
   }
+
+  Future<void> getRecommendations() async {
+    // Check if user wants to get recommendations
+    bool getHistory = await Storage().getEnableHistory();
+    bool getCatgories = await Storage().getEnableCategories();
+
+    setState(() {
+      historyEnabled = getHistory;
+      categoriesEnabled = getCatgories;
+    });
+
+    if (historyEnabled || categoriesEnabled) {
+      final data = await Recommendations().get(context);
+      print("DATATA;;;;;;; ${data.keys}");
+    }
+  } */
 
   /*  Future<void> getRecommendations() async {
     bool rcommendForYou = await Storage().getRecommendedForYou();
@@ -134,34 +152,20 @@ class _RecomendationsPhoneState extends State<RecomendationsPhone> {
  */
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
-      child: /* showBody
-          ? RecommendationsBodyPhone(
-              key: const ValueKey(true),
-              pTracks: pTracks,
-              pArtists: pArtists,
-              pAlbums: pAlbums,
-              pPlaylists: pPlaylists,
-              euTracks: euTracks,
-              euArtists: euArtists,
-              recommendationsDisabled: recommendationsDisabled,
-              onRefresh: () async {
-                await getRecommendations();
-              },
-            )
-          : */
-          SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              key: const ValueKey(false),
-              child: const Center(
-                child: Text("Fick spotify API"),
-              ) /*  RecommendedShimmer(
-          pongo: recommendedPongo,
-          forYou: recommendForYou,
-        ), */
-              ),
+    return ChangeNotifierProvider(
+      create: (_) => RecommendationsDataManager(context),
+      child: Consumer<RecommendationsDataManager>(
+          builder: (context, dataManager, child) {
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          child: dataManager.showBody
+              ? RecommendationsBodyPhone(dataManager: dataManager)
+              : RecommendedShimmer(
+                  history: dataManager.historyEnabled,
+                  categories: dataManager.categoriesEnabled,
+                ),
+        );
+      }),
     );
   }
 }

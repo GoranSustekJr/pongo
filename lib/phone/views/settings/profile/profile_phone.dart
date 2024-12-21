@@ -120,8 +120,17 @@ class _ProfilePhoneState extends State<ProfilePhone>
                             CircleAvatar(
                               radius: 80,
                               backgroundColor: Col.primaryCard.withAlpha(150),
-                              foregroundImage:
-                                  image != "" ? NetworkImage(image) : null,
+                              child: image != ""
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(360),
+                                      child: CachedNetworkImage(
+                                        imageUrl: image,
+                                        width: 160,
+                                        height: 160,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    )
+                                  : const SizedBox(),
                             ),
                             razh(AppBar().preferredSize.height),
                             settingsTile(

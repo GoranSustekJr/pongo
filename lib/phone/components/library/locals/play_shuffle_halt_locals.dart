@@ -2,6 +2,7 @@ import '../../../../exports.dart';
 
 class PlayShuffleHaltLocals extends StatefulWidget {
   final List missingTracks;
+  final bool allSelected;
   final bool loadingShuffle;
   final bool edit;
   final Widget frontWidget;
@@ -9,8 +10,9 @@ class PlayShuffleHaltLocals extends StatefulWidget {
   final Function() play;
   final Function() shuffle;
   final Function() stopEdit;
-  final Function() unfavourite;
+  final Function() remove;
   final Function() addToPlaylist;
+  final Function() selectAll;
   const PlayShuffleHaltLocals({
     super.key,
     required this.missingTracks,
@@ -21,8 +23,10 @@ class PlayShuffleHaltLocals extends StatefulWidget {
     required this.play,
     required this.shuffle,
     required this.stopEdit,
-    required this.unfavourite,
+    required this.remove,
     required this.addToPlaylist,
+    required this.allSelected,
+    required this.selectAll,
   });
 
   @override
@@ -52,9 +56,11 @@ class _PlayShuffleHaltLocalsState extends State<PlayShuffleHaltLocals> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       iconButton(
-                        AppIcons.download,
+                        widget.allSelected
+                            ? AppIcons.checkmark
+                            : AppIcons.uncheckmark,
                         Colors.white,
-                        () {},
+                        widget.selectAll,
                         edgeInsets: EdgeInsets.zero,
                       ),
                       iconButton(
@@ -66,10 +72,10 @@ class _PlayShuffleHaltLocalsState extends State<PlayShuffleHaltLocals> {
                         edgeInsets: EdgeInsets.zero,
                       ),
                       iconButton(
-                        AppIcons.heartSlash,
+                        AppIcons.trash,
                         Colors.white,
                         () {
-                          widget.unfavourite();
+                          widget.remove();
                         },
                         edgeInsets: EdgeInsets.zero,
                       ),

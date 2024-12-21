@@ -1,21 +1,16 @@
 import 'dart:ui';
-
+import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/components/library/locals/play_shuffle_halt_locals.dart';
-import 'package:pongo/phone/views/library/pages/locals/data/locals_data_manager.dart';
-import 'package:pongo/phone/views/library/pages/locals/views/locals_body_phone.dart';
 
-class LocalsPhone extends StatefulWidget {
+class LocalsPhone extends StatelessWidget {
   const LocalsPhone({super.key});
 
   @override
-  State<LocalsPhone> createState() => _LocalsPhoneState();
-}
-
-class _LocalsPhoneState extends State<LocalsPhone> {
-  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final audioServiceHandler =
+        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+
     return ChangeNotifierProvider(
       create: (_) => LocalsDataManager(
         context,
@@ -54,6 +49,31 @@ class _LocalsPhoneState extends State<LocalsPhone> {
                                     Expanded(
                                       child: Container(),
                                     ),
+                                    StreamBuilder(
+                                        stream: audioServiceHandler
+                                            .mediaItem.stream,
+                                        builder: (context, mediaItemStream) {
+                                          bool showPlay = mediaItemStream
+                                                      .data ==
+                                                  null
+                                              ? true
+                                              : "library.locals" !=
+                                                  '${mediaItemStream.data!.id.split('.')[0]}.${mediaItemStream.data!.id.split('.')[1]}';
+                                          return AnimatedSwitcher(
+                                              duration: const Duration(
+                                                  milliseconds: 300),
+                                              child: showPlay
+                                                  ? SizedBox(
+                                                      key: const ValueKey(true),
+                                                      child: backLikeButton(
+                                                        context,
+                                                        CupertinoIcons
+                                                            .line_horizontal_3_decrease,
+                                                        localsDataManager.sort,
+                                                      ),
+                                                    )
+                                                  : const SizedBox());
+                                        }),
                                   ],
                                 ),
                                 flexibleSpace: ClipRRect(
@@ -99,14 +119,29 @@ class _LocalsPhoneState extends State<LocalsPhone> {
                                         child: PlayShuffleHaltLocals(
                                           missingTracks: const [],
                                           loadingShuffle: false,
-                                          edit: false,
-                                          frontWidget: const SizedBox(),
-                                          endWidget: const SizedBox(),
+                                          edit: localsDataManager.edit,
+                                          allSelected: localsDataManager
+                                                  .selectedTracks.length ==
+                                              localsDataManager.tracks.length,
+                                          frontWidget: iconButton(
+                                            AppIcons.blankTrack,
+                                            Colors.white,
+                                            localsDataManager.newTracks,
+                                            edgeInsets: EdgeInsets.zero,
+                                          ),
+                                          endWidget: iconButton(
+                                            AppIcons.edit,
+                                            Colors.white,
+                                            localsDataManager.startEdit,
+                                            edgeInsets: EdgeInsets.zero,
+                                          ),
                                           play: localsDataManager.play,
                                           shuffle: localsDataManager.shuffle,
-                                          stopEdit: () {},
-                                          unfavourite: () {},
+                                          stopEdit: localsDataManager.stopEdit,
+                                          remove: localsDataManager.remove,
                                           addToPlaylist: () {},
+                                          selectAll:
+                                              localsDataManager.selectAll,
                                         ),
                                       ),
                                     ),

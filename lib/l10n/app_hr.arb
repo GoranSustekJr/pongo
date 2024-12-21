@@ -161,6 +161,10 @@
     "successfullydownloadedthetrack": "Pjesma je uspješno preuzeta",
     "repeatoff": "Ponavljanje je isključeno",
     "repeatthissong": "Ponovi ovu pjesmu",
-    "repeatthequeue": "Ponovi red čekanja"
+    "repeatthequeue": "Ponovi red čekanja",
+    "removefromdownloaded": "Ukloni sa preuzetih",
+    "removefromdownloadedbody": "Želite li ukloniti odabrane pjesme s preuzetih?",
+    "lastlistenedto": "Zadnje poslušano",
+    "explore": "Istraži"
 
 }

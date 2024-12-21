@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
+import 'package:pongo/shared/utils/API%20requests/download.dart';
 import 'controls.dart';
 
 class TrackControlsPhone extends StatelessWidget {
@@ -107,7 +108,9 @@ class TrackControlsPhone extends StatelessWidget {
                               lyricsOn: lyricsOn,
                               showQueue: showQueue,
                               trackId: currentMediaItem.id,
-                              downloadTrack: () {},
+                              downloadTrack: () async {
+                                await Download().single(currentMediaItem);
+                              },
                               changeLyricsOn: changeLyricsOn,
                               changeShowQueue: changeShowQueue,
                             ),

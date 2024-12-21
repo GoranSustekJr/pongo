@@ -160,5 +160,9 @@
     "successfullydownloadedthetrack": "Titel wurde erfolgreich heruntergeladen",
     "repeatoff": "Wiederholung ist aus",
     "repeatthissong": "Ein Lied wiederholen",
-    "repeatthequeue": "Warteschlange wiederholen"
+    "repeatthequeue": "Warteschlange wiederholen",
+    "removefromdownloaded": "Aus heruntergeladenen entfernen",
+    "removefromdownloadedbody": "Möchten Sie die ausgewählten Titel aus den heruntergeladenen entfernen?",
+    "lastlistenedto": "Zuletzt angehört",
+    "explore": "Erkunden"
 }

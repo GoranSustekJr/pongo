@@ -167,9 +167,7 @@ class _HomePhoneState extends State<HomePhone> {
                       },
                     ),
                   ),
-                  /*  ), */
                   // 4. - Search bar
-
                   AnimatedPositioned(
                     top: showSearchBar.value ? 0 : -100,
                     width: MediaQuery.of(context).size.width,

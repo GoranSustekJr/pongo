@@ -122,6 +122,12 @@ class PlayMultiple {
         mediaItems.add(mediaItem);
       }
 
+      if (shuffle) {
+        await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);
+      } else {
+        await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
+      }
+
       // Start the queue
       await audioServiceHandler.initSongs(
           songs: mediaItems); // Init the MediaItems
@@ -135,10 +141,6 @@ class PlayMultiple {
       audioServiceHandler.play(); // Play
 
       queueAllowShuffle.value = true;
-
-      if (shuffle) {
-        await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);
-      }
     }
   }
 
@@ -179,6 +181,12 @@ class PlayMultiple {
       mediaItems.add(mediaItem);
     }
 
+    if (shuffle) {
+      await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);
+    } else {
+      await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
+    }
+
     // Start the queue
     await audioServiceHandler.initSongs(
         songs: mediaItems); // Init the MediaItems
@@ -192,9 +200,5 @@ class PlayMultiple {
     audioServiceHandler.play(); // Play
 
     queueAllowShuffle.value = true;
-
-    if (shuffle) {
-      await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);
-    }
   }
 }

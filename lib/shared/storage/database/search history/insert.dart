@@ -61,7 +61,7 @@ Future<void> insertLFHArtsts(DatabaseHelper dbHelper, String said) async {
 
 Future<void> insertLFHTrcks(DatabaseHelper dbHelper, String stid) async {
   Database db = await dbHelper.database;
-  await dbHelper.removeLFHArtists(stid);
+  await dbHelper.removeLFHTracks(stid);
   await db.transaction((txn) async {
     print(1);
     await txn.insert(
