@@ -48,10 +48,12 @@ class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
                         fadeInDuration: const Duration(milliseconds: 200),
                         fadeOutDuration: const Duration(milliseconds: 200),
                         image: cover.runtimeType == String
-                            ? NetworkImage(cover)
-                            : FileImage(
-                                cover!,
-                              ),
+                            ? !cover.toString().contains('file:///')
+                                ? NetworkImage(cover!)
+                                : FileImage(
+                                    File.fromUri(Uri.parse(cover!)),
+                                  )
+                            : FileImage((cover as File)),
                       ),
                     ),
                   Center(

@@ -39,7 +39,9 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                           artist: mediaItem.artist ?? "",
                           cover: mediaItem.artUri.toString(),
                           playlistHandlerCoverType:
-                              PlaylistHandlerCoverType.url,
+                              !mediaItem.artUri.toString().contains('file:///')
+                                  ? PlaylistHandlerCoverType.url
+                                  : PlaylistHandlerCoverType.bytes,
                         )
                       ],
                     ),

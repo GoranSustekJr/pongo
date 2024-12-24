@@ -56,7 +56,11 @@ class _LocalsBodyPhoneState extends State<LocalsBodyPhone> {
                               height: 40,
                               width: 20,
                               child: Trailing(
-                                show: false,
+                                show: id ==
+                                        "library.locals.${widget.localsDataManager.tracks[index].id}" &&
+                                    audioServiceHandler
+                                            .audioPlayer.currentIndex ==
+                                        index,
                                 showThis: id ==
                                         "library.locals.${widget.localsDataManager.tracks[index].id}" &&
                                     audioServiceHandler

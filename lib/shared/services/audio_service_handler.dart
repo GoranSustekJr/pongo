@@ -38,7 +38,7 @@ class AudioServiceHandler extends BaseAudioHandler
 
   void importSettings() async {
     AudioServiceRepeatMode loopMde = await Storage().getLoopMode(); // Loop mode
-    setRepeatMode(loopMde);
+    setRepeatMode(loopMde, notify: false);
     AudioServiceShuffleMode shuffleMde =
         await Storage().getShuffleMode(); // Shuffle mode
     setShuffleMode(shuffleMde);
@@ -274,38 +274,45 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Set repeat mode
   @override
-  Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) async {
+  Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode,
+      {bool notify = true}) async {
     switch (repeatMode) {
       case AudioServiceRepeatMode.none:
         audioPlayer.setLoopMode(LoopMode.off);
         await Storage().writeLoopMode(LoopMode.off);
-        Notifications().showSpecialNotification(
-          notificationsContext.value!,
-          AppLocalizations.of(notificationsContext.value!)!.successful,
-          AppLocalizations.of(notificationsContext.value!)!.repeatoff,
-          AppIcons.repeat,
-          iconColor: Colors.white.withAlpha(150),
-        );
+        if (notify) {
+          Notifications().showSpecialNotification(
+            notificationsContext.value!,
+            AppLocalizations.of(notificationsContext.value!)!.successful,
+            AppLocalizations.of(notificationsContext.value!)!.repeatoff,
+            AppIcons.repeat,
+            iconColor: Colors.white.withAlpha(150),
+          );
+        }
         break;
       case AudioServiceRepeatMode.one:
         audioPlayer.setLoopMode(LoopMode.one);
         await Storage().writeLoopMode(LoopMode.one);
-        Notifications().showSpecialNotification(
-          notificationsContext.value!,
-          AppLocalizations.of(notificationsContext.value!)!.successful,
-          AppLocalizations.of(notificationsContext.value!)!.repeatthissong,
-          AppIcons.repeatOne,
-        );
+        if (notify) {
+          Notifications().showSpecialNotification(
+            notificationsContext.value!,
+            AppLocalizations.of(notificationsContext.value!)!.successful,
+            AppLocalizations.of(notificationsContext.value!)!.repeatthissong,
+            AppIcons.repeatOne,
+          );
+        }
       case AudioServiceRepeatMode.group:
       case AudioServiceRepeatMode.all:
         audioPlayer.setLoopMode(LoopMode.all);
         await Storage().writeLoopMode(LoopMode.all);
-        Notifications().showSpecialNotification(
-          notificationsContext.value!,
-          AppLocalizations.of(notificationsContext.value!)!.successful,
-          AppLocalizations.of(notificationsContext.value!)!.repeatthequeue,
-          AppIcons.repeat,
-        );
+        if (notify) {
+          Notifications().showSpecialNotification(
+            notificationsContext.value!,
+            AppLocalizations.of(notificationsContext.value!)!.successful,
+            AppLocalizations.of(notificationsContext.value!)!.repeatthequeue,
+            AppIcons.repeat,
+          );
+        }
         break;
     }
   }

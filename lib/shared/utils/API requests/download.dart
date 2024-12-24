@@ -11,7 +11,10 @@ class Download {
 
     if (track.runtimeType == Track) {
       id = track.id;
-      artists = track.artists.map((artist) => artist.toJson()).toList();
+      print(track.artists.runtimeType);
+      artists = (track.artists as List<ArtistTrack>)
+          .map((artist) => artist.toJson())
+          .toList();
       imageUrl = track.album != null
           ? calculateBestImageForTrack(track.album!.images)
           : null;

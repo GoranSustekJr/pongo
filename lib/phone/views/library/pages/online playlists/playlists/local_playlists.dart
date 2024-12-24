@@ -3,16 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/action%20sheets/continue_cancel_action_sheet.dart';
 import 'package:pongo/phone/components/shared/tiles/playlist_tile.dart';
+import 'package:pongo/phone/views/library/pages/local%20playlists/views/local_playlist_phone.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/playlist/views/online_playlist_phone.dart';
 
-class OnlinePlaylistsPhone extends StatefulWidget {
-  const OnlinePlaylistsPhone({super.key});
+class LocalPlaylistsPhone extends StatefulWidget {
+  const LocalPlaylistsPhone({super.key});
 
   @override
-  State<OnlinePlaylistsPhone> createState() => _OnlinePlaylistsPhoneState();
+  State<LocalPlaylistsPhone> createState() => _LocalPlaylistsPhoneState();
 }
 
-class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
+class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
   // Playlists
   List<Map<String, dynamic>> playlists = [];
 
@@ -33,14 +34,14 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
 
   initPlaylists() async {
     // First get length
-    int length = await DatabaseHelper().queryOnlinePlaylistsLength();
+    int length = await DatabaseHelper().queryLocalPlaylistsLength();
     setState(() {
       playlistsLength = length;
     });
 
     // Then get all playlists
     List<Map<String, dynamic>> temp =
-        await DatabaseHelper().queryAllOnlinePlaylists();
+        await DatabaseHelper().queryAllLocalPlaylists();
 
     List<MemoryImage?> coverImges = [];
     for (Map playlist in temp) {
@@ -101,7 +102,7 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                               OpenPlaylist().show(
                                   context,
                                   PlaylistHandler(
-                                      type: PlaylistHandlerType.online,
+                                      type: PlaylistHandlerType.offline,
                                       function: PlaylistHandlerFunction
                                           .createPlaylist,
                                       track: []));
@@ -115,7 +116,7 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                           child: FlexibleSpaceBar(
                             centerTitle: true,
                             title: Text(
-                              AppLocalizations.of(context)!.onlineplaylists,
+                              AppLocalizations.of(context)!.offlineplaylists,
                               style: TextStyle(
                                 fontSize: kIsApple ? 25 : 30,
                                 fontWeight: kIsApple
@@ -152,7 +153,7 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                             cover: coverImages[index]?.bytes,
                             title: playlists[index]["title"],
                             subtitle:
-                                AppLocalizations.of(context)!.onlineplaylist,
+                                AppLocalizations.of(context)!.offlineplaylist,
                             function: () async {
                               final String blurHash = coverImages[index] != null
                                   ? await BlurhashFFI.encode(
@@ -161,11 +162,11 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                                       componentY: 3,
                                     )
                                   : AppConstants().BLURHASH;
-                              print("object");
+
                               Navigations().nextScreen(
                                   context,
-                                  OnlinePlaylistPhone(
-                                    opid: playlists[index]["opid"],
+                                  LocalPlaylistPhone(
+                                    lpid: playlists[index]["lpid"],
                                     title: playlists[index]["title"],
                                     cover: coverImages[index],
                                     blurhash: blurHash,
@@ -186,7 +187,7 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                                   AppLocalizations.of(context)!.removeplaylist,
                                   () async {
                                 print(playlists[index]["opid"]);
-                                await DatabaseHelper().removeOnlinePlaylist(
+                                await DatabaseHelper().removeLocalPlaylist(
                                     playlists[index]["opid"]);
                                 setState(() {
                                   playlistsLength--;

@@ -121,8 +121,11 @@ class _QueuePhoneState extends State<QueuePhone> {
                                       name: track.title,
                                       artist: track.artist ?? "",
                                       cover: track.artUri.toString(),
-                                      playlistHandlerCoverType:
-                                          PlaylistHandlerCoverType.url,
+                                      playlistHandlerCoverType: track.artUri
+                                              .toString()
+                                              .contains("file:///")
+                                          ? PlaylistHandlerCoverType.bytes
+                                          : PlaylistHandlerCoverType.url,
                                     );
                                   }).toList(),
                                 ),

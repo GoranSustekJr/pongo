@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/library/pages/favourites/favourites_phone.dart';
+import 'package:pongo/phone/views/library/pages/online%20playlists/playlists/local_playlists.dart';
 import 'package:pongo/phone/views/library/pages/locals/views/locals_phone.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/playlists/online_playlists_phone.dart';
 
@@ -117,8 +118,8 @@ class _LibraryPhoneState extends State<LibraryPhone> {
                         AppLocalizations.of(context)!.playlists,
                         AppLocalizations.of(context)!.offlineplaylists,
                         () {
-                          /*    Navigations()
-                              .nextScreen(context, DownloadedPlaylistsScreen()); */
+                          Navigations()
+                              .nextScreen(context, const LocalPlaylistsPhone());
                         },
                       ),
                     ],

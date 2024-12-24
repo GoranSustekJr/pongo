@@ -68,9 +68,9 @@ class SelectedTracksPhone extends StatelessWidget {
                                       ? NetworkImage(
                                           playlistHandlerTracks[0].cover,
                                         )
-                                      : MemoryImage(
-                                          base64Decode(
-                                              playlistHandlerTracks[0].cover),
+                                      : FileImage(
+                                          File.fromUri(Uri.parse(
+                                              playlistHandlerTracks[0].cover)),
                                         ),
                                 ),
                               ),
@@ -147,10 +147,36 @@ class SelectedTracksPhone extends StatelessWidget {
                                           ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(7.5),
-                                            child: CachedNetworkImage(
+                                            child: /* CachedNetworkImage(
                                               imageUrl: track.cover.toString(),
                                               width: 55,
                                               height: 55,
+                                            ), */
+                                                FadeInImage(
+                                              width: 55,
+                                              height: 55,
+                                              placeholder: const AssetImage(
+                                                  'assets/images/placeholder.png'),
+                                              fadeInDuration: const Duration(
+                                                  milliseconds: 200),
+                                              fadeOutDuration: const Duration(
+                                                  milliseconds: 200),
+                                              image: playlistHandlerTracks[
+                                                              index]
+                                                          .playlistHandlerCoverType ==
+                                                      PlaylistHandlerCoverType
+                                                          .url
+                                                  ? NetworkImage(
+                                                      playlistHandlerTracks[
+                                                              index]
+                                                          .cover,
+                                                    )
+                                                  : FileImage(
+                                                      File(
+                                                          playlistHandlerTracks[
+                                                                  index]
+                                                              .cover),
+                                                    ),
                                             ),
                                           ),
                                           razw(10),

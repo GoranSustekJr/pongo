@@ -155,6 +155,11 @@
         "description": "offlineplaylists"
     },
 
+    "offlineplaylist": "Offline Playlist",
+    "@offlineplaylist": {
+        "description": "offlineplaylist"
+    },
+
     "newplaylist": "New Playlist",
     "@newplaylist": {
         "description": "newplaylist"

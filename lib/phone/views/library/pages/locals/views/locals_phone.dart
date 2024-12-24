@@ -139,7 +139,8 @@ class LocalsPhone extends StatelessWidget {
                                           shuffle: localsDataManager.shuffle,
                                           stopEdit: localsDataManager.stopEdit,
                                           remove: localsDataManager.remove,
-                                          addToPlaylist: () {},
+                                          addToPlaylist:
+                                              localsDataManager.addToPlaylist,
                                           selectAll:
                                               localsDataManager.selectAll,
                                         ),

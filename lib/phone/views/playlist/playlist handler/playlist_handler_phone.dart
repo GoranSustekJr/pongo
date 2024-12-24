@@ -1,6 +1,4 @@
 import 'dart:ui';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/playlist/playlist%20handler/playlist_handler_body_phone.dart';
 import 'package:http/http.dart' as http;
@@ -28,6 +26,9 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
 
   // Selected playlists
   List<int> selectedPlaylists = [];
+
+  // Online playlist
+  bool onlinePlaylist = false;
 
   @override
   void initState() {
@@ -202,7 +203,6 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
               body: PlaylistHandlerBodyPhone(
                 playlistHandlerTracks: widget.playlistHandler.track,
                 createPlaylistFunction: () async {
-                  //TODO: Create it!
                   if (titleController.value.text.trim() != "") {
                     List<Map> titless =
                         await DatabaseHelper().queryAllOnlinePlaylistsTitles();
@@ -213,28 +213,58 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                     if (!titles.contains(titleController.value.text.trim())) {
                       // If adding and creating
                       if (widget.playlistHandler.track != null) {
+                        print(newPlaylistCover);
                         Uint8List? bytes = newPlaylistCover != null
                             ? newPlaylistCover.runtimeType == String
-                                ? (await http.get(Uri.parse(newPlaylistCover)))
-                                    .bodyBytes
+                                ? newPlaylistCover
+                                        .toString()
+                                        .contains('file:///')
+                                    ? await File.fromUri(
+                                            Uri.parse(newPlaylistCover))
+                                        .readAsBytes()
+                                    : (await http
+                                            .get(Uri.parse(newPlaylistCover)))
+                                        .bodyBytes
                                 : await newPlaylistCover.readAsBytes()
                             : null;
-                        int opid = await DatabaseHelper().insertOnlinePlaylist(
-                            titleController.value.text.trim(), bytes);
-
-                        if (widget.playlistHandler.track != null) {
-                          if (widget.playlistHandler.track!.isEmpty) {
-                            playlistHandler.value = null;
-                          } else {
-                            for (int i = 0;
-                                i < widget.playlistHandler.track!.length;
-                                i++) {
-                              await DatabaseHelper().insertOnlineTrackId(
-                                  opid, widget.playlistHandler.track![i].id);
-                              if (i ==
-                                  widget.playlistHandler.track!.length - 1) {
-                                print("object");
-                                playlistHandler.value = null;
+                        if (widget.playlistHandler.type ==
+                            PlaylistHandlerType.online) {
+                          int opid = await DatabaseHelper()
+                              .insertOnlinePlaylist(
+                                  titleController.value.text.trim(), bytes);
+                          if (widget.playlistHandler.track != null) {
+                            if (widget.playlistHandler.track!.isEmpty) {
+                              playlistHandler.value = null;
+                            } else {
+                              for (int i = 0;
+                                  i < widget.playlistHandler.track!.length;
+                                  i++) {
+                                await DatabaseHelper().insertOnlineTrackId(
+                                    opid, widget.playlistHandler.track![i].id);
+                                if (i ==
+                                    widget.playlistHandler.track!.length - 1) {
+                                  playlistHandler.value = null;
+                                }
+                              }
+                            }
+                          }
+                        } else {
+                          int lpid = await DatabaseHelper().insertLocalPlaylist(
+                              titleController.value.text.trim(), bytes);
+                          if (widget.playlistHandler.track != null) {
+                            if (widget.playlistHandler.track!.isEmpty) {
+                              playlistHandler.value = null;
+                            } else {
+                              for (int i = 0;
+                                  i < widget.playlistHandler.track!.length;
+                                  i++) {
+                                await DatabaseHelper().insertLocalTrackId(
+                                    lpid, widget.playlistHandler.track![i].id);
+                                if (i ==
+                                    widget.playlistHandler.track!.length - 1) {
+                                  print("object");
+                                  playlistHandler.value = null;
+                                }
                               }
                             }
                           }

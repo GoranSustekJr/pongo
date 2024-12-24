@@ -32,6 +32,7 @@ export 'package:pongo/phone/components/library/locals/play_shuffle_halt_locals.d
 export 'package:pongo/phone/views/library/pages/locals/data/locals_data_manager.dart';
 export 'package:pongo/phone/views/library/pages/locals/views/locals_body_phone.dart';
 export 'package:pongo/phone/views/home/search/search_data_manager.dart';
+export 'package:pongo/phone/views/library/pages/online%20playlists/playlist/functions/playlist_functions.dart';
 
 export 'shared/api/api.dart';
 export 'shared/components/components.dart';

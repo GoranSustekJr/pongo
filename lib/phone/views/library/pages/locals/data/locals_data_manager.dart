@@ -129,6 +129,8 @@ class LocalsDataManager with ChangeNotifier {
         tracks.clear();
         selectedTracks.clear();
 
+        edit = false;
+
         init();
         notifyListeners();
       }
@@ -189,6 +191,39 @@ class LocalsDataManager with ChangeNotifier {
       position: RelativeRect.fromLTRB(
           MediaQuery.of(context).size.width, kToolbarHeight * 2, 0, 0),
       topWidget: const SizedBox(),
+    );
+  }
+
+  // Add to playlist
+  void addToPlaylist() {
+    OpenPlaylist().show(
+      context,
+      PlaylistHandler(
+        type: PlaylistHandlerType.offline,
+        function: PlaylistHandlerFunction.addToPlaylist,
+        track: tracks
+            .where((track) => selectedTracks.contains(track.id))
+            .map(
+              (track) => PlaylistHandlerOfflineTrack(
+                id: track.id,
+                name: track.name,
+                artist: track.artists.map((artist) => artist.name).join(', '),
+                cover: track.image != null ? track.image!.path : "",
+                playlistHandlerCoverType: PlaylistHandlerCoverType.bytes,
+                filePath: track.image != null ? track.image!.path : "",
+              ),
+            )
+            .toList(), /* [
+          PlaylistHandlerOfflineTrack(
+            id: id,
+            name: name,
+            artist: artist,
+            cover: cover,
+            playlistHandlerCoverType: playlistHandlerCoverType,
+            filePath: filePath,
+          ),
+        ], */
+      ),
     );
   }
 }
