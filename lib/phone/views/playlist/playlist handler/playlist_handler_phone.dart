@@ -96,19 +96,25 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
       final playlsts = await DatabaseHelper().queryAllLocalPlaylists();
 
       // Extract ids
-      final opids = playlsts.map((playlist) => playlist["opid"]).toList();
+      final lpids = playlsts.map((playlist) => playlist["lpid"]).toList();
 
       // get all of theyre current tracks
       Map plylistTrackMap = {};
-      for (int opid in opids) {
+      for (int lpid in lpids) {
         final tracks =
-            await DatabaseHelper().queryOnlineTrackIdsForPlaylist(opid);
-        plylistTrackMap[opid] = tracks;
+            await DatabaseHelper().queryLocalTrackIdsForPlaylist(lpid);
+        plylistTrackMap[lpid] = tracks;
       }
 
       // Set all to a widget state variable
       setState(() {
-        currentPlaylists = playlsts;
+        currentPlaylists = playlsts
+            .map((playlist) => {
+                  "id": playlist["lpid"],
+                  "title": playlist["title"],
+                  "cover": playlist["cover"],
+                })
+            .toList();
         currentPlaylistsCoverImages = playlsts
             .map((playlist) => playlist["cover"] != null
                 ? MemoryImage(playlist["cover"])
@@ -294,7 +300,17 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                       }
                     }
                   } else {
-                    //TODO: Offline adding
+                    for (int opid in selectedPlaylists) {
+                      if (widget.playlistHandler.track!.length == 1) {
+                        await DatabaseHelper().insertLocalTrackId(
+                            opid, widget.playlistHandler.track![0].id);
+                      } else {
+                        for (var track in widget.playlistHandler.track!) {
+                          await DatabaseHelper()
+                              .insertLocalTrackId(opid, track.id);
+                        }
+                      }
+                    }
                   }
                   playlistHandler.value = null;
                 },

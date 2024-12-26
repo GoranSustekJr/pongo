@@ -37,11 +37,26 @@ class AudioServiceHandler extends BaseAudioHandler
   }
 
   void importSettings() async {
-    AudioServiceRepeatMode loopMde = await Storage().getLoopMode(); // Loop mode
+    // Loop mode
+    AudioServiceRepeatMode loopMde = await Storage().getLoopMode();
     setRepeatMode(loopMde, notify: false);
-    AudioServiceShuffleMode shuffleMde =
-        await Storage().getShuffleMode(); // Shuffle mode
+
+    // Shuffle mode
+    AudioServiceShuffleMode shuffleMde = await Storage().getShuffleMode();
     setShuffleMode(shuffleMde);
+
+    // Queue, queue index and position
+    List<MediaItem> queueList = await Storage().getQueue();
+    int queueIndex = await Storage().getQueueIndex();
+    Duration position = await Storage().getCurrentPlayingPosition();
+    print(queueList);
+    print(queueIndex);
+    print(position);
+    await initSongs(songs: queueList);
+    if (queueIndex != -1) {
+      skipToQueueItem(queueIndex, playAuto: false);
+    }
+    seek(position);
   }
 
   // Create audio source from media item
@@ -249,10 +264,12 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Skip to a specific item in the queue and start playback
   @override
-  Future<void> skipToQueueItem(int index) async {
+  Future<void> skipToQueueItem(int index, {bool playAuto = true}) async {
     try {
       await audioPlayer.seek(Duration.zero, index: index);
-      play();
+      if (playAuto) {
+        play();
+      }
     } catch (e) {
       print("Erorrr; $e");
     }
@@ -279,7 +296,6 @@ class AudioServiceHandler extends BaseAudioHandler
     switch (repeatMode) {
       case AudioServiceRepeatMode.none:
         audioPlayer.setLoopMode(LoopMode.off);
-        await Storage().writeLoopMode(LoopMode.off);
         if (notify) {
           Notifications().showSpecialNotification(
             notificationsContext.value!,
@@ -292,7 +308,6 @@ class AudioServiceHandler extends BaseAudioHandler
         break;
       case AudioServiceRepeatMode.one:
         audioPlayer.setLoopMode(LoopMode.one);
-        await Storage().writeLoopMode(LoopMode.one);
         if (notify) {
           Notifications().showSpecialNotification(
             notificationsContext.value!,
@@ -304,7 +319,6 @@ class AudioServiceHandler extends BaseAudioHandler
       case AudioServiceRepeatMode.group:
       case AudioServiceRepeatMode.all:
         audioPlayer.setLoopMode(LoopMode.all);
-        await Storage().writeLoopMode(LoopMode.all);
         if (notify) {
           Notifications().showSpecialNotification(
             notificationsContext.value!,
@@ -322,11 +336,9 @@ class AudioServiceHandler extends BaseAudioHandler
   Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async {
     if (shuffleMode == AudioServiceShuffleMode.none) {
       await audioPlayer.setShuffleModeEnabled(false);
-      await Storage().writeShuffleMode(AudioServiceShuffleMode.none);
       await super.setShuffleMode(AudioServiceShuffleMode.none);
     } else if (shuffleMode == AudioServiceShuffleMode.all) {
       await audioPlayer.setShuffleModeEnabled(true);
-      await Storage().writeShuffleMode(AudioServiceShuffleMode.all);
       await super.setShuffleMode(AudioServiceShuffleMode.all);
     }
     broadcastState(PlaybackEvent());

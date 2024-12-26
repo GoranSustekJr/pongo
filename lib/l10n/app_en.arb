@@ -250,6 +250,16 @@
         "description": "removetrackfromplaylist"
     },
 
+    "removeselectedfromplaylist": "Are you sure you want to remove selected from the playlist?",
+    "@removeselectedfromplaylist": {
+        "description": "removeselectedfromplaylist"
+    },
+
+    "removefromplaylist": "Remove from playlist",
+    "@removefromplaylist": {
+        "description": "removefromplaylist"
+    },
+
     "continuee": "Continue",
     "@continuee": {
         "description": "continuee"

@@ -174,8 +174,9 @@ class DatabaseHelper {
     removeTrackFromOnPlaylist(this, opid, trackId, ordNum);
   }
 
-  Future<void> removeTracksFromOnlinePlaylist(List<String> stid) async {
-    await removeTracksFromOnPlaylist(this, stid);
+  Future<void> removeTracksFromOnlinePlaylist(
+      int opid, List<String> stid) async {
+    await removeTracksFromOnPlaylist(this, opid, stid);
   }
 
   Future<void> removeOnlinePlaylist(int opid) async {
@@ -320,10 +321,20 @@ class DatabaseHelper {
     return queryLoclTrackIdsForPlaylistLength(this, lpid);
   }
 
+  Future<List<Map<String, dynamic>>> queryLocalTrackIdsForPlaylist(
+      int opid) async {
+    return queryLoclTrackIdsForPlaylist(this, opid);
+  }
+
   // Local playlist remove
   Future<void> removeTrackFromLocalPlaylist(
       int lpid, String trackId, int ordNum) async {
     removeTrackFromLoclPlaylist(this, lpid, trackId, ordNum);
+  }
+
+  Future<void> removeTracksFromLocalPlaylist(
+      int lpid, List<String> stids, int ordNum) async {
+    removeTracksFromLoclPlaylist(this, lpid, stids);
   }
 
   // Local playlist update
@@ -332,8 +343,8 @@ class DatabaseHelper {
   }
 
   Future<void> updateLocalPlaylistOrder(
-      int lpid, int oldOrder, int newOrder, String trackId) async {
-    await updateLoclPlaylistOrder(this, lpid, oldOrder, newOrder, trackId);
+      int lpid, List<String> newTrackOrder) async {
+    await updateLoclPlaylistOrder(this, lpid, newTrackOrder);
   }
 
   Future<void> updateLocalPlaylistName(int lpid, String title) async {
@@ -342,6 +353,14 @@ class DatabaseHelper {
 
   Future<void> updateLocalPlaylistCover(int lpid, Uint8List cover) async {
     await updateLoclPlaylistCover(this, lpid, cover);
+  }
+
+  Future<void> updateLocalPlaylistShow(int opid, List<String> stids) async {
+    await updateLoclPlaylistShow(this, opid, stids);
+  }
+
+  Future<void> updateLocalPlaylistHide(int opid, List<String> stids) async {
+    await updateLoclPlaylistHide(this, opid, stids);
   }
 
   Future<void> insertLFHArtists(String said) async {

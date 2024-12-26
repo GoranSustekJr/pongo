@@ -8,7 +8,7 @@ class AppConstants {
   static const String LYRICS_URL = "https://lrclib.net/api/get?";
 
   String BLURHASH =
-      r'K35pwvohkN1qsrw7s?=Lwb'; //r'L03[fE,t|H$Q712s2swd{}{}OD{}';
+      r'L03[fE,t|H$Q712s2swd{}{}OD{}'; //r'L03[fE,t|H$Q712s2swd{}{}OD{}';
 
   BoxDecoration backgroundBoxDecoration = const BoxDecoration(
     // color: Colors.black,

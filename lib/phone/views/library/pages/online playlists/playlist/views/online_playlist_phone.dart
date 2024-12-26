@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/alerts/track%20from%20playlist/track_from_playlist.dart';
 import 'package:pongo/phone/components/library/online%20playlist/play_shuffle_halt_online_playlist.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/playlist/views/change_online_playlist_name_phone.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/playlist/views/online_playlist_app_bar_phone.dart';
@@ -391,9 +392,10 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
   void remove() async {
     // Rremove tracks from playlist
     if (selectedStids.isNotEmpty) {
-      CustomButton ok = await removeFavouriteAlert(context);
+      CustomButton ok = await removeTrackFromPlaylistAlert(context);
       if (ok == CustomButton.positiveButton) {
-        await DatabaseHelper().removeTracksFromOnlinePlaylist(selectedStids);
+        await DatabaseHelper()
+            .removeTracksFromOnlinePlaylist(widget.opid, selectedStids);
 
         setState(() {
           tracks.clear();
@@ -493,8 +495,8 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                     child: Container(),
                   ),
                   Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
+                    width: size.width,
+                    height: size.height,
                     color: Colors.black.withAlpha(50),
                     child: Scaffold(
                       extendBodyBehindAppBar: true,

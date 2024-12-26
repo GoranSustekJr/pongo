@@ -18,6 +18,18 @@ Future<void> removeTrackFromLoclPlaylist(
   );
 }
 
+Future<void> removeTracksFromLoclPlaylist(
+    DatabaseHelper dbHelper, int lpid, List<String> stids) async {
+  Database db = await dbHelper.database;
+
+  await db.delete(
+    'lpid_track_id',
+    where:
+        'lpid = ? AND track_id IN (${List.filled(stids.length, '?').join(', ')})',
+    whereArgs: [lpid, ...stids],
+  );
+}
+
 Future<void> removeLoclPlaylist(DatabaseHelper dbHelper, int lpid) async {
   Database db = await dbHelper.database;
 

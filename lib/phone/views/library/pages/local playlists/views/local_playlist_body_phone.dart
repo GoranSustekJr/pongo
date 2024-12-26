@@ -2,9 +2,10 @@ import 'dart:ui';
 
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/widgets/library/favourites/favourites_tile.dart';
+import 'package:pongo/phone/widgets/library/locals/locals_tile.dart';
 
-class OnlinePlaylistBodyPhone extends StatelessWidget {
-  final int opid;
+class LocalPlaylistBodyPhone extends StatefulWidget {
+  final int lpid;
   final List<Track> tracks;
   final List missingTracks;
   final List<String> loading;
@@ -15,9 +16,9 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
   final Function(int) play;
   final Function(String) select;
   final Function(int, int) move;
-  const OnlinePlaylistBodyPhone({
+  const LocalPlaylistBodyPhone({
     super.key,
-    required this.opid,
+    required this.lpid,
     required this.tracks,
     required this.missingTracks,
     required this.loading,
@@ -31,10 +32,30 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
   });
 
   @override
+  State<LocalPlaylistBodyPhone> createState() => _LocalPlaylistBodyPhoneState();
+}
+
+class _LocalPlaylistBodyPhoneState extends State<LocalPlaylistBodyPhone> {
+  // Scroll controller
+  ScrollController controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Not hiddent tracks
-    List<Track> shownTracks =
-        tracks.where((track) => hidden[track.id] != true || edit).toList();
+    List<Track> shownTracks = widget.tracks
+        .where((track) => widget.hidden[track.id] != true || widget.edit)
+        .toList();
 
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
@@ -56,8 +77,8 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             onReorder: (oldIndex, newIndex) {
-              if (edit) {}
-              move(oldIndex, newIndex);
+              if (widget.edit) {}
+              widget.move(oldIndex, newIndex);
             },
             proxyDecorator: (child, index, animation) => Container(
               decoration: BoxDecoration(
@@ -73,12 +94,11 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
               ),
             ),
             itemBuilder: (context, index) {
-              return FavouritesTile(
+              return LocalsTile(
                 key: ValueKey(index),
                 track: shownTracks[index],
                 first: index == 0,
                 last: shownTracks.length - 1 == index,
-                exists: !missingTracks.contains(shownTracks[index].id),
                 trailing: Padding(
                   padding: const EdgeInsets.only(right: 15),
                   child: SizedBox(
@@ -88,9 +108,10 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
                           height: 40,
                           width: 20,
                           child: Trailing(
-                              show: !loading.contains(shownTracks[index].id),
+                              show: !widget.loading
+                                  .contains(shownTracks[index].id),
                               showThis: id ==
-                                      "online.playlist:$opid.${shownTracks[index].id}" &&
+                                      "local.playlist:${widget.lpid}.${shownTracks[index].id}" &&
                                   audioServiceHandler
                                           .audioPlayer.currentIndex ==
                                       index,
@@ -100,7 +121,8 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
                                 color: Colors.white,
                               )),
                         ),
-                        if (edit && hidden[shownTracks[index].id] == true)
+                        if (widget.edit &&
+                            widget.hidden[shownTracks[index].id] == true)
                           const SizedBox(
                             height: 40,
                             width: 20,
@@ -111,17 +133,18 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
                           ),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
-                          width: edit ? 40 : 0,
+                          width: widget.edit ? 40 : 0,
                           height: 40,
                           child: Padding(
                             padding: const EdgeInsets.only(left: 15),
                             child: iconButton(
-                              selectedTracks.contains(shownTracks[index].id)
+                              widget.selectedTracks
+                                      .contains(shownTracks[index].id)
                                   ? AppIcons.checkmark
                                   : AppIcons.uncheckmark,
                               Colors.white,
                               () {
-                                select(shownTracks[index].id);
+                                widget.select(shownTracks[index].id);
                               },
                               edgeInsets: EdgeInsets.zero,
                             ),
@@ -131,15 +154,15 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
                     ),
                   ),
                 ),
-                function: edit
+                function: widget.edit
                     ? () {
-                        select(shownTracks[index].id);
+                        widget.select(shownTracks[index].id);
                       }
                     : () async {
                         final playNew = audioServiceHandler.mediaItem.value !=
                                 null
                             ? "${audioServiceHandler.mediaItem.value!.id.split(".")[0]}.${audioServiceHandler.mediaItem.value!.id.split(".")[1]}" !=
-                                "online.playlist:$opid"
+                                "local.playlist:${widget.lpid}"
                             : true;
 
                         final skipTo =
@@ -152,7 +175,7 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
                         if (playNew) {
                           print("play; $index");
                           changeTrackOnTap.value = true;
-                          play(index);
+                          widget.play(index);
                         } else if (skipTo &&
                             (audioServiceHandler.playlist.length - 1) >=
                                 index &&

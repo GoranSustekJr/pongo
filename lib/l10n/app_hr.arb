@@ -51,6 +51,8 @@
     "albums": "Albumi",
     "tracks": "Pjesme",
     "removetrackfromplaylist": "Jeste li sigurni da želite ukloniti ovu pjesmu s playliste?",
+    "removeselectedfromplaylist": "Jeste li sigurni da želite ukloniti odabrano iz popisa pjesama?",
+    "removefromplaylist": "Ukloni s playliste",
     "continuee": "Nastavite",
     "removeplaylist": "Jeste li sigurni da želite ukloniti ovaj Playlista?",
     "haltmusicplayer": "Zaustaviti glazbeni servis?",

@@ -129,6 +129,7 @@ Future<void> removeDownloadedTrcks(
         );
 
         // Remove from app data folder
+        print("Track; $track");
         final audioFile = File('${appDir.path}/$track.m4a');
         await audioFile.delete();
 

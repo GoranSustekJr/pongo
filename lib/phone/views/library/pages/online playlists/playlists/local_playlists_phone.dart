@@ -170,12 +170,22 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                                     title: playlists[index]["title"],
                                     cover: coverImages[index],
                                     blurhash: blurHash,
-                                    updateCover: (playlistCover) {
+                                    updateCover: (playlistCover) async {
+                                      await DatabaseHelper()
+                                          .updateLocalPlaylistCover(
+                                              playlists[index]["lpid"],
+                                              playlistCover.bytes);
                                       setState(() {
                                         coverImages[index] = playlistCover;
                                       });
                                     },
-                                    updateTitle: (newTitle) {
+                                    updateTitle: (newTitle) async {
+                                      print(playlists[index]["lpid"]);
+                                      print(newTitle);
+                                      await DatabaseHelper()
+                                          .updateLocalPlaylistName(
+                                              playlists[index]["lpid"],
+                                              newTitle);
                                       initPlaylists();
                                     },
                                   ));

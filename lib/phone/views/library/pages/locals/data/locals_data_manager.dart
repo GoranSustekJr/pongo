@@ -213,16 +213,7 @@ class LocalsDataManager with ChangeNotifier {
                 filePath: track.image != null ? track.image!.path : "",
               ),
             )
-            .toList(), /* [
-          PlaylistHandlerOfflineTrack(
-            id: id,
-            name: name,
-            artist: artist,
-            cover: cover,
-            playlistHandlerCoverType: playlistHandlerCoverType,
-            filePath: filePath,
-          ),
-        ], */
+            .toList(),
       ),
     );
   }

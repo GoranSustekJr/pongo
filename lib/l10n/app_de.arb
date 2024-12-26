@@ -50,6 +50,8 @@
     "albums": "Die Alben",
     "tracks": "Die Lieder",
     "removetrackfromplaylist": "Sind Sie sicher, dass Sie diese Lied von der Playlist entfernen möchten?",
+    "removeselectedfromplaylist": "Sind Sie sicher, dass Sie das Ausgewählte aus der Playlist entfernen möchten?",
+    "removefromplaylist": "Aus der Playlist entfernen",
     "continuee": "Weiter",
     "removeplaylist":  "Sind Sie sicher, dass Sie diesen Playlist entfernen möchten?",
     "haltmusicplayer": "Musikdienst anhalten?",

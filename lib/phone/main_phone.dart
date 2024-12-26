@@ -13,7 +13,7 @@ class MyAppPhone extends StatefulWidget {
   }
 }
 
-class _MyAppPhoneState extends State<MyAppPhone> {
+class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
   Locale? locale;
 
   setLocale(Locale local) {
@@ -26,6 +26,7 @@ class _MyAppPhoneState extends State<MyAppPhone> {
   void initState() {
     super.initState();
     mainContext.value = context;
+    WidgetsBinding.instance.addObserver(this);
     getLocale();
   }
 
@@ -35,6 +36,48 @@ class _MyAppPhoneState extends State<MyAppPhone> {
     setState(() {
       locale = Locale(local.toString());
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached) {
+      // Perform the required functions before the app closes
+      performBeforeCloseActions();
+    }
+  }
+
+  void performBeforeCloseActions() async {
+    print("CLOSIGN");
+    // Save the state
+    final audioServiceHandler =
+        Provider.of<AudioHandler>(context, listen: false)
+            as AudioServiceHandler;
+
+    // Loop mode
+    await Storage().writeLoopMode(audioServiceHandler.audioPlayer.loopMode);
+
+    // Shuffle mode
+    bool enabled = audioServiceHandler.audioPlayer.shuffleModeEnabled;
+    await Storage().writeShuffleMode(
+        enabled ? AudioServiceShuffleMode.all : AudioServiceShuffleMode.none);
+
+    // Current queue
+    List<MediaItem> queue = audioServiceHandler.queue.value;
+    await Storage().writeQueue(queue);
+
+    // Queue current playing index
+    int queueIndex = audioServiceHandler.audioPlayer.currentIndex ?? -1;
+    await Storage().writeQueueIndex(queueIndex);
+
+    // Current playing position
+    Duration currentPlayingPosition = audioServiceHandler.audioPlayer.position;
+    await Storage().writeCurrentPlayingPosition(currentPlayingPosition);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override

@@ -31,6 +31,9 @@ class Storage {
   static String enableHistoryKey = "ENABLEHISTORYKEY";
   static String enableCategoriesKey = "ENABLECATEGORIESKEY";
   static String numOfCategoriesKey = "NUMOFCATEGORIESKEY";
+  static String queueKey = "QUEUEKEY";
+  static String queueIndexKey = "QUEUEINDEXKEY";
+  static String currentPLayingPositionKey = "CURRENTPLAYINGPOSITIONKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -374,6 +377,94 @@ class Storage {
       return 50;
     } else {
       return int.parse(key);
+    }
+  }
+
+  // Queue media items
+  Future<void> writeQueue(List<MediaItem> queue) async {
+    await storage.write(key: queueKey, value: mediaItemsToString(queue));
+  }
+
+  Future<List<MediaItem>> getQueue() async {
+    String? key = await storage.read(key: queueKey);
+    if (key == null) {
+      return [];
+    } else {
+      return stringToMediaItems(key);
+    }
+  }
+
+  // Convert a list of MediaItems to a JSON string
+  String mediaItemsToString(List<MediaItem> mediaItems) {
+    List<Map<String, dynamic>> jsonList =
+        mediaItems.map((item) => mediaItemToJson(item)).toList();
+    return jsonEncode(jsonList);
+  }
+
+// Convert a JSON string back to a list of MediaItems
+  List<MediaItem> stringToMediaItems(String mediaItemsString) {
+    List<dynamic> jsonList = jsonDecode(mediaItemsString);
+    return jsonList
+        .map((json) => mediaItemFromJson(Map<String, dynamic>.from(json)))
+        .toList();
+  }
+
+// Serialize a MediaItem to JSON
+  Map<String, dynamic> mediaItemToJson(MediaItem item) {
+    return {
+      'id': item.id,
+      'title': item.title,
+      'album': item.album,
+      'artist': item.artist,
+      'duration': item.duration?.inMilliseconds, // Convert to milliseconds
+      'artUri': item.artUri?.toString(),
+      'extras': item.extras,
+    };
+  }
+
+// Deserialize a JSON map back to a MediaItem
+  MediaItem mediaItemFromJson(Map<String, dynamic> json) {
+    return MediaItem(
+      id: json['id'],
+      title: json['title'],
+      album: json['album'],
+      artist: json['artist'],
+      duration: json['duration'] != null
+          ? Duration(milliseconds: json['duration'])
+          : null,
+      artUri: json['artUri'] != null ? Uri.parse(json['artUri']) : null,
+      extras: json['extras'],
+    );
+  }
+
+  // Queue current index
+  Future<void> writeQueueIndex(int queueIndex) async {
+    await storage.write(key: queueIndexKey, value: queueIndex.toString());
+  }
+
+  Future<int> getQueueIndex() async {
+    String? key = await storage.read(key: queueIndexKey);
+    if (key == null) {
+      return -1;
+    } else {
+      return int.parse(key);
+    }
+  }
+
+  // Current palying position
+  Future<void> writeCurrentPlayingPosition(
+      Duration currentPlayingPosition) async {
+    await storage.write(
+        key: currentPLayingPositionKey,
+        value: currentPlayingPosition.inMicroseconds.toString());
+  }
+
+  Future<Duration> getCurrentPlayingPosition() async {
+    String? key = await storage.read(key: currentPLayingPositionKey);
+    if (key == null) {
+      return Duration.zero;
+    } else {
+      return Duration(microseconds: int.parse(key));
     }
   }
 
