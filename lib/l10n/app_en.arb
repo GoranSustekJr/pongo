@@ -410,6 +410,11 @@
         "description": "noalbums"
     },
 
+    "playlistalreadycontainsthistrack": "Playlist already contains this track",
+    "@playlistalreadycontainsthistrack": {
+        "description": "playlistalreadycontainsthistrack"
+    },
+
     "notracks": "No tracks",
     "@notracks": {
         "description": "notracks"

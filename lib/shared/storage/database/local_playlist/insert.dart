@@ -12,10 +12,24 @@ Future<int> insertLoclPlaylist(
   return await db.insert('local_playlist', row);
 }
 
-Future<int> insertLoclTrackId(
+Future<int?> insertLoclTrackId(
     DatabaseHelper dbHelper, int lpid, String stid) async {
   Database db = await dbHelper.database;
   // Get the current order count for the given lpid
+
+  final List<Map<String, dynamic>> existingRows = await db.query(
+    'lpid_track_id',
+    where: 'lpid = ? AND track_id = ?',
+    whereArgs: [lpid, stid],
+  );
+
+  if (existingRows.isNotEmpty) {
+    Notifications().showWarningNotification(
+        searchScreenContext.value!,
+        AppLocalizations.of(mainContext.value!)!
+            .playlistalreadycontainsthistrack);
+    return null;
+  }
 
   int currentOrder = await queryOrderForLpid(dbHelper, lpid);
 

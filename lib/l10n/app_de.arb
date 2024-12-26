@@ -155,6 +155,7 @@
     "onlineplaylist": "Online Playlist",
     "cropimage": "Bild zuschneiden",
     "plustracks": "Lieder",
+    "playlistalreadycontainsthistrack": "Die Playlist enthält diesen Titel bereits",
     "changename": "Namen ändern",
     "hide": "Verberg",
     "show": "Zeig",

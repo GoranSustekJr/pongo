@@ -290,7 +290,7 @@ class DatabaseHelper {
   }
 
   // Insert track id into Local playlist
-  Future<int> insertLocalTrackId(int lpid, String stid) async {
+  Future<int?> insertLocalTrackId(int lpid, String stid) async {
     return insertLoclTrackId(
       this,
       lpid,
