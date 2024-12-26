@@ -121,10 +121,10 @@ class RecommendedShimmer extends StatelessWidget {
                   if (categories) razh(10),
                   if (categories)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 0),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width,
+                          maxWidth: MediaQuery.of(context).size.width - 20,
                         ),
                         child: GridView.builder(
                           padding: const EdgeInsets.only(

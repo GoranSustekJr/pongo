@@ -40,7 +40,7 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.detached) {
+    if (state == AppLifecycleState.paused) {
       // Perform the required functions before the app closes
       performBeforeCloseActions();
     }
