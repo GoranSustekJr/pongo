@@ -130,7 +130,7 @@ Future<void> removeDownloadedTrcks(
 
         // Remove from app data folder
         print("Track; $track");
-        final audioFile = File('${appDir.path}/$track.m4a');
+        final audioFile = File('${appDir.path}/${track['track_id']}.m4a');
         await audioFile.delete();
 
         // Remove the track from the list to avoid reprocessing

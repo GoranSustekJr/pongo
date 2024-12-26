@@ -196,25 +196,27 @@ class LocalsDataManager with ChangeNotifier {
 
   // Add to playlist
   void addToPlaylist() {
-    OpenPlaylist().show(
-      context,
-      PlaylistHandler(
-        type: PlaylistHandlerType.offline,
-        function: PlaylistHandlerFunction.addToPlaylist,
-        track: tracks
-            .where((track) => selectedTracks.contains(track.id))
-            .map(
-              (track) => PlaylistHandlerOfflineTrack(
-                id: track.id,
-                name: track.name,
-                artist: track.artists.map((artist) => artist.name).join(', '),
-                cover: track.image != null ? track.image!.path : "",
-                playlistHandlerCoverType: PlaylistHandlerCoverType.bytes,
-                filePath: track.image != null ? track.image!.path : "",
-              ),
-            )
-            .toList(),
-      ),
-    );
+    if (selectedTracks.isNotEmpty) {
+      OpenPlaylist().show(
+        context,
+        PlaylistHandler(
+          type: PlaylistHandlerType.offline,
+          function: PlaylistHandlerFunction.addToPlaylist,
+          track: tracks
+              .where((track) => selectedTracks.contains(track.id))
+              .map(
+                (track) => PlaylistHandlerOfflineTrack(
+                  id: track.id,
+                  name: track.name,
+                  artist: track.artists.map((artist) => artist.name).join(', '),
+                  cover: track.image != null ? track.image!.path : "",
+                  playlistHandlerCoverType: PlaylistHandlerCoverType.bytes,
+                  filePath: track.image != null ? track.image!.path : "",
+                ),
+              )
+              .toList(),
+        ),
+      );
+    }
   }
 }

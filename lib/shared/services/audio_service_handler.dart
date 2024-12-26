@@ -93,6 +93,14 @@ class AudioServiceHandler extends BaseAudioHandler
       if (index == null || playlist.isEmpty) return;
       mediaItem.add(playlist[index]);
     });
+
+    mediaItem.stream.listen(
+      (mediaItem) async {
+        if (mediaItem != null) {
+          await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
+        }
+      },
+    );
   }
 
   void reorderQueue(AudioServiceHandler audioServiceHandler, int oldIndex,
@@ -223,7 +231,7 @@ class AudioServiceHandler extends BaseAudioHandler
   // Function to initialize the songs and set up the audio player
   Future<void> initSongs({required List<MediaItem> songs}) async {
     // Add track to history
-    await DatabaseHelper().insertLFHTracks(songs[0].id.split(".")[2]);
+
     // Create a list of audio sources from the provided songs
     await playlist.clear();
     queue.value.clear();

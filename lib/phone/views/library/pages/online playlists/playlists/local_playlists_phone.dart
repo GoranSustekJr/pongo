@@ -196,9 +196,9 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                                   AppLocalizations.of(context)!.areyousure,
                                   AppLocalizations.of(context)!.removeplaylist,
                                   () async {
-                                print(playlists[index]["opid"]);
+                                print(playlists[index]["lpid"]);
                                 await DatabaseHelper().removeLocalPlaylist(
-                                    playlists[index]["opid"]);
+                                    playlists[index]["lpid"]);
                                 setState(() {
                                   playlistsLength--;
                                   playlists.removeAt(index);
