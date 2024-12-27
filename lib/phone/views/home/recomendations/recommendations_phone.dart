@@ -1,16 +1,15 @@
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/shimmer/recommended_shimmer.dart';
 import 'package:pongo/phone/views/home/recomendations/recommendations_data_manager.dart';
-import 'package:spotify_api/spotify_api.dart' as sp;
 
-class RecomendationsPhone extends StatefulWidget {
-  const RecomendationsPhone({super.key});
+class RecommendationsPhone extends StatefulWidget {
+  const RecommendationsPhone({super.key});
 
   @override
-  State<RecomendationsPhone> createState() => _RecomendationsPhoneState();
+  State<RecommendationsPhone> createState() => _RecommendationsPhoneState();
 }
 
-class _RecomendationsPhoneState extends State<RecomendationsPhone> {
+class _RecommendationsPhoneState extends State<RecommendationsPhone> {
   /* // Pongo:: tracks
   List<Track> pTracks = [];
 

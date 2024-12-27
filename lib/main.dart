@@ -79,6 +79,8 @@ void main() async {
   useCacheAudioSource.value = useCache;
   bool enblLyrics = await Storage().getEnableLyrics(); // Enable lyrics
   enableLyrics.value = enblLyrics;
+  bool cacheImags = await Storage().getCacheImages(); // Cache images
+  cacheImages.value = cacheImags;
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();

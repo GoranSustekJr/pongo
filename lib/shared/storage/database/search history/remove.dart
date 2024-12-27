@@ -36,10 +36,9 @@ Future<void> clearLFHArtsts(DatabaseHelper dbHelper) async {
 Future<void> removeLFHTrcks(DatabaseHelper dbHelper, String stid) async {
   Database db = await dbHelper.database;
 
-  await db.delete(
-    'lfh_tracks',
-    where: 'stid = ?',
-    whereArgs: [stid],
+  await db.rawDelete(
+    'DELETE FROM lfh_tracks WHERE stid = ?',
+    [stid],
   );
 }
 

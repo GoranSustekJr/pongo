@@ -87,3 +87,6 @@ ValueNotifier<BuildContext?> notificationsContext = ValueNotifier(null);
 
 // Search data manager
 ValueNotifier<SearchDataManager?> searchDataManagr = ValueNotifier(null);
+
+// Cache images
+ValueNotifier<bool> cacheImages = ValueNotifier(false);

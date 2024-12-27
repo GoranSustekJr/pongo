@@ -49,10 +49,8 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.only(
-          top: 35,
-          left: 15,
-          right: 15,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).padding.bottom + 10,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,7 +84,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                   );
                 },
               ),
-            razh(50),
+            if (widget.albums.isNotEmpty) razh(50),
             if (widget.albums.isNotEmpty) razh(15),
             if (widget.albums.isNotEmpty)
               searchResultText(
@@ -118,7 +116,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                   );
                 },
               ),
-            razh(50),
+            if (widget.tracks.isNotEmpty) razh(50),
             if (widget.tracks.isNotEmpty) razh(15),
             if (widget.tracks.isNotEmpty)
               searchResultText(
@@ -186,15 +184,14 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                   );
                 },
               ),
-            razh(50),
+            if (widget.artists.isNotEmpty) razh(50),
             if (widget.artists.isNotEmpty)
               searchResultText(AppLocalizations.of(context)!.relatedartists,
                   suggestionHeader),
             if (widget.artists.isNotEmpty) razh(10),
             if (widget.artists.isNotEmpty)
               ListView.builder(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).padding.bottom),
+                padding: EdgeInsets.zero,
                 itemCount:
                     widget.artists.length > 10 ? 10 : widget.artists.length,
                 shrinkWrap: true,
@@ -217,7 +214,6 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                   );
                 },
               ),
-            razh(15),
           ],
         ),
       ),

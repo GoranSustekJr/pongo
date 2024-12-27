@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/components/recommended/Pull%20down%20menu%20items/recommended_track_pulldown_menu_items.dart';
-import 'package:pongo/phone/components/search/Pull%20down%20menu%20items/search_track_pulldown_menu_items.dart';
 
 class RecommendedTile extends StatelessWidget {
   final dynamic data;
@@ -133,10 +131,7 @@ class RecommendedTile extends StatelessWidget {
                                   child: Icon(noImage, color: Colors.white),
                                 )
                               : SizedBox(
-                                  child: CachedNetworkImage(
-                                    imageUrl: imageUrl,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  child: ImageCompatible(image: imageUrl),
                                 ),
                         ),
                       ),
@@ -209,16 +204,12 @@ class RecommendedTile extends StatelessWidget {
                     maxHeight: 66,
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(7.5),
-                    child: imageUrl == ""
-                        ? Center(
-                            child: Icon(noImage),
-                          )
-                        : CachedNetworkImage(
-                            imageUrl: imageUrl,
-                            fit: BoxFit.cover,
-                          ),
-                  ),
+                      borderRadius: BorderRadius.circular(7.5),
+                      child: imageUrl == ""
+                          ? Center(
+                              child: Icon(noImage),
+                            )
+                          : ImageCompatible(image: imageUrl)),
                 ),
                 title: Text(
                   title,

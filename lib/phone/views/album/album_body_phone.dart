@@ -36,7 +36,7 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
           children: [
             ListView.builder(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
+                  bottom: MediaQuery.of(context).padding.bottom + 10),
               itemCount: widget.tracks.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -120,7 +120,6 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
                 );
               },
             ),
-            razh(15),
           ],
         ),
       ),

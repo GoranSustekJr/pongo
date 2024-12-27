@@ -35,13 +35,15 @@ class QueueTile extends StatelessWidget {
                         color: Col.realBackground.withAlpha(150),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(7.5),
-                        child: imageUrl == ""
-                            ? Center(
-                                child: Icon(AppIcons.blankTrack,
-                                    color: Colors.white),
-                              )
-                            : imageUrl.toString().contains("file:///")
+                          borderRadius: BorderRadius.circular(7.5),
+                          child: imageUrl == ""
+                              ? Center(
+                                  child: Icon(AppIcons.blankTrack,
+                                      color: Colors.white),
+                                )
+                              : ImageCompatible(
+                                  image:
+                                      imageUrl) /* imageUrl.toString().contains("file:///")
                                 ? Image.file(
                                     File.fromUri(Uri.parse(imageUrl)),
                                     fit: BoxFit.cover,
@@ -49,8 +51,8 @@ class QueueTile extends StatelessWidget {
                                 : CachedNetworkImage(
                                     imageUrl: imageUrl,
                                     fit: BoxFit.cover,
-                                  ),
-                      ),
+                                  ), */
+                          ),
                     ),
                     razw(12.5),
                     Expanded(

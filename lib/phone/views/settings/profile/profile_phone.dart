@@ -123,11 +123,10 @@ class _ProfilePhoneState extends State<ProfilePhone>
                               child: image != ""
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.circular(360),
-                                      child: CachedNetworkImage(
-                                        imageUrl: image,
+                                      child: ImageCompatible(
+                                        image: image,
                                         width: 160,
                                         height: 160,
-                                        fit: BoxFit.fill,
                                       ),
                                     )
                                   : const SizedBox(),

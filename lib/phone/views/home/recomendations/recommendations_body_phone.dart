@@ -30,20 +30,22 @@ class RecommendationsBodyPhone extends StatelessWidget {
                             AppBar().preferredSize.height +
                             20
                         : Scaffold.of(context).appBarMaxHeight! + 20,
-                    // bottom: MediaQuery.of(context).padding.bottom,
+                    bottom: MediaQuery.of(context).padding.bottom + 10,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      RecommendationsHistory(
-                        dataManager: dataManager,
-                        audioServiceHandler: audioServiceHandler,
-                      ),
-                      RecommendationsCategories(
-                        dataManager: dataManager,
-                        audioServiceHandler: audioServiceHandler,
-                      ),
+                      if (dataManager.history.isNotEmpty)
+                        RecommendationsHistory(
+                          dataManager: dataManager,
+                          audioServiceHandler: audioServiceHandler,
+                        ),
+                      if (dataManager.history.isNotEmpty)
+                        RecommendationsCategories(
+                          dataManager: dataManager,
+                          audioServiceHandler: audioServiceHandler,
+                        ),
                     ],
                   ),
                 ),

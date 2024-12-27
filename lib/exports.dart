@@ -33,6 +33,14 @@ export 'package:pongo/phone/views/library/pages/locals/data/locals_data_manager.
 export 'package:pongo/phone/views/library/pages/locals/views/locals_body_phone.dart';
 export 'package:pongo/phone/views/home/search/search_data_manager.dart';
 export 'package:pongo/phone/views/library/pages/online%20playlists/playlist/functions/playlist_functions.dart';
+export 'package:pongo/phone/components/recommended/Pull%20down%20menu%20items/recommended_track_pulldown_menu_items.dart';
+export 'package:pongo/phone/components/search/Pull%20down%20menu%20items/search_track_pulldown_menu_items.dart';
+export 'package:pongo/shared/widgets/ui/image/image_compatible.dart';
+export 'package:pongo/phone/views/home/recomendations/recommendations_phone.dart';
+export 'package:pongo/phone/views/home/search%20bar/search_bar_android_phone.dart';
+export 'package:pongo/phone/views/home/search%20bar/search_bar_ios_phone.dart';
+export 'package:pongo/phone/views/home/search%20history/search_history_phone.dart';
+export 'package:pongo/phone/views/home/search/search_phone.dart';
 
 export 'shared/api/api.dart';
 export 'shared/components/components.dart';

@@ -105,8 +105,8 @@ class SliverAppBarPhone extends StatelessWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: CachedNetworkImage(
-                    imageUrl: image,
+                  child: ImageCompatible(
+                    image: image,
                   ),
                 ),
               ),

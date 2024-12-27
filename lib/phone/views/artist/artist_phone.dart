@@ -179,9 +179,8 @@ class _ArtistPhoneState extends State<ArtistPhone> {
                                             borderRadius:
                                                 BorderRadius.circular(15),
                                             child: widget.artist.image != ""
-                                                ? CachedNetworkImage(
-                                                    imageUrl:
-                                                        widget.artist.image,
+                                                ? ImageCompatible(
+                                                    image: widget.artist.image,
                                                   )
                                                 : Container(
                                                     width:

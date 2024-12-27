@@ -578,25 +578,30 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                                 move: moveTrack,
                                               ),
                                       )
-                                    : SingleChildScrollView(
+                                    : Column(
                                         key: const ValueKey(false),
-                                        child: Column(
-                                          children: [
-                                            ListView.builder(
-                                              itemCount: listLength,
-                                              shrinkWrap: true,
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                              itemBuilder: (context, index) {
-                                                return songTileSchimmer(
-                                                  context,
-                                                  index == 0,
-                                                  index == listLength--,
-                                                );
-                                              },
+                                        children: [
+                                          ListView.builder(
+                                            padding: EdgeInsets.only(
+                                              top: 35,
+                                              bottom: MediaQuery.of(context)
+                                                      .padding
+                                                      .bottom +
+                                                  15,
                                             ),
-                                          ],
-                                        ),
+                                            itemCount: listLength,
+                                            shrinkWrap: true,
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            itemBuilder: (context, index) {
+                                              return songTileSchimmer(
+                                                context,
+                                                index == 0,
+                                                index == listLength--,
+                                              );
+                                            },
+                                          ),
+                                        ],
                                       ),
                               ),
                             ),

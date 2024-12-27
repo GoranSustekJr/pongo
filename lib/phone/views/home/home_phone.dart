@@ -1,9 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/views/home/recomendations/recomendations_phone.dart';
-import 'package:pongo/phone/views/home/search%20bar/search_bar_android_phone.dart';
-import 'package:pongo/phone/views/home/search%20bar/search_bar_ios_phone.dart';
-import 'package:pongo/phone/views/home/search%20history/search_history_phone.dart';
-import 'package:pongo/phone/views/home/search/search_phone.dart';
 
 class HomePhone extends StatefulWidget {
   const HomePhone({super.key});
@@ -104,7 +99,7 @@ class _HomePhoneState extends State<HomePhone> {
                     top: (searchBarIsSearching.value || focusNode.hasFocus)
                         ? MediaQuery.of(context).size.height
                         : 0,
-                    child: const RecomendationsPhone(),
+                    child: const RecommendationsPhone(),
                   ),
                   // 3. - Search history screen
                   /*  Positioned(

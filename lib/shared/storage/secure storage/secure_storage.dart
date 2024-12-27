@@ -34,6 +34,7 @@ class Storage {
   static String queueKey = "QUEUEKEY";
   static String queueIndexKey = "QUEUEINDEXKEY";
   static String currentPLayingPositionKey = "CURRENTPLAYINGPOSITIONKEY";
+  static String cacheImagesKey = "CACHEIMAGESKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -465,6 +466,20 @@ class Storage {
       return Duration.zero;
     } else {
       return Duration(microseconds: int.parse(key));
+    }
+  }
+
+  // Cache images
+  Future<void> writeCacheImages(bool cacheImages) async {
+    await storage.write(key: cacheImagesKey, value: cacheImages.toString());
+  }
+
+  Future<bool> getCacheImages() async {
+    String? key = await storage.read(key: cacheImagesKey);
+    if (key == null) {
+      return false;
+    } else {
+      return key == "true";
     }
   }
 

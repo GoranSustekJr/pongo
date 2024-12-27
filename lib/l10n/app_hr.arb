@@ -170,6 +170,10 @@
     "removefromdownloaded": "Ukloni sa preuzetih",
     "removefromdownloadedbody": "Želite li ukloniti odabrane pjesme s preuzetih?",
     "lastlistenedto": "Zadnje poslušano",
-    "explore": "Istraži"
+    "explore": "Istraži",
+    "images": "Slike",
+    "imagecaching": "Predmemoriranje slika",
+    "cacheimagestoreducenetworkactivity": "Predmemorirajte slike kako biste smanjili mrežnu aktivnost"
+
 
 }

@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="pongo"
+        android:label="Pongo"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

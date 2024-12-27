@@ -840,7 +840,7 @@
         "description": "removefromdownloadedbody"
     },
 
-    "lastlistenedto": "lastlistenedto",
+    "lastlistenedto": "Last listened to",
     "@lastlistenedto": {
         "description": "lastlistenedto"
     },
@@ -848,6 +848,21 @@
     "explore": "Explore",
     "@explore": {
         "description": "explore"
+    },
+
+    "images": "Images",
+    "@images": {
+        "description": "images"
+    },
+
+    "imagecaching": "Image caching",
+    "@imagecaching": {
+        "description": "imagecaching"
+    },
+
+    "cacheimagestoreducenetworkactivity": "Cache images to reduce network activity",
+    "@cacheimagestoreducenetworkactivity": {
+        "description": "cacheimagestoreducenetworkactivity"
     }
 
 }

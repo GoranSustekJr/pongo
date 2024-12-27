@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:pongo/exports.dart';
-import 'package:spotify_api/spotify_api.dart' as sp;
 
 class FavouritesPhone extends StatefulWidget {
   const FavouritesPhone({super.key});

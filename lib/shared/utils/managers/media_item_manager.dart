@@ -26,10 +26,15 @@ class MediaItemManager with ChangeNotifier {
   }
 
   Future<void> _onMediaItemChanged(MediaItem? mediaItem) async {
-    if (mediaItem == null || mediaItem.id == currentMediaItemId) return;
+    if (mediaItem == null) return;
+    print("Mediaitem; $mediaItem");
+    if (mediaItem.id.split('.')[2] == currentMediaItemId) return;
 
     currentMediaItemId = mediaItem.id.split(".")[2];
     currentMediaItem = mediaItem;
+
+    print("Shit");
+    await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
 
     // Fetch lyrics and update blurhash asynchronously.
     if (enableLyrics.value) {

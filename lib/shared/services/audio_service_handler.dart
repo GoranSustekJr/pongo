@@ -94,13 +94,23 @@ class AudioServiceHandler extends BaseAudioHandler
       mediaItem.add(playlist[index]);
     });
 
+    /* MediaItem? tempMediaItem;
+
     mediaItem.stream.listen(
       (mediaItem) async {
-        if (mediaItem != null) {
+if (mediaItem != null){
+        print("SHIT ${mediaItem.id != tempMediaItem?.id}");
+        print("One; $mediaItem");
+        print("Two: $tempMediaItem");
+
+        if (mediaItem.id != tempMediaItem?.id) {
+          tempMediaItem = mediaItem;
+          print(tempMediaItem);
+
           await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
-        }
-      },
-    );
+                }
+      }}
+    ); */
   }
 
   void reorderQueue(AudioServiceHandler audioServiceHandler, int oldIndex,

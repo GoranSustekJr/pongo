@@ -12,9 +12,11 @@ class AccessTokenhandler {
   renew(context) async {
     final refreshToken = await Storage().getRefreshToken();
     print(refreshToken);
-    final response = await http.post(
-        Uri.parse("${AppConstants.SERVER_URL}renew_at"),
-        body: jsonEncode({"jwt": refreshToken}));
+    final response =
+        await http.post(Uri.parse("${AppConstants.SERVER_URL}renew_at"),
+            body: jsonEncode({
+              "jwt": refreshToken,
+            }));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

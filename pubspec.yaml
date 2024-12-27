@@ -103,6 +103,9 @@ dependencies:
   flutter_image_compress: ^2.3.0
   image_cropper: ^8.0.2
   flutter_staggered_animations: ^1.1.1
+  flutter_launcher_icons: ^0.14.2
+  flutter_native_splash: ^2.4.3
+  device_info_plus: ^10.1.2
   
 
 dependency_overrides:
@@ -119,6 +122,18 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/pongo.png"
+
+flutter_native_splash:
+  ios: true
+  android: true
+  web: false
+  background_image: "assets/images/pongo_background_10k.png"
+  image: "assets/images/pongo_logo_tranparent.png"
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -134,6 +149,8 @@ flutter:
   assets:
     - assets/images/placeholder.png
     - assets/images/pongo_background_10k.png
+    - assets/images/pongo.png
+    - assets/images/pongo_logo_tranparent.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

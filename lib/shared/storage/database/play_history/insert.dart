@@ -3,7 +3,7 @@ import 'package:pongo/exports.dart';
 // tracks
 Future<void> insertTrackPlayHist(DatabaseHelper dbHelper, String qry) async {
   Database db = await dbHelper.database;
-  await dbHelper.removeSearchHistoryEntry(qry);
+  await dbHelper.removeTrackHistoryEntry(qry);
   await db.transaction((txn) async {
     await txn.insert(
       'lfh_tracks',
@@ -32,7 +32,7 @@ Future<void> insertTrackPlayHist(DatabaseHelper dbHelper, String qry) async {
 // Artists
 Future<void> insertArtistPlayHist(DatabaseHelper dbHelper, String said) async {
   Database db = await dbHelper.database;
-  await dbHelper.removeSearchHistoryEntry(said);
+  await dbHelper.removeArtistHistoryEntry(said);
   await db.transaction((txn) async {
     await txn.insert(
       'lfh_artists',

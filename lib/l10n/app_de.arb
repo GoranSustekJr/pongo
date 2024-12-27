@@ -168,5 +168,8 @@
     "removefromdownloaded": "Aus heruntergeladenen entfernen",
     "removefromdownloadedbody": "Möchten Sie die ausgewählten Titel aus den heruntergeladenen entfernen?",
     "lastlistenedto": "Zuletzt angehört",
-    "explore": "Erkunden"
+    "explore": "Erkunden",
+    "images": "Die Bilder",
+    "imagecaching": "Bildcaching",
+    "cacheimagestoreducenetworkactivity": "Die Bilder zwischenspeichern, um die Netzwerkauslastung zu reduzieren"
 }

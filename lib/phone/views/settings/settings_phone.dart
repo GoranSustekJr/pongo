@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/views/settings/data/data_phone.dart';
 import 'package:pongo/phone/views/settings/profile/profile_phone.dart';
-
 import 'preferences/preferences_phone.dart';
 
 class SettingsPhone extends StatefulWidget {
@@ -79,7 +76,7 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                         //Navigations().nextScreen(context, PhonePreferencesScreen());
                       }),
                       razh(20),
-                      settingsText("Data"),
+                      /*  settingsText("Data"),
                       settingsTile(
                           context,
                           true,
@@ -91,7 +88,7 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                         Navigations().nextScreen(context, const DataPhone());
                         //Navigationss().nextScreen(context, '/profile', {});
                         // Navigations().nextScreen(context, PhoneProfileOther());
-                      }),
+                      }), */
                     ],
                   );
                 },

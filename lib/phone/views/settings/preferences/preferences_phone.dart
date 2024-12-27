@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:pongo/phone/components/settings/preferences/apple_lyrics_text_align_picker.dart';
 import 'package:pongo/phone/components/settings/preferences/apple_number_picker.dart';
 import 'package:pongo/phone/widgets/settings/tiles/settings_tile_int.dart';
@@ -47,6 +48,9 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   // Audio player
   bool useCachingAudioSource = false;
 
+  // Cache Images
+  bool useCacheImages = false;
+
   @override
   void initState() {
     super.initState();
@@ -77,6 +81,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final lyricsTxtAlign = await Storage().getLyricsTextAlign();
     final useCacheAudioSource = await Storage().getUseCachingAudioSource();
     final enblLyrics = await Storage().getEnableLyrics();
+    final useCachImages = await Storage().getCacheImages();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -91,6 +96,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       lyricsTextAlign = lyricsTxtAlign;
       useCachingAudioSource = useCacheAudioSource;
       enbleLyrics = enblLyrics;
+      useCacheImages = useCachImages;
     });
   }
 
@@ -457,9 +463,57 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                     useCachingAudioSource = use;
                                   });
                                   useCacheAudioSource.value = use;
-                                  Storage().writeUseCacheAudioSource(use);
+                                  await Storage().writeUseCacheAudioSource(use);
                                 },
                               ),
+                              settingsTile(
+                                context,
+                                true,
+                                true,
+                                AppIcons.audioPlayer,
+                                AppIcons.trash,
+                                AppLocalizations.of(context)!
+                                    .clearaudioplayercache,
+                                AppLocalizations.of(context)!
+                                    .clearyouraudioplayercache,
+                                () async {
+                                  await AudioPlayer.clearAssetCache();
+                                },
+                              ),
+                              razh(20),
+                              settingsText(
+                                  AppLocalizations.of(context)!.images),
+                              settingsTileSwitcher(
+                                context,
+                                true,
+                                false,
+                                CupertinoIcons.arrow_down_doc_fill,
+                                useCacheImages, // AppIcons.edit,
+                                AppLocalizations.of(context)!.imagecaching,
+                                AppLocalizations.of(context)!
+                                    .cacheimagestoreducenetworkactivity,
+                                (use) async {
+                                  setState(() {
+                                    useCacheImages = use;
+                                  });
+                                  cacheImages.value = use;
+                                  await Storage().writeCacheImages(use);
+                                },
+                              ),
+                              settingsTile(
+                                  context,
+                                  false,
+                                  true,
+                                  AppIcons.image,
+                                  AppIcons.trash,
+                                  AppLocalizations.of(context)!.clearimagecache,
+                                  AppLocalizations.of(context)!
+                                      .clearyourassetimagecache, () async {
+                                DefaultCacheManager manager =
+                                    DefaultCacheManager();
+                                manager.emptyCache();
+                                PaintingBinding.instance.imageCache.clear();
+                              }),
                               razh(50),
                             ],
                           );

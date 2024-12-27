@@ -55,13 +55,12 @@ class PlaylistSongTile extends StatelessWidget {
                       ? Center(
                           child: Icon(AppIcons.blankTrack, color: Colors.white),
                         )
-                      : CachedNetworkImage(
-                          imageUrl: calculateWantedResolutionForTrack(
+                      : ImageCompatible(
+                          image: calculateWantedResolutionForTrack(
                             track.album!.images,
                             100,
                             100,
                           ),
-                          fit: BoxFit.cover,
                         ),
                 ),
               ),

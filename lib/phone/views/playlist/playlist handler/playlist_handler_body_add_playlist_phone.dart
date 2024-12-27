@@ -19,8 +19,6 @@ class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    bool redIt = false;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -80,25 +78,19 @@ class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
                   controller: titleController,
                   onChanged: onChanged,
                   decoration: InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
+                    focusedBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(
-                        color: redIt && titleController.value.text.trim() == ""
-                            ? Colors.red
-                            : Colors.white,
+                        color: Colors.white,
                       ),
                     ),
-                    enabledBorder: UnderlineInputBorder(
+                    enabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(
-                        color: redIt && titleController.value.text.trim() == ""
-                            ? Colors.red
-                            : Colors.white,
+                        color: Colors.white,
                       ),
                     ),
-                    disabledBorder: UnderlineInputBorder(
+                    disabledBorder: const UnderlineInputBorder(
                       borderSide: BorderSide(
-                        color: redIt && titleController.value.text.trim() == ""
-                            ? Colors.red
-                            : Colors.white,
+                        color: Colors.white,
                       ),
                     ),
                     hintText: AppLocalizations.of(context)!.playlistname,

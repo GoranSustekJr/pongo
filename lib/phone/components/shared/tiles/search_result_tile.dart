@@ -110,9 +110,8 @@ class SearchResultTile extends StatelessWidget {
                             ? Center(
                                 child: Icon(noImage, color: Colors.white),
                               )
-                            : CachedNetworkImage(
-                                imageUrl: imageUrl,
-                                fit: BoxFit.cover,
+                            : ImageCompatible(
+                                image: imageUrl,
                               ),
                       ),
                     ),

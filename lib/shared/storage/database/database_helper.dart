@@ -21,7 +21,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 18,
+      version: 22,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -127,7 +127,7 @@ class DatabaseHelper {
       ALTER TABLE downloaded_tracks ADD COLUMN time_added TEXT;
     '''); */
     await db.execute('''
-      ALTER TABLE downloaded_tracks DROP COLUMN time_added;
+      DELETE FROM lfh_tracks;
     ''');
 
     print(newVersion);

@@ -1,3 +1,4 @@
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:pongo/exports.dart';
 
@@ -32,13 +33,27 @@ class OAuth2 {
       print("token: ");
       print(idToken);
       if (idToken != null) {
+        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+        String? deviceId;
+        if (kIsIOS) {
+          IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
+          deviceId = iosDeviceInfo.identifierForVendor;
+        } else if (kIsAndroid) {
+          AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
+          deviceId = androidDeviceInfo.id;
+        } // TODO: Other platforms
+
         // Send it to my server
         print("great");
         final response = await http.post(
           Uri.parse(
               "${AppConstants.SERVER_URL}bed1684d6d16802154bba513a5f0980dd3dc4b612aeb6a05433c28f55936ca7d"),
-          body: jsonEncode(
-              {"id_token": idToken, "platform": kIsApple ? "ios" : kPlatform}),
+          body: jsonEncode({
+            "id_token": idToken,
+            "platform": kIsApple ? "ios" : kPlatform,
+            "device_id": deviceId,
+          }),
         );
         print(response.statusCode);
         if (response.statusCode == 200) {

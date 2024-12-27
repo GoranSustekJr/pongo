@@ -186,13 +186,21 @@ class LocalPlaylistPhone extends StatelessWidget {
                                                       ),
                                               )
                                             : SingleChildScrollView(
-                                                key: const ValueKey(false),
                                                 child: Column(
+                                                  key: const ValueKey(false),
                                                   children: [
                                                     ListView.builder(
                                                       itemCount:
                                                           localPlaylistDataManager
                                                               .listLength,
+                                                      padding: EdgeInsets.only(
+                                                        top: 35,
+                                                        bottom: MediaQuery.of(
+                                                                    context)
+                                                                .padding
+                                                                .bottom +
+                                                            15,
+                                                      ),
                                                       shrinkWrap: true,
                                                       physics:
                                                           const NeverScrollableScrollPhysics(),

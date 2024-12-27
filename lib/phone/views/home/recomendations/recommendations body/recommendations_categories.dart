@@ -23,9 +23,9 @@ class RecommendationsCategories extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 7.5),
           child: GridView.builder(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
               top: 0,
-              bottom: MediaQuery.of(context).padding.bottom + 10,
+              // bottom: MediaQuery.of(context).padding.bottom + 10,
             ),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -45,10 +45,9 @@ class RecommendationsCategories extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(7.5),
-                      child: CachedNetworkImage(
-                        imageUrl:
+                      child: ImageCompatible(
+                        image:
                             dataManager.categories[index].categoryIcons[0].url,
-                        fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,
                       ),

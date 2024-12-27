@@ -198,6 +198,8 @@ class _TrackInfoState extends State<TrackInfo> {
                                                           child: Row(
                                                             children: [
                                                               Container(
+                                                                width: 40,
+                                                                height: 40,
                                                                 decoration:
                                                                     const BoxDecoration(
                                                                         boxShadow: [
@@ -222,7 +224,15 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                               .artUri
                                                                               .toString() !=
                                                                           ""
-                                                                      ? currentMediaItem
+                                                                      ? ImageCompatible(
+                                                                          image: currentMediaItem
+                                                                              .artUri
+                                                                              .toString(),
+                                                                          width:
+                                                                              40,
+                                                                          height:
+                                                                              40,
+                                                                        ) /* currentMediaItem
                                                                               .artUri
                                                                               .toString()
                                                                               .contains("file:///")
@@ -235,7 +245,7 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                               imageUrl: currentMediaItem.artUri.toString(),
                                                                               width: 40,
                                                                               height: 40,
-                                                                            )
+                                                                            ) */
                                                                       : SizedBox(
                                                                           height:
                                                                               40,
@@ -350,18 +360,32 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                     BorderRadius
                                                                         .circular(
                                                                             7.5),
-                                                                child: Image
-                                                                    .network(
-                                                                  "REMOVEDtrack_art/${currentMediaItem.id.split(".")[2]}.png",
-                                                                  width: 40,
-                                                                  height: 40,
-                                                                ), /* Image.file(
-                                                                File.fromUri(
-                                                                    currentMediaItem
-                                                                        .artUri!),
-                                                                width: 40,
-                                                                height: 40,
-                                                              ), */
+                                                                child: currentMediaItem
+                                                                            .artUri
+                                                                            .toString() !=
+                                                                        ""
+                                                                    ? ImageCompatible(
+                                                                        image: currentMediaItem
+                                                                            .artUri
+                                                                            .toString(),
+                                                                        width:
+                                                                            40,
+                                                                        height:
+                                                                            40,
+                                                                      )
+                                                                    : SizedBox(
+                                                                        height:
+                                                                            40,
+                                                                        width:
+                                                                            40,
+                                                                        child:
+                                                                            Center(
+                                                                          child:
+                                                                              Icon(
+                                                                            AppIcons.blankTrack,
+                                                                          ),
+                                                                        ),
+                                                                      ),
                                                               ),
                                                             ),
                                                             title: SizedBox(
