@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/views/introduction/introduction_phone.dart';
 import 'package:pongo/phone/views/settings/profile/profile_phone.dart';
 import 'preferences/preferences_phone.dart';
 
@@ -76,19 +78,38 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                         //Navigations().nextScreen(context, PhonePreferencesScreen());
                       }),
                       razh(20),
-                      /*  settingsText("Data"),
+                      settingsText("About"),
                       settingsTile(
-                          context,
-                          true,
-                          true,
-                          CupertinoIcons.chart_bar_fill,
-                          AppIcons.settings,
-                          AppLocalizations.of(context)!.data,
-                          AppLocalizations.of(context)!.saveyourdata, () {
-                        Navigations().nextScreen(context, const DataPhone());
-                        //Navigationss().nextScreen(context, '/profile', {});
-                        // Navigations().nextScreen(context, PhoneProfileOther());
-                      }), */
+                        context,
+                        true,
+                        false,
+                        CupertinoIcons.chart_bar_fill,
+                        AppIcons.settings,
+                        "Tipps & tricks",
+                        "Pongo tipps and tricks",
+                        () {
+                          Navigations().nextScreen(
+                            context,
+                            const IntroductionPhone(),
+                          );
+                        },
+                        special: true,
+                      ),
+                      settingsTile(
+                        context,
+                        false,
+                        true,
+                        CupertinoIcons.info_circle,
+                        AppIcons.musicAlbums,
+                        "About",
+                        "About Pongo",
+                        () {
+                          Navigations().nextScreen(
+                            context,
+                            const IntroductionPhone(),
+                          );
+                        },
+                      ),
                     ],
                   );
                 },

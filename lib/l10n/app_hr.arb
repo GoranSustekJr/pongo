@@ -173,7 +173,15 @@
     "explore": "Istraži",
     "images": "Slike",
     "imagecaching": "Predmemoriranje slika",
-    "cacheimagestoreducenetworkactivity": "Predmemorirajte slike kako biste smanjili mrežnu aktivnost"
+    "cacheimagestoreducenetworkactivity": "Predmemorirajte slike kako biste smanjili mrežnu aktivnost",
+    "deleteyouraccount": "Izbriši svoj račun",
+    "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": "Brisanjem računa izgubit ćeš sve povlastice ako plaćaš premium",
+    "deleteaccount": "Izbriši račun",
+    "areyousurezouwanttodeleteyouraccount": "Jesi li siguran da želiš izbrisati svoj račun?",
+    "skip": "Preskoči",
+    "next": "Sljedeće",
+    "done": "Gotovo"
+
 
 
 }

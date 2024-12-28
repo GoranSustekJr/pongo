@@ -1,3 +1,6 @@
+import 'package:pongo/phone/alerts/delete%20account/delete_account_alert.dart';
+import 'package:pongo/shared/utils/API%20requests/delete_account.dart';
+
 import '../../../../exports.dart';
 
 class ProfilePhone extends StatefulWidget {
@@ -159,6 +162,21 @@ class _ProfilePhoneState extends State<ProfilePhone>
                               AppLocalizations.of(context)!.subscribed,
                               AppLocalizations.of(context)!.premium,
                               () {},
+                            ),
+                            settingsTile(
+                              context,
+                              false,
+                              true,
+                              AppIcons.trash,
+                              null,
+                              AppLocalizations.of(context)!.delete,
+                              AppLocalizations.of(context)!.deleteyouraccount,
+                              () async {
+                                final ok = await deleteAccountAlert(context);
+                                if (ok == CustomButton.positiveButton) {
+                                  await DeleteAccount().delete(context);
+                                }
+                              },
                             ),
                             razh(25),
                             textButton(AppLocalizations.of(context)!.signout,

@@ -106,6 +106,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.2
   flutter_native_splash: ^2.4.3
   device_info_plus: ^10.1.2
+  intro_slider: ^4.2.1
   
 
 dependency_overrides:
@@ -151,6 +152,15 @@ flutter:
     - assets/images/pongo_background_10k.png
     - assets/images/pongo.png
     - assets/images/pongo_logo_tranparent.png
+    - assets/images/intro/hold_on_image.jpeg
+    - assets/images/intro/playling_details.jpeg
+    - assets/images/intro/tap_to_show_details.jpeg
+    - assets/images/intro/tap_on_album.jpg
+    - assets/images/intro/lyrics_buttons.jpg
+    - assets/images/intro/other_controls.jpeg
+    - assets/images/intro/lyrics.jpeg
+    - assets/images/intro/queue.jpeg
+    - assets/images/intro/add_to_playlist.jpeg
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

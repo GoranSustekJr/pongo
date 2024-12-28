@@ -171,5 +171,14 @@
     "explore": "Erkunden",
     "images": "Die Bilder",
     "imagecaching": "Bildcaching",
-    "cacheimagestoreducenetworkactivity": "Die Bilder zwischenspeichern, um die Netzwerkauslastung zu reduzieren"
+    "cacheimagestoreducenetworkactivity": "Die Bilder zwischenspeichern, um die Netzwerkauslastung zu reduzieren",
+    "deleteyouraccount": "Lösche dein Konto",
+    "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": "Durch das Löschen deines Kontos verlierst du alle Vorteile, falls du Premium zahlst",
+    "deleteaccount": "Konto löschen",
+    "areyousurezouwanttodeleteyouraccount": "Bist du sicher, dass du dein Konto löschen möchtest?",
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "done": "Fertig"
+
+
 }

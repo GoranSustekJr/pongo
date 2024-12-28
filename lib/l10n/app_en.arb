@@ -863,6 +863,42 @@
     "cacheimagestoreducenetworkactivity": "Cache images to reduce network activity",
     "@cacheimagestoreducenetworkactivity": {
         "description": "cacheimagestoreducenetworkactivity"
+    },
+
+    "deleteyouraccount": "Delete your account",
+    "@deleteyouraccount": {
+        "description": "deleteyouraccount"
+    },
+
+    "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": "By deleting your account, you will delete all your privileges if paying premium",
+    "@bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": {
+        "description": "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium"
+    },
+
+    "deleteaccount": "Delete account",
+    "@deleteaccount": {
+        "description": "deleteaccount"
+    },
+
+    "areyousurezouwanttodeleteyouraccount": "Are you sure that you want to delete your account?",
+    "@areyousurezouwanttodeleteyouraccount": {
+        "description": "areyousurezouwanttodeleteyouraccount"
+    },
+
+    "skip": "Skip",
+    "@skip": {
+        "description": "skip"
+    },
+
+    "next": "Next",
+    "@next": {
+        "description": "next"
+    },
+
+    "done": "Done",
+    "@done": {
+        "description": "done"
     }
 
 }
+

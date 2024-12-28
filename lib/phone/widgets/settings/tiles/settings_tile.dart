@@ -1,15 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
-settingsTile(
-    context,
-    bool first,
-    bool last,
-    IconData icon,
-    IconData? trailingIcon,
-    String title,
-    String? subtitle,
-    Function() function) {
+settingsTile(context, bool first, bool last, IconData icon,
+    IconData? trailingIcon, String title, String? subtitle, Function() function,
+    {bool special = false}) {
   double radius = 15;
   BorderRadius borderRadius = BorderRadius.only(
     topLeft: first ? Radius.circular(radius) : Radius.zero,
@@ -48,7 +42,10 @@ settingsTile(
                         SizedBox(
                             width: 58,
                             height: 48,
-                            child: Icon(icon, color: Col.onIcon, size: 27.5)),
+                            child: special
+                                ? Image.asset(
+                                    'assets/images/pongo_logo_tranparent.png')
+                                : Icon(icon, color: Col.onIcon, size: 27.5)),
                         Expanded(
                             child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +120,10 @@ settingsTile(
                         SizedBox(
                             width: 58,
                             height: 58,
-                            child: Icon(icon, color: Col.onIcon, size: 27.5)),
+                            child: special
+                                ? Image.asset(
+                                    'assets/images/pongo_logo_tranparent.png')
+                                : Icon(icon, color: Col.onIcon, size: 27.5)),
                         Expanded(
                             child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
