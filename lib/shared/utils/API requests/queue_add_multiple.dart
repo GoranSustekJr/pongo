@@ -47,6 +47,10 @@ class QueueAddMultiple {
                   : '',
             ),
             extras: {
+              "artists": jsonEncode(tracks[i]
+                  .artists
+                  .map((artist) => {"id": artist.id, "name": artist.name})
+                  .toList()),
               "online": online,
               "released":
                   tracks[i].album != null ? tracks[i].album!.releaseDate : "",
@@ -107,6 +111,10 @@ class QueueAddMultiple {
                       : '',
                 ),
                 extras: {
+                  "artists": jsonEncode(tracks[i]
+                      .artists
+                      .map((artist) => {"id": artist.id, "name": artist.name})
+                      .toList()),
                   "online": online,
                   "released": tracks[i].album != null
                       ? tracks[i].album!.releaseDate

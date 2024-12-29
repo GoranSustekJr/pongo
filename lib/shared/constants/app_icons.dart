@@ -31,6 +31,8 @@ class AppIcons {
   static const info = CupertinoIcons.info_circle;
   static const addToQueue = CupertinoIcons.plus_square_on_square;
 
+  static const warning = CupertinoIcons.exclamationmark_triangle;
+
   static final download =
       kIsApple ? CupertinoIcons.cloud_download : Icons.cloud_download_rounded;
 

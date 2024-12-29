@@ -36,8 +36,11 @@ class MediaItemManager with ChangeNotifier {
     print("Shit");
     await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
 
+    final internetConnectivityHandler =
+        Provider.of<InternetConnectivityHandler>(context, listen: false);
+
     // Fetch lyrics and update blurhash asynchronously.
-    if (enableLyrics.value) {
+    if (enableLyrics.value && internetConnectivityHandler.isConnected) {
       final lyrics = await TrackMetadata().getLyrics(
         context,
         mediaItem.title,

@@ -61,10 +61,11 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Create audio source from media item
   AudioSource createAudioSource(MediaItem item) {
+    print(item.extras);
     /* final accessTokenHandler =
         Provider.of<AccessToken>(searchScreenContext.value!, listen: false); */
     return item.extras!["downloaded"] == "true"
-        ? AudioSource.file(item.extras!["audio"]!)
+        ? AudioSource.file(item.extras!["audio"])
         : useCacheAudioSource.value
             ? LockCachingAudioSource(
                 Uri.parse(

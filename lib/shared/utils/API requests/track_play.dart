@@ -35,6 +35,9 @@ class TrackPlay {
                   : '',
             ),
             extras: {
+              "artists": jsonEncode(track.artists
+                  .map((artist) => {"id": artist.id, "name": artist.name})
+                  .toList()),
               "released": track.album != null ? track.album!.releaseDate : "",
             },
           ),
@@ -83,6 +86,9 @@ class TrackPlay {
               : '',
         ),
         extras: {
+          "artists": jsonEncode(track.artists
+              .map((artist) => {"id": artist.id, "name": artist.name})
+              .toList()),
           "released": track.album != null ? track.album!.releaseDate : "",
           "salid": track.album != null ? track.album!.id : "",
         },
@@ -165,6 +171,9 @@ class TrackPlay {
                   : '',
             ),
             extras: {
+              "artists": jsonEncode(track.artists
+                  .map((artist) => {"id": artist.id, "name": artist.name})
+                  .toList()),
               "released": track.album != null ? track.album!.releaseDate : "",
             },
           ),
@@ -213,6 +222,9 @@ class TrackPlay {
               : '',
         ),
         extras: {
+          "artists": jsonEncode(track.artists
+              .map((artist) => {"id": artist.id, "name": artist.name})
+              .toList()),
           "released": track.album != null ? track.album!.releaseDate : "",
           "salid": track.album != null ? track.album!.id : "",
         },

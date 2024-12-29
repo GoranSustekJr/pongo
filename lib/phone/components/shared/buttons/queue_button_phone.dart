@@ -13,6 +13,7 @@ class QueueButtonPhone extends StatelessWidget {
   final Function() removeItemsFromQueue;
   final Function() changeLyricsOn;
   final Function() saveAsPlaylist;
+  final Function() download;
   const QueueButtonPhone({
     super.key,
     required this.showQueue,
@@ -23,6 +24,7 @@ class QueueButtonPhone extends StatelessWidget {
     required this.removeItemsFromQueue,
     required this.changeLyricsOn,
     required this.saveAsPlaylist,
+    required this.download,
   });
 
   @override
@@ -32,7 +34,7 @@ class QueueButtonPhone extends StatelessWidget {
     return Positioned(
       top: MediaQuery.of(context).padding.top + 12.5,
       child: SizedBox(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width - 20,
         height: 40,
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -183,13 +185,13 @@ class QueueButtonPhone extends StatelessWidget {
                             context,
                             changeEditQueue,
                             removeItemsFromQueue,
-                            () {},
+                            download,
                           )
                         : queueMorePullDownMenuItems(
                             context,
                             changeEditQueue,
                             saveAsPlaylist,
-                            () {},
+                            download,
                           ),
                     buttonBuilder: (context, showMenu) => CupertinoButton(
                       onPressed: showMenu,

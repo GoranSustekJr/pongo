@@ -38,11 +38,6 @@ Future<int?> insertOnTrackId(
 
   // Ensure that the playlist does not contains this track
   if (existingRows.isNotEmpty) {
-    Notifications().showWarningNotification(
-        searchScreenContext.value!,
-        AppLocalizations.of(mainContext.value!)!
-            .playlistalreadycontainsthistrack);
-
     return null;
   }
 

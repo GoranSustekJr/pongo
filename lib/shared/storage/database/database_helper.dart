@@ -21,7 +21,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 22,
+      version: 24,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -127,7 +127,11 @@ class DatabaseHelper {
       ALTER TABLE downloaded_tracks ADD COLUMN time_added TEXT;
     '''); */
     await db.execute('''
-      DELETE FROM lfh_tracks;
+      DELETE FROM downloaded_tracks;
+    ''');
+
+    await db.execute('''
+      DELETE FROM lpid_track_id;
     ''');
 
     print(newVersion);
@@ -268,6 +272,10 @@ class DatabaseHelper {
 
   Future<int> queryAllDownloadedTracksLength() async {
     return await queryAllDownloadedTrcksLength(this);
+  }
+
+  Future<List<String>> queryMissingStids(List<String> stids) async {
+    return await queryMssingStids(stids, this);
   }
 
   Future<bool> downloadedTrackAlreadyExists(String stid) async {

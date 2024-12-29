@@ -11,6 +11,7 @@ class PlayShuffleHaltFavourites extends StatefulWidget {
   final Function() stopEdit;
   final Function() unfavourite;
   final Function() addToPlaylist;
+  final Function() download;
   const PlayShuffleHaltFavourites({
     super.key,
     required this.missingTracks,
@@ -23,6 +24,7 @@ class PlayShuffleHaltFavourites extends StatefulWidget {
     required this.stopEdit,
     required this.unfavourite,
     required this.addToPlaylist,
+    required this.download,
   });
 
   @override
@@ -55,7 +57,9 @@ class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
                       iconButton(
                         AppIcons.download,
                         Colors.white,
-                        () {},
+                        () {
+                          widget.download();
+                        },
                         edgeInsets: EdgeInsets.zero,
                       ),
                       iconButton(

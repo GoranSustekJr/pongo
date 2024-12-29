@@ -27,7 +27,7 @@ List<PullDownMenuEntry> queueEditPullDownMenuItems(
           ),
           const PullDownMenuDivider.large(),
           PullDownMenuItem(
-            onTap: () async {},
+            onTap: download,
             title: AppLocalizations.of(context)!.download,
             icon: AppIcons.download,
             itemTheme: const PullDownMenuItemTheme(

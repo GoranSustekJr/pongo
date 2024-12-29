@@ -4,7 +4,6 @@ import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/action%20sheets/continue_cancel_action_sheet.dart';
 import 'package:pongo/phone/components/shared/tiles/playlist_tile.dart';
 import 'package:pongo/phone/views/library/pages/local%20playlists/views/local_playlist_phone.dart';
-import 'package:pongo/phone/views/library/pages/online%20playlists/playlist/views/online_playlist_phone.dart';
 
 class LocalPlaylistsPhone extends StatefulWidget {
   const LocalPlaylistsPhone({super.key});
@@ -100,12 +99,14 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                             CupertinoIcons.add,
                             () {
                               OpenPlaylist().show(
-                                  context,
-                                  PlaylistHandler(
-                                      type: PlaylistHandlerType.offline,
-                                      function: PlaylistHandlerFunction
-                                          .createPlaylist,
-                                      track: []));
+                                context,
+                                PlaylistHandler(
+                                  type: PlaylistHandlerType.offline,
+                                  function:
+                                      PlaylistHandlerFunction.createPlaylist,
+                                  track: null,
+                                ),
+                              );
                             },
                           ),
                         ],
@@ -180,8 +181,6 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                                       });
                                     },
                                     updateTitle: (newTitle) async {
-                                      print(playlists[index]["lpid"]);
-                                      print(newTitle);
                                       await DatabaseHelper()
                                           .updateLocalPlaylistName(
                                               playlists[index]["lpid"],
@@ -196,7 +195,6 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                                   AppLocalizations.of(context)!.areyousure,
                                   AppLocalizations.of(context)!.removeplaylist,
                                   () async {
-                                print(playlists[index]["lpid"]);
                                 await DatabaseHelper().removeLocalPlaylist(
                                     playlists[index]["lpid"]);
                                 setState(() {

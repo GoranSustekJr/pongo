@@ -98,6 +98,12 @@ class LocalPlaylistPhone extends StatelessWidget {
                                               child:
                                                   PlayShuffleHaltLocalPlaylist(
                                                 lpid: lpid,
+                                                allSelected:
+                                                    localPlaylistDataManager
+                                                            .selectedStids
+                                                            .length ==
+                                                        localPlaylistDataManager
+                                                            .tracks.length,
                                                 missingTracks:
                                                     localPlaylistDataManager
                                                         .missingTracks,
@@ -127,6 +133,9 @@ class LocalPlaylistPhone extends StatelessWidget {
                                                     .showSelected,
                                                 hide: localPlaylistDataManager
                                                     .hideSelected,
+                                                selectAll:
+                                                    localPlaylistDataManager
+                                                        .selectAll,
                                               ),
                                             ),
                                           ),

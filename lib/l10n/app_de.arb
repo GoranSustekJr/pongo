@@ -178,7 +178,14 @@
     "areyousurezouwanttodeleteyouraccount": "Bist du sicher, dass du dein Konto löschen möchtest?",
     "skip": "Überspringen",
     "next": "Weiter",
-    "done": "Fertig"
+    "done": "Fertig",
+    "error": "Fehler",
+    "downloadsucceeded": "Download erfolgreich",
+    "downloadfailed": "Download fehlgeschlagen",
+    "downloading": "Wird heruntergeladen",
+    "downloadhasstarted": "Download gestartet. SCHLIEßEN SIE DIE APP NICHT!",
+    "firstadded": "Zuerst hinzugefügt",
+    "lastadded": "Zuletzt hinzugefügt"
 
 
 }

@@ -37,8 +37,10 @@ class LocalsDataManager with ChangeNotifier {
     // Get the number of tracks
     int len = await DatabaseHelper().queryAllDownloadedTracksLength();
 
-    // Set tracks length in order to show the shimmer
+    // Get the sort
+    String sort = await Storage().getLocalsSort();
 
+    // Set tracks length in order to show the shimmer
     numOfTracks = len;
     showBody = true;
     notifyListeners();
@@ -53,6 +55,17 @@ class LocalsDataManager with ChangeNotifier {
     }
 
     tracks = Track.fromMapListLocal(trackss);
+
+    if (sort == "A-Z") {
+      tracks.sort((a, b) => a.name.compareTo(b.name));
+    } else if (sort == "Z-A") {
+      tracks.sort((a, b) => b.name.compareTo(a.name));
+    } else if (sort == "First added") {
+      tracks.sort((a, b) => primaryKey[a.id]!.compareTo(primaryKey[b.id]!));
+    } else {
+      tracks.sort((a, b) => primaryKey[b.id]!.compareTo(primaryKey[a.id]!));
+    }
+
     notifyListeners();
   }
 
@@ -139,7 +152,6 @@ class LocalsDataManager with ChangeNotifier {
 
   // Select all stids
   selectAll() {
-    print(selectedTracks.length != tracks.length);
     if (selectedTracks.length != tracks.length) {
       selectedTracks.clear();
       selectedTracks.addAll(tracks.map((track) => track.id));
@@ -155,37 +167,41 @@ class LocalsDataManager with ChangeNotifier {
       context: context,
       items: [
         PullDownMenuItem(
-          onTap: () {
+          onTap: () async {
             tracks.sort((a, b) => a.name.compareTo(b.name));
             notifyListeners();
+            await Storage().writeLocalsSort("A-Z");
           },
           title: "A-Z",
         ),
         const PullDownMenuDivider(),
         PullDownMenuItem(
-          onTap: () {
+          onTap: () async {
             tracks.sort((a, b) => b.name.compareTo(a.name));
             notifyListeners();
+            await Storage().writeLocalsSort("Z-A");
           },
           title: "Z-A",
         ),
         const PullDownMenuDivider(),
         PullDownMenuItem(
-          onTap: () {
+          onTap: () async {
             tracks
                 .sort((a, b) => primaryKey[a.id]!.compareTo(primaryKey[b.id]!));
             notifyListeners();
+            await Storage().writeLocalsSort("First added");
           },
-          title: "First added",
+          title: AppLocalizations.of(context)!.firstadded,
         ),
         const PullDownMenuDivider(),
         PullDownMenuItem(
-          onTap: () {
+          onTap: () async {
             tracks
                 .sort((a, b) => primaryKey[b.id]!.compareTo(primaryKey[a.id]!));
             notifyListeners();
+            await Storage().writeLocalsSort("Last added");
           },
-          title: "Last added",
+          title: AppLocalizations.of(context)!.lastadded,
         ),
       ],
       position: RelativeRect.fromLTRB(
@@ -208,7 +224,9 @@ class LocalsDataManager with ChangeNotifier {
                 (track) => PlaylistHandlerOfflineTrack(
                   id: track.id,
                   name: track.name,
-                  artist: track.artists.map((artist) => artist.name).join(', '),
+                  artist: track.artists
+                      .map((artist) => {"id": artist.id, "name": artist.name})
+                      .toList(),
                   cover: track.image != null ? track.image!.path : "",
                   playlistHandlerCoverType: PlaylistHandlerCoverType.bytes,
                   filePath: track.image != null ? track.image!.path : "",

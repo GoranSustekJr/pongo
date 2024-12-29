@@ -20,7 +20,6 @@ Future<int?> querySyncTimeDlay(DatabaseHelper dbHelper, String stid) async {
   Database db = await dbHelper.database;
   final result = await db.query("lyrics_sync_time_delay",
       columns: ["sync_time_delay"], where: "stid = ?", whereArgs: [stid]);
-  print("Result; $result");
 
   return result.isNotEmpty ? result[0]["sync_time_delay"] as int : null;
 }

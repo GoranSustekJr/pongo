@@ -35,6 +35,7 @@ class Storage {
   static String queueIndexKey = "QUEUEINDEXKEY";
   static String currentPLayingPositionKey = "CURRENTPLAYINGPOSITIONKEY";
   static String cacheImagesKey = "CACHEIMAGESKEY";
+  static String localsSortKey = "LOCALSSORTKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -480,6 +481,20 @@ class Storage {
       return false;
     } else {
       return key == "true";
+    }
+  }
+
+  // Locals sort
+  Future<void> writeLocalsSort(String localsSort) async {
+    await storage.write(key: localsSortKey, value: localsSort.toString());
+  }
+
+  Future<String> getLocalsSort() async {
+    String? key = await storage.read(key: localsSortKey);
+    if (key == null) {
+      return "A-Z";
+    } else {
+      return key;
     }
   }
 

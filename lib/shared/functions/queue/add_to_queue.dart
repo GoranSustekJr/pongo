@@ -111,6 +111,9 @@ class AddToQueue {
                   : '',
             ),
             extras: {
+              "artists": jsonEncode(track.artists
+                  .map((artist) => {"id": artist.id, "name": artist.name})
+                  .toList()),
               "released": track.album != null ? track.album!.releaseDate : "",
             },
           );
@@ -135,6 +138,9 @@ class AddToQueue {
               : '',
         ),
         extras: {
+          "artists": jsonEncode(track.artists
+              .map((artist) => {"id": artist.id, "name": artist.name})
+              .toList()),
           "released": track.album != null ? track.album!.releaseDate : "",
         },
       );
@@ -182,6 +188,9 @@ class AddToQueue {
                   : '',
             ),
             extras: {
+              "artists": jsonEncode(track.artists
+                  .map((artist) => {"id": artist.id, "name": artist.name})
+                  .toList()),
               "released": track.album != null ? track.album!.releaseDate : "",
             },
           );
@@ -214,6 +223,9 @@ class AddToQueue {
               : '',
         ),
         extras: {
+          "artists": jsonEncode(track.artists
+              .map((artist) => {"id": artist.id, "name": artist.name})
+              .toList()),
           "released": track.album != null ? track.album!.releaseDate : "",
         },
       );
@@ -269,6 +281,9 @@ class AddToQueue {
                   : '',
             ),
             extras: {
+              "artists": jsonEncode(track.artists
+                  .map((artist) => {"id": artist.id, "name": artist.name})
+                  .toList()),
               "released": track.album != null ? track.album!.releaseDate : "",
             },
           );
@@ -300,6 +315,9 @@ class AddToQueue {
               : '',
         ),
         extras: {
+          "artists": jsonEncode(track.artists
+              .map((artist) => {"id": artist.id, "name": artist.name})
+              .toList()),
           "released": track.album != null ? track.album!.releaseDate : "",
         },
       );

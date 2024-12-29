@@ -4,6 +4,7 @@ import '../../../../exports.dart';
 class PlayShuffleHaltLocalPlaylist extends StatefulWidget {
   final int lpid;
   final List missingTracks;
+  final bool allSelected;
   final bool loadingShuffle;
   final bool edit;
   final Widget frontWidget;
@@ -15,6 +16,7 @@ class PlayShuffleHaltLocalPlaylist extends StatefulWidget {
   final Function() addToPlaylist;
   final Function() show;
   final Function() hide;
+  final Function() selectAll;
   const PlayShuffleHaltLocalPlaylist({
     super.key,
     required this.lpid,
@@ -30,6 +32,8 @@ class PlayShuffleHaltLocalPlaylist extends StatefulWidget {
     required this.addToPlaylist,
     required this.show,
     required this.hide,
+    required this.allSelected,
+    required this.selectAll,
   });
 
   @override
@@ -60,6 +64,14 @@ class _PlayShuffleHaltLocalPlaylistState
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                      iconButton(
+                        widget.allSelected
+                            ? AppIcons.checkmark
+                            : AppIcons.uncheckmark,
+                        Colors.white,
+                        widget.selectAll,
+                        edgeInsets: EdgeInsets.zero,
+                      ),
                       iconButton(
                         AppIcons.musicAlbums,
                         Colors.white,

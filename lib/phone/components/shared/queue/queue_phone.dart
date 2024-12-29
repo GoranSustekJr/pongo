@@ -86,6 +86,9 @@ class _QueuePhoneState extends State<QueuePhone> {
                           changeShowQueue: widget.changeShowQueue,
                           changeEditQueue: () {
                             setState(() {
+                              if (editQueue == true) {
+                                selectedQueueIndexes.clear();
+                              }
                               editQueue = !editQueue;
                             });
                           },
@@ -119,7 +122,14 @@ class _QueuePhoneState extends State<QueuePhone> {
                                     return PlaylistHandlerOnlineTrack(
                                       id: track.id.split('.')[2],
                                       name: track.title,
-                                      artist: track.artist ?? "",
+                                      artist: track.artist != null
+                                          ? (jsonDecode(
+                                                      track.extras!["artists"])
+                                                  as List)
+                                              .map((e) =>
+                                                  e as Map<String, dynamic>)
+                                              .toList()
+                                          : [],
                                       cover: track.artUri.toString(),
                                       playlistHandlerCoverType: track.artUri
                                               .toString()

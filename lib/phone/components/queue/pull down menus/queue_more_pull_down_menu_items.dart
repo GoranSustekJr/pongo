@@ -41,7 +41,7 @@ List<PullDownMenuEntry> queueMorePullDownMenuItems(
           ),
           const PullDownMenuDivider(),
           PullDownMenuItem(
-            onTap: () async {},
+            onTap: download,
             title: AppLocalizations.of(context)!.download,
             icon: AppIcons.download,
             itemTheme: const PullDownMenuItemTheme(

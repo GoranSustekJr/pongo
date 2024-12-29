@@ -13,6 +13,7 @@ class PlaylistHandlerBodyPhone extends StatefulWidget {
   final List<PlaylistHandlerTrack>? playlistHandlerTracks;
   final bool showCreatePlaylist;
   final bool onlyCreatePlaylist;
+  final bool working;
   final List currentPlaylists;
   final List<MemoryImage?> currentPlaylistsCoverImages;
   final TextEditingController titleController;
@@ -42,6 +43,7 @@ class PlaylistHandlerBodyPhone extends StatefulWidget {
     this.newPlaylistCover,
     required this.titleController,
     required this.onChanged,
+    required this.working,
   });
 
   @override
@@ -126,7 +128,9 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
                       textButton(
                         AppLocalizations.of(context)!.cancel,
                         () {
-                          playlistHandler.value = null;
+                          if (!widget.working) {
+                            playlistHandler.value = null;
+                          }
                         },
                         const TextStyle(color: Colors.white),
                         edgeInsets: EdgeInsets.zero,
@@ -158,47 +162,48 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
             ),
           ),
         ),
-        SelectedTracksPhone(
-          show: widget.showCreatePlaylist ||
-              widget.onlyCreatePlaylist ||
-              widget.playlistHandlerTracks == null,
-          playlistHandlerTracks: widget.playlistHandlerTracks!,
-          height: height,
-          onVerticalDragEnd: (details) {
-            // Set a threshold for the drag distance
-            const dragThreshold = 10;
+        if (widget.playlistHandlerTracks != null)
+          SelectedTracksPhone(
+            show: widget.showCreatePlaylist ||
+                widget.onlyCreatePlaylist ||
+                widget.playlistHandlerTracks == null,
+            playlistHandlerTracks: widget.playlistHandlerTracks!,
+            height: height,
+            onVerticalDragEnd: (details) {
+              // Set a threshold for the drag distance
+              const dragThreshold = 10;
 
-            setState(() {
-              // Check if the drag distance exceeds the threshold
-              if (details.primaryVelocity != null &&
-                  details.primaryVelocity! < -dragThreshold) {
-                // If dragged up, snap to full height
-                height = 0;
-              } else if (details.primaryVelocity != null &&
-                  details.primaryVelocity! < dragThreshold) {
-                // If dragged down, snap back to bottom
-                height = size.height / 2.5;
-              } else {
-                // If not enough velocity, check current height to decide snap
-                if (height > dragThreshold) {
-                  height = size.height / 2.5; // Snap to full height
+              setState(() {
+                // Check if the drag distance exceeds the threshold
+                if (details.primaryVelocity != null &&
+                    details.primaryVelocity! < -dragThreshold) {
+                  // If dragged up, snap to full height
+                  height = 0;
+                } else if (details.primaryVelocity != null &&
+                    details.primaryVelocity! < dragThreshold) {
+                  // If dragged down, snap back to bottom
+                  height = size.height / 2.5;
                 } else {
-                  height = 0; // Snap to bottom
+                  // If not enough velocity, check current height to decide snap
+                  if (height > dragThreshold) {
+                    height = size.height / 2.5; // Snap to full height
+                  } else {
+                    height = 0; // Snap to bottom
+                  }
                 }
-              }
-            });
-          },
-          onVerticalDragUpdate: (details) {
-            setState(() {
-              height += details.delta.dy;
-              if (height > size.height / 2.5) {
-                height = size.height / 2.5;
-              } else if (height < 0) {
-                height = 0;
-              }
-            });
-          },
-        ),
+              });
+            },
+            onVerticalDragUpdate: (details) {
+              setState(() {
+                height += details.delta.dy;
+                if (height > size.height / 2.5) {
+                  height = size.height / 2.5;
+                } else if (height < 0) {
+                  height = 0;
+                }
+              });
+            },
+          ),
       ],
     );
   }

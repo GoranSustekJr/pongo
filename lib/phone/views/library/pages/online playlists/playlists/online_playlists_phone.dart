@@ -99,12 +99,14 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                             CupertinoIcons.add,
                             () {
                               OpenPlaylist().show(
-                                  context,
-                                  PlaylistHandler(
-                                      type: PlaylistHandlerType.online,
-                                      function: PlaylistHandlerFunction
-                                          .createPlaylist,
-                                      track: []));
+                                context,
+                                PlaylistHandler(
+                                  type: PlaylistHandlerType.online,
+                                  function:
+                                      PlaylistHandlerFunction.createPlaylist,
+                                  track: null,
+                                ),
+                              );
                             },
                           ),
                         ],

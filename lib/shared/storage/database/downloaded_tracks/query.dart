@@ -28,3 +28,23 @@ Future<bool> downloadedTrckAlreadyExists(
   // If result is not empty, the track exists
   return result.isNotEmpty;
 }
+
+Future<List<String>> queryMssingStids(
+    List<String> stids, DatabaseHelper dbHelper) async {
+  String placeholders = List.generate(stids.length, (_) => '?').join(', ');
+
+  Database db = await dbHelper.database;
+
+  List<Map<String, dynamic>> results = await db.rawQuery(
+    "SELECT stid FROM downloaded_tracks WHERE stid IN ($placeholders)",
+    stids,
+  );
+
+  List<String> exsitingStids =
+      results.map((row) => row['stid'] as String).toList();
+
+  List<String> missingStids =
+      stids.where((stid) => !exsitingStids.contains(stid)).toList();
+
+  return missingStids;
+}

@@ -116,7 +116,6 @@ class _LocalsBodyPhoneState extends State<LocalsBodyPhone> {
 
                           if (playNew) {
                             changeTrackOnTap.value = true;
-                            print("object");
                             widget.localsDataManager.play(index: index);
                           } else if (skipTo &&
                               (audioServiceHandler.playlist.length - 1) >=

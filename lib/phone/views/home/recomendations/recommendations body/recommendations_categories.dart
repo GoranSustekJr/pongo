@@ -91,7 +91,7 @@ class RecommendationsCategories extends StatelessWidget {
                         print(dataManager.categories[index].id);
                         if (searchDataManagr.value != null) {
                           searchDataManagr.value!.search(
-                            "tag:${dataManager.categories[index].name}",
+                            dataManager.categories[index].name,
                           );
                           navigationBarIndex.value = 0;
                           searchBarIsSearching.value = true;

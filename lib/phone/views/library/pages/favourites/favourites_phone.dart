@@ -178,7 +178,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
               id: "library.newTracks.${newTracks[i].id}",
               title: newTracks[i].name,
               artist:
-                  newTracks[i].artists.map((artist) => artist.name).join(', '),
+                  favourites[i].artists.map((artist) => artist.name).join(', '),
               album: newTracks[i].album != null
                   ? "${newTracks[i].album!.id}..Ææ..${newTracks[i].album!.name}"
                   : "..Ææ..",
@@ -191,6 +191,10 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                     : '',
               ),
               extras: {
+                "artists": jsonEncode(favourites[i]
+                    .artists
+                    .map((artist) => {"id": artist.id, "name": artist.name})
+                    .toList()),
                 "released": newTracks[i].album != null
                     ? newTracks[i].album!.releaseDate
                     : "",
@@ -327,6 +331,10 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
               ),
               extras: {
                 //"blurhash": blurHash,
+                "artists": jsonEncode(favourites[i]
+                    .artists
+                    .map((artist) => {"id": artist.id, "name": artist.name})
+                    .toList()),
                 "released": favourites[i].album != null
                     ? favourites[i].album!.releaseDate
                     : "",
@@ -386,6 +394,10 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                 : '',
           ),
           extras: {
+            "artists": jsonEncode(favourites[i]
+                .artists
+                .map((artist) => {"id": artist.id, "name": artist.name})
+                .toList()),
             "released": favourites[i].album != null
                 ? favourites[i].album!.releaseDate
                 : "",
@@ -401,6 +413,42 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
       setState(() {
         loadingShuffle = false;
       });
+    }
+  }
+
+  // Download the tracks/playlist
+  void download() async {
+    if (selectedTracks.isNotEmpty) {
+      // Get the tracks that need to be downloaded
+      List<String> toDownload =
+          await DatabaseHelper().queryMissingStids(selectedTracks);
+
+      // Open playlist helper and add them to a playlist or create a new playlist
+      OpenPlaylist().show(
+        context,
+        PlaylistHandler(
+          toDownload: toDownload,
+          type: PlaylistHandlerType.offline,
+          function: PlaylistHandlerFunction.addToPlaylist,
+          track: favourites
+              .where((track) => selectedTracks.contains(track.id))
+              .map(
+            (track) {
+              return PlaylistHandlerOnlineTrack(
+                id: track.id,
+                name: track.name,
+                artist: track.artists
+                    .map((artist) => {"id": artist.id, "name": artist.name})
+                    .toList(),
+                cover: calculateBestImageForTrack(
+                  track.album!.images,
+                ),
+                playlistHandlerCoverType: PlaylistHandlerCoverType.url,
+              );
+            },
+          ).toList(),
+        ),
+      );
     }
   }
 
@@ -548,6 +596,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                       selectedTracks.clear();
                                     });
                                   },
+                                  download: download,
                                   unfavourite: () async {
                                     if (selectedTracks.isNotEmpty) {
                                       CustomButton ok =
@@ -582,9 +631,11 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                               id: favourite.id,
                                               name: favourite.name,
                                               artist: favourite.artists
-                                                  .map((artist) => artist.name)
-                                                  .toList()
-                                                  .join(', '),
+                                                  .map((artist) => {
+                                                        "id": artist.id,
+                                                        "name": artist.name
+                                                      })
+                                                  .toList(),
                                               cover:
                                                   calculateWantedResolutionForTrack(
                                                       favourite.album != null

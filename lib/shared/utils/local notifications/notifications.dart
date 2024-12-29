@@ -78,7 +78,7 @@ class Notifications {
       context: context,
       title: AppLocalizations.of(context)!.warning,
       message: message,
-      icon: CupertinoIcons.exclamationmark_triangle,
+      icon: AppIcons.warning,
       backgroundColor: Col.primaryCard,
       durationInSeconds: 5,
     );

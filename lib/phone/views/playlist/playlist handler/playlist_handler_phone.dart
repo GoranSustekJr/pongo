@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/playlist/playlist%20handler/playlist_handler_body_phone.dart';
 import 'package:http/http.dart' as http;
+import 'package:pongo/shared/utils/API%20requests/download.dart';
 
 class PlaylistHandlerPhone extends StatefulWidget {
   final PlaylistHandler playlistHandler;
@@ -29,6 +30,9 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
 
   // Online playlist
   bool onlinePlaylist = false;
+
+  // Working
+  bool working = false;
 
   @override
   void initState() {
@@ -208,18 +212,29 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
               appBar: AppBar(),
               body: PlaylistHandlerBodyPhone(
                 playlistHandlerTracks: widget.playlistHandler.track,
+                working: working,
                 createPlaylistFunction: () async {
-                  if (titleController.value.text.trim() != "") {
-                    List<Map> titless =
-                        await DatabaseHelper().queryAllOnlinePlaylistsTitles();
-                    List<String> titles = titless
-                        .map((title) => title["title"] as String)
-                        .toList();
+                  if (!working) {
+                    setState(() {
+                      working = true;
+                    });
+                    if (titleController.value.text.trim() != "") {
+                      List<Map> titless = [];
+                      if (widget.playlistHandler.type ==
+                          PlaylistHandlerType.online) {
+                        titless = await DatabaseHelper()
+                            .queryAllOnlinePlaylistsTitles();
+                      } else {
+                        titless = await DatabaseHelper()
+                            .queryAllLocalPlaylistsTitles();
+                      }
+                      List<String> titles = titless
+                          .map((title) => title["title"] as String)
+                          .toList();
+                      bool titleDoesntExist =
+                          !titles.contains(titleController.value.text.trim());
 
-                    if (!titles.contains(titleController.value.text.trim())) {
-                      // If adding and creating
-                      if (widget.playlistHandler.track != null) {
-                        print(newPlaylistCover);
+                      if (titleDoesntExist) {
                         Uint8List? bytes = newPlaylistCover != null
                             ? newPlaylistCover.runtimeType == String
                                 ? newPlaylistCover
@@ -233,86 +248,227 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                                         .bodyBytes
                                 : await newPlaylistCover.readAsBytes()
                             : null;
-                        if (widget.playlistHandler.type ==
-                            PlaylistHandlerType.online) {
-                          int opid = await DatabaseHelper()
-                              .insertOnlinePlaylist(
-                                  titleController.value.text.trim(), bytes);
-                          if (widget.playlistHandler.track != null) {
-                            if (widget.playlistHandler.track!.isEmpty) {
-                              playlistHandler.value = null;
-                            } else {
-                              for (int i = 0;
-                                  i < widget.playlistHandler.track!.length;
-                                  i++) {
-                                await DatabaseHelper().insertOnlineTrackId(
-                                    opid, widget.playlistHandler.track![i].id);
-                                if (i ==
-                                    widget.playlistHandler.track!.length - 1) {
-                                  playlistHandler.value = null;
+
+                        // If adding and creating
+                        if (widget.playlistHandler.track != null) {
+                          if (widget.playlistHandler.type ==
+                              PlaylistHandlerType.online) {
+                            int opid = await DatabaseHelper()
+                                .insertOnlinePlaylist(
+                                    titleController.value.text.trim(), bytes);
+                            if (widget.playlistHandler.track != null) {
+                              if (widget.playlistHandler.track!.isEmpty) {
+                                playlistHandler.value = null;
+                              } else {
+                                for (int i = 0;
+                                    i < widget.playlistHandler.track!.length;
+                                    i++) {
+                                  await DatabaseHelper().insertOnlineTrackId(
+                                      opid,
+                                      widget.playlistHandler.track![i].id);
+                                  if (i ==
+                                      widget.playlistHandler.track!.length -
+                                          1) {
+                                    playlistHandler.value = null;
+                                  }
                                 }
+                              }
+                            }
+                          } else {
+                            if (widget.playlistHandler.toDownload.isEmpty) {
+                              int lpid = await DatabaseHelper()
+                                  .insertLocalPlaylist(
+                                      titleController.value.text.trim(), bytes);
+                              if (widget.playlistHandler.track != null) {
+                                if (widget.playlistHandler.track!.isEmpty) {
+                                  playlistHandler.value = null;
+                                } else {
+                                  for (int i = 0;
+                                      i < widget.playlistHandler.track!.length;
+                                      i++) {
+                                    await DatabaseHelper().insertLocalTrackId(
+                                        lpid,
+                                        widget.playlistHandler.track![i].id);
+                                    if (i ==
+                                        widget.playlistHandler.track!.length -
+                                            1) {
+                                      print("object");
+                                      playlistHandler.value = null;
+                                    }
+                                  }
+                                }
+                              }
+                            } else {
+                              try {
+                                // Download and add
+                                Notifications().showSpecialNotification(
+                                    context,
+                                    AppLocalizations.of(context)!.downloading,
+                                    AppLocalizations.of(context)!
+                                        .downloadhasstarted,
+                                    AppIcons.download);
+
+                                final downloaded = await Download().playlist(
+                                    context, widget.playlistHandler.toDownload);
+
+                                for (String stid in downloaded.keys) {
+                                  PlaylistHandlerTrack track = widget
+                                      .playlistHandler.track!
+                                      .where((track) => track.id == stid)
+                                      .first;
+                                  await Download().singleWithoutAPI(
+                                    stid,
+                                    base64Decode(downloaded[stid][1]),
+                                    downloaded[stid][0],
+                                    track.cover,
+                                    track.name,
+                                    track.artist,
+                                  );
+                                }
+                                // Add the tracks
+                                int lpid = await DatabaseHelper()
+                                    .insertLocalPlaylist(
+                                        titleController.value.text.trim(),
+                                        bytes);
+                                if (widget.playlistHandler.track!.length == 1) {
+                                  await DatabaseHelper().insertLocalTrackId(
+                                      lpid,
+                                      widget.playlistHandler.track![0].id);
+                                } else {
+                                  for (var track
+                                      in widget.playlistHandler.track!) {
+                                    await DatabaseHelper()
+                                        .insertLocalTrackId(lpid, track.id);
+                                  }
+                                }
+
+                                // Notify the user
+                                Notifications().showSpecialNotification(
+                                    context,
+                                    AppLocalizations.of(context)!.successful,
+                                    AppLocalizations.of(context)!
+                                        .downloadsucceeded,
+                                    AppIcons.download);
+                              } catch (e) {
+                                print(e);
+                                Notifications().showSpecialNotification(
+                                    context,
+                                    AppLocalizations.of(context)!.error,
+                                    AppLocalizations.of(context)!
+                                        .downloadfailed,
+                                    AppIcons.warning);
                               }
                             }
                           }
                         } else {
-                          int lpid = await DatabaseHelper().insertLocalPlaylist(
-                              titleController.value.text.trim(), bytes);
-                          if (widget.playlistHandler.track != null) {
-                            if (widget.playlistHandler.track!.isEmpty) {
-                              playlistHandler.value = null;
-                            } else {
-                              for (int i = 0;
-                                  i < widget.playlistHandler.track!.length;
-                                  i++) {
-                                await DatabaseHelper().insertLocalTrackId(
-                                    lpid, widget.playlistHandler.track![i].id);
-                                if (i ==
-                                    widget.playlistHandler.track!.length - 1) {
-                                  print("object");
-                                  playlistHandler.value = null;
-                                }
-                              }
-                            }
+                          if (widget.playlistHandler.type ==
+                              PlaylistHandlerType.online) {
+                            await DatabaseHelper().insertOnlinePlaylist(
+                                titleController.value.text.trim(), bytes);
+                          } else {
+                            await DatabaseHelper().insertLocalPlaylist(
+                                titleController.value.text.trim(), bytes);
                           }
                         }
+                        playlistHandler.value = null;
+                      } else {
+                        Notifications().showWarningNotification(
+                            context,
+                            AppLocalizations.of(context)!
+                                .playlistnamealreadyexists);
                       }
-                    } else {
-                      Notifications().showWarningNotification(
-                          context,
-                          AppLocalizations.of(context)!
-                              .playlistnamealreadyexists);
                     }
                   }
                 },
                 titleController: titleController,
                 addTracksToPlalists: () async {
-                  if (widget.playlistHandler.type ==
-                      PlaylistHandlerType.online) {
-                    for (int opid in selectedPlaylists) {
-                      if (widget.playlistHandler.track!.length == 1) {
-                        await DatabaseHelper().insertOnlineTrackId(
-                            opid, widget.playlistHandler.track![0].id);
+                  if (!working && selectedPlaylists.isNotEmpty) {
+                    setState(() {
+                      working = true;
+                    });
+                    if (widget.playlistHandler.type ==
+                        PlaylistHandlerType.online) {
+                      for (int opid in selectedPlaylists) {
+                        if (widget.playlistHandler.track!.length == 1) {
+                          await DatabaseHelper().insertOnlineTrackId(
+                              opid, widget.playlistHandler.track![0].id);
+                        } else {
+                          for (var track in widget.playlistHandler.track!) {
+                            await DatabaseHelper()
+                                .insertOnlineTrackId(opid, track.id);
+                          }
+                        }
+                      }
+                    } else {
+                      if (widget.playlistHandler.toDownload.isEmpty) {
+                        for (int lpid in selectedPlaylists) {
+                          if (widget.playlistHandler.track!.length == 1) {
+                            await DatabaseHelper().insertLocalTrackId(
+                                lpid, widget.playlistHandler.track![0].id);
+                          } else {
+                            for (var track in widget.playlistHandler.track!) {
+                              await DatabaseHelper()
+                                  .insertLocalTrackId(lpid, track.id);
+                            }
+                          }
+                        }
                       } else {
-                        for (var track in widget.playlistHandler.track!) {
-                          await DatabaseHelper()
-                              .insertOnlineTrackId(opid, track.id);
+                        try {
+                          // Download and add
+                          Notifications().showSpecialNotification(
+                              context,
+                              AppLocalizations.of(context)!.downloading,
+                              AppLocalizations.of(context)!.downloadhasstarted,
+                              AppIcons.download);
+
+                          final downloaded = await Download().playlist(
+                              context, widget.playlistHandler.toDownload);
+
+                          for (String stid in downloaded.keys) {
+                            PlaylistHandlerTrack track = widget
+                                .playlistHandler.track!
+                                .where((track) => track.id == stid)
+                                .first;
+                            await Download().singleWithoutAPI(
+                              stid,
+                              base64Decode(downloaded[stid][1]),
+                              downloaded[stid][0],
+                              track.cover,
+                              track.name,
+                              track.artist,
+                            );
+                          }
+                          // Add the tracks
+                          for (int opid in selectedPlaylists) {
+                            if (widget.playlistHandler.track!.length == 1) {
+                              await DatabaseHelper().insertLocalTrackId(
+                                  opid, widget.playlistHandler.track![0].id);
+                            } else {
+                              for (var track in widget.playlistHandler.track!) {
+                                await DatabaseHelper()
+                                    .insertLocalTrackId(opid, track.id);
+                              }
+                            }
+                          }
+
+                          // Notify the user
+                          Notifications().showSpecialNotification(
+                              context,
+                              AppLocalizations.of(context)!.successful,
+                              AppLocalizations.of(context)!.downloadsucceeded,
+                              AppIcons.download);
+                        } catch (e) {
+                          print(e);
+                          Notifications().showSpecialNotification(
+                              context,
+                              AppLocalizations.of(context)!.error,
+                              AppLocalizations.of(context)!.downloadfailed,
+                              AppIcons.warning);
                         }
                       }
                     }
-                  } else {
-                    for (int opid in selectedPlaylists) {
-                      if (widget.playlistHandler.track!.length == 1) {
-                        await DatabaseHelper().insertLocalTrackId(
-                            opid, widget.playlistHandler.track![0].id);
-                      } else {
-                        for (var track in widget.playlistHandler.track!) {
-                          await DatabaseHelper()
-                              .insertLocalTrackId(opid, track.id);
-                        }
-                      }
-                    }
+                    playlistHandler.value = null;
                   }
-                  playlistHandler.value = null;
                 },
                 newPlaylistCover: newPlaylistCover,
                 currentPlaylists: currentPlaylists,
@@ -321,10 +477,10 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                 playlistTrackMap: playlistTrackMap,
 
                 showCreatePlaylist: showCreatePlaylist ||
-                    playlistHandler.value!.function ==
+                    playlistHandler.value?.function ==
                         PlaylistHandlerFunction
                             .createPlaylist, // When not on create playlist page
-                onlyCreatePlaylist: playlistHandler.value!.function ==
+                onlyCreatePlaylist: playlistHandler.value?.function ==
                     PlaylistHandlerFunction
                         .createPlaylist, // When not only showing the create playlist page
                 changeCreatePlaylist: () {

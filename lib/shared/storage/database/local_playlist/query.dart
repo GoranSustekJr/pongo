@@ -3,7 +3,7 @@ import 'package:pongo/exports.dart';
 Future<List<Map<String, dynamic>>> queryAllLoclPlaylists(
     DatabaseHelper dbHelper) async {
   Database db = await dbHelper.database;
-  return await db.query('local_playlist');
+  return await db.query('local_playlist', orderBy: 'lpid DESC');
 }
 
 Future<List<Map<String, dynamic>>> queryAllLoclPlaylistsTitles(
@@ -15,8 +15,7 @@ Future<List<Map<String, dynamic>>> queryAllLoclPlaylistsTitles(
 Future<List<Map<String, dynamic>>> queryLoclTracksForPlaylist(
     DatabaseHelper dbHelper, int lpid) async {
   Database db = await dbHelper.database;
-  final check = await db.rawQuery("SELECT * FROM lpid_track_id");
-  print(" CHECL; $check");
+
   final result = await db.rawQuery(
     '''
     SELECT ltid.track_id, ltid.order_number, ltid.hidden, dt.id, dt.stid, dt.audio, dt.artists, dt.title, dt.duration, dt.image

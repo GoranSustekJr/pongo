@@ -107,6 +107,8 @@ dependencies:
   flutter_native_splash: ^2.4.3
   device_info_plus: ^10.1.2
   intro_slider: ^4.2.1
+  sticky_az_list: ^0.0.7
+
   
 
 dependency_overrides:

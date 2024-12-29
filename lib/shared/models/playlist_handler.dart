@@ -2,9 +2,14 @@ class PlaylistHandler {
   final PlaylistHandlerType type;
   final PlaylistHandlerFunction function;
   final List<PlaylistHandlerTrack>? track;
+  List<String> toDownload;
 
-  PlaylistHandler(
-      {required this.type, required this.function, required this.track});
+  PlaylistHandler({
+    required this.type,
+    required this.function,
+    required this.track,
+    this.toDownload = const [],
+  });
 }
 
 enum PlaylistHandlerType { online, offline }
@@ -16,7 +21,7 @@ enum PlaylistHandlerCoverType { url, bytes }
 abstract class PlaylistHandlerTrack {
   final String id;
   final String name;
-  final String artist;
+  final List<Map<String, dynamic>> artist;
   final String cover;
   final PlaylistHandlerCoverType playlistHandlerCoverType;
 

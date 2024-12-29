@@ -115,7 +115,6 @@ class LocalPlaylistDataManager with ChangeNotifier {
     Map<String, bool> hiddn = {};
 
     for (var trackk in trackss) {
-      print(trackk.keys);
       stidList.add(trackk["stid"]);
       hiddn[trackk["stid"]] = (trackk["hidden"] == 1);
       durations[trackk["stid"]] = trackk["duration"];
@@ -326,7 +325,9 @@ class LocalPlaylistDataManager with ChangeNotifier {
                 (track) => PlaylistHandlerOfflineTrack(
                   id: track.id,
                   name: track.name,
-                  artist: track.artists.map((artist) => artist.name).join(', '),
+                  artist: track.artists
+                      .map((artist) => {"id": artist.id, "name": artist.name})
+                      .toList(),
                   cover: track.image != null ? track.image!.path : "",
                   playlistHandlerCoverType: PlaylistHandlerCoverType.bytes,
                   filePath: track.image != null ? track.image!.path : "",
@@ -364,6 +365,17 @@ class LocalPlaylistDataManager with ChangeNotifier {
       stid,
     );
     DatabaseHelper().updateLocalPlaylistOrder(lpid, stids);
+    notifyListeners();
+  }
+
+  // Select all tracks
+  selectAll() {
+    if (selectedStids.length != tracks.length) {
+      selectedStids.clear();
+      selectedStids.addAll(tracks.map((track) => track.id));
+    } else {
+      selectedStids.clear();
+    }
     notifyListeners();
   }
 }

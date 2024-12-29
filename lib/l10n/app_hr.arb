@@ -180,8 +180,14 @@
     "areyousurezouwanttodeleteyouraccount": "Jesi li siguran da želiš izbrisati svoj račun?",
     "skip": "Preskoči",
     "next": "Sljedeće",
-    "done": "Gotovo"
-
+    "done": "Gotovo",
+    "error": "Greška",
+    "downloadsucceeded": "Preuzimanje uspješno",
+    "downloadfailed": "Preuzimanje nije uspjelo",
+    "downloading": "Preuzimanje",
+    "downloadhasstarted": "Preuzimanje je započelo. NE ZATVARAJTE APLIKACIJU!",
+    "firstadded": "Prvo dodano",
+    "lastadded": "Posljednje dodano"
 
 
 }

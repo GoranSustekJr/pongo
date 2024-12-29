@@ -114,6 +114,10 @@ class PlayMultiple {
                 : '',
           ),
           extras: {
+            "artists": jsonEncode(tracks[i]
+                .artists
+                .map((artist) => {"id": artist.id, "name": artist.name})
+                .toList()),
             "online": online,
             "released":
                 tracks[i].album != null ? tracks[i].album!.releaseDate : "",
@@ -173,7 +177,12 @@ class PlayMultiple {
         artUri:
             tracks[i].image != null ? Uri.file(tracks[i].image!.path) : null,
         extras: {
-          "online": online,
+          "artists": jsonEncode(tracks[i]
+              .artists
+              .map((artist) => {"id": artist.id, "name": artist.name})
+              .toList()),
+          "audio": tracks[i].audio,
+          "downloaded": "true",
           "released":
               tracks[i].album != null ? tracks[i].album!.releaseDate : "",
         },

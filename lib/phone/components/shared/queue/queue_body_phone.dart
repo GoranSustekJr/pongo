@@ -88,6 +88,7 @@ class QueueBodyPhone extends StatelessWidget {
                             int ind = shuffleModeEnabled
                                 ? shuffleIndices[index]
                                 : index;
+
                             return QueueTile(
                               key: ValueKey(ind),
                               title: queue![ind].title,
@@ -180,6 +181,63 @@ class QueueBodyPhone extends StatelessWidget {
                       removeItemsFromQueue: removeItemsFromQueue,
                       changeLyricsOn: changeLyricsOn,
                       saveAsPlaylist: saveAsPlaylist,
+                      download: () async {
+                        if (queue != null) {
+                          List<String> selectedStids = [];
+                          for (int i = 0; i < queue!.length; i++) {
+                            int ind =
+                                shuffleModeEnabled ? shuffleIndices[i] : i;
+
+                            if (selectedQueueIndexes.contains(ind)) {
+                              selectedStids.add(queue![ind].id.split('.')[2]);
+                            }
+                          }
+                          if (selectedStids.isEmpty) {
+                            selectedStids = queue!
+                                .map((mediaItem) => mediaItem.id.split('.')[2])
+                                .toList();
+                          }
+
+                          // Get the tracks that need to be downloaded
+                          List<String> toDownload = await DatabaseHelper()
+                              .queryMissingStids(selectedStids);
+
+                          // Open playlist helper and add them to a playlist or create a new playlist
+                          OpenPlaylist().show(
+                            context,
+                            PlaylistHandler(
+                              toDownload: toDownload,
+                              type: PlaylistHandlerType.offline,
+                              function: PlaylistHandlerFunction.addToPlaylist,
+                              track: queue!.where((track) {
+                                print(selectedStids);
+                                print(track.id.split('.')[2]);
+                                return selectedStids
+                                    .contains(track.id.split('.')[2]);
+                              }).map(
+                                (track) {
+                                  return PlaylistHandlerOnlineTrack(
+                                    id: track.id.split('.')[2],
+                                    name: track.title,
+                                    artist: (jsonDecode(
+                                            track.extras!["artists"]) as List)
+                                        .map((e) => e as Map<String, dynamic>)
+                                        .toList(),
+                                    cover: track.artUri != null
+                                        ? track.artUri.toString()
+                                        : "",
+                                    playlistHandlerCoverType: track.artUri
+                                            .toString()
+                                            .contains('file:///')
+                                        ? PlaylistHandlerCoverType.bytes
+                                        : PlaylistHandlerCoverType.url,
+                                  );
+                                },
+                              ).toList(),
+                            ),
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),

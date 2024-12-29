@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:spotify_api/spotify_api.dart' as sp;
 
 class LocalsTile extends StatelessWidget {
   final Track track;
@@ -93,7 +92,7 @@ class LocalsTile extends StatelessWidget {
                   ),
                   razh(2.5),
                   Text(
-                    track.artists.map((artist) => artist.name).join(', '),
+                    (track.artists.map((artist) => artist.name).join(', ')),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(

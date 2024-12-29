@@ -155,18 +155,22 @@ class LocalsPhone extends StatelessWidget {
                                   child: localsDataManager.tracks.isNotEmpty
                                       ? SizedBox(
                                           key: const ValueKey(true),
-                                          child:
-                                              localsDataManager.tracks.isEmpty
-                                                  ? Column(
-                                                      children: [
-                                                        razh(size.height / 3),
-                                                        const Text("Empty"),
-                                                      ],
-                                                    )
-                                                  : LocalsBodyPhone(
-                                                      localsDataManager:
-                                                          localsDataManager,
-                                                    ),
+                                          child: localsDataManager
+                                                  .tracks.isEmpty
+                                              ? Column(
+                                                  children: [
+                                                    razh(size.height / 3),
+                                                    iconButton(
+                                                        AppIcons.musicAlbums,
+                                                        Colors.white,
+                                                        localsDataManager
+                                                            .newTracks),
+                                                  ],
+                                                )
+                                              : LocalsBodyPhone(
+                                                  localsDataManager:
+                                                      localsDataManager,
+                                                ),
                                         )
                                       : SingleChildScrollView(
                                           key: const ValueKey(false),

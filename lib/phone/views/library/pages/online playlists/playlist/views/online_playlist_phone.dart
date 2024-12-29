@@ -423,9 +423,8 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                   id: track.id,
                   name: track.name,
                   artist: track.artists
-                      .map((artist) => artist.name)
-                      .toList()
-                      .join(', '),
+                      .map((artist) => {"id": artist.id, "name": artist.name})
+                      .toList(),
                   cover: calculateWantedResolutionForTrack(
                       track.album != null
                           ? track.album!.images
@@ -465,6 +464,52 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
       );
       DatabaseHelper().updateOnlinePlaylistOrder(widget.opid, stids);
     });
+  }
+
+  // Select all stids
+  selectAll() {
+    setState(() {
+      if (selectedStids.length != tracks.length) {
+        selectedStids.clear();
+        selectedStids.addAll(tracks.map((track) => track.id));
+      } else {
+        selectedStids.clear();
+      }
+    });
+  }
+
+  // Download the tracks/playlist
+  void download() async {
+    if (selectedStids.isNotEmpty) {
+      // Get the tracks that need to be downloaded
+      List<String> toDownload =
+          await DatabaseHelper().queryMissingStids(selectedStids);
+
+      // Open playlist helper and add them to a playlist or create a new playlist
+      OpenPlaylist().show(
+        context,
+        PlaylistHandler(
+          toDownload: toDownload,
+          type: PlaylistHandlerType.offline,
+          function: PlaylistHandlerFunction.addToPlaylist,
+          track: tracks.where((track) => selectedStids.contains(track.id)).map(
+            (track) {
+              return PlaylistHandlerOnlineTrack(
+                id: track.id,
+                name: track.name,
+                artist: track.artists
+                    .map((artist) => {"id": artist.id, "name": artist.name})
+                    .toList(),
+                cover: calculateBestImageForTrack(
+                  track.album!.images,
+                ),
+                playlistHandlerCoverType: PlaylistHandlerCoverType.url,
+              );
+            },
+          ).toList(),
+        ),
+      );
+    }
   }
 
   @override
@@ -532,6 +577,8 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                         missingTracks: missingTracks,
                                         loadingShuffle: loadingShuffle,
                                         edit: edit,
+                                        allSelected: selectedStids.length ==
+                                            tracks.length,
                                         frontWidget: const SizedBox(),
                                         endWidget: const SizedBox(),
                                         play: () {
@@ -543,6 +590,8 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                         addToPlaylist: addToPlaylist,
                                         show: showSelected,
                                         hide: hideSelected,
+                                        selectAll: selectAll,
+                                        download: download,
                                       ),
                                     ),
                                   ),

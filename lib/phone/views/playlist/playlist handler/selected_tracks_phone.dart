@@ -92,7 +92,10 @@ class SelectedTracksPhone extends StatelessWidget {
                                     height: 22,
                                   ),
                                   marquee(
-                                    "${playlistHandlerTracks[0].artist}  ",
+                                    playlistHandlerTracks[0]
+                                        .artist
+                                        .map((artist) => artist["name"])
+                                        .join(', '),
                                     const TextStyle(
                                       color: Colors.white,
                                       fontSize: 15,
@@ -172,10 +175,10 @@ class SelectedTracksPhone extends StatelessWidget {
                                                           .cover,
                                                     )
                                                   : FileImage(
-                                                      File(
+                                                      File.fromUri(Uri.parse(
                                                           playlistHandlerTracks[
                                                                   index]
-                                                              .cover),
+                                                              .cover)),
                                                     ),
                                             ),
                                           ),
@@ -198,7 +201,7 @@ class SelectedTracksPhone extends StatelessWidget {
                                                   height: 22,
                                                 ),
                                                 marquee(
-                                                  "${track.artist}  ",
+                                                  "${playlistHandlerTracks[index].artist.map((artist) => artist["name"]).join(', ')}  ",
                                                   const TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 15,

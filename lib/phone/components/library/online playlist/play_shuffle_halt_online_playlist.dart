@@ -7,6 +7,7 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
   final List missingTracks;
   final bool loadingShuffle;
   final bool edit;
+  final bool allSelected;
   final Widget frontWidget;
   final Widget endWidget;
   final Function() play;
@@ -16,6 +17,8 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
   final Function() addToPlaylist;
   final Function() show;
   final Function() hide;
+  final Function() selectAll;
+  final Function() download;
   const PlayShuffleHaltOnlinePlaylist({
     super.key,
     required this.opid,
@@ -31,6 +34,9 @@ class PlayShuffleHaltOnlinePlaylist extends StatefulWidget {
     required this.addToPlaylist,
     required this.show,
     required this.hide,
+    required this.allSelected,
+    required this.selectAll,
+    required this.download,
   });
 
   @override
@@ -64,7 +70,9 @@ class _PlayShuffleHaltOnlinePlaylistState
                       iconButton(
                         AppIcons.download,
                         Colors.white,
-                        () {},
+                        () {
+                          widget.download();
+                        },
                         edgeInsets: EdgeInsets.zero,
                       ),
                       iconButton(
@@ -73,6 +81,14 @@ class _PlayShuffleHaltOnlinePlaylistState
                         () {
                           widget.addToPlaylist();
                         },
+                        edgeInsets: EdgeInsets.zero,
+                      ),
+                      iconButton(
+                        widget.allSelected
+                            ? AppIcons.checkmark
+                            : AppIcons.uncheckmark,
+                        Colors.white,
+                        widget.selectAll,
                         edgeInsets: EdgeInsets.zero,
                       ),
                       if (kIsApple)

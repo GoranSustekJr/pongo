@@ -36,7 +36,11 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                         PlaylistHandlerOnlineTrack(
                           id: mediaItem.id.split('.')[2],
                           name: mediaItem.title,
-                          artist: mediaItem.artist ?? "",
+                          artist: mediaItem.artist != null
+                              ? (jsonDecode(mediaItem.artist!) as List)
+                                  .map((e) => e as Map<String, dynamic>)
+                                  .toList()
+                              : [],
                           cover: mediaItem.artUri.toString(),
                           playlistHandlerCoverType:
                               !mediaItem.artUri.toString().contains('file:///')

@@ -24,10 +24,6 @@ Future<int?> insertLoclTrackId(
   );
 
   if (existingRows.isNotEmpty) {
-    Notifications().showWarningNotification(
-        searchScreenContext.value!,
-        AppLocalizations.of(mainContext.value!)!
-            .playlistalreadycontainsthistrack);
     return null;
   }
 

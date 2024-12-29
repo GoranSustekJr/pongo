@@ -49,9 +49,9 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
                         id: track.id,
                         name: track.name,
                         artist: track.artists
-                            .map((artist) => artist.name)
-                            .toList()
-                            .join(', '),
+                            .map((artist) =>
+                                {"id": artist.id, "name": artist.name})
+                            .toList(),
                         cover: calculateWantedResolutionForTrack(
                             track.album != null
                                 ? track.album!.images

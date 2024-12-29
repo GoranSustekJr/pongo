@@ -9,6 +9,7 @@ class Track {
   final AlbumTrack? album;
   final LocalImage? image;
   final TrackType type;
+  String? audio;
   Track({
     required this.id,
     required this.name,
@@ -16,7 +17,13 @@ class Track {
     required this.album,
     this.image,
     this.type = TrackType.online,
+    this.audio,
   });
+
+  /*  // Create a map of Artist
+  static List<Map<String, dynamic>> toJsonArtist(Track track) {
+    return track.artists.map((artist) => artist.toJson()).toList();
+  } */
 
   // Creata a Track from a Map
   factory Track.fromMap(Map<String, dynamic> map) {
@@ -39,6 +46,7 @@ class Track {
 
   // Convert local track to a Track object
   factory Track.fromMapLocal(Map<String, dynamic> map) {
+    print(map.keys);
     return Track(
       id: map["stid"],
       name: map["title"],
@@ -48,6 +56,7 @@ class Track {
       album: null,
       type: TrackType.offline,
       image: map["image"] != null ? LocalImage(path: map["image"]) : null,
+      audio: map["audio"],
     );
   }
 

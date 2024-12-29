@@ -898,6 +898,41 @@
     "done": "Done",
     "@done": {
         "description": "done"
+    },
+
+    "error": "Error",
+    "@error": {
+        "description": "error"
+    },
+
+    "downloadsucceeded": "Download succedeed",
+    "@downloadsucceeded": {
+        "description": "downloadsucceeded"
+    },
+
+    "downloadfailed": "Download failed",
+    "@downloadfailed": {
+        "description": "downloadfailed"
+    },
+
+    "downloading": "Downloading",
+    "@downloading": {
+        "description": "downloading"
+    },
+
+    "downloadhasstarted": "Download has started. DO NOT CLOSE THE APP!",
+    "@downloadhasstarted": {
+        "description": "downloadhasstarted"
+    },
+
+    "firstadded": "First added",
+    "@firstadded": {
+        "description": "firstadded"
+    },
+
+    "lastadded": "Last added",
+    "@lastadded": {
+        "description": "lastadded"
     }
 
 }
