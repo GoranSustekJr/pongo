@@ -10,6 +10,11 @@ Future<void> configureMacosWindowUtils() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Ads
+  MobileAds.instance.initialize();
+  MobileAds.instance.updateRequestConfiguration(
+      RequestConfiguration(testDeviceIds: ["00000000-0000-0000-0000-000000"]));
+
   // Audio Session Configuration
   final session = await AudioSession.instance;
   await session.configure(const AudioSessionConfiguration.music());

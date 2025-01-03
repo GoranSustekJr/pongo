@@ -41,6 +41,8 @@ export 'package:pongo/phone/views/home/search%20bar/search_bar_android_phone.dar
 export 'package:pongo/phone/views/home/search%20bar/search_bar_ios_phone.dart';
 export 'package:pongo/phone/views/home/search%20history/search_history_phone.dart';
 export 'package:pongo/phone/views/home/search/search_phone.dart';
+export 'package:pongo/phone/alerts/delete%20account/delete_account_alert.dart';
+export 'package:pongo/shared/utils/API%20requests/delete_account.dart';
 
 export 'shared/api/api.dart';
 export 'shared/components/components.dart';
@@ -120,3 +122,4 @@ export 'package:flutter_platform_alert/flutter_platform_alert.dart';
 export 'package:blurhash_ffi/blurhash.dart';
 export 'package:image_cropper/image_cropper.dart';
 export 'package:image_picker/image_picker.dart';
+export 'package:google_mobile_ads/google_mobile_ads.dart';

@@ -1,6 +1,3 @@
-import 'package:pongo/phone/alerts/delete%20account/delete_account_alert.dart';
-import 'package:pongo/shared/utils/API%20requests/delete_account.dart';
-
 import '../../../../exports.dart';
 
 class ProfilePhone extends StatefulWidget {
@@ -23,14 +20,57 @@ class _ProfilePhoneState extends State<ProfilePhone>
   // Locale
   String locale = "en";
 
+  // Ad
+  InterstitialAd? interstitialAd;
+
+  String adUnitId =
+      "ca-app-pub-3940256099942544/4411468910"; // "ca-app-pub-3931049547680648/4444030128";
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showBottomNavBar.value = false;
     });
+    loadAdd();
     initUserData();
     initLocale();
+  }
+
+  void loadAdd() async {
+    await InterstitialAd.load(
+        adUnitId: adUnitId,
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          // Called when an ad is successfully received.
+          onAdLoaded: (ad) {
+            ad.fullScreenContentCallback = FullScreenContentCallback(
+                // Called when the ad showed the full screen content.
+                onAdShowedFullScreenContent: (ad) {},
+                // Called when an impression occurs on the ad.
+                onAdImpression: (ad) {},
+                // Called when the ad failed to show full screen content.
+                onAdFailedToShowFullScreenContent: (ad, err) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when the ad dismissed full screen content.
+                onAdDismissedFullScreenContent: (ad) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when a click is recorded for an ad.
+                onAdClicked: (ad) {});
+
+            debugPrint('$ad loaded.');
+            // Keep a reference to the ad so you can show it later.
+            interstitialAd = ad;
+          },
+          // Called when an ad request failed.
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('InterstitialAd failed to load: $error');
+          },
+        ));
   }
 
   @override
@@ -186,6 +226,15 @@ class _ProfilePhoneState extends State<ProfilePhone>
                             },
                                 const TextStyle(
                                     color: Colors.white, fontSize: 18)),
+                            textButton(
+                              "Get an ad",
+                              () async {
+                                // Ad
+
+                                await interstitialAd!.show();
+                              },
+                              const TextStyle(),
+                            ),
                           ],
                         ),
                       ),
