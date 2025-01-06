@@ -43,6 +43,10 @@ export 'package:pongo/phone/views/home/search%20history/search_history_phone.dar
 export 'package:pongo/phone/views/home/search/search_phone.dart';
 export 'package:pongo/phone/alerts/delete%20account/delete_account_alert.dart';
 export 'package:pongo/shared/utils/API%20requests/delete_account.dart';
+export 'package:pongo/phone/views/library/library_main_phone.dart';
+export 'package:pongo/phone/views/playing%20details/playing_details_phone.dart';
+export 'package:pongo/phone/views/playlist/playlist%20handler/playlist_handler_phone.dart';
+export 'package:pongo/phone/views/settings/settings_main_phone.dart';
 
 export 'shared/api/api.dart';
 export 'shared/components/components.dart';

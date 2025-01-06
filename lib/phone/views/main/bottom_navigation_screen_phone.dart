@@ -1,9 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/views/library/library_main_phone.dart';
-import 'package:pongo/phone/views/playing%20details/playing_details_phone.dart';
-import 'package:pongo/phone/views/playlist/playlist%20handler/old%20online%20handler/online_playlist_handler_phone.dart';
-import 'package:pongo/phone/views/playlist/playlist%20handler/playlist_handler_phone.dart';
-import 'package:pongo/phone/views/settings/settings_main_phone.dart';
 import '../bottom navigation bar/bottom_navigation_bar.dart';
 import '../home/home_main_phone.dart';
 
@@ -53,10 +48,13 @@ class _BottomNavigationScreenPhoneState
         builder: (context, index, child) {
           return Stack(
             children: [
+              // The views
               IndexedStack(
                 index: navigationBarIndex.value,
                 children: pages,
               ),
+
+              // Playing details view
               ValueListenableBuilder(
                 valueListenable: currentTrackHeight,
                 builder: (context, index, child) {
@@ -137,6 +135,8 @@ class _BottomNavigationScreenPhoneState
                   );
                 },
               ),
+
+              // Playlist handler view
               ValueListenableBuilder(
                 valueListenable: playlistHandler,
                 builder: (context, value, child) {

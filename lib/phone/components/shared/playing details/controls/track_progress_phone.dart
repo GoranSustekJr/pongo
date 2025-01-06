@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:interactive_slider_path/interactive_slider.dart' as isf;
 import '../../../../../exports.dart';
 
@@ -8,6 +7,7 @@ class TrackProgressPhone extends StatefulWidget {
   final String released;
   final Duration? duration;
   final Function(String) showAlbum;
+
   const TrackProgressPhone({
     super.key,
     required this.album,
@@ -62,12 +62,11 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
     return StreamBuilder<Duration>(
       stream: audioServiceHandler.audioPlayer.positionStream,
       builder: (context, position) {
-        // Verhindern von mehrfachen Berechnungen
+        // Update progress only if there's a change
         if (position.hasData && widget.duration != null) {
           double progress =
               position.data!.inSeconds / widget.duration!.inSeconds;
           if (progress != progressNotifier.value) {
-            // Nur wenn der Fortschritt sich ändert, aktualisieren
             progressController.value = progress;
             updateProgress(progress);
           }
@@ -77,17 +76,16 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
           padding: const EdgeInsets.symmetric(vertical: 15),
           child: Column(
             children: [
-              // Slider für den Fortschritt
+              // Progress slider widget
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: 15,
                 child: isf.InteractiveSlider(
                   padding: EdgeInsets.zero,
-                  initialProgress: 0.5,
+                  initialProgress: progressNotifier.value,
                   controller: progressController,
                   focusedHeight: 11.5,
                   onProgressUpdated: (position) async {
-                    // Fortschritt aktualisieren
                     updateProgress(position);
                     await audioServiceHandler.seek(
                       Duration(
@@ -97,7 +95,8 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                   },
                 ),
               ),
-              // Zeitanzeige und Albuminformation
+
+              // Time display and album name
               SizedBox(
                 width: MediaQuery.of(context).size.width - 35,
                 height: 30,

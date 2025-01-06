@@ -33,41 +33,52 @@ class MediaItemManager with ChangeNotifier {
     currentMediaItemId = mediaItem.id.split(".")[2];
     currentMediaItem = mediaItem;
 
-    print("Shit");
+    // Blurhash
+    try {
+      blurhash = mediaItem.artUri != null
+          ? await BlurhashFFI.encode(
+              currentMediaItem!.artUri.toString().contains("file:///")
+                  ? FileImage(File(currentMediaItem!.artUri!.toFilePath()))
+                  : NetworkImage(currentMediaItem!.artUri.toString()),
+              componentX: 3,
+              componentY: 3)
+          : AppConstants().BLURHASH;
+      currentBlurhash.value = blurhash;
+    } catch (e) {
+      print(e);
+    }
+    // Add to track history
     await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
 
     final internetConnectivityHandler =
         Provider.of<InternetConnectivityHandler>(context, listen: false);
 
     // Fetch lyrics and update blurhash asynchronously.
-    if (enableLyrics.value && internetConnectivityHandler.isConnected) {
-      final lyrics = await TrackMetadata().getLyrics(
-        context,
-        mediaItem.title,
-        mediaItem.artist ?? "",
-        mediaItem.duration?.inSeconds.toDouble() ?? 0,
-        mediaItem.album ?? "",
-      );
+    try {
+      if (enableLyrics.value && internetConnectivityHandler.isConnected) {
+        final lyrics = await TrackMetadata().getLyrics(
+          context,
+          mediaItem.title,
+          mediaItem.artist ?? "",
+          mediaItem.duration?.inSeconds.toDouble() ?? 0,
+          mediaItem.album ?? "",
+        );
 
-      int? syncDelayDb =
-          await DatabaseHelper().querySyncTimeDelay(currentMediaItemId!);
-      syncTimeDelay = syncDelayDb ?? 0;
+        int? syncDelayDb =
+            await DatabaseHelper().querySyncTimeDelay(currentMediaItemId!);
+        syncTimeDelay = syncDelayDb ?? 0;
 
-      plainLyrics = lyrics["plainLyrics"] ?? "";
-      syncedLyrics = lyrics["syncedLyrics"] ?? "";
-    } else {
+        plainLyrics = lyrics["plainLyrics"] ?? "";
+        syncedLyrics = lyrics["syncedLyrics"] ?? "";
+      } else {
+        plainLyrics = "";
+        syncedLyrics = "";
+      }
+    } catch (e) {
       plainLyrics = "";
       syncedLyrics = "";
+      print(e);
     }
-    blurhash = mediaItem.artUri != null
-        ? await BlurhashFFI.encode(
-            currentMediaItem!.artUri.toString().contains("file:///")
-                ? FileImage(File(currentMediaItem!.artUri!.toFilePath()))
-                : NetworkImage(currentMediaItem!.artUri.toString()),
-            componentX: 3,
-            componentY: 3)
-        : AppConstants().BLURHASH;
-    currentBlurhash.value = blurhash;
 
     notifyListeners();
   }

@@ -150,9 +150,28 @@ class LocalsPhone extends StatelessWidget {
                                 ),
                               ),
                               SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 10),
+                                  child: CupertinoSearchTextField(
+                                    controller:
+                                        localsDataManager.searchController,
+                                    focusNode: localsDataManager.focusNode,
+                                    onChanged: localsDataManager.onSearched,
+                                    onSuffixTap: localsDataManager.clearSearch,
+                                    placeholder:
+                                        AppLocalizations.of(context)!.search,
+                                    backgroundColor:
+                                        Col.primaryCard.withAlpha(150),
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              SliverToBoxAdapter(
                                 child: AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 300),
-                                  child: localsDataManager.tracks.isNotEmpty
+                                  child: localsDataManager
+                                          .tracksBackup.isNotEmpty
                                       ? SizedBox(
                                           key: const ValueKey(true),
                                           child: localsDataManager

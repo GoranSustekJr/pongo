@@ -30,28 +30,38 @@ class _LyricsPhoneState extends State<LyricsPhone> {
         key: ValueKey("${widget.plainLyrics}${enableLyrics.value}"),
         width: MediaQuery.of(context).size.width,
         child: AnimatedOpacity(
-          opacity: widget.lyricsOn ? 1 : 0,
-          duration: Duration(milliseconds: widget.lyricsOn ? 500 : 200),
-          child: !enableLyrics.value
-              ? Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.lyricsdisabled,
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 25),
-                  ),
-                )
-              : !widget.useSyncedLyrics
-                  ? TrackPlainLyricsPhone(
-                      key: const ValueKey(true), lyrics: widget.plainLyrics)
-                  : TrackSyncLyricsPhone(
-                      key: const ValueKey(false),
-                      lyricsOn: widget.lyricsOn,
-                      lyrics: widget.syncedLyrics,
-                      syncTimeDelay: widget.syncTimeDelay,
+            opacity: widget.lyricsOn ? 1 : 0,
+            duration: Duration(milliseconds: widget.lyricsOn ? 500 : 200),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 350),
+              child: widget.lyricsOn
+                  ? SizedBox(
+                      key: const ValueKey(true),
+                      child: !enableLyrics.value
+                          ? Center(
+                              child: Text(
+                                AppLocalizations.of(context)!.lyricsdisabled,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 25),
+                              ),
+                            )
+                          : !widget.useSyncedLyrics
+                              ? TrackPlainLyricsPhone(
+                                  key: const ValueKey(true),
+                                  lyrics: widget.plainLyrics)
+                              : TrackSyncLyricsPhone(
+                                  key: const ValueKey(false),
+                                  lyricsOn: widget.lyricsOn,
+                                  lyrics: widget.syncedLyrics,
+                                  syncTimeDelay: widget.syncTimeDelay,
+                                ),
+                    )
+                  : const SizedBox(
+                      key: ValueKey(false),
                     ),
-        ),
+            )),
       ),
     );
   }

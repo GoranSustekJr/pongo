@@ -25,7 +25,7 @@ class AudioServiceHandler extends BaseAudioHandler
     try {
       audioPlayer.playbackEventStream.listen(broadcastState);
       audioPlayer.setAudioSource(playlist);
-      listenForNewTracks();
+      //listenForNewTracks();
       audioPlayer.processingStateStream.listen((state) async {
         if (state == ProcessingState.completed) {
           if (queue.value.length - 1 == audioPlayer.currentIndex) {

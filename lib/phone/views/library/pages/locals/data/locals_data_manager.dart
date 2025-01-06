@@ -18,6 +18,9 @@ class LocalsDataManager with ChangeNotifier {
   // Tracks
   List<Track> tracks = [];
 
+  // Tracks backup
+  List<Track> tracksBackup = [];
+
   // Scroll controller
   ScrollController scrollController = ScrollController();
 
@@ -32,6 +35,12 @@ class LocalsDataManager with ChangeNotifier {
 
   // Selected track
   List<String> selectedTracks = [];
+
+  // Search focus node
+  FocusNode focusNode = FocusNode();
+
+  // Search controller
+  TextEditingController searchController = TextEditingController();
 
   void init() async {
     // Get the number of tracks
@@ -55,6 +64,7 @@ class LocalsDataManager with ChangeNotifier {
     }
 
     tracks = Track.fromMapListLocal(trackss);
+    tracksBackup = tracks;
 
     if (sort == "A-Z") {
       tracks.sort((a, b) => a.name.compareTo(b.name));
@@ -236,5 +246,37 @@ class LocalsDataManager with ChangeNotifier {
         ),
       );
     }
+  }
+
+  // On searched
+  void onSearched(String value) {
+    if (value.isEmpty) {
+      tracks = tracksBackup;
+    } else {
+      final byName = tracks
+          .where((track) => track.name.toLowerCase().contains(value))
+          .toList();
+      final byArtist = tracks
+          .where((track) =>
+              !byName.contains(
+                  track) && // Do not include tracks are already filtered
+              track.artists
+                  .map((artist) => artist.name)
+                  .join(', ')
+                  .toLowerCase()
+                  .contains(value))
+          .toList();
+
+      tracks = [...byName, ...byArtist];
+    }
+
+    notifyListeners();
+  }
+
+  // Clear the search
+  clearSearch() {
+    searchController.text = '';
+    onSearched('');
+    notifyListeners();
   }
 }
