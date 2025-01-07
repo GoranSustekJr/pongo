@@ -161,7 +161,7 @@ class Storage {
   Future<bool> getUseSyncedLyrics() async {
     String? key = await storage.read(key: useSyncedLyricsKey);
     if (key == null) {
-      return false;
+      return true;
     } else {
       return key == "true";
     }

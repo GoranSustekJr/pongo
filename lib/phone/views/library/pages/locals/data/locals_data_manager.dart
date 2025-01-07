@@ -253,10 +253,11 @@ class LocalsDataManager with ChangeNotifier {
     if (value.isEmpty) {
       tracks = tracksBackup;
     } else {
-      final byName = tracks
-          .where((track) => track.name.toLowerCase().contains(value))
+      final byName = tracksBackup
+          .where(
+              (track) => track.name.toLowerCase().contains(value.toLowerCase()))
           .toList();
-      final byArtist = tracks
+      final byArtist = tracksBackup
           .where((track) =>
               !byName.contains(
                   track) && // Do not include tracks are already filtered
@@ -264,7 +265,7 @@ class LocalsDataManager with ChangeNotifier {
                   .map((artist) => artist.name)
                   .join(', ')
                   .toLowerCase()
-                  .contains(value))
+                  .contains(value.toLowerCase()))
           .toList();
 
       tracks = [...byName, ...byArtist];

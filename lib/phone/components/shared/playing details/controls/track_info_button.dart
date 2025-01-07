@@ -25,8 +25,8 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                         as AudioServiceHandler;
                 final MediaItem? mediaItem =
                     audioServiceHandler.mediaItem.value;
-
                 if (mediaItem != null) {
+                  print(mediaItem.extras);
                   OpenPlaylist().show(
                     context,
                     PlaylistHandler(
@@ -37,7 +37,8 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                           id: mediaItem.id.split('.')[2],
                           name: mediaItem.title,
                           artist: mediaItem.artist != null
-                              ? (jsonDecode(mediaItem.artist!) as List)
+                              ? (jsonDecode(mediaItem.extras!["artists"])
+                                      as List)
                                   .map((e) => e as Map<String, dynamic>)
                                   .toList()
                               : [],

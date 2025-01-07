@@ -56,7 +56,7 @@ class Download {
         name = track.name;
       } else if (track.runtimeType == MediaItem) {
         id = track.id.split('.')[2];
-        artists = (jsonDecode(track.artist) as List)
+        artists = (jsonDecode(track.extras!["artists"]) as List)
             .map((e) => e as Map<String, dynamic>)
             .toList();
         imageUrl = track.artUri?.toString();
@@ -94,6 +94,7 @@ class Download {
                 );
 
                 if (response.statusCode == 200) {
+                  print("object");
                   // If successful request
                   final audio = response.bodyBytes;
 
@@ -166,7 +167,8 @@ class Download {
       }
     } catch (e) {
       Notifications().showWarningNotification(notificationsContext.value!,
-          AppLocalizations.of(mainContext.value!)!.downloadfailed);
+          AppLocalizations.of(notificationsContext.value!)!.downloadfailed);
+      print(e);
     }
   }
 

@@ -74,9 +74,16 @@ class TrackImagePhone extends StatelessWidget {
                                           duration: const Duration(
                                               milliseconds: 1000),
                                           child: image != ""
-                                              ? ImageCompatible(image: image)
+                                              ? SizedBox(
+                                                  height: size.width - 60,
+                                                  width: size.width - 60,
+                                                  child: ImageCompatible(
+                                                    image: image,
+                                                  ),
+                                                )
                                               : SizedBox(
-                                                  height: size.width,
+                                                  height: size.width - 60,
+                                                  width: size.width - 60,
                                                   child: Center(
                                                     child: Icon(
                                                       AppIcons.blankTrack,
