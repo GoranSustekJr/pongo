@@ -94,7 +94,6 @@ class Download {
                 );
 
                 if (response.statusCode == 200) {
-                  print("object");
                   // If successful request
                   final audio = response.bodyBytes;
 
