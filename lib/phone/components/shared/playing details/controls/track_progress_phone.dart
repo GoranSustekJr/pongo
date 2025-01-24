@@ -73,7 +73,7 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
         }
 
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
+          padding: const EdgeInsets.only(top: 10, bottom: 5),
           child: Column(
             children: [
               // Progress slider widget

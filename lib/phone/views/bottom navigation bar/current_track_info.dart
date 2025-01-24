@@ -46,7 +46,7 @@ class _TrackInfoState extends State<TrackInfo> {
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.decelerate,
-                margin: const EdgeInsets.fromLTRB(24, 0, 24, 11),
+                margin: const EdgeInsets.fromLTRB(5, 0, 5, 11),
                 padding: const EdgeInsets.all(1),
                 height: currentMediaItem == null || playbackState.data == null
                     ? 55
@@ -178,7 +178,7 @@ class _TrackInfoState extends State<TrackInfo> {
                                                         MediaQuery.of(context)
                                                                 .size
                                                                 .width -
-                                                            48,
+                                                            10,
                                                     color: Colors.transparent,
                                                     child: Column(
                                                       children: [
@@ -188,7 +188,7 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                       context)
                                                                   .size
                                                                   .width -
-                                                              48,
+                                                              10,
                                                           padding:
                                                               const EdgeInsets
                                                                   .symmetric(
@@ -299,21 +299,18 @@ class _TrackInfoState extends State<TrackInfo> {
                                                               const Expanded(
                                                                   child:
                                                                       SizedBox()),
-                                                              RepaintBoundary(
-                                                                child:
-                                                                    PlayPauseMini(
-                                                                  playbackState:
-                                                                      playbackState,
-                                                                  function: () {
-                                                                    if (playing) {
-                                                                      audioServiceHandler
-                                                                          .pause();
-                                                                    } else {
-                                                                      audioServiceHandler
-                                                                          .play();
-                                                                    }
-                                                                  },
-                                                                ),
+                                                              PlayPauseMini(
+                                                                playbackState:
+                                                                    playbackState,
+                                                                function: () {
+                                                                  if (playing) {
+                                                                    audioServiceHandler
+                                                                        .pause();
+                                                                  } else {
+                                                                    audioServiceHandler
+                                                                        .play();
+                                                                  }
+                                                                },
                                                               ),
                                                             ],
                                                           ),

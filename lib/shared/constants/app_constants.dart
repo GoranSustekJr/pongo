@@ -1,9 +1,9 @@
 import 'package:pongo/exports.dart';
 
 class AppConstants {
-  static const String SERVER_URL = "https://gogodom.ddns.net:9090/";
+  static const String SERVER_URL = "https://gogodom.ddns.net:48129/";
 
-  static const String SERVER_URL_WSS = "wss://gogodom.ddns.net:9090/";
+  static const String SERVER_URL_WSS = "REMOVED";
 
   static const String LYRICS_URL = "https://lrclib.net/api/get?";
 

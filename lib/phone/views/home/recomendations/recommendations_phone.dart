@@ -157,12 +157,27 @@ class _RecommendationsPhoneState extends State<RecommendationsPhone> {
           builder: (context, dataManager, child) {
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 250),
-          child: dataManager.showBody
-              ? RecommendationsBodyPhone(dataManager: dataManager)
-              : RecommendedShimmer(
-                  history: dataManager.historyEnabled,
-                  categories: dataManager.categoriesEnabled,
-                ),
+          child: dataManager.failed
+              ? SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(AppLocalizations.of(context)!.error),
+                        iconButton(
+                            AppIcons.repeat, Colors.white, dataManager.init),
+                      ],
+                    ),
+                  ),
+                )
+              : dataManager.showBody
+                  ? RecommendationsBodyPhone(dataManager: dataManager)
+                  : RecommendedShimmer(
+                      history: dataManager.historyEnabled,
+                      categories: dataManager.categoriesEnabled,
+                    ),
         );
       }),
     );

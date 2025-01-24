@@ -33,12 +33,13 @@ class TrackControlsPhone extends StatelessWidget {
       duration: const Duration(milliseconds: 750),
       curve: Curves.decelerate,
       bottom: lyricsOn || showQueue
-          ? -50 - 50 - 30
+          ? -50 - 50 - 30 - 50 + MediaQuery.of(context).viewPadding.bottom + 30
           : (size.height -
                       (size.width - 60) -
                       380 -
                       MediaQuery.of(context).padding.top -
-                      30) /
+                      30 -
+                      15) /
                   2 -
               70,
       child: CupertinoButton(

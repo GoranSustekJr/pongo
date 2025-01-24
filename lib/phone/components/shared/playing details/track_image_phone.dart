@@ -24,12 +24,12 @@ class TrackImagePhone extends StatelessWidget {
               (MediaQuery.of(context).padding.top + 30 + size.width - 60),
       curve: Curves.decelerate,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: size.width - 60,
+              width: size.width - 40,
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
@@ -75,15 +75,15 @@ class TrackImagePhone extends StatelessWidget {
                                               milliseconds: 1000),
                                           child: image != ""
                                               ? SizedBox(
-                                                  height: size.width - 60,
-                                                  width: size.width - 60,
+                                                  height: size.width - 40,
+                                                  width: size.width - 40,
                                                   child: ImageCompatible(
                                                     image: image,
                                                   ),
                                                 )
                                               : SizedBox(
-                                                  height: size.width - 60,
-                                                  width: size.width - 60,
+                                                  height: size.width - 40,
+                                                  width: size.width - 40,
                                                   child: Center(
                                                     child: Icon(
                                                       AppIcons.blankTrack,

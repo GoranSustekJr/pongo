@@ -10,9 +10,14 @@ class RecommendationsDataManager with ChangeNotifier {
   // Show body
   bool showBody = false;
 
+  // Failed query
+  bool failed = false;
+
   // Bool recomendations disabled
   bool historyEnabled = true;
   bool categoriesEnabled = true;
+
+  //
 
   // Categories
   List<SpCategory> categories = [];
@@ -42,12 +47,17 @@ class RecommendationsDataManager with ChangeNotifier {
     if (historyEnabled || categoriesEnabled) {
       final data = await Recommendations().get(context);
 
-      // Set the categories
-      categories =
-          SpCategory.fromMapList(data["categories"]["categories"]["items"]);
+      print("data; ${data.runtimeType}");
+      if (data.isNotEmpty) {
+        // Set the categories
+        categories =
+            SpCategory.fromMapList(data["categories"]["categories"]["items"]);
 
-      // Set the history
-      history = Track.fromMapList(data["history"]["tracks"]);
+        // Set the history
+        history = Track.fromMapList(data["history"]["tracks"]);
+      } else {
+        failed = true;
+      }
     }
 
     showBody = true;

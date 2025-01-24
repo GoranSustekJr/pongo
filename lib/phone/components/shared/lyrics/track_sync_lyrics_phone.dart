@@ -43,6 +43,9 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   void initState() {
     super.initState();
 
+    // Get the current position
+    getCurrentPosition();
+
     // Start a timer that updates every 250 milliseconds
     _timer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
       final audioServiceHandler =
@@ -59,6 +62,21 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
           findCurrentLyricIndex(_currentPosition);
         }
       });
+    });
+  }
+
+  void getCurrentPosition() async {
+    final audioServiceHandler =
+        Provider.of<AudioHandler>(context, listen: false)
+            as AudioServiceHandler;
+
+    audioServiceHandler.positionStream.first.then((position) {
+      setState(() {
+        _currentPosition = position;
+      });
+      if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+        findCurrentLyricIndex(_currentPosition, first: true);
+      }
     });
   }
 
@@ -87,36 +105,68 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
   }
 
   // Find the index of the current lyric based on the position
-  findCurrentLyricIndex(Duration position) {
+  findCurrentLyricIndex(Duration position, {bool first = false}) {
     for (int i = 0; i < widget.lyrics.length - 1; i++) {
       final currentTimestamp = parseTimestamp(widget.lyrics[i]);
 
       if (currentTimestamp != null && widget.lyricsOn) {
-        if (position.inMilliseconds <=
-                currentTimestamp.inMilliseconds + 250 - widget.syncTimeDelay &&
-            position.inMilliseconds >=
-                currentTimestamp.inMilliseconds - 250 - widget.syncTimeDelay &&
-            !isUserScrolling) {
-          autoScrollController.scrollToIndex(
-            i,
-            duration: const Duration(milliseconds: 350),
-            preferPosition: 1 -
-                (((MediaQuery.of(context).size.height - 370)) /
-                    MediaQuery.of(context)
-                        .size
-                        .height), // 200 / MediaQuery.of(context).size.height
-          );
+        if (!first) {
+          if (position.inMilliseconds <=
+                  currentTimestamp.inMilliseconds +
+                      250 -
+                      widget.syncTimeDelay &&
+              position.inMilliseconds >=
+                  currentTimestamp.inMilliseconds -
+                      250 -
+                      widget.syncTimeDelay &&
+              !isUserScrolling) {
+            autoScrollController.scrollToIndex(
+              i,
+              duration: const Duration(milliseconds: 350),
+              preferPosition: 1 -
+                  (((MediaQuery.of(context).size.height - 385)) /
+                      MediaQuery.of(context)
+                          .size
+                          .height), // 200 / MediaQuery.of(context).size.height
+            );
 
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            setState(() {
-              currentLyricIndex = i;
-              if (i == 0) {
-                notifier.value = 1;
-              } else {
-                notifier.value = i.toDouble();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() {
+                  currentLyricIndex = i;
+                  if (i == 0) {
+                    notifier.value = 1;
+                  } else {
+                    notifier.value = i.toDouble();
+                  }
+                });
               }
             });
-          });
+          }
+        } else {
+          if (currentTimestamp.inMilliseconds >= position.inMilliseconds) {
+            if (mounted) {
+              autoScrollController.scrollToIndex(
+                i - 1,
+                duration: const Duration(milliseconds: 350),
+                preferPosition: 1 -
+                    (((MediaQuery.of(context).size.height - 385)) /
+                        MediaQuery.of(context)
+                            .size
+                            .height), // 200 / MediaQuery.of(context).size.height
+              );
+
+              setState(() {
+                currentLyricIndex = i - 1;
+                if (i == 0) {
+                  notifier.value = 1;
+                } else {
+                  notifier.value = i - 1.toDouble();
+                }
+              });
+            }
+            break;
+          }
         }
       }
     }
