@@ -46,7 +46,7 @@ class _TrackInfoState extends State<TrackInfo> {
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.decelerate,
-                margin: const EdgeInsets.fromLTRB(5, 0, 5, 11),
+                margin: const EdgeInsets.fromLTRB(10, 0, 10, 11),
                 padding: const EdgeInsets.all(1),
                 height: currentMediaItem == null || playbackState.data == null
                     ? 55
@@ -312,6 +312,7 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                   }
                                                                 },
                                                               ),
+                                                              razw(10)
                                                             ],
                                                           ),
                                                         ),

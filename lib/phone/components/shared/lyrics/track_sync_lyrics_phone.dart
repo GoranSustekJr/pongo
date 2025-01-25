@@ -145,24 +145,26 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
           }
         } else {
           if (currentTimestamp.inMilliseconds >= position.inMilliseconds) {
-            if (mounted) {
-              autoScrollController.scrollToIndex(
-                i - 1,
-                duration: const Duration(milliseconds: 350),
-                preferPosition: 1 -
-                    (((MediaQuery.of(context).size.height - 385)) /
-                        MediaQuery.of(context)
-                            .size
-                            .height), // 200 / MediaQuery.of(context).size.height
-              );
+            if (mounted && i != 0) {
+              Future.delayed(const Duration(milliseconds: 250), () {
+                autoScrollController.scrollToIndex(
+                  i - 1,
+                  duration: const Duration(milliseconds: 350),
+                  preferPosition: 1 -
+                      (((MediaQuery.of(context).size.height - 385)) /
+                          MediaQuery.of(context)
+                              .size
+                              .height), // 200 / MediaQuery.of(context).size.height
+                );
 
-              setState(() {
-                currentLyricIndex = i - 1;
-                if (i == 0) {
-                  notifier.value = 1;
-                } else {
-                  notifier.value = i - 1.toDouble();
-                }
+                setState(() {
+                  currentLyricIndex = i - 1;
+                  if (i == 0) {
+                    notifier.value = 1;
+                  } else {
+                    notifier.value = i - 1.toDouble();
+                  }
+                });
               });
             }
             break;

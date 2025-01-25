@@ -41,16 +41,17 @@ class SearchBodyPhone extends StatelessWidget {
                     AppBar().preferredSize.height +
                     20
                 : Scaffold.of(context).appBarMaxHeight! + 20,
-            // bottom: MediaQuery.of(context).padding.bottom,
+            bottom: MediaQuery.of(context).padding.bottom,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (artists.isNotEmpty)
+              if (artists.isNotEmpty && numberOfSearchArtists.value > 0)
                 searchResultText(
                     AppLocalizations.of(context)!.artists, suggestionHeader),
-              if (artists.isNotEmpty) razh(10),
-              if (artists.isNotEmpty)
+              if (artists.isNotEmpty && numberOfSearchArtists.value > 0)
+                razh(10),
+              if (artists.isNotEmpty && numberOfSearchArtists.value > 0)
                 ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: artists.length > numberOfSearchArtists.value
@@ -75,12 +76,13 @@ class SearchBodyPhone extends StatelessWidget {
                     );
                   },
                 ),
-              if (albums.isNotEmpty) razh(50),
-              if (albums.isNotEmpty)
+              if (artists.isNotEmpty && numberOfSearchArtists.value > 0)
+                razh(50),
+              if (albums.isNotEmpty && numberOfSearchAlbums.value > 0)
                 searchResultText(
                     AppLocalizations.of(context)!.albums, suggestionHeader),
-              if (albums.isNotEmpty) razh(10),
-              if (albums.isNotEmpty)
+              if (albums.isNotEmpty && numberOfSearchAlbums.value > 0) razh(10),
+              if (albums.isNotEmpty && numberOfSearchAlbums.value > 0)
                 ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: albums.length > numberOfSearchAlbums.value
@@ -105,12 +107,12 @@ class SearchBodyPhone extends StatelessWidget {
                     );
                   },
                 ),
-              if (tracks.isNotEmpty) razh(50),
-              if (tracks.isNotEmpty)
+              if (albums.isNotEmpty && numberOfSearchAlbums.value > 0) razh(50),
+              if (tracks.isNotEmpty && numberOfSearchTracks.value > 0)
                 searchResultText(
                     AppLocalizations.of(context)!.tracks, suggestionHeader),
-              if (tracks.isNotEmpty) razh(10),
-              if (tracks.isNotEmpty)
+              if (tracks.isNotEmpty && numberOfSearchTracks.value > 0) razh(10),
+              if (tracks.isNotEmpty && numberOfSearchTracks.value > 0)
                 ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: tracks.length > numberOfSearchTracks.value
@@ -230,12 +232,13 @@ class SearchBodyPhone extends StatelessWidget {
                     );
                   },
                 ),
-              if (playlists.isNotEmpty) razh(50),
-              if (playlists.isNotEmpty)
+              if (tracks.isNotEmpty && numberOfSearchTracks.value > 0) razh(50),
+              if (playlists.isNotEmpty && numberOfSearchPlaylists.value > 0)
                 searchResultText(
                     AppLocalizations.of(context)!.playlists, suggestionHeader),
-              if (playlists.isNotEmpty) razh(10),
-              if (playlists.isNotEmpty)
+              if (playlists.isNotEmpty && numberOfSearchPlaylists.value > 0)
+                razh(10),
+              if (playlists.isNotEmpty && numberOfSearchPlaylists.value > 0)
                 ListView.builder(
                   padding: EdgeInsets.only(
                       bottom: MediaQuery.of(context).padding.bottom),

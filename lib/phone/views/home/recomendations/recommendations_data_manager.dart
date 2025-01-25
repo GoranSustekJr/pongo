@@ -37,6 +37,8 @@ class RecommendationsDataManager with ChangeNotifier {
 
   // Init the manager
   Future<void> init() async {
+    failed = false;
+
     // Check if user wants to get recommendations
     bool getHistory = await Storage().getEnableHistory();
     bool getCatgories = await Storage().getEnableCategories();
