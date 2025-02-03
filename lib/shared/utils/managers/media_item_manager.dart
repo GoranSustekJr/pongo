@@ -27,7 +27,6 @@ class MediaItemManager with ChangeNotifier {
 
   Future<void> _onMediaItemChanged(MediaItem? mediaItem) async {
     if (mediaItem == null) return;
-    print("Mediaitem; $mediaItem");
     if (mediaItem.id.split('.')[2] == currentMediaItemId) return;
 
     currentMediaItemId = mediaItem.id.split(".")[2];
@@ -40,12 +39,12 @@ class MediaItemManager with ChangeNotifier {
               currentMediaItem!.artUri.toString().contains("file:///")
                   ? FileImage(File(currentMediaItem!.artUri!.toFilePath()))
                   : NetworkImage(currentMediaItem!.artUri.toString()),
-              componentX: 3,
-              componentY: 3)
+              componentX: 2,
+              componentY: 2)
           : AppConstants().BLURHASH;
       currentBlurhash.value = blurhash;
     } catch (e) {
-      print(e);
+      // print(e);
     }
     // Add to track history
     await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
@@ -77,7 +76,7 @@ class MediaItemManager with ChangeNotifier {
     } catch (e) {
       plainLyrics = "";
       syncedLyrics = "";
-      print(e);
+      // print(e);
     }
 
     notifyListeners();

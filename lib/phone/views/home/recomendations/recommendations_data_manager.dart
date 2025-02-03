@@ -49,14 +49,15 @@ class RecommendationsDataManager with ChangeNotifier {
     if (historyEnabled || categoriesEnabled) {
       final data = await Recommendations().get(context);
 
-      print("data; ${data.runtimeType}");
       if (data.isNotEmpty) {
         // Set the categories
         categories =
             SpCategory.fromMapList(data["categories"]["categories"]["items"]);
 
         // Set the history
-        history = Track.fromMapList(data["history"]["tracks"]);
+        if (data["history"] != null) {
+          history = Track.fromMapList(data["history"]["tracks"]);
+        }
       } else {
         failed = true;
       }

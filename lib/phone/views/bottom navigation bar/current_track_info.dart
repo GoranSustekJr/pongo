@@ -268,7 +268,7 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                             context)
                                                                         .size
                                                                         .width -
-                                                                    180,
+                                                                    145,
                                                                 child: Column(
                                                                   mainAxisSize:
                                                                       MainAxisSize

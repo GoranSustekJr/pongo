@@ -1,9 +1,7 @@
 import 'dart:ui';
-import 'package:blurhash_ffi/blurhash.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
-import 'package:pongo/shared/utils/API%20requests/artist.dart';
 import '../../../exports.dart';
 import 'artist_body_phone.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 class ArtistPhone extends StatefulWidget {
   final BuildContext context;
@@ -76,8 +74,6 @@ class _ArtistPhoneState extends State<ArtistPhone> {
 
     final List<Album> allAlbums =
         Album.fromMapList(data["albums"] as List<dynamic>);
-
-    print("All albums length; ${allAlbums.length}");
 
     setState(() {
       blurhash = blurHash;

@@ -10,9 +10,10 @@ signInButtonPhone(context, CustomPainter? painter, String txt, String who) {
             padding: const EdgeInsets.only(),
             onPressed: () {
               if (who == "Google") {
-                OAuth2().mobileSignIn(context);
+                OAuth2().mobileSignInGoogle(context);
               } else {
-                //SignInApple();
+                //SignInApple()
+                OAuth2().mobileSignInApple(context);
               }
             },
             child: Container(
@@ -66,9 +67,10 @@ signInButtonPhone(context, CustomPainter? painter, String txt, String who) {
             borderRadius: BorderRadius.circular(15),
             onTap: () {
               if (who == "Google") {
-                OAuth2().mobileSignIn(context);
+                OAuth2().mobileSignInGoogle(context);
               } else {
                 //SignInApple();
+                OAuth2().mobileSignInApple(context);
               }
             },
             child: Container(

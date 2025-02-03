@@ -23,7 +23,6 @@ class InternetConnectivityHandler {
         .listen((List<ConnectivityResult> result) {
       updateConnectionStatus(result);
     });
-    print(connectivityResult);
   }
 
   void updateConnectionStatus(List<ConnectivityResult> result) {

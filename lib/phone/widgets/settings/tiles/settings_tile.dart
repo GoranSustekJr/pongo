@@ -25,9 +25,7 @@ settingsTile(context, bool first, bool last, IconData icon,
               ),
               child: CupertinoButton(
                 padding: EdgeInsets.zero,
-                onPressed: () {
-                  function();
-                },
+                onPressed: function,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [

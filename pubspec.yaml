@@ -44,8 +44,8 @@ dependencies:
   spotify_api: ^3.0.0
   web_socket_channel: ^3.0.0
   in_app_notification: ^1.1.2
-  just_audio: ^0.9.42
-  audio_service: ^0.18.15
+  just_audio: ^0.9.43
+  audio_service: ^0.18.16
   provider: ^6.1.2
   path_provider: ^2.1.3
   fading_edge_scrollview: ^4.1.0
@@ -109,6 +109,8 @@ dependencies:
   intro_slider: ^4.2.1
   sticky_az_list: ^0.0.7
   google_mobile_ads: ^5.2.0
+  sign_in_with_apple: ^6.1.4
+  in_app_purchase: ^3.2.1
 
   
 
@@ -129,7 +131,8 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/pongo.png"
+  remove_alpha_ios: true
+  image_path: "assets/images/pongo_icon.png"
 
 flutter_native_splash:
   ios: true
@@ -164,6 +167,10 @@ flutter:
     - assets/images/intro/lyrics.jpeg
     - assets/images/intro/queue.jpeg
     - assets/images/intro/add_to_playlist.jpeg
+    - assets/images/pongo_icon.png
+    - assets/images/pongo_premium.png
+    - assets/images/pongo_premium_transparent.png
+    - assets/images/your_image_transparent.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

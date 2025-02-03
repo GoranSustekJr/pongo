@@ -17,7 +17,6 @@ class ArtistSpotify {
 
         String market = await Storage().getMarket() ?? 'US';
 
-        print(accessTokenHandler.accessToken);
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_artist_metadata"),
           body: jsonEncode(
@@ -44,8 +43,7 @@ class ArtistSpotify {
         }
       }
     } catch (e) {
-      print(e);
-
+      // print(e);
       return {};
     }
     return {};

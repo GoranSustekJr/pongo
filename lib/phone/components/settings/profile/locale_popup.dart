@@ -19,8 +19,6 @@ appleLocalePopup(String locale, Function(String) function) {
           MyAppPhone.setLocale(context, const Locale('de'));
           Storage().writeLocale("de");
           function("de");
-
-          print("object");
         },
       ),
       const PullDownMenuDivider(),

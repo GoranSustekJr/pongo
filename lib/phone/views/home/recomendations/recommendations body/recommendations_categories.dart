@@ -16,10 +16,10 @@ class RecommendationsCategories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (dataManager.history.isNotEmpty)
+        if (dataManager.categories.isNotEmpty)
           searchResultText(AppLocalizations.of(context)!.explore,
               dataManager.suggestionHeader),
-        if (dataManager.history.isNotEmpty) razh(10),
+        if (dataManager.categories.isNotEmpty) razh(10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 7.5),
           child: GridView.builder(
@@ -87,8 +87,6 @@ class RecommendationsCategories extends StatelessWidget {
                   ? CupertinoButton(
                       padding: EdgeInsets.zero,
                       onPressed: () async {
-                        print(dataManager.categories[index].name);
-                        print(dataManager.categories[index].id);
                         if (searchDataManagr.value != null) {
                           searchDataManagr.value!.search(
                             dataManager.categories[index].name,

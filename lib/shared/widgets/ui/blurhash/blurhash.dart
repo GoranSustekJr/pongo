@@ -1,3 +1,5 @@
+// ignore_for_file: non_nullable_equals_parameter
+
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
 import 'dart:ui' as ui;
@@ -178,12 +180,8 @@ class Blurhash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return ClipRRect(
       child: Container(
-        // width: 1000, //size.width,
-        //height: 1000, //size.height,
         color: const Color(0xFF141C3D),
         child: BlurHash(
           hash: blurhash,

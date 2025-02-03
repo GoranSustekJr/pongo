@@ -1,16 +1,15 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:pongo/exports.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class OAuth2 {
-  //TODO: Make all API client IDs ( oauth2 and spotify ) gotten from server so rate limit is not exceeded
-
   final String oauth2APIClientID = kIsApple
       ? "REMOVED"
       : "REMOVED";
   //final String oauth2APISecret = "REMOVED";
 
-  mobileSignIn(context) async {
+  mobileSignInGoogle(context) async {
     // Create mobile sign in session
     final GoogleSignIn googleSignInMobile = GoogleSignIn(
       scopes: ['email', 'profile', 'openid'],
@@ -30,8 +29,6 @@ class OAuth2 {
           await googleSignInAccount.authentication;
 
       String? idToken = googleSignInAuthentication.idToken;
-      print("token: ");
-      print(idToken);
       if (idToken != null) {
         DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
@@ -45,19 +42,17 @@ class OAuth2 {
         } // TODO: Other platforms
 
         // Send it to my server
-        print("great");
         final response = await http.post(
           Uri.parse(
               "${AppConstants.SERVER_URL}bed1684d6d16802154bba513a5f0980dd3dc4b612aeb6a05433c28f55936ca7d"),
           body: jsonEncode({
+            "apple": false,
             "id_token": idToken,
             "platform": kIsApple ? "ios" : kPlatform,
             "device_id": deviceId,
           }),
         );
-        print(response.statusCode);
         if (response.statusCode == 200) {
-          print("NICE");
           final data = jsonDecode(response.body);
           final accessToken = data["at+JWT"];
           final refreshToken = data["rt+JWT"];
@@ -68,11 +63,61 @@ class OAuth2 {
 
             RefreshTokenhandler().updateSystemWide(context, refreshToken);
           } else if (response.statusCode == 401) {
-            print("SHIIIIT");
+            // Auth failed
             AccessTokenhandler().renew(context);
-            // TODO: Auth failed
           }
         }
+      }
+    }
+  }
+
+  mobileSignInApple(context) async {
+    // Get the code
+    AuthorizationCredentialAppleID credential =
+        await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+
+    // Device id
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    String? deviceId;
+    if (kIsIOS) {
+      IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
+      deviceId = iosDeviceInfo.identifierForVendor;
+    } else if (kIsAndroid) {
+      AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
+      deviceId = androidDeviceInfo.id;
+    } // TODO: Other platforms
+
+    // Send to server
+    final response = await http.post(
+      Uri.parse(
+          "${AppConstants.SERVER_URL}bed1684d6d16802154bba513a5f0980dd3dc4b612aeb6a05433c28f55936ca7d"),
+      body: jsonEncode({
+        "apple": true,
+        "id_token": credential.authorizationCode,
+        "platform": kIsApple ? "ios" : kPlatform,
+        "device_id": deviceId,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final accessToken = data["at+JWT"];
+      final refreshToken = data["rt+JWT"];
+      if (accessToken != null && refreshToken != null) {
+        SignInHandler().updateSystemWide(true);
+
+        AccessTokenhandler().updateSystemWide(context, accessToken);
+
+        RefreshTokenhandler().updateSystemWide(context, refreshToken);
+      } else if (response.statusCode == 401) {
+        // Auth failed
+        AccessTokenhandler().renew(context);
       }
     }
   }

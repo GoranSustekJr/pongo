@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
 class Notifications {
@@ -13,10 +12,12 @@ class Notifications {
     int durationInSeconds = 5, // Default duration
     int maxLines = 3, // Max lines for text
     Color iconColor = Colors.white, // Default
+    void Function()? onTap,
   }) {
     InAppNotification.show(
       context: context,
       duration: Duration(seconds: durationInSeconds),
+      onTap: onTap,
       child: ConstrainedBox(
         constraints: const BoxConstraints(),
         child: Padding(
@@ -87,7 +88,7 @@ class Notifications {
   // Show custom notification with title and icon
   void showSpecialNotification(
       BuildContext context, String title, String message, IconData icon,
-      {Color iconColor = Colors.white}) {
+      {Color iconColor = Colors.white, void Function()? onTap}) {
     showNotification(
       context: context,
       title: title,
@@ -96,6 +97,7 @@ class Notifications {
       backgroundColor: Col.primaryCard,
       durationInSeconds: 5,
       iconColor: iconColor,
+      onTap: onTap,
     );
   }
 }

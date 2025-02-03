@@ -15,7 +15,6 @@ class AlbumSpotify {
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
 
-        print(accessTokenHandler.accessToken);
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_album_data"),
           body: jsonEncode(
@@ -41,8 +40,7 @@ class AlbumSpotify {
         }
       }
     } catch (e) {
-      print(e);
-
+      // print(e);
       return {};
     }
     return {};
@@ -57,7 +55,6 @@ class AlbumSpotify {
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
 
-        print(accessTokenHandler.accessToken);
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_album"),
           body: jsonEncode(
@@ -83,8 +80,7 @@ class AlbumSpotify {
         }
       }
     } catch (e) {
-      print(e);
-
+      //  print(e);
       return {};
     }
     return {};
@@ -99,7 +95,6 @@ class AlbumSpotify {
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
 
-        print(accessTokenHandler.accessToken);
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_album_shuffle"),
           body: jsonEncode(
@@ -125,8 +120,7 @@ class AlbumSpotify {
         }
       }
     } catch (e) {
-      print(e);
-
+      //print(e);
       return {};
     }
     return {};

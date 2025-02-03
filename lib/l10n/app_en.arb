@@ -15,6 +15,16 @@
         "description": "Cancel"
     },
 
+    "premiumisneededtodownloadatrack": "Premium is needed to download a track",
+    "@premiumisneededtodownloadatrack": {
+        "description": "premiumisneededtodownloadatrack"
+    },
+
+    "premiumisneededtosavethequeue": "Premium is needed to save the queue",
+    "@premiumisneededtosavethequeue": {
+        "description": "premiumisneededtosavethequeue"
+    },
+
     "okey": "OK",
     "@okey": {
         "description": "OK"
@@ -65,9 +75,69 @@
         "description": "profile"
     },
 
+    "hidden": "Hidden",
+    "@hidden": {
+        "description": "hidden"
+    },
+
+    "allofyourdataishidden": "All of your data is hidden",
+    "@allofyourdataishidden": {
+        "description": "allofyourdataishidden"
+    },
+
     "name": "Name",
     "@name": {
         "description": "name"
+    },
+
+    "startpage": "Start page",
+    "@startpage": {
+        "description": "startpage"
+    },
+
+    "showhistory": "Show history",
+    "@showhistory": {
+        "description": "showhistory"
+    },
+
+    "buypremium": "Buy Pongo premium",
+    "@buypremium": {
+        "description": "buypremium"
+    },
+
+    "showhistoryonstartpage": "Show history on start page",
+    "@showhistoryonstartpage": {
+        "description": "showhistoryonstartpage"
+    },
+
+    "showexplore": "Show explore",
+    "@showexplore": {
+        "description": "showexplore"
+    },
+
+    "showexploreonstartpage": "Show explore on start page",
+    "@showexploreonstartpage": {
+        "description": "showexploreonstartpage"
+    },
+
+    "downloadtracksnow": "Download tracks now!",
+    "@downloadtracksnow": {
+        "description": "downloadtracksnow"
+    },
+
+    "addtrackstoyoutplaylist": "Add tracks to your playlist!",
+    "@addtrackstoyoutplaylist": {
+        "description": "addtrackstoyoutplaylist"
+    },
+
+    "createnewplaylistnow": "Create a new playlist now!",
+    "@createnewplaylistnow": {
+        "description": "createnewplaylistnow"
+    },
+
+    "findyourfavouritesongsnow": "Find your favourite songs now!",
+    "@findyourfavouritesongsnow": {
+        "description": "findyourfavouritesongsnow"
     },
 
     "email": "Email",

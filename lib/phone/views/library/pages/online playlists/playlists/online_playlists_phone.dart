@@ -1,9 +1,5 @@
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/components/shared/action%20sheets/continue_cancel_action_sheet.dart';
-import 'package:pongo/phone/components/shared/tiles/playlist_tile.dart';
-import 'package:pongo/phone/views/library/pages/online%20playlists/playlist/views/online_playlist_phone.dart';
 
 class OnlinePlaylistsPhone extends StatefulWidget {
   const OnlinePlaylistsPhone({super.key});
@@ -64,6 +60,17 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
     });
   }
 
+  void newPlaylist() {
+    OpenPlaylist().show(
+      context,
+      PlaylistHandler(
+        type: PlaylistHandlerType.online,
+        function: PlaylistHandlerFunction.createPlaylist,
+        track: null,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -96,18 +103,8 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                           ),
                           backLikeButton(
                             context,
-                            CupertinoIcons.add,
-                            () {
-                              OpenPlaylist().show(
-                                context,
-                                PlaylistHandler(
-                                  type: PlaylistHandlerType.online,
-                                  function:
-                                      PlaylistHandlerFunction.createPlaylist,
-                                  track: null,
-                                ),
-                              );
-                            },
+                            AppIcons.add,
+                            newPlaylist,
                           ),
                         ],
                       ),
@@ -136,70 +133,101 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                         ),
                       ),
                     ),
-                    SliverList.builder(
-                      itemCount: playlists.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            top: index == 0
-                                ? AppBar().preferredSize.height * 1.5
-                                : 0,
-                            bottom: index == playlists.length - 1
-                                ? MediaQuery.of(context).padding.bottom + 10
-                                : 0,
-                          ),
-                          child: PlaylistTile(
-                            first: index == 0,
-                            last: index == playlists.length - 1,
-                            cover: coverImages[index]?.bytes,
-                            title: playlists[index]["title"],
-                            subtitle:
-                                AppLocalizations.of(context)!.onlineplaylist,
-                            function: () async {
-                              final String blurHash = coverImages[index] != null
-                                  ? await BlurhashFFI.encode(
-                                      coverImages[index]!,
-                                      componentX: 3,
-                                      componentY: 3,
-                                    )
-                                  : AppConstants().BLURHASH;
-                              print("object");
-                              Navigations().nextScreen(
-                                  context,
-                                  OnlinePlaylistPhone(
-                                    opid: playlists[index]["opid"],
-                                    title: playlists[index]["title"],
-                                    cover: coverImages[index],
-                                    blurhash: blurHash,
-                                    updateCover: (playlistCover) {
-                                      setState(() {
-                                        coverImages[index] = playlistCover;
-                                      });
-                                    },
-                                    updateTitle: (newTitle) {
-                                      initPlaylists();
-                                    },
-                                  ));
-                            },
-                            removePlaylist: () {
-                              continueCancelActionSheet(
-                                  context,
-                                  AppLocalizations.of(context)!.areyousure,
-                                  AppLocalizations.of(context)!.removeplaylist,
-                                  () async {
-                                print(playlists[index]["opid"]);
-                                await DatabaseHelper().removeOnlinePlaylist(
-                                    playlists[index]["opid"]);
-                                setState(() {
-                                  playlistsLength--;
-                                  playlists.removeAt(index);
-                                  coverImages.removeAt(index);
-                                });
-                              });
-                            },
-                          ),
-                        );
-                      },
+                    SliverToBoxAdapter(
+                      child: playlists.isNotEmpty
+                          ? Column(
+                              children: [
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: playlists.length,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                        top: index == 0
+                                            ? AppBar().preferredSize.height *
+                                                1.5
+                                            : 0,
+                                        bottom: index == playlists.length - 1
+                                            ? MediaQuery.of(context)
+                                                    .padding
+                                                    .bottom +
+                                                10
+                                            : 0,
+                                      ),
+                                      child: PlaylistTile(
+                                        first: index == 0,
+                                        last: index == playlists.length - 1,
+                                        cover: coverImages[index]?.bytes,
+                                        title: playlists[index]["title"],
+                                        subtitle: AppLocalizations.of(context)!
+                                            .onlineplaylist,
+                                        function: () async {
+                                          final String blurHash =
+                                              coverImages[index] != null
+                                                  ? await BlurhashFFI.encode(
+                                                      coverImages[index]!,
+                                                      componentX: 2,
+                                                      componentY: 2,
+                                                    )
+                                                  : AppConstants().BLURHASH;
+
+                                          Navigations().nextScreen(
+                                              context,
+                                              OnlinePlaylistPhone(
+                                                opid: playlists[index]["opid"],
+                                                title: playlists[index]
+                                                    ["title"],
+                                                cover: coverImages[index],
+                                                blurhash: blurHash,
+                                                updateCover: (playlistCover) {
+                                                  setState(() {
+                                                    coverImages[index] =
+                                                        playlistCover;
+                                                  });
+                                                },
+                                                updateTitle: (newTitle) {
+                                                  initPlaylists();
+                                                },
+                                              ));
+                                        },
+                                        removePlaylist: () {
+                                          continueCancelActionSheet(
+                                              context,
+                                              AppLocalizations.of(context)!
+                                                  .areyousure,
+                                              AppLocalizations.of(context)!
+                                                  .removeplaylist, () async {
+                                            await DatabaseHelper()
+                                                .removeOnlinePlaylist(
+                                                    playlists[index]["opid"]);
+                                            setState(() {
+                                              playlistsLength--;
+                                              playlists.removeAt(index);
+                                              coverImages.removeAt(index);
+                                            });
+                                          });
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                razh(100),
+                                iconButton(
+                                    AppIcons.add, Colors.white, newPlaylist,
+                                    size: 60),
+                                textButton(
+                                    AppLocalizations.of(context)!
+                                        .createnewplaylistnow,
+                                    newPlaylist,
+                                    const TextStyle(color: Colors.white),
+                                    edgeInsets: EdgeInsets.zero)
+                              ],
+                            ),
                     )
                   ],
                 ),

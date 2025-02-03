@@ -90,3 +90,12 @@ ValueNotifier<SearchDataManager?> searchDataManagr = ValueNotifier(null);
 
 // Cache images
 ValueNotifier<bool> cacheImages = ValueNotifier(false);
+
+// Subscriptions
+List<ProductDetails> subscriptionModels = [];
+
+// Subsciption level
+ValueNotifier<String> subscriptionLevel = ValueNotifier("");
+
+// Premium
+ValueNotifier<bool> premium = ValueNotifier(true);

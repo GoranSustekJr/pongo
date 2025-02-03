@@ -15,7 +15,7 @@ class PlaylistSpotify {
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
 
-        print(accessTokenHandler.accessToken);
+        //print(accessTokenHandler.accessToken);
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_playlist"),
           body: jsonEncode(
@@ -41,7 +41,7 @@ class PlaylistSpotify {
         }
       }
     } catch (e) {
-      print(e);
+      //print(e);
 
       return {};
     }
@@ -57,7 +57,6 @@ class PlaylistSpotify {
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
 
-        print(accessTokenHandler.accessToken);
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_playlist_shuffle"),
           body: jsonEncode(
@@ -83,8 +82,7 @@ class PlaylistSpotify {
         }
       }
     } catch (e) {
-      print(e);
-
+      // print(e);
       return {};
     }
     return {};

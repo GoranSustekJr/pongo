@@ -1,8 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/components/shared/action%20sheets/continue_cancel_action_sheet.dart';
-import 'package:pongo/phone/components/shared/tiles/playlist_tile.dart';
 import 'package:pongo/phone/views/library/pages/local%20playlists/views/local_playlist_phone.dart';
 
 class LocalPlaylistsPhone extends StatefulWidget {
@@ -64,6 +62,17 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
     });
   }
 
+  void newPlaylist() {
+    OpenPlaylist().show(
+      context,
+      PlaylistHandler(
+        type: PlaylistHandlerType.offline,
+        function: PlaylistHandlerFunction.createPlaylist,
+        track: null,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -97,17 +106,7 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                           backLikeButton(
                             context,
                             CupertinoIcons.add,
-                            () {
-                              OpenPlaylist().show(
-                                context,
-                                PlaylistHandler(
-                                  type: PlaylistHandlerType.offline,
-                                  function:
-                                      PlaylistHandlerFunction.createPlaylist,
-                                  track: null,
-                                ),
-                              );
-                            },
+                            newPlaylist,
                           ),
                         ],
                       ),
@@ -136,77 +135,112 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                         ),
                       ),
                     ),
-                    SliverList.builder(
-                      itemCount: playlists.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            top: index == 0
-                                ? AppBar().preferredSize.height * 1.5
-                                : 0,
-                            bottom: index == playlists.length - 1
-                                ? MediaQuery.of(context).padding.bottom + 10
-                                : 0,
-                          ),
-                          child: PlaylistTile(
-                            first: index == 0,
-                            last: index == playlists.length - 1,
-                            cover: coverImages[index]?.bytes,
-                            title: playlists[index]["title"],
-                            subtitle:
-                                AppLocalizations.of(context)!.offlineplaylist,
-                            function: () async {
-                              final String blurHash = coverImages[index] != null
-                                  ? await BlurhashFFI.encode(
-                                      coverImages[index]!,
-                                      componentX: 3,
-                                      componentY: 3,
-                                    )
-                                  : AppConstants().BLURHASH;
+                    SliverToBoxAdapter(
+                      child: playlists.isNotEmpty
+                          ? Column(
+                              children: [
+                                ListView.builder(
+                                  itemCount: playlists.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                        top: index == 0
+                                            ? AppBar().preferredSize.height *
+                                                1.5
+                                            : 0,
+                                        bottom: index == playlists.length - 1
+                                            ? MediaQuery.of(context)
+                                                    .padding
+                                                    .bottom +
+                                                10
+                                            : 0,
+                                      ),
+                                      child: PlaylistTile(
+                                        first: index == 0,
+                                        last: index == playlists.length - 1,
+                                        cover: coverImages[index]?.bytes,
+                                        title: playlists[index]["title"],
+                                        subtitle: AppLocalizations.of(context)!
+                                            .offlineplaylist,
+                                        function: () async {
+                                          final String blurHash =
+                                              coverImages[index] != null
+                                                  ? await BlurhashFFI.encode(
+                                                      coverImages[index]!,
+                                                      componentX: 2,
+                                                      componentY: 2,
+                                                    )
+                                                  : AppConstants().BLURHASH;
 
-                              Navigations().nextScreen(
-                                  context,
-                                  LocalPlaylistPhone(
-                                    lpid: playlists[index]["lpid"],
-                                    title: playlists[index]["title"],
-                                    cover: coverImages[index],
-                                    blurhash: blurHash,
-                                    updateCover: (playlistCover) async {
-                                      await DatabaseHelper()
-                                          .updateLocalPlaylistCover(
-                                              playlists[index]["lpid"],
-                                              playlistCover.bytes);
-                                      setState(() {
-                                        coverImages[index] = playlistCover;
-                                      });
-                                    },
-                                    updateTitle: (newTitle) async {
-                                      await DatabaseHelper()
-                                          .updateLocalPlaylistName(
-                                              playlists[index]["lpid"],
-                                              newTitle);
-                                      initPlaylists();
-                                    },
-                                  ));
-                            },
-                            removePlaylist: () {
-                              continueCancelActionSheet(
-                                  context,
-                                  AppLocalizations.of(context)!.areyousure,
-                                  AppLocalizations.of(context)!.removeplaylist,
-                                  () async {
-                                await DatabaseHelper().removeLocalPlaylist(
-                                    playlists[index]["lpid"]);
-                                setState(() {
-                                  playlistsLength--;
-                                  playlists.removeAt(index);
-                                  coverImages.removeAt(index);
-                                });
-                              });
-                            },
-                          ),
-                        );
-                      },
+                                          Navigations().nextScreen(
+                                              context,
+                                              LocalPlaylistPhone(
+                                                lpid: playlists[index]["lpid"],
+                                                title: playlists[index]
+                                                    ["title"],
+                                                cover: coverImages[index],
+                                                blurhash: blurHash,
+                                                updateCover:
+                                                    (playlistCover) async {
+                                                  await DatabaseHelper()
+                                                      .updateLocalPlaylistCover(
+                                                          playlists[index]
+                                                              ["lpid"],
+                                                          playlistCover.bytes);
+                                                  setState(() {
+                                                    coverImages[index] =
+                                                        playlistCover;
+                                                  });
+                                                },
+                                                updateTitle: (newTitle) async {
+                                                  await DatabaseHelper()
+                                                      .updateLocalPlaylistName(
+                                                          playlists[index]
+                                                              ["lpid"],
+                                                          newTitle);
+                                                  initPlaylists();
+                                                },
+                                              ));
+                                        },
+                                        removePlaylist: () {
+                                          continueCancelActionSheet(
+                                              context,
+                                              AppLocalizations.of(context)!
+                                                  .areyousure,
+                                              AppLocalizations.of(context)!
+                                                  .removeplaylist, () async {
+                                            await DatabaseHelper()
+                                                .removeLocalPlaylist(
+                                                    playlists[index]["lpid"]);
+                                            setState(() {
+                                              playlistsLength--;
+                                              playlists.removeAt(index);
+                                              coverImages.removeAt(index);
+                                            });
+                                          });
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            )
+                          : Column(
+                              children: [
+                                razh(100),
+                                iconButton(
+                                    AppIcons.add, Colors.white, newPlaylist,
+                                    size: 60),
+                                textButton(
+                                    AppLocalizations.of(context)!
+                                        .createnewplaylistnow,
+                                    newPlaylist,
+                                    const TextStyle(color: Colors.white),
+                                    edgeInsets: EdgeInsets.zero)
+                              ],
+                            ),
                     )
                   ],
                 ),

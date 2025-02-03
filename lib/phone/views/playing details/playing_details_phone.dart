@@ -1,6 +1,4 @@
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/shared/utils/managers/media_item_manager.dart';
 
 class PlayingDetailsPhone extends StatelessWidget {
   final Function(String) showAlbum;

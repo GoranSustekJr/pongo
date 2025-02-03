@@ -42,8 +42,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   int numOfSearchPlaylists = 20;
 
   // Recommendations
-  bool recommendedForYou = true;
-  bool recommendedPongo = true;
+  bool showHistory = true;
+  bool showExplore = true;
 
   // Audio player
   bool useCachingAudioSource = false;
@@ -76,8 +76,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final numSearchAlbums = await Storage().getNumOfSearchAlbums();
     final numSearchTracks = await Storage().getNumOfSearchTracks();
     final numSearchPlaylists = await Storage().getNumOfSearchPlaylists();
-    final recommendForYou = await Storage().getRecommendedForYou();
-    final recommendPongo = await Storage().getRecommendedPongo();
+    final shwHistory = await Storage().getRecommendedForYou();
+    final shwExplore = await Storage().getRecommendedPongo();
     final lyricsTxtAlign = await Storage().getLyricsTextAlign();
     final useCacheAudioSource = await Storage().getUseCachingAudioSource();
     final enblLyrics = await Storage().getEnableLyrics();
@@ -91,8 +91,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       numOfSearchAlbums = numSearchAlbums;
       numOfSearchTracks = numSearchTracks;
       numOfSearchPlaylists = numSearchPlaylists;
-      recommendedForYou = recommendForYou;
-      recommendedPongo = recommendPongo;
+      showHistory = shwHistory;
+      showExplore = shwExplore;
       lyricsTextAlign = lyricsTxtAlign;
       useCachingAudioSource = useCacheAudioSource;
       enbleLyrics = enblLyrics;
@@ -277,23 +277,22 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 });
                               }),
                               razh(20),
-                              settingsText(AppLocalizations.of(context)!
-                                  .recommendations),
+                              settingsText(
+                                  AppLocalizations.of(context)!.startpage),
                               settingsTileSwitcher(
                                 context,
                                 true,
                                 false,
                                 CupertinoIcons.arrow_down_doc_fill,
-                                recommendedForYou, // AppIcons.edit,
+                                showHistory, // AppIcons.edit,
+                                AppLocalizations.of(context)!.showhistory,
                                 AppLocalizations.of(context)!
-                                    .showrecommendedforyou,
-                                AppLocalizations.of(context)!
-                                    .showrecommendedforyoubody,
+                                    .showhistoryonstartpage,
                                 (use) async {
                                   setState(() {
-                                    recommendedForYou = use;
+                                    showHistory = use;
                                   });
-                                  Storage().writeRecommendedForYou(use);
+                                  Storage().writeEnableHistory(use);
                                 },
                               ),
                               settingsTileSwitcher(
@@ -301,16 +300,15 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 false,
                                 true,
                                 CupertinoIcons.arrow_up_doc_fill,
-                                recommendedPongo, // AppIcons.edit,
+                                showExplore, // AppIcons.edit,
+                                AppLocalizations.of(context)!.showexplore,
                                 AppLocalizations.of(context)!
-                                    .showrecommendedbypongo,
-                                AppLocalizations.of(context)!
-                                    .showrecommendedbypongobody,
+                                    .showexploreonstartpage,
                                 (use) async {
                                   setState(() {
-                                    recommendedPongo = use;
+                                    showExplore = use;
                                   });
-                                  Storage().writeRecommendedPongo(use);
+                                  Storage().writeEnableCategories(use);
                                 },
                               ),
                               razh(20),
@@ -331,7 +329,6 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   });
                                   await Storage().writeEnableLyrics(enable);
                                   enableLyrics.value = enable;
-                                  print(enableLyrics.value);
                                 },
                               ),
                               settingsTileSwitcher(

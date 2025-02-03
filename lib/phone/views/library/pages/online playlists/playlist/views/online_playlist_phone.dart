@@ -1,10 +1,5 @@
 import 'dart:ui';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/alerts/track%20from%20playlist/track_from_playlist.dart';
-import 'package:pongo/phone/components/library/online%20playlist/play_shuffle_halt_online_playlist.dart';
-import 'package:pongo/phone/views/library/pages/online%20playlists/playlist/views/change_online_playlist_name_phone.dart';
-import 'package:pongo/phone/views/library/pages/online%20playlists/playlist/views/online_playlist_app_bar_phone.dart';
-import 'package:pongo/phone/views/library/pages/online%20playlists/playlist/views/online_playlist_body_phone.dart';
 
 class OnlinePlaylistPhone extends StatefulWidget {
   final int opid;
@@ -90,15 +85,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
     blurhash = widget.blurhash;
     scrollController = ScrollController();
     scrollController.addListener(scrollControllerListener);
-    /* playlistFunctions = PlaylistFunctions( //TODO: Migrate to new apstract object for the functions
-      context: context,
-      opid: widget.opid,
-      updateCover: widget.updateCover,
-      updateTitle: widget.updateTitle,
-      addLoading: addLoading,
-      removeLoading: removeLoading,
-      addDuration: addDuration,
-    ); */
+
     getTracks();
   }
 
@@ -162,7 +149,6 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
     setState(() {
       tracks = newTracks; // Tracks, runntimetype List<Track>
 
-      print(trackData["durations"]);
       existingTracks = {
         for (var item in trackData["durations"])
           item[0] as String: item[1] as double
@@ -199,10 +185,6 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
   }
 
   play({int index = 0}) async {
-    for (Track track in tracks) {
-      print(track.id);
-    }
-
     if (!loadingShuffle) {
       PlayMultiple().onlineTrack(
         "online.playlist:${widget.opid}",
@@ -601,14 +583,35 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                             SliverToBoxAdapter(
                               child: AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 300),
-                                child: tracks.isNotEmpty
+                                child: tracks.isNotEmpty || listLength < 1
                                     ? SizedBox(
                                         key: const ValueKey(true),
                                         child: stids.isEmpty
                                             ? Column(
                                                 children: [
                                                   razh(50),
-                                                  const Text("Empty"),
+                                                  iconButton(
+                                                      AppIcons.blankTrack,
+                                                      Colors.white, () {
+                                                    navigationBarIndex.value =
+                                                        0;
+                                                    searchFocusNode.value
+                                                        .requestFocus();
+                                                  }, size: 60),
+                                                  textButton(
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .addtrackstoyoutplaylist,
+                                                      () {
+                                                    navigationBarIndex.value =
+                                                        0;
+                                                    searchFocusNode.value
+                                                        .requestFocus();
+                                                  },
+                                                      const TextStyle(
+                                                          color: Colors.white),
+                                                      edgeInsets:
+                                                          EdgeInsets.zero)
                                                 ],
                                               )
                                             : OnlinePlaylistBodyPhone(

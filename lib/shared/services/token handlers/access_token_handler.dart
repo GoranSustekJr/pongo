@@ -11,7 +11,6 @@ class AccessTokenhandler {
 
   renew(context) async {
     final refreshToken = await Storage().getRefreshToken();
-    print(refreshToken);
     final response =
         await http.post(Uri.parse("${AppConstants.SERVER_URL}renew_at"),
             body: jsonEncode({
@@ -22,8 +21,8 @@ class AccessTokenhandler {
       final data = jsonDecode(response.body);
       await updateSystemWide(context, data["at"]);
     } else if (response.statusCode == 401) {
+      //Bas refresh token! => Sign out
       SignInHandler().signOut(context);
-      //TODO: Bas refresh token!
     }
   }
 }

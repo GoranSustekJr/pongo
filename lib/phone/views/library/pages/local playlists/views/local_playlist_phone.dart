@@ -1,10 +1,5 @@
 import 'dart:ui';
-
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/components/library/local%20playlist/play_shuffle_halt_local_playlist.dart';
-import 'package:pongo/phone/views/library/pages/local%20playlists/data%20manager/local_playlist_data_manager.dart';
-import 'package:pongo/phone/views/library/pages/local%20playlists/views/local_playlist_body_phone.dart';
-import 'package:pongo/phone/views/library/pages/local%20playlists/widgets/local_playlist_app_bar_phone.dart';
 
 class LocalPlaylistPhone extends StatelessWidget {
   final int lpid;
@@ -147,7 +142,10 @@ class LocalPlaylistPhone extends StatelessWidget {
                                         duration:
                                             const Duration(milliseconds: 300),
                                         child: localPlaylistDataManager
-                                                .tracks.isNotEmpty
+                                                    .tracks.isNotEmpty ||
+                                                localPlaylistDataManager
+                                                        .listLength <
+                                                    1
                                             ? SizedBox(
                                                 key: const ValueKey(true),
                                                 child: localPlaylistDataManager
@@ -155,7 +153,33 @@ class LocalPlaylistPhone extends StatelessWidget {
                                                     ? Column(
                                                         children: [
                                                           razh(50),
-                                                          const Text("Empty"),
+                                                          iconButton(
+                                                              AppIcons
+                                                                  .blankTrack,
+                                                              Colors.white, () {
+                                                            navigationBarIndex
+                                                                .value = 0;
+                                                            searchFocusNode
+                                                                .value
+                                                                .requestFocus();
+                                                          }, size: 60),
+                                                          textButton(
+                                                              AppLocalizations.of(
+                                                                      context)!
+                                                                  .addtrackstoyoutplaylist,
+                                                              () {
+                                                            navigationBarIndex
+                                                                .value = 0;
+                                                            searchFocusNode
+                                                                .value
+                                                                .requestFocus();
+                                                          },
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                              edgeInsets:
+                                                                  EdgeInsets
+                                                                      .zero)
                                                         ],
                                                       )
                                                     : LocalPlaylistBodyPhone(
@@ -194,38 +218,36 @@ class LocalPlaylistPhone extends StatelessWidget {
                                                                 .moveTrack,
                                                       ),
                                               )
-                                            : SingleChildScrollView(
-                                                child: Column(
-                                                  key: const ValueKey(false),
-                                                  children: [
-                                                    ListView.builder(
-                                                      itemCount:
-                                                          localPlaylistDataManager
-                                                              .listLength,
-                                                      padding: EdgeInsets.only(
-                                                        top: 35,
-                                                        bottom: MediaQuery.of(
-                                                                    context)
-                                                                .padding
-                                                                .bottom +
-                                                            15,
-                                                      ),
-                                                      shrinkWrap: true,
-                                                      physics:
-                                                          const NeverScrollableScrollPhysics(),
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        return songTileSchimmer(
-                                                          context,
-                                                          index == 0,
-                                                          index ==
-                                                              localPlaylistDataManager
-                                                                  .listLength--,
-                                                        );
-                                                      },
+                                            : Column(
+                                                key: const ValueKey(false),
+                                                children: [
+                                                  ListView.builder(
+                                                    itemCount:
+                                                        localPlaylistDataManager
+                                                            .listLength,
+                                                    padding: EdgeInsets.only(
+                                                      top: 35,
+                                                      bottom:
+                                                          MediaQuery.of(context)
+                                                                  .padding
+                                                                  .bottom +
+                                                              15,
                                                     ),
-                                                  ],
-                                                ),
+                                                    shrinkWrap: true,
+                                                    physics:
+                                                        const NeverScrollableScrollPhysics(),
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return songTileSchimmer(
+                                                        context,
+                                                        index == 0,
+                                                        index ==
+                                                            localPlaylistDataManager
+                                                                .listLength--,
+                                                      );
+                                                    },
+                                                  ),
+                                                ],
                                               ),
                                       ),
                                     ),

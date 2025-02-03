@@ -60,7 +60,6 @@ class _PlaylistBodyPhoneState extends State<PlaylistBodyPhone> {
                         : false;
 
                     if (playNew) {
-                      print("play; $index");
                       changeTrackOnTap.value = true;
                       widget.play(index);
                     } else if (skipTo &&

@@ -122,7 +122,6 @@ class TrackPlay {
             },
           );
         } else {
-          print("STARTED; $i");
           await playAlreadyExists(
             context,
             tracks[i],
@@ -258,7 +257,6 @@ class TrackPlay {
             },
           );
         } else {
-          print("STARTED; $i");
           await playAlreadyExistsTrack(
             context,
             tracks[i],

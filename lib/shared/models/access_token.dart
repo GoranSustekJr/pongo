@@ -10,10 +10,7 @@ class AccessToken {
   }
 
   Future<void> setAccessToken(String? accessToken) async {
-    print(2.1);
-
     await Storage().writeAccessToken(accessToken);
-    print(2.2);
     _accessToken = accessToken;
   }
 }

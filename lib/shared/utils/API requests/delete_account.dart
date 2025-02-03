@@ -38,8 +38,7 @@ class DeleteAccount {
         }
       }
     } catch (e) {
-      print(e);
-
+      //print(e);
       return {};
     }
     return {};

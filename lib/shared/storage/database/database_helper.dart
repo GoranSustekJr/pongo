@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:path/path.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/shared/storage/database/lyrics_sync_time_delay/insert.dart';
@@ -108,7 +110,7 @@ class DatabaseHelper {
   }
 
   Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
-    print("JEEEEEEEE; $oldVersion");
+    //print("JEEEEEEEE; $oldVersion");
     /*   await db.execute('''
       ALTER TABLE opid_track_id ADD COLUMN hidden BOOLEAN DEFAULT FALSE;
     ''');
@@ -134,7 +136,7 @@ class DatabaseHelper {
       DELETE FROM lpid_track_id;
     ''');
 
-    print(newVersion);
+    // print(newVersion);
   }
 
   // Insert online playlist

@@ -38,7 +38,6 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                 CupertinoButton(
                   onPressed: () async {
                     if (titleController.text.isNotEmpty) {
-                      print(titleController.text);
                       await DatabaseHelper()
                           .updateOnlinePlaylistName(opid, titleController.text);
                       function(titleController.text);
@@ -113,7 +112,6 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                     TextButton(
                       onPressed: () async {
                         if (titleController.text.isNotEmpty) {
-                          print(titleController.text);
                           await DatabaseHelper().updateOnlinePlaylistName(
                               opid, titleController.text);
                           function(titleController.text);

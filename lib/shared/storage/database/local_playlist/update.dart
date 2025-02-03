@@ -3,8 +3,6 @@ import 'package:pongo/exports.dart';
 Future<void> updateLoclPlaylistOrder(
     DatabaseHelper dbHelper, int lpid, List<String> newTrackOrder) async {
   Database db = await dbHelper.database;
-  print("START;");
-  print(await DatabaseHelper().queryLocalTracksForPlaylist(lpid));
 
   // Start a transaction to ensure atomicity
   await db.transaction((txn) async {
@@ -26,8 +24,6 @@ Future<void> updateLoclPlaylistOrder(
       );
     }
   });
-  print("END;");
-  print(await DatabaseHelper().queryLocalTracksForPlaylist(lpid));
 }
 
 Future<void> updateLoclPlaylistName(

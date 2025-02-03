@@ -36,6 +36,7 @@ class Storage {
   static String currentPLayingPositionKey = "CURRENTPLAYINGPOSITIONKEY";
   static String cacheImagesKey = "CACHEIMAGESKEY";
   static String localsSortKey = "LOCALSSORTKEY";
+  static String subscriptionKey = "SUBSCRIPTIONKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -314,7 +315,6 @@ class Storage {
 
   Future<AudioServiceRepeatMode> getLoopMode() async {
     String? key = await storage.read(key: loopModeKey);
-    print("key; $key");
     if (key == "LoopMode.off") {
       return AudioServiceRepeatMode.none;
     } else if (key == "LoopMode.one") {

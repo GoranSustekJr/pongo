@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/shared/functions/favourites/favourites.dart';
 
 trackInfoButton(context, String trackId, bool favourite, Function() download,
     Function() refreshFavourite) {
@@ -26,7 +25,6 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                 final MediaItem? mediaItem =
                     audioServiceHandler.mediaItem.value;
                 if (mediaItem != null) {
-                  print(mediaItem.extras);
                   OpenPlaylist().show(
                     context,
                     PlaylistHandler(

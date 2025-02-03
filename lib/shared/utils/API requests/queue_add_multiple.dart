@@ -29,7 +29,6 @@ class QueueAddMultiple {
       for (int i = 0; i < tracks.length; i++) {
         if (!missingTracks.contains(tracks[i].id)) {
           // Track already exists
-          print("Exists");
 
           // Create media item
           final MediaItem mediaItem = MediaItem(
@@ -68,7 +67,6 @@ class QueueAddMultiple {
                 .add(audioServiceHandler.createAudioSource(mediaItem));
           }
         } else {
-          print("Not exist; $i");
           // Track does not exist
           addLoading(tracks[i].id);
 
@@ -88,7 +86,6 @@ class QueueAddMultiple {
 
               var response = json.decode(message);
 
-              print("Response; $response");
               double duration = response["duration"];
 
               // Update state
@@ -151,7 +148,7 @@ class QueueAddMultiple {
 
       queueAllowShuffle.value = true;
     } catch (e) {
-      print(e);
+      // print(e);
     }
   }
 }

@@ -97,7 +97,6 @@ class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () {
-                  print("object");
                   if (searchBarIsSearching.value || widget.focusNode.hasFocus) {
                     setState(() {
                       searching = false;

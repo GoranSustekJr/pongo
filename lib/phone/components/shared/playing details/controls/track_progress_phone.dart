@@ -85,6 +85,7 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                   initialProgress: progressNotifier.value,
                   controller: progressController,
                   focusedHeight: 11.5,
+                  enabled: premium.value,
                   onProgressUpdated: (position) async {
                     updateProgress(position);
                     await audioServiceHandler.seek(

@@ -1,7 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/shared/functions/favourites/favourites.dart';
-import 'package:pongo/shared/utils/API%20requests/download.dart';
-import 'package:spotify_api/spotify_api.dart' as sp;
 
 List<PullDownMenuEntry> searchTrackPulldownMenuItems(
   BuildContext context,
@@ -15,7 +12,6 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
       ? [
           PullDownMenuItem(
             onTap: () async {
-              print("DFHAKJFHDAJKFHKA");
               await Download().single(track);
             },
             title: AppLocalizations.of(context)!.download,
@@ -24,21 +20,6 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
           const PullDownMenuDivider.large(),
           PullDownMenuItem(
             onTap: () {
-              /* OpenPlaylist().open(
-                context,
-                id: track.id,
-                cover: calculateWantedResolutionForTrack(
-                    track.album != null
-                        ? track.album!.images
-                        : track.album!.images,
-                    150,
-                    150),
-                title: track.name,
-                artist: track.artists
-                    .map((artist) => artist.name)
-                    .toList()
-                    .join(', '),
-              ); */
               OpenPlaylist().show(
                   context,
                   PlaylistHandler(

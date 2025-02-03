@@ -17,6 +17,9 @@ class _ProfilePhoneState extends State<ProfilePhone>
   // Show Body
   bool showBody = false;
 
+  // Hidden auth
+  bool hidden = false;
+
   // Locale
   String locale = "en";
 
@@ -89,6 +92,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
         email = data["email"];
         name = data["name"];
         image = data["picture"];
+        hidden = data["hidden_auth"];
         showBody = true;
       });
     } else {
@@ -172,21 +176,39 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                         height: 160,
                                       ),
                                     )
-                                  : const SizedBox(),
+                                  : const Center(
+                                      child: Icon(
+                                        AppIcons.profile,
+                                        color: Colors.white,
+                                        size: 60,
+                                      ),
+                                    ),
                             ),
                             razh(AppBar().preferredSize.height),
+                            if (!hidden && name != "")
+                              settingsTile(
+                                  context,
+                                  true,
+                                  false,
+                                  AppIcons.profile,
+                                  null,
+                                  name,
+                                  AppLocalizations.of(context)!.name,
+                                  () {}),
+                            if (hidden)
+                              settingsTile(
+                                  context,
+                                  true,
+                                  false,
+                                  AppIcons.hide,
+                                  null,
+                                  AppLocalizations.of(context)!.hidden,
+                                  AppLocalizations.of(context)!
+                                      .allofyourdataishidden,
+                                  () {}),
                             settingsTile(
                                 context,
-                                true,
-                                false,
-                                AppIcons.profile,
-                                null,
-                                name,
-                                AppLocalizations.of(context)!.name,
-                                () {}),
-                            settingsTile(
-                                context,
-                                false,
+                                !hidden && name == "",
                                 false,
                                 AppIcons.mail,
                                 null,
@@ -196,12 +218,18 @@ class _ProfilePhoneState extends State<ProfilePhone>
                             settingsTile(
                               context,
                               false,
-                              true,
+                              false,
                               AppIcons.premium,
                               null,
-                              AppLocalizations.of(context)!.subscribed,
+                              premium.value
+                                  ? AppLocalizations.of(context)!.subscribed
+                                  : AppLocalizations.of(context)!.buypremium,
                               AppLocalizations.of(context)!.premium,
-                              () {},
+                              () {
+                                if (!premium.value) {
+                                  Navigator.of(context).pop();
+                                }
+                              },
                             ),
                             settingsTile(
                               context,

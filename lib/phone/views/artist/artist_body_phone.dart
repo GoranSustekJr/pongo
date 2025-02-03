@@ -202,7 +202,6 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                     data: widget.artists[index],
                     type: TileType.artist,
                     onTap: () {
-                      // TODO: something
                       Navigator.pop(context);
                       Navigations().nextScreen(
                           widget.context,

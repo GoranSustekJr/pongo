@@ -22,6 +22,8 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
   // Num of songs per page
   int numb = 150;
 
+  // No favourites
+
   // Edit
   bool edit = false;
   List<String> selectedTracks = [];
@@ -88,7 +90,6 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
       tempStids,
     );
 
-    print(trackData["tracks"].runtimeType);
     final List<dynamic> page = trackData["tracks"]["tracks"];
 
     final trackThatExist = await Tracks().getDurations(
@@ -173,7 +174,6 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
           final List<MediaItem> mediaItems = [];
 
           for (int i = 0; i < newTracks.length; i++) {
-            print("object; $i");
             final MediaItem mediaItem = MediaItem(
               id: "library.newTracks.${newTracks[i].id}",
               title: newTracks[i].name,
@@ -244,7 +244,6 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
         if (missingTracks.isNotEmpty) {
           queueAllowShuffle.value = false;
 
-          print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
           setState(() {
             cancel = true;
           });
@@ -312,7 +311,6 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                   as AudioServiceHandler;
 
           for (int i = 0; i < favourites.length; i++) {
-            print("object; $i");
             final MediaItem mediaItem = MediaItem(
               id: "library.favourites.${favourites[i].id}",
               title: favourites[i].name,
@@ -344,7 +342,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
           }
 
           await audioServiceHandler.initSongs(songs: mediaItems);
-          print("INDEX; $index");
+
           await audioServiceHandler.skipToQueueItem(index!);
           audioServiceHandler.play();
         }
@@ -660,15 +658,33 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                       SliverToBoxAdapter(
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 300),
-                          child: favourites.isNotEmpty
+                          child: favourites.isNotEmpty || lengthOfFavourites < 1
                               ? SizedBox(
                                   key: const ValueKey(true),
                                   child: favouritesSTIDS.isEmpty
-                                      ? Column(
-                                          children: [
-                                            razh(size.height / 3),
-                                            const Text("Empty"),
-                                          ],
+                                      ? Center(
+                                          child: Column(
+                                            children: [
+                                              razh(150),
+                                              iconButton(AppIcons.heartFill,
+                                                  Colors.white, () {
+                                                navigationBarIndex.value = 0;
+                                                searchFocusNode.value
+                                                    .requestFocus();
+                                              }, size: 60),
+                                              textButton(
+                                                  AppLocalizations.of(context)!
+                                                      .findyourfavouritesongsnow,
+                                                  () {
+                                                navigationBarIndex.value = 0;
+                                                searchFocusNode.value
+                                                    .requestFocus();
+                                              },
+                                                  const TextStyle(
+                                                      color: Colors.white),
+                                                  edgeInsets: EdgeInsets.zero)
+                                            ],
+                                          ),
                                         )
                                       : FavouritesBodyPhone(
                                           favourites: favourites,

@@ -9,7 +9,7 @@ class UserData {
       tries++;
       final accessTokenHandler =
           Provider.of<AccessToken>(context, listen: false);
-      print(accessTokenHandler.accessToken);
+
       final response = await http.post(
         Uri.parse("${AppConstants.SERVER_URL}user_data"),
         body: jsonEncode(
@@ -19,7 +19,7 @@ class UserData {
 
       if (response.statusCode == 200) {
         Map data = jsonDecode(response.body);
-        print("data; $data");
+
         return data;
       } else if (response.statusCode == 401) {
         if (tries < 2) {
@@ -28,12 +28,10 @@ class UserData {
           break; // Exit the loop after the second attempt
         }
       } else {
-        print("HEEEE");
         SignInHandler().signOut(context);
         return null; // Handle other status codes as needed
       }
     }
-    print("HEEEE33333");
     SignInHandler().signOut(context);
     return null; // Return null if it fails after the retry
   }

@@ -7,9 +7,8 @@ class SignInHandler {
   }
 
   signOut(context) async {
-    print("system wide signin");
     updateSystemWide(false);
-    print("Sistem wide access token");
+
     AccessTokenhandler().updateSystemWide(context, null);
 
     RefreshTokenhandler().updateSystemWide(context, null);

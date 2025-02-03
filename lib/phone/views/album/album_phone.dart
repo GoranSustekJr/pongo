@@ -101,7 +101,6 @@ class _AlbumPhoneState extends State<AlbumPhone> {
 
       tracks = Track.fromMapList(dta); // Tracks, runntimetype List<Track>
 
-      print(data["missing_tracks"].runtimeType);
       missingTracks = (data["missing_tracks"] as List<dynamic>)
           .cast<String>(); // Missing tracks stids
 

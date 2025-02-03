@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
-iconButton(IconData icon, Color color, Function() function,
+Widget iconButton(IconData icon, Color color, Function() function,
     {EdgeInsets? edgeInsets, double? size}) {
   if (kIsApple) {
     return CupertinoButton(

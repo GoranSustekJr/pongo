@@ -210,8 +210,6 @@ class QueueBodyPhone extends StatelessWidget {
                               type: PlaylistHandlerType.offline,
                               function: PlaylistHandlerFunction.addToPlaylist,
                               track: queue!.where((track) {
-                                print(selectedStids);
-                                print(track.id.split('.')[2]);
                                 return selectedStids
                                     .contains(track.id.split('.')[2]);
                               }).map(

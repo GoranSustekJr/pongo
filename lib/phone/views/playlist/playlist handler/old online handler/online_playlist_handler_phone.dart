@@ -220,7 +220,6 @@ class _OnlinePlaylistHandlerPhoneState
                                     .playlistnamealreadyexists);
                           }
                         } else {
-                          print("object; ${titleController.value.text}");
                           setState(() {
                             redIt = true;
                           });

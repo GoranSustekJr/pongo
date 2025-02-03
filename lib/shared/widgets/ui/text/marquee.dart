@@ -15,8 +15,6 @@ LayoutBuilder marquee(
 
       textPainter.layout(maxWidth: constraints.maxWidth);
 
-      bool isOverflowing = textPainter.didExceedMaxLines;
-
       return /*  isOverflowing
           ? SizedBox(
               height: height,

@@ -1,5 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/theme/theme.dart';
 
 class MyAppPhone extends StatefulWidget {
   const MyAppPhone({super.key});
@@ -14,20 +13,33 @@ class MyAppPhone extends StatefulWidget {
 }
 
 class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
+  // Locale
   Locale? locale;
-
-  setLocale(Locale local) {
-    setState(() {
-      locale = local;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
+    // Init the globals
     mainContext.value = context;
     WidgetsBinding.instance.addObserver(this);
+
+    // Init functions
+    checkIfPremium();
     getLocale();
+  }
+
+  // Premium
+  void checkIfPremium() async {
+    // Premium
+    bool premim = await Premium().isPremium(context);
+    premium.value = premim;
+  }
+
+  // Set locale
+  setLocale(Locale local) {
+    setState(() {
+      locale = local;
+    });
   }
 
   getLocale() async {
@@ -47,7 +59,6 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
   }
 
   void performBeforeCloseActions() async {
-    print("CLOSIGN");
     // Save the state
     final audioServiceHandler =
         Provider.of<AudioHandler>(context, listen: false)

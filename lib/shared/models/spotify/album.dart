@@ -9,7 +9,6 @@ class Album {
 
   // Creata a Album from a Map
   factory Album.fromMap(Map<String, dynamic> map) {
-    print(map.keys);
     return Album(
       id: map["id"],
       type: map.keys.contains("album_group")

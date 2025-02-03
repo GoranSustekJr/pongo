@@ -22,10 +22,7 @@ class Playlist {
   static List<Playlist> fromMapList(List<dynamic> list) {
     for (var item in list) {
       if (item == null) {
-        print("Found null in playlist list");
-      } else if (item is! Map<String, dynamic>) {
-        print("Unexpected type: ${item.runtimeType} - $item");
-      }
+      } else if (item is! Map<String, dynamic>) {}
     }
 
     return list

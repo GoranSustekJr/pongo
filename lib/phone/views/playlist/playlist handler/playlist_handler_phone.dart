@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/playlist/playlist%20handler/playlist_handler_body_phone.dart';
 import 'package:http/http.dart' as http;
-import 'package:pongo/shared/utils/API%20requests/download.dart';
 
 class PlaylistHandlerPhone extends StatefulWidget {
   final PlaylistHandler playlistHandler;
@@ -71,7 +70,6 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
       for (int opid in opids) {
         final tracks =
             await DatabaseHelper().queryOnlineTrackIdsForPlaylist(opid);
-        print(tracks);
         plylistTrackMap[opid] = tracks.map((track) => {
               "id": track["opid"],
               "track_id": track["track_id"],
@@ -133,7 +131,6 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
     setState(() {
       if (widget.playlistHandler.track != null) {
         if (widget.playlistHandler.track!.isNotEmpty) {
-          print("Dubre; ${widget.playlistHandler.track}");
           newPlaylistCover = widget.playlistHandler.track![0].cover;
         }
       }
@@ -292,7 +289,6 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                                     if (i ==
                                         widget.playlistHandler.track!.length -
                                             1) {
-                                      print("object");
                                       playlistHandler.value = null;
                                     }
                                   }
@@ -311,46 +307,48 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                                 final downloaded = await Download().playlist(
                                     context, widget.playlistHandler.toDownload);
 
-                                for (String stid in downloaded.keys) {
-                                  PlaylistHandlerTrack track = widget
-                                      .playlistHandler.track!
-                                      .where((track) => track.id == stid)
-                                      .first;
-                                  await Download().singleWithoutAPI(
-                                    stid,
-                                    base64Decode(downloaded[stid][1]),
-                                    downloaded[stid][0],
-                                    track.cover,
-                                    track.name,
-                                    track.artist,
-                                  );
-                                }
-                                // Add the tracks
-                                int lpid = await DatabaseHelper()
-                                    .insertLocalPlaylist(
-                                        titleController.value.text.trim(),
-                                        bytes);
-                                if (widget.playlistHandler.track!.length == 1) {
-                                  await DatabaseHelper().insertLocalTrackId(
-                                      lpid,
-                                      widget.playlistHandler.track![0].id);
-                                } else {
-                                  for (var track
-                                      in widget.playlistHandler.track!) {
-                                    await DatabaseHelper()
-                                        .insertLocalTrackId(lpid, track.id);
+                                if (downloaded.isNotEmpty) {
+                                  for (String stid in downloaded.keys) {
+                                    PlaylistHandlerTrack track = widget
+                                        .playlistHandler.track!
+                                        .where((track) => track.id == stid)
+                                        .first;
+                                    await Download().singleWithoutAPI(
+                                      stid,
+                                      base64Decode(downloaded[stid][1]),
+                                      downloaded[stid][0],
+                                      track.cover,
+                                      track.name,
+                                      track.artist,
+                                    );
                                   }
-                                }
+                                  // Add the tracks
+                                  int lpid = await DatabaseHelper()
+                                      .insertLocalPlaylist(
+                                          titleController.value.text.trim(),
+                                          bytes);
+                                  if (widget.playlistHandler.track!.length ==
+                                      1) {
+                                    await DatabaseHelper().insertLocalTrackId(
+                                        lpid,
+                                        widget.playlistHandler.track![0].id);
+                                  } else {
+                                    for (var track
+                                        in widget.playlistHandler.track!) {
+                                      await DatabaseHelper()
+                                          .insertLocalTrackId(lpid, track.id);
+                                    }
+                                  }
 
-                                // Notify the user
-                                Notifications().showSpecialNotification(
-                                    context,
-                                    AppLocalizations.of(context)!.successful,
-                                    AppLocalizations.of(context)!
-                                        .downloadsucceeded,
-                                    AppIcons.download);
+                                  // Notify the user
+                                  Notifications().showSpecialNotification(
+                                      context,
+                                      AppLocalizations.of(context)!.successful,
+                                      AppLocalizations.of(context)!
+                                          .downloadsucceeded,
+                                      AppIcons.download);
+                                }
                               } catch (e) {
-                                print(e);
                                 Notifications().showSpecialNotification(
                                     context,
                                     AppLocalizations.of(context)!.error,
@@ -424,41 +422,43 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                           final downloaded = await Download().playlist(
                               context, widget.playlistHandler.toDownload);
 
-                          for (String stid in downloaded.keys) {
-                            PlaylistHandlerTrack track = widget
-                                .playlistHandler.track!
-                                .where((track) => track.id == stid)
-                                .first;
-                            await Download().singleWithoutAPI(
-                              stid,
-                              base64Decode(downloaded[stid][1]),
-                              downloaded[stid][0],
-                              track.cover,
-                              track.name,
-                              track.artist,
-                            );
-                          }
-                          // Add the tracks
-                          for (int opid in selectedPlaylists) {
-                            if (widget.playlistHandler.track!.length == 1) {
-                              await DatabaseHelper().insertLocalTrackId(
-                                  opid, widget.playlistHandler.track![0].id);
-                            } else {
-                              for (var track in widget.playlistHandler.track!) {
-                                await DatabaseHelper()
-                                    .insertLocalTrackId(opid, track.id);
+                          if (downloaded.isNotEmpty) {
+                            for (String stid in downloaded.keys) {
+                              PlaylistHandlerTrack track = widget
+                                  .playlistHandler.track!
+                                  .where((track) => track.id == stid)
+                                  .first;
+                              await Download().singleWithoutAPI(
+                                stid,
+                                base64Decode(downloaded[stid][1]),
+                                downloaded[stid][0],
+                                track.cover,
+                                track.name,
+                                track.artist,
+                              );
+                            }
+                            // Add the tracks
+                            for (int opid in selectedPlaylists) {
+                              if (widget.playlistHandler.track!.length == 1) {
+                                await DatabaseHelper().insertLocalTrackId(
+                                    opid, widget.playlistHandler.track![0].id);
+                              } else {
+                                for (var track
+                                    in widget.playlistHandler.track!) {
+                                  await DatabaseHelper()
+                                      .insertLocalTrackId(opid, track.id);
+                                }
                               }
                             }
-                          }
 
-                          // Notify the user
-                          Notifications().showSpecialNotification(
-                              context,
-                              AppLocalizations.of(context)!.successful,
-                              AppLocalizations.of(context)!.downloadsucceeded,
-                              AppIcons.download);
+                            // Notify the user
+                            Notifications().showSpecialNotification(
+                                context,
+                                AppLocalizations.of(context)!.successful,
+                                AppLocalizations.of(context)!.downloadsucceeded,
+                                AppIcons.download);
+                          }
                         } catch (e) {
-                          print(e);
                           Notifications().showSpecialNotification(
                               context,
                               AppLocalizations.of(context)!.error,

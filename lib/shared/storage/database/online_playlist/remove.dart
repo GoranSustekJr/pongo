@@ -4,8 +4,6 @@ Future<void> removeTrackFromOnPlaylist(
     DatabaseHelper dbHelper, int opid, String trackId, int ordNum) async {
   Database db = await dbHelper.database;
 
-  print("ORDDD; $ordNum");
-
   await db.delete(
     'opid_track_id',
     where: 'opid = ? AND track_id = ? AND order_number = ?',

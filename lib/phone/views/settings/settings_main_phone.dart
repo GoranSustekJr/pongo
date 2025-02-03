@@ -16,7 +16,6 @@ class _SettingsMainPhoneState extends State<SettingsMainPhone> {
         body: SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
-      //decoration: Constants().backgroundBoxDecoration,
       child: Stack(
         children: [
           Navigator(
@@ -24,8 +23,6 @@ class _SettingsMainPhoneState extends State<SettingsMainPhone> {
             onGenerateRoute: (routeSettings) {
               return MaterialPageRoute(
                   builder: (context) => const SettingsPhone());
-              //TODO: Add clear player cache setting
-              //TODO: Add data save settings for various images and other data
             },
           )
         ],

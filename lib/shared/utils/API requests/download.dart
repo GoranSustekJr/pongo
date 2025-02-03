@@ -144,12 +144,24 @@ class Download {
                   } else {
                     break; // Exit the loop after the second attempt
                   }
+                } else if (response.statusCode == 403) {
+                  Notifications().showSpecialNotification(
+                      notificationsContext.value!,
+                      AppLocalizations.of(notificationsContext.value!)!.error,
+                      AppLocalizations.of(notificationsContext.value!)!
+                          .premiumisneededtodownloadatrack,
+                      AppIcons.warning, onTap: () {
+                    if (!premium.value) {
+                      navigationBarIndex.value = 2;
+                      currentTrackHeight.value = 0;
+                    }
+                  });
                 } else {
                   return {}; // Handle other status codes as needed
                 }
               }
             } catch (e) {
-              print(e);
+              //print(e);
 
               return {};
             }
@@ -167,7 +179,7 @@ class Download {
     } catch (e) {
       Notifications().showWarningNotification(notificationsContext.value!,
           AppLocalizations.of(notificationsContext.value!)!.downloadfailed);
-      print(e);
+      //print(e);
     }
   }
 
@@ -201,13 +213,27 @@ class Download {
           } else {
             break; // Exit the loop after the second attempt
           }
+        } else if (response.statusCode == 403) {
+          Notifications().showSpecialNotification(
+            notificationsContext.value!,
+            AppLocalizations.of(notificationsContext.value!)!.error,
+            AppLocalizations.of(notificationsContext.value!)!
+                .premiumisneededtodownloadatrack,
+            AppIcons.warning,
+            onTap: () {
+              if (!premium.value) {
+                navigationBarIndex.value = 2;
+                currentTrackHeight.value = 0;
+              }
+            },
+          );
+          return {};
         } else {
           return {}; // Handle other status codes as needed
         }
       }
     } catch (e) {
-      print(e);
-
+      //print(e);
       return {};
     }
     return {};

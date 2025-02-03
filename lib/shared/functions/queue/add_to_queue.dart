@@ -13,10 +13,7 @@ class AddToQueue {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
-    print("add to queue");
     final duration = await TrackMetadata().getDuration(context, track.id);
-
-    print(duration.runtimeType);
 
     if (duration["duration"] == null) {
       TrackMetadata().checkTrackExists(
@@ -85,10 +82,7 @@ class AddToQueue {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
-    print("add to queue");
     final duration = await TrackMetadata().getDuration(context, track.id);
-
-    print(duration.runtimeType);
 
     if (duration["duration"] == null) {
       TrackMetadata().checkTrackExists(
@@ -162,10 +156,7 @@ class AddToQueue {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
-    print("add to queue");
     final duration = await TrackMetadata().getDuration(context, track.id);
-
-    print(duration.runtimeType);
 
     if (duration["duration"] == null) {
       TrackMetadata().checkTrackExists(
@@ -208,7 +199,6 @@ class AddToQueue {
         },
       );
     } else {
-      print("HSDFJAHFKA; $id${track.id}");
       MediaItem mediaItem = MediaItem(
         id: "$id${track.id}",
         title: track.name,
@@ -255,10 +245,7 @@ class AddToQueue {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
-    print("add to queue");
     final duration = await TrackMetadata().getDuration(context, track.id);
-
-    print(duration.runtimeType);
 
     if (duration["duration"] == null) {
       TrackMetadata().checkTrackExists(

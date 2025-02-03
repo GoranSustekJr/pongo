@@ -41,7 +41,7 @@ class _SearchPhoneState extends State<SearchPhone> {
               ? SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
-                  key: const ValueKey(true), // TODO: Shimmer
+                  key: const ValueKey(true),
                 )
               : SearchBodyPhone(
                   tracks: searchDataManager.tracks,

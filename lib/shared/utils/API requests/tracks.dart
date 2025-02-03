@@ -36,8 +36,7 @@ class Tracks {
         }
       }
     } catch (e) {
-      print(e);
-
+      //  print(e);SignInHandler().signOut(context);
       return {};
     }
     return {};

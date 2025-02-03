@@ -74,7 +74,6 @@ class PlayMultiple {
             as AudioServiceHandler;
 
     if (missingTracks.isNotEmpty) {
-      print("not empty");
       // Disable ability to shuffle
       queueAllowShuffle.value = false;
 
@@ -165,7 +164,6 @@ class PlayMultiple {
 
     // Add each track as a MediaItem
     for (int i = 0; i < tracks.length; i++) {
-      print(tracks[i].image != null ? Uri.file(tracks[i].image!.path) : null);
       final MediaItem mediaItem = MediaItem(
         id: "$baseId.${tracks[i].id}",
         title: tracks[i].name,

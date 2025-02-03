@@ -23,4 +23,3 @@ export 'database/search history/remove.dart';
 export 'package:pongo/shared/storage/database/favourites/insert.dart';
 export 'package:pongo/shared/storage/database/favourites/query.dart';
 export 'package:pongo/shared/storage/database/favourites/remove.dart';
-import 'package:pongo/shared/storage/database/lyrics_sync_time_delay/query.dart';

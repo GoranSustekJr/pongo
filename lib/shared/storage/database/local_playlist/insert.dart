@@ -8,7 +8,6 @@ Future<int> insertLoclPlaylist(
     'title': title,
     'cover': cover,
   };
-  print("INSERTED");
   return await db.insert('local_playlist', row);
 }
 

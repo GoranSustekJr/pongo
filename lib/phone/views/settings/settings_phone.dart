@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/introduction/introduction_phone.dart';
+import 'package:pongo/phone/views/library/pages/buy%20premium/buy_premium_phone.dart';
 import 'package:pongo/phone/views/settings/profile/profile_phone.dart';
 import 'preferences/preferences_phone.dart';
 
@@ -65,18 +66,39 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                         //Navigationss().nextScreen(context, '/profile', {});
                         Navigations().nextScreen(context, const ProfilePhone());
                       }),
-                      settingsTile(
-                          context,
-                          false,
-                          true,
-                          AppIcons.preferences,
-                          AppIcons.settings,
-                          AppLocalizations.of(context)!.preferences,
-                          AppLocalizations.of(context)!.yourpreferences, () {
-                        Navigations()
-                            .nextScreen(context, const PreferencesPhone());
-                        //Navigations().nextScreen(context, PhonePreferencesScreen());
-                      }),
+                      ValueListenableBuilder(
+                          valueListenable: premium,
+                          builder: (context, value, child) {
+                            return Column(
+                              children: [
+                                settingsTile(
+                                    context,
+                                    false,
+                                    premium.value,
+                                    AppIcons.preferences,
+                                    AppIcons.settings,
+                                    AppLocalizations.of(context)!.preferences,
+                                    AppLocalizations.of(context)!
+                                        .yourpreferences, () {
+                                  Navigations().nextScreen(
+                                      context, const PreferencesPhone());
+                                }),
+                                if (!premium.value)
+                                  settingsTile(
+                                      context,
+                                      false,
+                                      true,
+                                      CupertinoIcons.shopping_cart,
+                                      CupertinoIcons.creditcard,
+                                      AppLocalizations.of(context)!.buypremium,
+                                      AppLocalizations.of(context)!.premium,
+                                      () {
+                                    Navigations().nextScreen(
+                                        context, const BuyPremiumPhone());
+                                  }),
+                              ],
+                            );
+                          }),
                       razh(20),
                       settingsText("About"),
                       settingsTile(
@@ -86,7 +108,7 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                         CupertinoIcons.chart_bar_fill,
                         AppIcons.settings,
                         "Tipps & tricks",
-                        "Pongo tipps and tricks",
+                        "Pongo tipps & tricks",
                         () {
                           Navigations().nextScreen(
                             context,

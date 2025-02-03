@@ -28,7 +28,6 @@ class TrackMetadata {
       var response = json.decode(message);
       responseNum += 1;
 
-      print("Response; $response");
       // print(response["exists"]);
 
       // First response
@@ -43,7 +42,6 @@ class TrackMetadata {
             //  print("Exists: $exists; ${response["exists"] == "false"}");
             doesNotExist(stid);
           } else {
-            print("HMM");
             await AccessTokenhandler().renew(context);
             return checkSongExistsNoRenewal(
                 context, stid, doesNotExist, doesNowExist, finished);
@@ -59,8 +57,7 @@ class TrackMetadata {
           //return response["duration"];
           finished(response["duration"]);
         } else {
-          // TODO: Store all gotten data
-          print("AAAAAAAAAAAAAAA");
+          // Store all gotten data
           finished(response["duration"]);
           // print(response["song_data"]["album"]["name"]);
           //   final trackData = await TrackData().get(context, stid);
@@ -155,11 +152,11 @@ class TrackMetadata {
         }
       } else {
         // Handle non-200 status codes
-        print("getLyrics failed with status code: ${response.statusCode}");
+//        print("getLyrics failed with status code: ${response.statusCode}");
         return await getIfLyricsFail(context, name, artist, duration, album);
       }
     } catch (e) {
-      print("Error fetching lyrics: $e");
+      //    print("Error fetching lyrics: $e");
       return await getIfLyricsFail(context, name, artist, duration, album);
     }
   }
@@ -167,8 +164,6 @@ class TrackMetadata {
   Future<Map<String, dynamic>> getIfLyricsFail(BuildContext context,
       String name, String artist, double duration, String album) async {
     try {
-      print("Attempting to fetch alternative lyrics for: $name - $artist");
-
       final response = await http.get(
         Uri(
           scheme: 'https',
@@ -182,31 +177,27 @@ class TrackMetadata {
 
       if (response.statusCode == 200) {
         final data = json.decode(utf8.decode(response.bodyBytes));
-        print(1);
         if (data.isEmpty) {
           // If no lyrics are found, return an empty response
-          print(2);
+
           return {"plainLyrics": "", "syncedLyrics": "", "duration": 0};
         }
 
         // Filter synced lyrics
         List<int> syncedIndexes = [];
         List<int> durations = [];
-        print(3);
+
         for (int i = 0; i < data.length; i++) {
           if (data[i]["syncedLyrics"] != null) {
-            print(4);
             syncedIndexes.add(i);
-            print(5);
 
             durations.add(data[i]["duration"].toInt());
           }
         }
-        print(6);
 
         if (syncedIndexes.isNotEmpty) {
           // Find the closest match by duration
-          print(7);
+
           int closestMatchIndex = durations
               .asMap()
               .entries
@@ -222,12 +213,12 @@ class TrackMetadata {
           return data[0];
         }
       } else {
-        print(
-            "getIfLyricsFail failed with status code: ${response.statusCode}");
+        // print(
+        //   "getIfLyricsFail failed with status code: ${response.statusCode}");
         return {"plainLyrics": "", "syncedLyrics": "", "duration": 0};
       }
     } catch (e) {
-      print("Error fetching alternative lyrics: $e");
+      //   print("Error fetching alternative lyrics: $e");
       return {"plainLyrics": "", "syncedLyrics": "", "duration": 0};
     }
   }
@@ -241,7 +232,6 @@ class TrackMetadata {
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
 
-        print(accessTokenHandler.accessToken);
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_track_duration"),
           body: jsonEncode(
@@ -267,7 +257,7 @@ class TrackMetadata {
         }
       }
     } catch (e) {
-      print(e);
+      // print(e);
 
       return {};
     }

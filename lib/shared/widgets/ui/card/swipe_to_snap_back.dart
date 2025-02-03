@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import '../../../../exports.dart';
 
 class SwipeToSnapBack extends StatefulWidget {
@@ -33,10 +35,8 @@ class _SwipeToSnapBackState extends State<SwipeToSnapBack> {
   void onHorizontalDragEnd(DragEndDetails details) {
     if (offsetX.abs() > swipeThreshold) {
       if (details.primaryVelocity! > 0) {
-        print("Drag right");
         widget.swipeRight();
       } else if (details.primaryVelocity! < 0) {
-        print("Drag left");
         widget.swipeLeft();
       }
     }

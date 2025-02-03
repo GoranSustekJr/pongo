@@ -1,6 +1,6 @@
 import 'package:pongo/exports.dart';
 
-razh(double x) {
+Widget razh(double x) {
   return SizedBox(
     height: x,
   );

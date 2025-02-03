@@ -5,7 +5,6 @@ Future<void> insertSearchHistorySrch(
   Database db = await dbHelper.database;
   await dbHelper.removeSearchHistoryEntry(qry);
   await db.transaction((txn) async {
-    print(1);
     await txn.insert(
       'search_history',
       {'query': qry},
@@ -34,7 +33,6 @@ Future<void> insertLFHArtsts(DatabaseHelper dbHelper, String said) async {
   Database db = await dbHelper.database;
   await dbHelper.removeLFHArtists(said);
   await db.transaction((txn) async {
-    print(1);
     await txn.insert(
       'lfh_artists',
       {'said': said},
@@ -62,9 +60,7 @@ Future<void> insertLFHArtsts(DatabaseHelper dbHelper, String said) async {
 Future<void> insertLFHTrcks(DatabaseHelper dbHelper, String stid) async {
   Database db = await dbHelper.database;
   await dbHelper.removeLFHTracks(stid);
-  print("object; $stid");
   await db.transaction((txn) async {
-    print(1);
     await txn.insert(
       'lfh_tracks',
       {'stid': stid},

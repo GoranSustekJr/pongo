@@ -171,19 +171,30 @@ class LocalsPhone extends StatelessWidget {
                                 child: AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 300),
                                   child: localsDataManager
-                                          .tracksBackup.isNotEmpty
+                                              .tracksBackup.isNotEmpty ||
+                                          localsDataManager.numOfTracks < 1
                                       ? SizedBox(
                                           key: const ValueKey(true),
                                           child: localsDataManager
                                                   .tracks.isEmpty
                                               ? Column(
                                                   children: [
-                                                    razh(size.height / 3),
+                                                    razh(100),
                                                     iconButton(
                                                         AppIcons.musicAlbums,
                                                         Colors.white,
                                                         localsDataManager
-                                                            .newTracks),
+                                                            .newTracks,
+                                                        size: 60),
+                                                    textButton(
+                                                        AppLocalizations.of(
+                                                                context)!
+                                                            .downloadtracksnow,
+                                                        localsDataManager
+                                                            .newTracks,
+                                                        const TextStyle(
+                                                            color:
+                                                                Colors.white))
                                                   ],
                                                 )
                                               : LocalsBodyPhone(

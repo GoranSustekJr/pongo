@@ -18,7 +18,6 @@ Future<void> insertSyncTimeDlay(
 
     await db.insert('lyrics_sync_time_delay', trackData);
   } else {
-    print("Schon exisitert");
     await db.update(
         "lyrics_sync_time_delay",
         {

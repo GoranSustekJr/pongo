@@ -118,11 +118,11 @@ class PlaylistFunctions {
         if (croppedFile != null) {
           Uint8List bytes = await File(croppedFile.path).readAsBytes();
           await DatabaseHelper().updateOnlinePlaylistCover(opid, bytes);
-          final String blurHash = await BlurhashFFI.encode(
+          /* final String blurHash = await BlurhashFFI.encode(
             MemoryImage(bytes),
             componentX: 3,
             componentY: 3,
-          );
+          ); */
           updateCover(MemoryImage(bytes));
         }
       }

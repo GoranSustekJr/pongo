@@ -1,6 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/widgets/library/favourites/favourites_tile.dart';
-import 'package:spotify_api/spotify_api.dart' as sp;
 
 class FavouritesBodyPhone extends StatefulWidget {
   final List<Track> favourites;
@@ -140,7 +138,6 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
                                   : false;
 
                           if (playNew) {
-                            print("play; $index");
                             changeTrackOnTap.value = true;
                             widget.play(index);
                           } else if (skipTo &&

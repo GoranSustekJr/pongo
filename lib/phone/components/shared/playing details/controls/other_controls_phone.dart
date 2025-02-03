@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'track_info_button.dart';
@@ -78,7 +80,6 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
                     audioServiceHandler
                         .setRepeatMode(AudioServiceRepeatMode.all);
                   }
-                  print(audioServiceHandler.audioPlayer.loopMode.name);
                 },
               ),
               FutureBuilder<bool>(
@@ -109,8 +110,6 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
                 Colors.white,
                 () {
                   widget.changeShowQueue();
-                  print(audioServiceHandler.audioPlayer.effectiveIndices);
-                  print(audioServiceHandler.playlist.sequence);
                 },
               ),
             ],

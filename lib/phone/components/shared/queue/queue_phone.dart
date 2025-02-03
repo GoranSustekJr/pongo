@@ -1,5 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/components/shared/queue/queue_body_phone.dart';
 
 class QueuePhone extends StatefulWidget {
   final bool showQueue;
@@ -112,34 +111,51 @@ class _QueuePhoneState extends State<QueuePhone> {
                           changeLyricsOn: widget.changeLyricsOn,
                           saveAsPlaylist: () {
                             if (queue != null) {
-                              OpenPlaylist().show(
-                                context,
-                                PlaylistHandler(
-                                  type: PlaylistHandlerType.online,
-                                  function:
-                                      PlaylistHandlerFunction.createPlaylist,
-                                  track: queue.map((track) {
-                                    return PlaylistHandlerOnlineTrack(
-                                      id: track.id.split('.')[2],
-                                      name: track.title,
-                                      artist: track.artist != null
-                                          ? (jsonDecode(
-                                                      track.extras!["artists"])
-                                                  as List)
-                                              .map((e) =>
-                                                  e as Map<String, dynamic>)
-                                              .toList()
-                                          : [],
-                                      cover: track.artUri.toString(),
-                                      playlistHandlerCoverType: track.artUri
-                                              .toString()
-                                              .contains("file:///")
-                                          ? PlaylistHandlerCoverType.bytes
-                                          : PlaylistHandlerCoverType.url,
-                                    );
-                                  }).toList(),
-                                ),
-                              );
+                              if (premium.value) {
+                                OpenPlaylist().show(
+                                  context,
+                                  PlaylistHandler(
+                                    type: PlaylistHandlerType.online,
+                                    function:
+                                        PlaylistHandlerFunction.createPlaylist,
+                                    track: queue.map((track) {
+                                      return PlaylistHandlerOnlineTrack(
+                                        id: track.id.split('.')[2],
+                                        name: track.title,
+                                        artist: track.artist != null
+                                            ? (jsonDecode(track
+                                                        .extras!["artists"])
+                                                    as List)
+                                                .map((e) =>
+                                                    e as Map<String, dynamic>)
+                                                .toList()
+                                            : [],
+                                        cover: track.artUri.toString(),
+                                        playlistHandlerCoverType: track.artUri
+                                                .toString()
+                                                .contains("file:///")
+                                            ? PlaylistHandlerCoverType.bytes
+                                            : PlaylistHandlerCoverType.url,
+                                      );
+                                    }).toList(),
+                                  ),
+                                );
+                              } else {
+                                Notifications().showSpecialNotification(
+                                    notificationsContext.value!,
+                                    AppLocalizations.of(
+                                            notificationsContext.value!)!
+                                        .error,
+                                    AppLocalizations.of(
+                                            notificationsContext.value!)!
+                                        .premiumisneededtosavethequeue,
+                                    AppIcons.warning, onTap: () {
+                                  if (!premium.value) {
+                                    currentTrackHeight.value = 0;
+                                    navigationBarIndex.value = 2;
+                                  }
+                                });
+                              }
                             }
                           },
                         ),

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_renaming_method_parameters
+
 import '../../exports.dart';
 
 class GoogleLogoPainter extends CustomPainter {

@@ -16,6 +16,7 @@ class Recommendations {
             Provider.of<AccessToken>(context, listen: false);
         String market = await Storage().getMarket() ?? 'US';
         List<String> history = await DatabaseHelper().queryTrackHistoryNum(50);
+
         int categoriesNum = await Storage().getNumOfCategories();
         String locale = await Storage().getLocale() ?? 'en';
 
@@ -46,8 +47,9 @@ class Recommendations {
         }
       }
     } catch (e) {
-      print(e);
+      //print(e);SignInHandler().signOut(context);
 
+      SignInHandler().signOut(context);
       return {};
     }
     return {};
@@ -62,15 +64,13 @@ class Recommendations {
     bool recommendForYou = await Storage().getRecommendedForYou();
     bool recommendPongo = await Storage().getRecommendedPongo();
 
-    print(stids);
-
     try {
       while (tries < 2) {
         tries++;
         final accessTokenHandler =
             Provider.of<AccessToken>(context, listen: false);
         String market = await Storage().getMarket() ?? 'US';
-        print(accessTokenHandler.accessToken);
+
         final response = await http.post(
           Uri.parse("${AppConstants.SERVER_URL}get_suggestions"),
           body: jsonEncode(
@@ -86,7 +86,6 @@ class Recommendations {
 
         if (response.statusCode == 200) {
           Map<String, dynamic> data = jsonDecode(response.body);
-          print("KEYS: ${data.keys}");
           return data;
         } else if (response.statusCode == 401) {
           if (tries < 2) {
@@ -99,7 +98,7 @@ class Recommendations {
         }
       }
     } catch (e) {
-      print(e);
+      //print(e);
 
       return {};
     }

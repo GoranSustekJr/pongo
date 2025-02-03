@@ -35,7 +35,7 @@ class SearializedData {
         }
       }
     } catch (e) {
-      print(e);
+      // print(e);
 
       return {};
     }
@@ -76,8 +76,7 @@ class SearializedData {
         }
       }
     } catch (e) {
-      print(e);
-
+      //print(e);
       return {};
     }
     return {};

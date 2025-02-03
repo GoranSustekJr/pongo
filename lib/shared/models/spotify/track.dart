@@ -46,7 +46,6 @@ class Track {
 
   // Convert local track to a Track object
   factory Track.fromMapLocal(Map<String, dynamic> map) {
-    print(map.keys);
     return Track(
       id: map["stid"],
       name: map["title"],

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import '../../exports.dart';
 import 'package:path_provider/path_provider.dart' as syspaths;
 
@@ -37,7 +39,7 @@ class AudioServiceHandler extends BaseAudioHandler
         }
       });
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -54,9 +56,7 @@ class AudioServiceHandler extends BaseAudioHandler
     List<MediaItem> queueList = await Storage().getQueue();
     int queueIndex = await Storage().getQueueIndex();
     Duration position = await Storage().getCurrentPlayingPosition();
-    print(queueList);
-    print(queueIndex);
-    print(position);
+
     await initSongs(songs: queueList);
     if (queueIndex != -1) {
       skipToQueueItem(queueIndex, playAuto: false);
@@ -66,7 +66,6 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Create audio source from media item
   AudioSource createAudioSource(MediaItem item) {
-    print(item.extras);
     /* final accessTokenHandler =
         Provider.of<AccessToken>(searchScreenContext.value!, listen: false); */
     return item.extras!["downloaded"] == "true"
@@ -122,9 +121,7 @@ if (mediaItem != null){
   void listenForNewTracks() async {
     audioPlayer.positionStream.listen(
       (Duration position) async {
-        print(position);
         if (position == audioPlayer.duration) {
-          print("object");
           await InterstitialAd.load(
               adUnitId: adUnitId,
               request: const AdRequest(),
@@ -334,7 +331,8 @@ if (mediaItem != null){
 
   // Seek function to change the playback position
   @override
-  Future<void> seek(Duration position) async => audioPlayer.seek(position);
+  Future<void> seek(Duration position) async =>
+      premium.value ? audioPlayer.seek(position) : null;
 
   // Skip to a specific item in the queue and start playback
   @override
@@ -345,7 +343,7 @@ if (mediaItem != null){
         play();
       }
     } catch (e) {
-      print("Erorrr; $e");
+      //print("Erorrr; $e");
     }
   }
 

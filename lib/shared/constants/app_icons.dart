@@ -52,6 +52,8 @@ class AppIcons {
 
   static const world = CupertinoIcons.globe;
 
+  static const add = CupertinoIcons.add;
+
   static final blankArtist =
       kIsApple ? CupertinoIcons.person : Icons.person_rounded;
 
