@@ -16,6 +16,17 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
   // Locale
   Locale? locale;
 
+  final InAppPurchase inAppPurchase = InAppPurchase.instance; // InAppPurchase
+  final String premiumId =
+      "pongoo1810premium"; // Premium subscription identifier
+
+  bool storeAvailable = true; // Check if store is available for the device
+  List<ProductDetails> products = []; // List of product details
+  List<PurchaseDetails> purchases = []; // List of purchase details
+  late StreamSubscription<List<PurchaseDetails>>
+      subscription; // Listen for updates that are betrift mit purchases
+  bool isPurchaseInProgress = false; // is a purchase in progress
+
   @override
   void initState() {
     super.initState();
@@ -23,9 +34,96 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
     mainContext.value = context;
     WidgetsBinding.instance.addObserver(this);
 
+    // Init the subscription
+    inAppPurchaseInstance = inAppPurchase;
+    final Stream<List<PurchaseDetails>> purchaseUpdated =
+        inAppPurchase.purchaseStream;
+
+    subscription = purchaseUpdated.listen((purchaseDetails) {
+      setState(() {
+        purchases.addAll(purchaseDetails);
+        listenPurchaseUpdated(purchaseDetails);
+      });
+    }, onDone: () {
+      subscription.cancel();
+    }, onError: (error) {
+      subscription.cancel();
+    });
+
     // Init functions
+    initialize();
     checkIfPremium();
     getLocale();
+  }
+
+// Init the app/google play store products
+  void initialize() async {
+    storeAvailable = await inAppPurchase.isAvailable();
+
+    List<ProductDetails> productss = await getProducts(
+      productIds: <String>{premiumId},
+    );
+
+    subscriptionModels = productss;
+    setState(() {
+      products = productss;
+    });
+  }
+
+  // Listener for changes in the purchase stream
+  void listenPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (isPurchaseInProgress) return; // If in progress stop
+
+      isPurchaseInProgress = true; // If the first one isolate it
+
+      switch (purchaseDetails.status) {
+        case PurchaseStatus.pending:
+          // Show pending
+          break;
+
+        case PurchaseStatus.purchased:
+        case PurchaseStatus.restored:
+          if (purchaseDetails.pendingCompletePurchase &&
+              !isUserSignedIn.value) {
+            await inAppPurchase.completePurchase(purchaseDetails);
+            print("Purchased or auto renewed");
+            // Call your method to handle the purchase
+            await Premium().buyPremium(
+                context,
+                purchaseDetails.verificationData.serverVerificationData,
+                purchaseDetails.purchaseID);
+          }
+          break;
+
+        case PurchaseStatus.error:
+          print("error");
+          // handleError(purchaseDetails);
+          break;
+
+        default:
+          break;
+      }
+
+      if (purchaseDetails.pendingCompletePurchase && !isUserSignedIn.value) {
+        try {
+          await inAppPurchase.completePurchase(purchaseDetails);
+        } catch (e) {
+          print("DIGGA; $e");
+        }
+      }
+
+      isPurchaseInProgress = false; // Reset the flag after processing
+    });
+  }
+
+  // Get the available products
+  Future<List<ProductDetails>> getProducts(
+      {required Set<String> productIds}) async {
+    ProductDetailsResponse response =
+        await inAppPurchase.queryProductDetails(productIds);
+
+    return response.productDetails;
   }
 
   // Premium
@@ -88,6 +186,7 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    subscription.cancel();
     super.dispose();
   }
 

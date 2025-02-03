@@ -12,8 +12,8 @@ void main() async {
 
   // Ads
   MobileAds.instance.initialize();
-  MobileAds.instance.updateRequestConfiguration(
-      RequestConfiguration(testDeviceIds: ["00000000-0000-0000-0000-000000"]));
+  MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
+      testDeviceIds: ["F28981DD-9820-4986-BD79-8839334AF568"]));
 
   // Audio Session Configuration
   final session = await AudioSession.instance;

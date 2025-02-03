@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/introduction/introduction_phone.dart';
 import 'package:pongo/phone/views/library/pages/buy%20premium/buy_premium_phone.dart';
+import 'package:pongo/phone/views/settings/about/about_phone.dart';
 import 'package:pongo/phone/views/settings/profile/profile_phone.dart';
 import 'preferences/preferences_phone.dart';
 
@@ -105,6 +106,21 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                         context,
                         true,
                         false,
+                        CupertinoIcons.info_circle,
+                        AppIcons.musicAlbums,
+                        "About",
+                        "About Pongo",
+                        () {
+                          Navigations().nextScreen(
+                            context,
+                            const AboutPhone(),
+                          );
+                        },
+                      ),
+                      settingsTile(
+                        context,
+                        false,
+                        true,
                         CupertinoIcons.chart_bar_fill,
                         AppIcons.settings,
                         "Tipps & tricks",
@@ -116,21 +132,6 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                           );
                         },
                         special: true,
-                      ),
-                      settingsTile(
-                        context,
-                        false,
-                        true,
-                        CupertinoIcons.info_circle,
-                        AppIcons.musicAlbums,
-                        "About",
-                        "About Pongo",
-                        () {
-                          Navigations().nextScreen(
-                            context,
-                            const IntroductionPhone(),
-                          );
-                        },
                       ),
                     ],
                   );

@@ -94,6 +94,9 @@ ValueNotifier<bool> cacheImages = ValueNotifier(false);
 // Subscriptions
 List<ProductDetails> subscriptionModels = [];
 
+// In app purchase instance
+InAppPurchase? inAppPurchaseInstance;
+
 // Subsciption level
 ValueNotifier<String> subscriptionLevel = ValueNotifier("");
 

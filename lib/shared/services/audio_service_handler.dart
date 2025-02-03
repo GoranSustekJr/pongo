@@ -15,6 +15,9 @@ class AudioServiceHandler extends BaseAudioHandler
   double volume = 1.0;
   double tempVolume = 1.0;
 
+  // Songs played
+  int songsPlayed = 0;
+
   // Ad
   InterstitialAd? interstitialAd;
   String adUnitId = "ca-app-pub-3940256099942544/4411468910";
@@ -30,8 +33,10 @@ class AudioServiceHandler extends BaseAudioHandler
       //listenForNewTracks();
       audioPlayer.processingStateStream.listen((state) async {
         if (state == ProcessingState.completed) {
+          checkToShowAdd();
           if (queue.value.length - 1 == audioPlayer.currentIndex) {
             await skipToQueueItem(0);
+            showAdd();
             pause();
           } else {
             skipToNext();
@@ -64,6 +69,8 @@ class AudioServiceHandler extends BaseAudioHandler
     seek(position);
   }
 
+  //
+
   // Create audio source from media item
   AudioSource createAudioSource(MediaItem item) {
     /* final accessTokenHandler =
@@ -89,6 +96,61 @@ class AudioServiceHandler extends BaseAudioHandler
                 }, */
                 tag: item,
               ) as AudioSource;
+  }
+
+  // Check if to show add
+  void checkToShowAdd() async {
+    songsPlayed++;
+
+    print(songsPlayed);
+
+    if (songsPlayed > 2) {
+      showAdd();
+      songsPlayed = 0;
+    }
+  }
+
+  void showAdd() async {
+    await InterstitialAd.load(
+      adUnitId: adUnitId,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) async {
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+              // Called when the ad showed the full screen content.
+              onAdShowedFullScreenContent: (ad) {
+                pause();
+              },
+              // Called when an impression occurs on the ad.
+              onAdImpression: (ad) {},
+              // Called when the ad failed to show full screen content.
+              onAdFailedToShowFullScreenContent: (ad, err) {
+                // Dispose the ad here to free resources.
+                ad.dispose();
+              },
+              // Called when the ad dismissed full screen content.
+              onAdDismissedFullScreenContent: (ad) {
+                // Dispose the ad here to free resources.
+                play();
+                ad.dispose();
+              },
+              // Called when a click is recorded for an ad.
+              onAdClicked: (ad) {});
+
+          debugPrint('$ad loaded.');
+          // Keep a reference to the ad so you can show it later.
+          interstitialAd = ad;
+
+          print(interstitialAd);
+          if (interstitialAd != null) {
+            await interstitialAd!.show();
+          }
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          debugPrint('InterstitialAd failed to load: $error');
+        },
+      ),
+    );
   }
 
   // Listen for changes in the current song index and update the media item
@@ -127,7 +189,7 @@ if (mediaItem != null){
               request: const AdRequest(),
               adLoadCallback: InterstitialAdLoadCallback(
                 // Called when an ad is successfully received.
-                onAdLoaded: (ad) {
+                onAdLoaded: (ad) async {
                   ad.fullScreenContentCallback = FullScreenContentCallback(
                       // Called when the ad showed the full screen content.
                       onAdShowedFullScreenContent: (ad) {
@@ -152,15 +214,19 @@ if (mediaItem != null){
                   debugPrint('$ad loaded.');
                   // Keep a reference to the ad so you can show it later.
                   interstitialAd = ad;
+
+                  if (interstitialAd != null) {
+                    await interstitialAd!.show();
+                  }
                 },
                 // Called when an ad request failed.
                 onAdFailedToLoad: (LoadAdError error) {
                   debugPrint('InterstitialAd failed to load: $error');
                 },
               ));
-          if (interstitialAd != null) {
+          /* if (interstitialAd != null) {
             await interstitialAd!.show();
-          }
+          } */
         }
       },
     );
@@ -349,7 +415,13 @@ if (mediaItem != null){
 
   // Skip to the next item in the queue
   @override
-  Future<void> skipToNext() async => audioPlayer.seekToNext();
+  Future<void> skipToNext() async {
+    await audioPlayer.seekToNext();
+    print(!premium.value);
+    if (!premium.value) {
+      checkToShowAdd();
+    }
+  }
 
   // Skip to the previous item in the queue
   @override
@@ -358,6 +430,10 @@ if (mediaItem != null){
       await audioPlayer.seekToPrevious();
     } else {
       await seek(const Duration(seconds: 0));
+    }
+    print(!premium.value);
+    if (!premium.value) {
+      checkToShowAdd();
     }
   }
 

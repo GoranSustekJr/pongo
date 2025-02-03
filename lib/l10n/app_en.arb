@@ -30,6 +30,11 @@
         "description": "OK"
     },
 
+    "pleaseleavethepageafterasuccessfullpurchase": "Please leave the page after a successfull purchase",
+    "@pleaseleavethepageafterasuccessfullpurchase": {
+        "description": "pleaseleavethepageafterasuccessfullpurchase"
+    },
+
     "areyousure": "Are you sure?",
     "@areyousure": {
         "description": "Are You Sure?"

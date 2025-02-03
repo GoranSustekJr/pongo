@@ -9,110 +9,31 @@ class BuyPremiumPhone extends StatefulWidget {
 
 class _BuyPremiumPhoneState extends State<BuyPremiumPhone>
     with WidgetsBindingObserver {
-  // Premium
-  final InAppPurchase inAppPurchase = InAppPurchase.instance; // InAppPurchase
-  final String premiumId =
-      "pongoo1810premium"; // Premium subscription identifier
-
-  bool storeAvailable = true; // Check if store is available for the device
-  List<ProductDetails> products = []; // List of product details
-  List<PurchaseDetails> purchases = []; // List of purchase details
-  late StreamSubscription<List<PurchaseDetails>>
-      subscription; // Listen for updates that are betrift mit purchases
-
-// Init
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showBottomNavBar.value = false;
     });
-
-    // Init the subscription
-    final Stream<List<PurchaseDetails>> purchaseUpdated =
-        inAppPurchase.purchaseStream;
-
-    subscription = purchaseUpdated.listen((purchaseDetails) {
-      setState(() {
-        purchases.addAll(purchaseDetails);
-        listenPurchaseUpdated(purchaseDetails);
-      });
-    }, onDone: () {
-      subscription.cancel();
-    }, onError: (error) {
-      subscription.cancel();
-    });
-
-    // Init the specials
-    initialize();
-  }
-
-  // Init the app/google play store products
-  void initialize() async {
-    storeAvailable = await inAppPurchase.isAvailable();
-
-    List<ProductDetails> productss = await getProducts(
-      productIds: <String>{premiumId},
-    );
-
-    setState(() {
-      products = productss;
-    });
-  }
-
-  // Listener for changes in the purchase stream
-  void listenPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
-    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-      switch (purchaseDetails.status) {
-        case PurchaseStatus.pending:
-          // Show pending
-          break;
-
-        case PurchaseStatus.purchased:
-        case PurchaseStatus.restored:
-          if (purchaseDetails.pendingCompletePurchase) {
-            await inAppPurchase.completePurchase(purchaseDetails);
-
-            // Call your method to handle the purchase
-            await Premium().buyPremium(
-                context,
-                purchaseDetails.verificationData.serverVerificationData,
-                purchaseDetails.purchaseID);
-          }
-          break;
-
-        case PurchaseStatus.error:
-          // handleError(purchaseDetails);
-          break;
-
-        default:
-          break;
-      }
-
-      if (purchaseDetails.pendingCompletePurchase) {
-        await inAppPurchase.completePurchase(purchaseDetails);
-      }
-    });
-  }
-
-  // Get the available products
-  Future<List<ProductDetails>> getProducts(
-      {required Set<String> productIds}) async {
-    ProductDetailsResponse response =
-        await inAppPurchase.queryProductDetails(productIds);
-
-    return response.productDetails;
   }
 
   // subscribe
   void subscribe({required ProductDetails product}) async {
     final PurchaseParam purchaseParam = PurchaseParam(productDetails: product);
-    inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+    if (inAppPurchaseInstance != null) {
+      print(inAppPurchaseInstance);
+      try {
+        await inAppPurchaseInstance!
+            .buyNonConsumable(purchaseParam: purchaseParam);
+      } catch (e) {
+        Notifications().showWarningNotification(context,
+            "An error has occured. Try buying premium later. If the problems continue, contact us at pongo.group@gmail.com");
+      }
+    }
   }
 
   @override
   void dispose() {
-    subscription.cancel();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showBottomNavBar.value = true;
     });
@@ -137,10 +58,18 @@ class _BuyPremiumPhoneState extends State<BuyPremiumPhone>
                   border: Border.all(color: Colors.red),
                   borderRadius: BorderRadius.circular(35)),
               child: textButton(
-                  "${AppLocalizations.of(context)!.buypremium}: ${products.isNotEmpty ? products[0].price : ""} ${products.isNotEmpty ? products[0].currencyCode : ""}",
+                  "${AppLocalizations.of(context)!.buypremium}: ${subscriptionModels.isNotEmpty ? subscriptionModels[0].price : ""} ${subscriptionModels.isNotEmpty ? subscriptionModels[0].currencyCode : ""}",
                   () {
-                subscribe(product: products[0]);
+                subscribe(product: subscriptionModels[0]);
               }, const TextStyle(color: Colors.white)),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                AppLocalizations.of(context)!
+                    .pleaseleavethepageafterasuccessfullpurchase,
+                textAlign: TextAlign.center,
+              ),
             ),
             Expanded(child: Container()),
             textButton(AppLocalizations.of(context)!.cancel, () {
