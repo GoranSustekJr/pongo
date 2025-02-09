@@ -113,6 +113,7 @@ dependencies:
   #in_app_purchase: ^3.2.1
   flutter_inapp_purchase: ^5.6.1
   in_app_purchase: ^3.2.1
+  pdfx: ^2.8.0
 
   
 
@@ -173,6 +174,7 @@ flutter:
     - assets/images/pongo_premium.png
     - assets/images/pongo_premium_transparent.png
     - assets/images/your_image_transparent.png
+    - assets/pdf/Terms_and_conditions_Pongo.pdf
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

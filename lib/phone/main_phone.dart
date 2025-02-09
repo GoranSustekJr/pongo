@@ -84,8 +84,7 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
 
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
-          if (purchaseDetails.pendingCompletePurchase &&
-              !isUserSignedIn.value) {
+          if (purchaseDetails.pendingCompletePurchase && isUserSignedIn.value) {
             await inAppPurchase.completePurchase(purchaseDetails);
             print("Purchased or auto renewed");
             // Call your method to handle the purchase
@@ -105,7 +104,7 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
           break;
       }
 
-      if (purchaseDetails.pendingCompletePurchase && !isUserSignedIn.value) {
+      if (purchaseDetails.pendingCompletePurchase && isUserSignedIn.value) {
         try {
           await inAppPurchase.completePurchase(purchaseDetails);
         } catch (e) {

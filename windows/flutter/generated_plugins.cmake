@@ -8,6 +8,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_platform_alert
   flutter_secure_storage_windows
   irondash_engine_context
+  pdfx
   permission_handler_windows
   screen_retriever
   super_native_extensions

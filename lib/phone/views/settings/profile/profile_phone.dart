@@ -217,15 +217,6 @@ class _ProfilePhoneState extends State<ProfilePhone>
                             },
                                 const TextStyle(
                                     color: Colors.white, fontSize: 18)),
-                            /* textButton(
-                              "Get an ad",
-                              () async {
-                                // Ad
-
-                                await interstitialAd!.show();
-                              },
-                              const TextStyle(),
-                            ), */
                           ],
                         ),
                       ),

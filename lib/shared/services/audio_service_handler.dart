@@ -33,7 +33,9 @@ class AudioServiceHandler extends BaseAudioHandler
       //listenForNewTracks();
       audioPlayer.processingStateStream.listen((state) async {
         if (state == ProcessingState.completed) {
-          checkToShowAdd();
+          if (!premium.value) {
+            checkToShowAdd();
+          }
           if (queue.value.length - 1 == audioPlayer.currentIndex) {
             await skipToQueueItem(0);
             showAdd();
