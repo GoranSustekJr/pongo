@@ -20,7 +20,8 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Ad
   InterstitialAd? interstitialAd;
-  String adUnitId = "ca-app-pub-3940256099942544/4411468910";
+  String adUnitId =
+      "ca-app-pub-3931049547680648~4426620774"; // Ios test id "ca-app-pub-3940256099942544/4411468910";
 
   // Playlist
   ConcatenatingAudioSource playlist = ConcatenatingAudioSource(children: []);
@@ -33,9 +34,8 @@ class AudioServiceHandler extends BaseAudioHandler
       //listenForNewTracks();
       audioPlayer.processingStateStream.listen((state) async {
         if (state == ProcessingState.completed) {
-          if (!premium.value) {
-            checkToShowAdd();
-          }
+          checkToShowAdd();
+
           if (queue.value.length - 1 == audioPlayer.currentIndex) {
             await skipToQueueItem(0);
             showAdd();
@@ -102,13 +102,13 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Check if to show add
   void checkToShowAdd() async {
-    songsPlayed++;
+    if (!premium.value) {
+      songsPlayed++;
 
-    print(songsPlayed);
-
-    if (songsPlayed > 2) {
-      showAdd();
-      songsPlayed = 0;
+      if (songsPlayed > 1) {
+        showAdd();
+        songsPlayed = 0;
+      }
     }
   }
 
@@ -419,10 +419,7 @@ if (mediaItem != null){
   @override
   Future<void> skipToNext() async {
     await audioPlayer.seekToNext();
-    print(!premium.value);
-    if (!premium.value) {
-      checkToShowAdd();
-    }
+    checkToShowAdd();
   }
 
   // Skip to the previous item in the queue
@@ -433,10 +430,7 @@ if (mediaItem != null){
     } else {
       await seek(const Duration(seconds: 0));
     }
-    print(!premium.value);
-    if (!premium.value) {
-      checkToShowAdd();
-    }
+    checkToShowAdd();
   }
 
   // Set repeat mode
