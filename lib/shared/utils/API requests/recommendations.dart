@@ -49,7 +49,6 @@ class Recommendations {
     } catch (e) {
       //print(e);SignInHandler().signOut(context);
 
-      SignInHandler().signOut(context);
       return {};
     }
     return {};

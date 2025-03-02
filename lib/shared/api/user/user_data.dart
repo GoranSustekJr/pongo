@@ -28,11 +28,9 @@ class UserData {
           break; // Exit the loop after the second attempt
         }
       } else {
-        SignInHandler().signOut(context);
         return null; // Handle other status codes as needed
       }
     }
-    SignInHandler().signOut(context);
     return null; // Return null if it fails after the retry
   }
 }

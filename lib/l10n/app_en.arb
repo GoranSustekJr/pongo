@@ -40,9 +40,9 @@
         "description": "Use blur"
     },
 
-    "turnoffifyourdeviceisgettinghotorhaslag": "OK",
+    "turnoffifyourdeviceisgettinghotorhaslag": "Turn off if your device is getting hot or has lag",
     "@turnoffifyourdeviceisgettinghotorhaslag": {
-        "description": "OK"
+        "description": "Turn off if your device is getting hot or has lag"
     },
 
     "pleaseleavethepageafterasuccessfullpurchase": "Please leave the page after a successfull purchase",

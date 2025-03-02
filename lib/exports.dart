@@ -76,7 +76,6 @@ export 'package:pongo/shared/services/connectivity_handler.dart';
 export 'shared/constants/app_icons.dart';
 export 'shared/models/models.dart';
 export 'shared/functions/image /calculate_image_resolution.dart';
-export 'shared/services/cache_manager.dart';
 export 'package:pongo/shared/utils/API%20requests/album_tracks.dart';
 export 'package:pongo/shared/components/other/shimmer_container.dart';
 export 'package:pongo/shared/functions/open%20playlist/open_playlist.dart';
