@@ -299,7 +299,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                                   ? Colors.white.withAlpha(150)
                                                   : Colors.white.withAlpha(100),
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 35,
+                                      fontSize: kIsApple ? 35 : 40,
                                       height: 1,
                                     ),
                                   ),

@@ -190,46 +190,118 @@ class RecommendedTile extends StatelessWidget {
               ),
             ),
           )
-        : InkWell(
-            splashColor: Colors.white.withAlpha(200),
-            highlightColor: Colors.white.withAlpha(150),
-            onTap: onTap,
+        : Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 7.5),
             child: SizedBox(
-              height: 85,
-              width: size.width,
-              child: ListTile(
-                leading: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minWidth: 44,
-                    minHeight: 44,
-                    maxWidth: 66,
-                    maxHeight: 66,
-                  ),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(7.5),
-                      child: imageUrl == ""
-                          ? Center(
-                              child: Icon(noImage),
-                            )
-                          : ImageCompatible(image: imageUrl)),
-                ),
-                title: Text(
-                  title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 18.5,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                subtitle: Text(
-                  subtitle,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white.withAlpha(200),
+              height: 160,
+              width: 120,
+              child: GestureDetector(
+                onLongPressStart: (LongPressStartDetails details) async {
+                  bool isFavourite = await DatabaseHelper()
+                      .favouriteTrackAlreadyExists(data.id);
+                  if (type == TileType.track) {
+                    showPullDownMenu(
+                      context: context,
+                      items: searchTrackPulldownMenuItems(
+                        context,
+                        data,
+                        "recommended.single.",
+                        isFavourite,
+                        doesNotExist!,
+                        doesNowExist!,
+                      ),
+                      position: RelativeRect.fromLTRB(
+                        details.globalPosition.dx >= 260
+                            ? details.globalPosition.dx
+                            : size.width - details.globalPosition.dx,
+                        size.height - details.globalPosition.dy - 300 > 150
+                            ? details.globalPosition.dy
+                            : 400,
+                        details.globalPosition.dx >= 260
+                            ? size.width - details.globalPosition.dx
+                            : details.globalPosition.dx,
+                        details.globalPosition.dy,
+                      ),
+                      topWidget: const SizedBox(),
+                    );
+                  }
+                },
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: onTap,
+                  child: Column(
+                    crossAxisAlignment: type == TileType.artist
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        height: 120,
+                        width: 120,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(
+                              type == TileType.artist ? 360 : 7.5),
+                          color: Col.realBackground.withAlpha(150),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              type == TileType.artist ? 360 : 7.5),
+                          child: imageUrl == ""
+                              ? Center(
+                                  child: Icon(noImage, color: Colors.white),
+                                )
+                              : SizedBox(
+                                  child: ImageCompatible(image: imageUrl),
+                                ),
+                        ),
+                      ),
+                      razh(2.5),
+                      Flexible(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 18,
+                                    //   width: 120,
+                                    child: Text(
+                                      title,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: kIsApple ? 14 : 15,
+                                        fontWeight: kIsApple
+                                            ? FontWeight.w500
+                                            : FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 17,
+                                    // width: 120,
+                                    child: Text(
+                                      subtitle,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: kIsApple ? 12 : 13,
+                                        fontWeight: kIsApple
+                                            ? FontWeight.w400
+                                            : FontWeight.w500,
+                                        color: Colors.white.withAlpha(175),
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (trailing != null) trailing!,
+                          ],
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),

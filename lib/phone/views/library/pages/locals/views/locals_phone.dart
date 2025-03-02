@@ -39,6 +39,10 @@ class LocalsPhone extends StatelessWidget {
                                 floating: true,
                                 pinned: true,
                                 stretch: true,
+                                backgroundColor: useBlur.value
+                                    ? Col.transp
+                                    : Col.realBackground
+                                        .withAlpha(AppConstants().noBlur),
                                 automaticallyImplyLeading: false,
                                 expandedHeight: kIsApple
                                     ? size.height / 5
@@ -79,7 +83,8 @@ class LocalsPhone extends StatelessWidget {
                                 flexibleSpace: ClipRRect(
                                   child: BackdropFilter(
                                     filter: ImageFilter.blur(
-                                        sigmaX: 10, sigmaY: 10),
+                                        sigmaX: useBlur.value ? 10 : 0,
+                                        sigmaY: useBlur.value ? 10 : 0),
                                     child: FlexibleSpaceBar(
                                       centerTitle: true,
                                       title: Text(
@@ -111,38 +116,49 @@ class LocalsPhone extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.only(
                                         left: 15, right: 15, top: 5),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(60),
-                                      child: BackdropFilter(
-                                        filter: ImageFilter.blur(
-                                            sigmaX: 10, sigmaY: 10),
-                                        child: PlayShuffleHaltLocals(
-                                          missingTracks: const [],
-                                          loadingShuffle: false,
-                                          edit: localsDataManager.edit,
-                                          allSelected: localsDataManager
-                                                  .selectedTracks.length ==
-                                              localsDataManager.tracks.length,
-                                          frontWidget: iconButton(
-                                            AppIcons.blankTrack,
-                                            Colors.white,
-                                            localsDataManager.newTracks,
-                                            edgeInsets: EdgeInsets.zero,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(60),
+                                          color: useBlur.value
+                                              ? Col.transp
+                                              : Col.realBackground.withAlpha(
+                                                  AppConstants().noBlur)),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(60),
+                                        child: BackdropFilter(
+                                          filter: ImageFilter.blur(
+                                              sigmaX: useBlur.value ? 10 : 0,
+                                              sigmaY: useBlur.value ? 10 : 0),
+                                          child: PlayShuffleHaltLocals(
+                                            missingTracks: const [],
+                                            loadingShuffle: false,
+                                            edit: localsDataManager.edit,
+                                            allSelected: localsDataManager
+                                                    .selectedTracks.length ==
+                                                localsDataManager.tracks.length,
+                                            frontWidget: iconButton(
+                                              AppIcons.blankTrack,
+                                              Colors.white,
+                                              localsDataManager.newTracks,
+                                              edgeInsets: EdgeInsets.zero,
+                                            ),
+                                            endWidget: iconButton(
+                                              AppIcons.edit,
+                                              Colors.white,
+                                              localsDataManager.startEdit,
+                                              edgeInsets: EdgeInsets.zero,
+                                            ),
+                                            play: localsDataManager.play,
+                                            shuffle: localsDataManager.shuffle,
+                                            stopEdit:
+                                                localsDataManager.stopEdit,
+                                            remove: localsDataManager.remove,
+                                            addToPlaylist:
+                                                localsDataManager.addToPlaylist,
+                                            selectAll:
+                                                localsDataManager.selectAll,
                                           ),
-                                          endWidget: iconButton(
-                                            AppIcons.edit,
-                                            Colors.white,
-                                            localsDataManager.startEdit,
-                                            edgeInsets: EdgeInsets.zero,
-                                          ),
-                                          play: localsDataManager.play,
-                                          shuffle: localsDataManager.shuffle,
-                                          stopEdit: localsDataManager.stopEdit,
-                                          remove: localsDataManager.remove,
-                                          addToPlaylist:
-                                              localsDataManager.addToPlaylist,
-                                          selectAll:
-                                              localsDataManager.selectAll,
                                         ),
                                       ),
                                     ),

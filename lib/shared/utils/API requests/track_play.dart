@@ -29,11 +29,9 @@ class TrackPlay {
                 ? "${track.album!.id}..Ææ..${track.album!.name}"
                 : "..Ææ..",
             duration: Duration(milliseconds: (duration * 1000).toInt()),
-            artUri: Uri.parse(
-              track.album != null
-                  ? calculateBestImageForTrack(track.album!.images)
-                  : '',
-            ),
+            artUri: track.album != null
+                ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+                : null,
             extras: {
               "artists": jsonEncode(track.artists
                   .map((artist) => {"id": artist.id, "name": artist.name})
@@ -80,11 +78,9 @@ class TrackPlay {
             : "..Ææ..",
         duration:
             Duration(milliseconds: (existingTracks[track.id]! * 1000).toInt()),
-        artUri: Uri.parse(
-          track.album != null
-              ? calculateBestImageForTrack(track.album!.images)
-              : '',
-        ),
+        artUri: track.album != null
+            ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+            : null,
         extras: {
           "artists": jsonEncode(track.artists
               .map((artist) => {"id": artist.id, "name": artist.name})
@@ -164,11 +160,9 @@ class TrackPlay {
                 ? "${track.album!.id}..Ææ..${track.album!.name}"
                 : "..Ææ..",
             duration: Duration(milliseconds: (duration * 1000).toInt()),
-            artUri: Uri.parse(
-              track.album != null
-                  ? calculateBestImageForTrack(track.album!.images)
-                  : '',
-            ),
+            artUri: track.album != null
+                ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+                : null,
             extras: {
               "artists": jsonEncode(track.artists
                   .map((artist) => {"id": artist.id, "name": artist.name})
@@ -215,11 +209,9 @@ class TrackPlay {
             : "..Ææ..",
         duration:
             Duration(milliseconds: (existingTracks[track.id]! * 1000).toInt()),
-        artUri: Uri.parse(
-          track.album != null
-              ? calculateBestImageForTrack(track.album!.images)
-              : '',
-        ),
+        artUri: track.album != null
+            ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+            : null,
         extras: {
           "artists": jsonEncode(track.artists
               .map((artist) => {"id": artist.id, "name": artist.name})

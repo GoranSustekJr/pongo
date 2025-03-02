@@ -28,14 +28,16 @@ class SearchHistoryPhone extends StatelessWidget {
             MediaQuery.of(context).viewInsets.bottom,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          color: Col.primaryCard.withAlpha(150),
+          color: Col.primaryCard.withAlpha(useBlur.value ? 150 : 240),
         ),
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 350),
           opacity: showSearchHistory ? 1 : 0,
           child: ClipRRect(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              filter: ImageFilter.blur(
+                  sigmaX: useBlur.value ? 10 : 0,
+                  sigmaY: useBlur.value ? 10 : 0),
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.only(

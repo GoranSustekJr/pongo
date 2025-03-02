@@ -113,7 +113,7 @@ libraryTile(
               },
               borderRadius: borderRadius,
               child: Container(
-                height: 60,
+                height: 50,
                 width: MediaQuery.of(context).size.width - 20,
                 decoration: BoxDecoration(
                   borderRadius: borderRadius,
@@ -135,8 +135,8 @@ libraryTile(
                     Row(
                       children: [
                         SizedBox(
-                            width: 58,
-                            height: 58,
+                            width: 49,
+                            height: 49,
                             child: Icon(icon, color: Col.onIcon, size: 27.5)),
                         Expanded(
                             child: Column(
@@ -154,7 +154,7 @@ libraryTile(
                                 subtitle,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  fontSize: 2.5,
+                                  fontSize: 12.5,
                                   color: Colors.white.withAlpha(150),
                                 ),
                               ),
@@ -170,10 +170,10 @@ libraryTile(
                         ),
                         SizedBox(
                             width: 28,
-                            height: kIsApple ? 40 : 58,
+                            height: 49,
                             child: Icon(
                               trailingIcon,
-                              size: kIsApple ? 22.5 : 27.5,
+                              size: 27.5,
                             )),
                         const SizedBox(
                           width: 30,

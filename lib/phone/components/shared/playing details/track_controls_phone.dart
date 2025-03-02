@@ -10,6 +10,7 @@ class TrackControlsPhone extends StatelessWidget {
   final Function() changeLyricsOn;
   final Function() changeShowQueue;
   final Function(String) showAlbum;
+  final Function(String) showArtist;
   const TrackControlsPhone({
     super.key,
     required this.currentMediaItem,
@@ -18,6 +19,7 @@ class TrackControlsPhone extends StatelessWidget {
     required this.showQueue,
     required this.changeShowQueue,
     required this.showAlbum,
+    required this.showArtist,
     required this.syncLyrics,
   });
 
@@ -50,16 +52,26 @@ class TrackControlsPhone extends StatelessWidget {
           width: size.width,
           height: 400,
           decoration: BoxDecoration(
-            gradient: lyricsOn && syncLyrics
+            gradient: (lyricsOn && syncLyrics) || (showQueue && !useBlur.value)
                 ? LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [
-                      Colors.black.withAlpha(100),
-                      Colors.black.withAlpha(100),
-                      Colors.black.withAlpha(100),
-                      Colors.black.withAlpha(100),
-                      Colors.transparent,
+                      if ((showQueue && !useBlur.value && !lyricsOn))
+                        Col.realBackground.withAlpha(200),
+                      if (lyricsOn && syncLyrics) Colors.black.withAlpha(100),
+                      if ((showQueue && !useBlur.value && !lyricsOn))
+                        Col.realBackground.withAlpha(200),
+                      if (lyricsOn && syncLyrics) Colors.black.withAlpha(100),
+                      if ((showQueue && !useBlur.value && !lyricsOn))
+                        Col.realBackground.withAlpha(200),
+                      if (lyricsOn && syncLyrics) Colors.black.withAlpha(100),
+                      if ((showQueue && !useBlur.value && !lyricsOn))
+                        Col.realBackground.withAlpha(200),
+                      if (lyricsOn && syncLyrics) Colors.black.withAlpha(100),
+                      if (showQueue && !useBlur.value && !lyricsOn)
+                        Col.realBackground.withAlpha(50),
+                      if (lyricsOn && syncLyrics) Colors.transparent,
                     ],
                   )
                 : null,
@@ -68,8 +80,8 @@ class TrackControlsPhone extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
               filter: ImageFilter.blur(
-                  sigmaX: lyricsOn && syncLyrics ? 0.1 : x,
-                  sigmaY: lyricsOn && syncLyrics ? 0.1 : x),
+                  sigmaX: (lyricsOn && syncLyrics) || !useBlur.value ? 0.1 : x,
+                  sigmaY: (lyricsOn && syncLyrics) || !useBlur.value ? 0.1 : x),
               blendMode: BlendMode.src,
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -90,8 +102,9 @@ class TrackControlsPhone extends StatelessWidget {
                             // razh(50),
                             TitleArtistVisualizerPhone(
                               name: currentMediaItem.title,
-                              artist: currentMediaItem.artist!,
+                              artistJson: currentMediaItem.extras!["artists"],
                               playbackState: playbackState,
+                              showArtist: showArtist,
                             ),
                             TrackProgressPhone(
                               album: currentMediaItem.album!,

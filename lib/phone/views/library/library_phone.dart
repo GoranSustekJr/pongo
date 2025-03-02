@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/views/library/pages/favourites/favourites_phone.dart';
+import 'package:pongo/phone/views/library/pages/favourites/views/favourites_phone.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/playlists/local_playlists_phone.dart';
 import 'package:pongo/phone/views/library/pages/locals/views/locals_phone.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/playlists/online_playlists_phone.dart';

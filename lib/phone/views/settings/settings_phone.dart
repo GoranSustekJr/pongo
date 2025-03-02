@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/introduction/introduction_phone.dart';
-import 'package:pongo/phone/views/library/pages/buy%20premium/buy_premium_phone.dart';
 import 'package:pongo/phone/views/settings/about/about_phone.dart';
 import 'package:pongo/phone/views/settings/profile/profile_phone.dart';
 import 'preferences/preferences_phone.dart';

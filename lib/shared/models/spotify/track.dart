@@ -33,7 +33,11 @@ class Track {
       artists: (map["artists"] as List<dynamic>)
           .map((artist) => ArtistTrack.fromMap(artist))
           .toList(),
-      album: map["album"] != null ? AlbumTrack.fromMap(map["album"]) : null,
+      album: map["album"] != null
+          ? map["album"]["id"] != null
+              ? AlbumTrack.fromMap(map["album"])
+              : null
+          : null,
     );
   }
 
@@ -69,7 +73,7 @@ class Track {
 
 class ArtistTrack {
   final String id;
-  final String name;
+  final String? name;
 
   ArtistTrack({
     required this.id,
@@ -96,7 +100,7 @@ class ArtistTrack {
 class AlbumTrack {
   final String id;
   final String name;
-  final String releaseDate;
+  final String? releaseDate;
   final List<AlbumImagesTrack> images;
 
   AlbumTrack({

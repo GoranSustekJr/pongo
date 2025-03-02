@@ -37,6 +37,8 @@ class Storage {
   static String cacheImagesKey = "CACHEIMAGESKEY";
   static String localsSortKey = "LOCALSSORTKEY";
   static String subscriptionKey = "SUBSCRIPTIONKEY";
+  static String subscriptionEndKey = "SUBSCRIPTIONENDKEY";
+  static String useBlurKey = "USEBLURKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -177,7 +179,7 @@ class Storage {
   Future<int> getNumOfSearchArtists() async {
     String? key = await storage.read(key: numOfSearchArtistsKey);
     if (key == null) {
-      return 3;
+      return 1;
     } else {
       return int.parse(key);
     }
@@ -192,7 +194,7 @@ class Storage {
   Future<int> getNumOfSearchAlbums() async {
     String? key = await storage.read(key: numOfSearchAlbumsKey);
     if (key == null) {
-      return 5;
+      return 1;
     } else {
       return int.parse(key);
     }
@@ -495,6 +497,48 @@ class Storage {
       return "A-Z";
     } else {
       return key;
+    }
+  }
+
+  // Subscription
+  Future<void> writeSubscription(bool subscription) async {
+    await storage.write(key: subscriptionKey, value: subscription.toString());
+  }
+
+  Future<bool> getSubscription() async {
+    String? key = await storage.read(key: subscriptionKey);
+    if (key == null) {
+      return false;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Subscription end
+  Future<void> writeSubscriptionEnd(String subscriptionEnd) async {
+    await storage.write(key: subscriptionEndKey, value: subscriptionEnd);
+  }
+
+  Future<DateTime> getSubscriptionEnd() async {
+    String? key = await storage.read(key: subscriptionEndKey);
+    if (key == null) {
+      return DateTime.now();
+    } else {
+      return DateTime.parse(key);
+    }
+  }
+
+  // Subscription
+  Future<void> writeUseBlur(bool useBlur) async {
+    await storage.write(key: useBlurKey, value: useBlur.toString());
+  }
+
+  Future<bool> getUseBlur() async {
+    String? key = await storage.read(key: useBlurKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
     }
   }
 

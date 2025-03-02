@@ -98,7 +98,7 @@ settingsTile(context, bool first, bool last, IconData icon,
               splashColor: Colors.white.withAlpha(100),
               borderRadius: borderRadius,
               child: Container(
-                height: 60,
+                height: 50,
                 width: MediaQuery.of(context).size.width - 20,
                 decoration: BoxDecoration(
                   borderRadius: borderRadius,
@@ -116,8 +116,8 @@ settingsTile(context, bool first, bool last, IconData icon,
                     Row(
                       children: [
                         SizedBox(
-                            width: 58,
-                            height: 58,
+                            width: 50,
+                            height: 49,
                             child: special
                                 ? Image.asset(
                                     'assets/images/pongo_logo_tranparent.png')
@@ -130,7 +130,7 @@ settingsTile(context, bool first, bool last, IconData icon,
                               title,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontSize: 17.5,
+                                fontSize: 17,
                               ),
                             ),
                             if (subtitle != null)
@@ -156,7 +156,7 @@ settingsTile(context, bool first, bool last, IconData icon,
                         if (trailingIcon != null)
                           SizedBox(
                               width: 28,
-                              height: 58,
+                              height: 49,
                               child: Icon(trailingIcon,
                                   color: Col.onIcon.withAlpha(200), size: 20)),
                         const SizedBox(

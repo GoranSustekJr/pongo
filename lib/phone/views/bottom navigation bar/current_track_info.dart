@@ -14,13 +14,13 @@ class _TrackInfoState extends State<TrackInfo> {
 
   // Text styles
   final TextStyle bottomTitle = TextStyle(
-    fontSize: kIsApple ? 17 : 18,
-    fontWeight: kIsApple ? FontWeight.w500 : FontWeight.w600,
+    fontSize: kIsApple ? 17 : 20.5,
+    fontWeight: kIsApple ? FontWeight.w500 : FontWeight.w700,
   );
 
   final TextStyle bottomArtist = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w300,
+    fontSize: kIsApple ? 14 : 16,
+    fontWeight: kIsApple ? FontWeight.w300 : FontWeight.w400,
     color: Colors.white.withAlpha(200),
   );
 
@@ -52,7 +52,7 @@ class _TrackInfoState extends State<TrackInfo> {
                     ? 55
                     : kIsApple
                         ? 110
-                        : 125,
+                        : 115,
                 constraints: const BoxConstraints(maxWidth: 768),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
@@ -166,271 +166,155 @@ class _TrackInfoState extends State<TrackInfo> {
                                     child: Stack(
                                       children: [
                                         Positioned(
-                                          left: horizontalPositionCurrent != 0
-                                              ? horizontalPositionCurrent -
-                                                  horizontalPositionStart
-                                              : 0,
-                                          child: kIsApple
-                                              ? RepaintBoundary(
-                                                  child: Container(
-                                                    height: 70,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width -
-                                                            10,
-                                                    color: Colors.transparent,
-                                                    child: Column(
-                                                      children: [
-                                                        Container(
-                                                          height: 55,
-                                                          width: MediaQuery.of(
-                                                                      context)
+                                            left: horizontalPositionCurrent != 0
+                                                ? horizontalPositionCurrent -
+                                                    horizontalPositionStart
+                                                : 0,
+                                            child: RepaintBoundary(
+                                              child: Container(
+                                                height: kIsApple ? 70 : 90,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width -
+                                                    10,
+                                                color: Colors.transparent,
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      height:
+                                                          kIsApple ? 55 : 65,
+                                                      width:
+                                                          MediaQuery.of(context)
                                                                   .size
                                                                   .width -
                                                               10,
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                            horizontal: 15,
-                                                            vertical: 5,
-                                                          ),
-                                                          child: Row(
-                                                            children: [
-                                                              Container(
-                                                                width: 40,
-                                                                height: 40,
-                                                                decoration:
-                                                                    const BoxDecoration(
-                                                                        boxShadow: [
-                                                                      BoxShadow(
-                                                                          color: Col
-                                                                              .realBackground,
-                                                                          blurRadius:
-                                                                              5,
-                                                                          spreadRadius:
-                                                                              0,
-                                                                          offset: Offset(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                        horizontal: 15,
+                                                        vertical:
+                                                            kIsApple ? 5 : 10,
+                                                      ),
+                                                      child: Row(
+                                                        children: [
+                                                          Container(
+                                                            width: 50,
+                                                            height: 50,
+                                                            decoration:
+                                                                const BoxDecoration(
+                                                                    boxShadow: [
+                                                                  BoxShadow(
+                                                                      color: Col
+                                                                          .realBackground,
+                                                                      blurRadius:
+                                                                          5,
+                                                                      spreadRadius:
+                                                                          0,
+                                                                      offset:
+                                                                          Offset(
                                                                               0,
                                                                               0)),
-                                                                    ]),
-                                                                child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              7.5),
-                                                                  child: currentMediaItem
-                                                                              .artUri
-                                                                              .toString() !=
-                                                                          ""
-                                                                      ? ImageCompatible(
-                                                                          image: currentMediaItem
-                                                                              .artUri
-                                                                              .toString(),
-                                                                          width:
-                                                                              40,
-                                                                          height:
-                                                                              40,
-                                                                        ) /* currentMediaItem
-                                                                              .artUri
-                                                                              .toString()
-                                                                              .contains("file:///")
-                                                                          ? Image.file(
-                                                                              File.fromUri(currentMediaItem.artUri!),
-                                                                              width: 40,
-                                                                              height: 40,
-                                                                            )
-                                                                          : CachedNetworkImage(
-                                                                              imageUrl: currentMediaItem.artUri.toString(),
-                                                                              width: 40,
-                                                                              height: 40,
-                                                                            ) */
-                                                                      : SizedBox(
-                                                                          height:
-                                                                              40,
-                                                                          width:
-                                                                              40,
-                                                                          child:
-                                                                              Center(
-                                                                            child:
-                                                                                Icon(
-                                                                              AppIcons.blankTrack,
-                                                                            ),
-                                                                          ),
+                                                                ]),
+                                                            child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          7.5),
+                                                              child: currentMediaItem
+                                                                          .artUri
+                                                                          .toString() !=
+                                                                      ""
+                                                                  ? ImageCompatible(
+                                                                      image: currentMediaItem
+                                                                          .artUri
+                                                                          .toString(),
+                                                                      width: 40,
+                                                                      height:
+                                                                          40,
+                                                                    )
+                                                                  : SizedBox(
+                                                                      height:
+                                                                          40,
+                                                                      width: 40,
+                                                                      child:
+                                                                          Center(
+                                                                        child:
+                                                                            Icon(
+                                                                          AppIcons
+                                                                              .blankTrack,
                                                                         ),
-                                                                ),
-                                                              ),
-                                                              const SizedBox(
-                                                                  width: 10),
-                                                              SizedBox(
-                                                                width: MediaQuery.of(
+                                                                      ),
+                                                                    ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 10),
+                                                          SizedBox(
+                                                            width: kIsApple
+                                                                ? MediaQuery.of(
                                                                             context)
                                                                         .size
                                                                         .width -
-                                                                    145,
-                                                                child: Column(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .max,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    marquee(
-                                                                      "${currentMediaItem.title}  ",
-                                                                      bottomTitle,
-                                                                      1,
-                                                                      null,
-                                                                      height:
-                                                                          22,
-                                                                    ),
-                                                                    marquee(
-                                                                      "${currentMediaItem.artist}  ",
-                                                                      bottomArtist,
-                                                                      1,
-                                                                      null,
-                                                                      height:
-                                                                          20,
-                                                                    ),
-                                                                  ],
+                                                                    155
+                                                                : MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width -
+                                                                    160,
+                                                            child: Column(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .max,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                marquee(
+                                                                  "${currentMediaItem.title}  ",
+                                                                  bottomTitle,
+                                                                  1,
+                                                                  null,
+                                                                  height:
+                                                                      kIsApple
+                                                                          ? 22
+                                                                          : 27,
                                                                 ),
-                                                              ),
-                                                              const Expanded(
-                                                                  child:
-                                                                      SizedBox()),
-                                                              PlayPauseMini(
-                                                                playbackState:
-                                                                    playbackState,
-                                                                function: () {
-                                                                  if (playing) {
-                                                                    audioServiceHandler
-                                                                        .pause();
-                                                                  } else {
-                                                                    audioServiceHandler
-                                                                        .play();
-                                                                  }
-                                                                },
-                                                              ),
-                                                              razw(10)
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                )
-                                              : RepaintBoundary(
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 60,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width -
-                                                            48,
-                                                        child: Material(
-                                                          color: Colors
-                                                              .transparent,
-                                                          child: ListTile(
-                                                            leading: Container(
-                                                              decoration:
-                                                                  const BoxDecoration(
-                                                                      boxShadow: [
-                                                                    BoxShadow(
-                                                                        color: Col
-                                                                            .realBackground,
-                                                                        blurRadius:
-                                                                            5,
-                                                                        spreadRadius:
-                                                                            0,
-                                                                        offset: Offset(
-                                                                            0,
-                                                                            0)),
-                                                                  ]),
-                                                              child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            7.5),
-                                                                child: currentMediaItem
-                                                                            .artUri
-                                                                            .toString() !=
-                                                                        ""
-                                                                    ? ImageCompatible(
-                                                                        image: currentMediaItem
-                                                                            .artUri
-                                                                            .toString(),
-                                                                        width:
-                                                                            40,
-                                                                        height:
-                                                                            40,
-                                                                      )
-                                                                    : SizedBox(
-                                                                        height:
-                                                                            40,
-                                                                        width:
-                                                                            40,
-                                                                        child:
-                                                                            Center(
-                                                                          child:
-                                                                              Icon(
-                                                                            AppIcons.blankTrack,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                              ),
-                                                            ),
-                                                            title: SizedBox(
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width -
-                                                                  180,
-                                                              child: Text(
-                                                                currentMediaItem
-                                                                    .title,
-                                                                maxLines: 1,
-                                                                style:
-                                                                    bottomTitle,
-                                                              ),
-                                                            ),
-                                                            subtitle: Text(
-                                                              currentMediaItem
-                                                                  .artist!,
-                                                              maxLines: 1,
-                                                              style:
+                                                                marquee(
+                                                                  "${currentMediaItem.artist}  ",
                                                                   bottomArtist,
-                                                            ),
-                                                            trailing:
-                                                                RepaintBoundary(
-                                                              child:
-                                                                  PlayPauseMini(
-                                                                playbackState:
-                                                                    playbackState,
-                                                                function: () {
-                                                                  if (playing) {
-                                                                    audioServiceHandler
-                                                                        .pause();
-                                                                  } else {
-                                                                    audioServiceHandler
-                                                                        .play();
-                                                                  }
-                                                                },
-                                                              ),
+                                                                  1,
+                                                                  null,
+                                                                  height:
+                                                                      kIsApple
+                                                                          ? 20
+                                                                          : 25,
+                                                                ),
+                                                              ],
                                                             ),
                                                           ),
-                                                        ),
+                                                          const Expanded(
+                                                              child:
+                                                                  SizedBox()),
+                                                          PlayPauseMini(
+                                                            playbackState:
+                                                                playbackState,
+                                                            function: () {
+                                                              if (playing) {
+                                                                audioServiceHandler
+                                                                    .pause();
+                                                              } else {
+                                                                audioServiceHandler
+                                                                    .play();
+                                                              }
+                                                            },
+                                                          ),
+                                                          razw(10)
+                                                        ],
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
-                                        ),
+                                              ),
+                                            )),
                                       ],
                                     ),
                                   ),

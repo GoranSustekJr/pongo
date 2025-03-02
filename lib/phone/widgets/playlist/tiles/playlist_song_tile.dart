@@ -39,6 +39,7 @@ class PlaylistSongTile extends StatelessWidget {
           ),
         Row(
           children: [
+            razw(15),
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Container(
@@ -76,8 +77,8 @@ class PlaylistSongTile extends StatelessWidget {
                     track.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 16.5,
+                    style: TextStyle(
+                      fontSize: kIsApple ? 16.5 : 17.5,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
@@ -133,11 +134,11 @@ class PlaylistSongTile extends StatelessWidget {
                   splashColor: Colors.white.withAlpha(100),
                   borderRadius: borderRadius,
                   child: Container(
-                    height: 60,
-                    width: MediaQuery.of(context).size.width - 20,
+                    height: 61,
+                    width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       borderRadius: borderRadius,
-                      color: Col.primaryCard.withAlpha(200),
+                      color: Col.transp,
                     ),
                     child: child,
                   ),

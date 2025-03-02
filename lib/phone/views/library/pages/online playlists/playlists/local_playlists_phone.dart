@@ -94,6 +94,9 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                       floating: true,
                       pinned: true,
                       stretch: true,
+                      backgroundColor: useBlur.value
+                          ? Col.transp
+                          : Col.realBackground.withAlpha(AppConstants().noBlur),
                       automaticallyImplyLeading: false,
                       expandedHeight:
                           kIsApple ? size.height / 5 : size.height / 4,
@@ -112,7 +115,9 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                       ),
                       flexibleSpace: ClipRRect(
                         child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          filter: ImageFilter.blur(
+                              sigmaX: useBlur.value ? 10 : 0,
+                              sigmaY: useBlur.value ? 10 : 0),
                           child: FlexibleSpaceBar(
                             centerTitle: true,
                             title: Text(

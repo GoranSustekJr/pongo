@@ -31,9 +31,10 @@ class SelectedTracksPhone extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(60),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            filter: ImageFilter.blur(
+                sigmaX: useBlur.value ? 10 : 0, sigmaY: useBlur.value ? 10 : 0),
             child: Container(
-              color: Colors.black.withAlpha(50),
+              color: Colors.black.withAlpha(useBlur.value ? 50 : 200),
               child: playlistHandlerTracks.length == 1
                   ? Padding(
                       padding: const EdgeInsets.symmetric(

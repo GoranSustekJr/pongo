@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:pongo/exports.dart';
 
 class MyAppPhone extends StatefulWidget {
@@ -86,7 +88,6 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
         case PurchaseStatus.restored:
           if (purchaseDetails.pendingCompletePurchase && isUserSignedIn.value) {
             await inAppPurchase.completePurchase(purchaseDetails);
-            print("Purchased or auto renewed");
             // Call your method to handle the purchase
             await Premium().buyPremium(
                 context,
@@ -96,7 +97,7 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
           break;
 
         case PurchaseStatus.error:
-          print("error");
+//          print("error");
           // handleError(purchaseDetails);
           break;
 
@@ -108,7 +109,7 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
         try {
           await inAppPurchase.completePurchase(purchaseDetails);
         } catch (e) {
-          print("DIGGA; $e");
+          //        print("DIGGA; $e");
         }
       }
 
@@ -128,8 +129,10 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
   // Premium
   void checkIfPremium() async {
     // Premium
-    bool premim = await Premium().isPremium(context);
-    premium.value = premim;
+    Map response = await Premium().isPremium(context);
+    premium.value = response["premium"];
+    await Storage().writeSubscription(response["premium"]);
+    await Storage().writeSubscriptionEnd(response["expires"]);
   }
 
   // Set locale

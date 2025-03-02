@@ -33,179 +33,178 @@ class QueueButtonPhone extends StatelessWidget {
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return Positioned(
       top: MediaQuery.of(context).padding.top + 12.5,
-      child: SizedBox(
+      child: Container(
         width: MediaQuery.of(context).size.width - 20,
         height: 40,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(60),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(60),
-                    color: kIsDesktop
-                        ? const MacosColor.fromRGBO(
-                            40, 40, 40, 0.8) // Add transparency here
-                        : Col.transp,
-                  ),
-                  child: iconButton(
-                      lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
-                      Colors.white,
-                      changeLyricsOn,
-                      edgeInsets: EdgeInsets.zero),
-                ),
-              ),
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(60),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(60),
-                    color: kIsDesktop
-                        ? const MacosColor.fromRGBO(
-                            40, 40, 40, 0.8) // Add transparency here
-                        : Col.transp,
-                  ),
-                  child: ValueListenableBuilder(
-                      valueListenable: queueAllowShuffle,
-                      builder: (context, _, __) {
-                        return CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          onPressed: () async {
-                            if (queueAllowShuffle.value) {
-                              if (audioServiceHandler
-                                  .audioPlayer.shuffleModeEnabled) {
-                                await audioServiceHandler.setShuffleMode(
-                                    AudioServiceShuffleMode.none);
-                              } else {
-                                await audioServiceHandler.setShuffleMode(
-                                    AudioServiceShuffleMode.all);
-                              }
-                            }
-                          },
-                          child: StreamBuilder(
-                              stream: audioServiceHandler
-                                  .audioPlayer.shuffleModeEnabledStream,
-                              builder: (context, snapshot) {
-                                bool enabled = snapshot.data ?? false;
-                                return Icon(
-                                  AppIcons.shuffle,
-                                  color: enabled
-                                      ? Colors.white
-                                      : Colors.white.withAlpha(150),
-                                );
-                              }),
-                        );
-                      }),
-                ),
-              ),
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(60),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(60),
-                    color: kIsDesktop
-                        ? const MacosColor.fromRGBO(
-                            40, 40, 40, 0.8) // Add transparency here
-                        : Col.transp,
-                  ),
-                  child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: changeShowQueue,
-                    child: Icon(
-                      showQueue ? AppIcons.musicQueueFill : AppIcons.musicQueue,
-                      color: Colors.white,
+        decoration: BoxDecoration(
+            color: useBlur.value
+                ? Col.transp
+                : Col.realBackground.withAlpha(AppConstants().noBlur),
+            borderRadius: BorderRadius.circular(60)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(60),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+                sigmaX: useBlur.value ? 10 : 0, sigmaY: useBlur.value ? 10 : 0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(60),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      color: kIsDesktop
+                          ? const MacosColor.fromRGBO(
+                              40, 40, 40, 0.8) // Add transparency here
+                          : Col.transp,
                     ),
+                    child: iconButton(
+                        lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
+                        Colors.white,
+                        changeLyricsOn,
+                        edgeInsets: EdgeInsets.zero),
                   ),
                 ),
-              ),
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(60),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(60),
-                    color: kIsDesktop
-                        ? const MacosColor.fromRGBO(
-                            40, 40, 40, 0.8) // Add transparency here
-                        : Col.transp,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(60),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      color: kIsDesktop
+                          ? const MacosColor.fromRGBO(
+                              40, 40, 40, 0.8) // Add transparency here
+                          : Col.transp,
+                    ),
+                    child: ValueListenableBuilder(
+                        valueListenable: queueAllowShuffle,
+                        builder: (context, _, __) {
+                          return CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () async {
+                              if (queueAllowShuffle.value) {
+                                if (audioServiceHandler
+                                    .audioPlayer.shuffleModeEnabled) {
+                                  await audioServiceHandler.setShuffleMode(
+                                      AudioServiceShuffleMode.none);
+                                } else {
+                                  await audioServiceHandler.setShuffleMode(
+                                      AudioServiceShuffleMode.all);
+                                }
+                              }
+                            },
+                            child: StreamBuilder(
+                                stream: audioServiceHandler
+                                    .audioPlayer.shuffleModeEnabledStream,
+                                builder: (context, snapshot) {
+                                  bool enabled = snapshot.data ?? false;
+                                  return Icon(
+                                    AppIcons.shuffle,
+                                    color: enabled
+                                        ? Colors.white
+                                        : Colors.white.withAlpha(150),
+                                  );
+                                }),
+                          );
+                        }),
                   ),
-                  child: iconButton(AppIcons.halt, Colors.white, () async {
-                    CustomButton ok = await haltAlert(context);
-                    if (ok == CustomButton.positiveButton) {
-                      currentTrackHeight.value = 0;
-                      final audioServiceHandler =
-                          Provider.of<AudioHandler>(context, listen: false)
-                              as AudioServiceHandler;
-
-                      await audioServiceHandler.halt();
-                    }
-                  }, edgeInsets: EdgeInsets.zero),
                 ),
-              ),
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(60),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(60),
-                    color: kIsDesktop
-                        ? const MacosColor.fromRGBO(
-                            40, 40, 40, 0.8) // Add transparency here
-                        : Col.transp,
-                  ),
-                  child: PullDownButton(
-                    offset: const Offset(10, 10),
-                    position: PullDownMenuPosition.automatic,
-                    itemBuilder: (context) => editQueue
-                        ? queueEditPullDownMenuItems(
-                            context,
-                            changeEditQueue,
-                            removeItemsFromQueue,
-                            download,
-                          )
-                        : queueMorePullDownMenuItems(
-                            context,
-                            changeEditQueue,
-                            saveAsPlaylist,
-                            download,
-                          ),
-                    buttonBuilder: (context, showMenu) => CupertinoButton(
-                      onPressed: showMenu,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(60),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      color: kIsDesktop
+                          ? const MacosColor.fromRGBO(
+                              40, 40, 40, 0.8) // Add transparency here
+                          : Col.transp,
+                    ),
+                    child: CupertinoButton(
                       padding: EdgeInsets.zero,
-                      child: const Icon(
-                        CupertinoIcons.ellipsis,
+                      onPressed: changeShowQueue,
+                      child: Icon(
+                        showQueue
+                            ? AppIcons.musicQueueFill
+                            : AppIcons.musicQueue,
                         color: Colors.white,
                       ),
                     ),
                   ),
                 ),
-              ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(60),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      color: kIsDesktop
+                          ? const MacosColor.fromRGBO(
+                              40, 40, 40, 0.8) // Add transparency here
+                          : Col.transp,
+                    ),
+                    child: iconButton(AppIcons.halt, Colors.white, () async {
+                      CustomButton ok = await haltAlert(context);
+                      if (ok == CustomButton.positiveButton) {
+                        currentTrackHeight.value = 0;
+                        final audioServiceHandler =
+                            Provider.of<AudioHandler>(context, listen: false)
+                                as AudioServiceHandler;
+
+                        await audioServiceHandler.halt();
+                      }
+                    }, edgeInsets: EdgeInsets.zero),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(60),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      color: kIsDesktop
+                          ? const MacosColor.fromRGBO(
+                              40, 40, 40, 0.8) // Add transparency here
+                          : Col.transp,
+                    ),
+                    child: PullDownButton(
+                      offset: const Offset(10, 10),
+                      position: PullDownMenuPosition.automatic,
+                      itemBuilder: (context) => editQueue
+                          ? queueEditPullDownMenuItems(
+                              context,
+                              changeEditQueue,
+                              removeItemsFromQueue,
+                              download,
+                            )
+                          : queueMorePullDownMenuItems(
+                              context,
+                              changeEditQueue,
+                              saveAsPlaylist,
+                              download,
+                            ),
+                      buttonBuilder: (context, showMenu) => CupertinoButton(
+                        onPressed: showMenu,
+                        padding: EdgeInsets.zero,
+                        child: const Icon(
+                          CupertinoIcons.ellipsis,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

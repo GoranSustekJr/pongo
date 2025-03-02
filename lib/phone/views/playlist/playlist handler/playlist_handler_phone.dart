@@ -194,11 +194,14 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
     Size size = MediaQuery.of(context).size;
     return ClipRRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 12.5, sigmaY: 12.5),
+        filter: ImageFilter.blur(
+            sigmaX: useBlur.value ? 12.5 : 0, sigmaY: useBlur.value ? 12.5 : 0),
         child: Container(
           height: size.height,
           width: size.width,
-          color: Colors.black.withAlpha(75),
+          color: useBlur.value
+              ? Colors.black.withAlpha(75)
+              : Col.realBackground.withAlpha(225),
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 350),
             child: Scaffold(

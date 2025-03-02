@@ -102,3 +102,6 @@ ValueNotifier<String> subscriptionLevel = ValueNotifier("");
 
 // Premium
 ValueNotifier<bool> premium = ValueNotifier(true);
+
+// Use blur
+ValueNotifier<bool> useBlur = ValueNotifier(true);

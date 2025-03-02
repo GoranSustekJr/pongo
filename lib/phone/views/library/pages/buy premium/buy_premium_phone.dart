@@ -21,7 +21,6 @@ class _BuyPremiumPhoneState extends State<BuyPremiumPhone>
   void subscribe({required ProductDetails product}) async {
     final PurchaseParam purchaseParam = PurchaseParam(productDetails: product);
     if (inAppPurchaseInstance != null) {
-      print(inAppPurchaseInstance);
       try {
         await inAppPurchaseInstance!
             .buyNonConsumable(purchaseParam: purchaseParam);

@@ -21,11 +21,12 @@ class BottomNavBar extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            filter: ImageFilter.blur(
+                sigmaX: useBlur.value ? 10 : 0, sigmaY: useBlur.value ? 10 : 0),
             child: Container(
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color: Col.realBackground.withAlpha(150),
+                color: Col.realBackground.withAlpha(useBlur.value ? 150 : 250),
                 borderRadius: BorderRadius.circular(24),
               ),
               child: ValueListenableBuilder<int>(

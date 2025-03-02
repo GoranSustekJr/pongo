@@ -21,4 +21,6 @@ class AppConstants {
       fit: BoxFit.fill,
     ),
   );
+
+  int noBlur = 150;
 }

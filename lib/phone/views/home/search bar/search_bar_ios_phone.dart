@@ -87,7 +87,8 @@ class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
                       widget.focusNode.unfocus();
                     },
                     placeholder: AppLocalizations.of(context)!.search,
-                    backgroundColor: Col.primaryCard.withAlpha(150),
+                    backgroundColor:
+                        Col.primaryCard.withAlpha(useBlur.value ? 150 : 245),
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),

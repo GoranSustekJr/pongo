@@ -78,8 +78,9 @@ class QueueBodyPhone extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: BackdropFilter(
-                                filter:
-                                    ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                filter: ImageFilter.blur(
+                                    sigmaX: useBlur.value ? 10 : 0,
+                                    sigmaY: useBlur.value ? 10 : 0),
                                 child: child,
                               ),
                             ),

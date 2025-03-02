@@ -27,7 +27,7 @@ export 'package:pongo/phone/alerts/audio%20player/halt_alert.dart';
 export 'package:pongo/phone/alerts/favourites/favourites.dart';
 export 'package:pongo/phone/components/library/favourites/play_shuffle_halt_favourites.dart';
 export 'package:pongo/phone/components/shared/shimmer/song_shimmer.dart';
-export 'package:pongo/phone/views/library/pages/favourites/favourites_body_phone.dart';
+export 'package:pongo/phone/views/library/pages/favourites/views/favourites_body_phone.dart';
 export 'package:pongo/shared/utils/API%20requests/searialized_data.dart';
 export 'package:pongo/shared/utils/API%20requests/tracks.dart';
 export 'package:pongo/phone/theme/theme.dart';

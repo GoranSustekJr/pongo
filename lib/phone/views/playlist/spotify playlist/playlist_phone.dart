@@ -197,19 +197,28 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                               child: Padding(
                                 padding: const EdgeInsets.only(
                                     left: 15, right: 15, top: 5),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(60),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                        sigmaX: 10, sigmaY: 10),
-                                    child: PlayShuffleHaltPlaylist(
-                                      playlist: widget.playlist,
-                                      missingTracks: missingTracks,
-                                      loadingShuffle: loadingShuffle,
-                                      play: () {
-                                        play(index: 0);
-                                      },
-                                      shuffle: playShuffle,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(60),
+                                      color: useBlur.value
+                                          ? Col.transp
+                                          : Col.realBackground.withAlpha(
+                                              AppConstants().noBlur)),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(60),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                          sigmaX: useBlur.value ? 10 : 0,
+                                          sigmaY: useBlur.value ? 10 : 0),
+                                      child: PlayShuffleHaltPlaylist(
+                                        playlist: widget.playlist,
+                                        missingTracks: missingTracks,
+                                        loadingShuffle: loadingShuffle,
+                                        play: () {
+                                          play(index: 0);
+                                        },
+                                        shuffle: playShuffle,
+                                      ),
                                     ),
                                   ),
                                 ),

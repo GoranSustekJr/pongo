@@ -48,4 +48,46 @@ class ArtistSpotify {
     }
     return {};
   }
+
+// Get artist image
+  Future<Map> getImage(context, String said) async {
+    int tries = 0;
+
+    try {
+      while (tries < 2) {
+        tries++;
+        final accessTokenHandler =
+            Provider.of<AccessToken>(context, listen: false);
+
+        final response = await http.post(
+          Uri.parse(
+              "${AppConstants.SERVER_URL}caf5cc332d474f35ff74e94af44f2a7801b620b2ce0196560e038b511d14986e"),
+          body: jsonEncode(
+            {
+              "at+JWT": accessTokenHandler.accessToken,
+              "said": said,
+            },
+          ),
+        );
+
+        if (response.statusCode == 200) {
+          Map<String, dynamic> data = jsonDecode(response.body);
+
+          return data;
+        } else if (response.statusCode == 401) {
+          if (tries < 2) {
+            await AccessTokenhandler().renew(context);
+          } else {
+            break; // Exit the loop after the second attempt
+          }
+        } else {
+          return {}; // Handle other status codes as needed
+        }
+      }
+    } catch (e) {
+      // print(e);
+      return {};
+    }
+    return {};
+  }
 }

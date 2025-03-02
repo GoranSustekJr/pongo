@@ -30,11 +30,9 @@ class AddToQueue {
                 ? "${track.album!.id}..Ææ..${track.album!.name}"
                 : "..Ææ..",
             duration: Duration(milliseconds: (duration * 1000).toInt()),
-            artUri: Uri.parse(
-              track.album != null
-                  ? calculateBestImageForTrack(track.album!.images)
-                  : '',
-            ),
+            artUri: track.album != null
+                ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+                : null,
             extras: {
               "released": track.album != null ? track.album!.releaseDate : "",
             },
@@ -54,11 +52,9 @@ class AddToQueue {
             ? "${track.album!.id}..Ææ..${track.album!.name}"
             : "..Ææ..",
         duration: Duration(milliseconds: (duration["duration"] * 1000).toInt()),
-        artUri: Uri.parse(
-          track.album != null
-              ? calculateBestImageForTrack(track.album!.images)
-              : '',
-        ),
+        artUri: track.album != null
+            ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+            : null,
         extras: {
           "released": track.album != null ? track.album!.releaseDate : "",
         },
@@ -99,11 +95,9 @@ class AddToQueue {
                 ? "${track.album!.id}..Ææ..${track.album!.name}"
                 : "..Ææ..",
             duration: Duration(milliseconds: (duration * 1000).toInt()),
-            artUri: Uri.parse(
-              track.album != null
-                  ? calculateBestImageForTrack(track.album!.images)
-                  : '',
-            ),
+            artUri: track.album != null
+                ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+                : null,
             extras: {
               "artists": jsonEncode(track.artists
                   .map((artist) => {"id": artist.id, "name": artist.name})
@@ -126,11 +120,9 @@ class AddToQueue {
             ? "${track.album!.id}..Ææ..${track.album!.name}"
             : "..Ææ..",
         duration: Duration(milliseconds: (duration["duration"] * 1000).toInt()),
-        artUri: Uri.parse(
-          track.album != null
-              ? calculateBestImageForTrack(track.album!.images)
-              : '',
-        ),
+        artUri: track.album != null
+            ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+            : null,
         extras: {
           "artists": jsonEncode(track.artists
               .map((artist) => {"id": artist.id, "name": artist.name})
@@ -173,11 +165,9 @@ class AddToQueue {
                 ? "${track.album!.id}..Ææ..${track.album!.name}"
                 : "..Ææ..",
             duration: Duration(milliseconds: (duration * 1000).toInt()),
-            artUri: Uri.parse(
-              track.album != null
-                  ? calculateBestImageForTrack(track.album!.images)
-                  : '',
-            ),
+            artUri: track.album != null
+                ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+                : null,
             extras: {
               "artists": jsonEncode(track.artists
                   .map((artist) => {"id": artist.id, "name": artist.name})
@@ -207,11 +197,9 @@ class AddToQueue {
             ? "${track.album!.id}..Ææ..${track.album!.name}"
             : "..Ææ..",
         duration: Duration(milliseconds: (duration["duration"] * 1000).toInt()),
-        artUri: Uri.parse(
-          track.album != null
-              ? calculateBestImageForTrack(track.album!.images)
-              : '',
-        ),
+        artUri: track.album != null
+            ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+            : null,
         extras: {
           "artists": jsonEncode(track.artists
               .map((artist) => {"id": artist.id, "name": artist.name})
@@ -262,11 +250,9 @@ class AddToQueue {
                 ? "${track.album!.id}..Ææ..${track.album!.name}"
                 : "..Ææ..",
             duration: Duration(milliseconds: (duration * 1000).toInt()),
-            artUri: Uri.parse(
-              track.album != null
-                  ? calculateBestImageForTrack(track.album!.images)
-                  : '',
-            ),
+            artUri: track.album != null
+                ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+                : null,
             extras: {
               "artists": jsonEncode(track.artists
                   .map((artist) => {"id": artist.id, "name": artist.name})
@@ -296,11 +282,9 @@ class AddToQueue {
             ? "${track.album!.id}..Ææ..${track.album!.name}"
             : "..Ææ..",
         duration: Duration(milliseconds: (duration["duration"] * 1000).toInt()),
-        artUri: Uri.parse(
-          track.album != null
-              ? calculateBestImageForTrack(track.album!.images)
-              : '',
-        ),
+        artUri: track.album != null
+            ? Uri.parse(calculateBestImageForTrack(track.album!.images))
+            : null,
         extras: {
           "artists": jsonEncode(track.artists
               .map((artist) => {"id": artist.id, "name": artist.name})

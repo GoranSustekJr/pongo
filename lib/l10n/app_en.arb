@@ -30,6 +30,21 @@
         "description": "OK"
     },
 
+    "userinterface": "User interface",
+    "@userinterface": {
+        "description": "User interface"
+    },
+
+    "useblur": "Use blur",
+    "@useblur": {
+        "description": "Use blur"
+    },
+
+    "turnoffifyourdeviceisgettinghotorhaslag": "OK",
+    "@turnoffifyourdeviceisgettinghotorhaslag": {
+        "description": "OK"
+    },
+
     "pleaseleavethepageafterasuccessfullpurchase": "Please leave the page after a successfull purchase",
     "@pleaseleavethepageafterasuccessfullpurchase": {
         "description": "pleaseleavethepageafterasuccessfullpurchase"

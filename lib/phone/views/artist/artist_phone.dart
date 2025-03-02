@@ -137,6 +137,20 @@ class _ArtistPhoneState extends State<ArtistPhone> {
                               titlePadding: EdgeInsets.zero,
                               centerTitle: true,
                               title: AppBar(
+                                backgroundColor: useBlur.value
+                                    ? Col.transp
+                                    : Col.realBackground.withAlpha(
+                                        ((MediaQuery.of(context).size.height /
+                                                            2 <=
+                                                        scrollControllerOffset
+                                                    ? 1
+                                                    : scrollControllerOffset /
+                                                        (MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            2)) *
+                                                150)
+                                            .toInt()),
                                 automaticallyImplyLeading: false,
                                 flexibleSpace: Opacity(
                                   opacity: MediaQuery.of(context).size.height /
@@ -148,8 +162,8 @@ class _ArtistPhoneState extends State<ArtistPhone> {
                                               2),
                                   child: BackdropFilter(
                                     filter: ImageFilter.blur(
-                                      sigmaX: 10,
-                                      sigmaY: 10,
+                                      sigmaX: useBlur.value ? 10 : 0,
+                                      sigmaY: useBlur.value ? 10 : 0,
                                     ),
                                     child: Container(),
                                   ),

@@ -106,6 +106,31 @@ class _BottomNavigationScreenPhoneState
                         height: currentTrackHeight.value,
                         child: RepaintBoundary(
                           child: PlayingDetailsPhone(
+                            showArtist: (aid) async {
+                              currentTrackHeight.value = 0;
+                              navigationBarIndex.value = 0;
+                              Map artist = await ArtistSpotify()
+                                  .getImage(context, jsonDecode(aid)["id"]);
+
+                              Navigations().nextScreen(
+                                  searchScreenContext.value,
+                                  ArtistPhone(
+                                      artist: Artist(
+                                          id: jsonDecode(aid)["id"],
+                                          name: jsonDecode(aid)["name"],
+                                          image: calculateBestImageForTrack(
+                                              (artist["images"]
+                                                      as List<dynamic>)
+                                                  .map((image) =>
+                                                      AlbumImagesTrack(
+                                                          url: image["url"],
+                                                          height:
+                                                              image["height"],
+                                                          width:
+                                                              image["width"]))
+                                                  .toList())),
+                                      context: context));
+                            },
                             showAlbum: (salid) async {
                               currentTrackHeight.value = 0;
                               navigationBarIndex.value = 0;

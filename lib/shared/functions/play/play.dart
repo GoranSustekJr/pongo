@@ -107,11 +107,9 @@ class PlayMultiple {
               : "..Ææ..",
           duration: Duration(
               milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
-          artUri: Uri.parse(
-            tracks[i].album != null
-                ? calculateBestImageForTrack(tracks[i].album!.images)
-                : '',
-          ),
+          artUri: tracks[i].album != null
+              ? Uri.parse(calculateBestImageForTrack(tracks[i].album!.images))
+              : null,
           extras: {
             "artists": jsonEncode(tracks[i]
                 .artists

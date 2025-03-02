@@ -207,19 +207,29 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                               child: Padding(
                                 padding: const EdgeInsets.only(
                                     left: 15, right: 15, top: 5),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(60),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                        sigmaX: 10, sigmaY: 10),
-                                    child: PlayShuffleHaltAlbum(
-                                      album: widget.album,
-                                      missingTracks: missingTracks,
-                                      loadingShuffle: loadingShuffle,
-                                      play: () {
-                                        play(index: 0);
-                                      },
-                                      shuffle: playShuffle,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(60),
+                                      color: useBlur.value
+                                          ? Col.transp
+                                          : Col.realBackground.withAlpha(
+                                              AppConstants().noBlur)),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(60),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                        sigmaX: useBlur.value ? 10 : 0,
+                                        sigmaY: useBlur.value ? 10 : 0,
+                                      ),
+                                      child: PlayShuffleHaltAlbum(
+                                        album: widget.album,
+                                        missingTracks: missingTracks,
+                                        loadingShuffle: loadingShuffle,
+                                        play: () {
+                                          play(index: 0);
+                                        },
+                                        shuffle: playShuffle,
+                                      ),
                                     ),
                                   ),
                                 ),

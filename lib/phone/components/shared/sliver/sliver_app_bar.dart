@@ -141,6 +141,16 @@ class SliverAppBarPhone extends StatelessWidget {
         titlePadding: EdgeInsets.zero,
         centerTitle: true,
         title: AppBar(
+          backgroundColor: useBlur.value
+              ? Col.transp
+              : Col.realBackground.withAlpha(
+                  ((MediaQuery.of(context).size.height / 2 <=
+                                  scrollControllerOffset
+                              ? 1
+                              : scrollControllerOffset /
+                                  (MediaQuery.of(context).size.height / 2)) *
+                          AppConstants().noBlur)
+                      .toInt()),
           automaticallyImplyLeading: false,
           flexibleSpace: Opacity(
             opacity:
@@ -150,8 +160,8 @@ class SliverAppBarPhone extends StatelessWidget {
                         (MediaQuery.of(context).size.height / 2),
             child: BackdropFilter(
               filter: ImageFilter.blur(
-                sigmaX: 10,
-                sigmaY: 10,
+                sigmaX: useBlur.value ? 10 : 0,
+                sigmaY: useBlur.value ? 10 : 0,
               ),
               child: Container(),
             ),

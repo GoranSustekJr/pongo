@@ -20,8 +20,8 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Ad
   InterstitialAd? interstitialAd;
-  String adUnitId =
-      "ca-app-pub-3931049547680648~4426620774"; // Ios test id "ca-app-pub-3940256099942544/4411468910";
+  String adUnitId = "ca-app-pub-3940256099942544/4411468910";
+  //"ca-app-pub-3931049547680648~4426620774"; // Ios test id "ca-app-pub-3940256099942544/4411468910";
 
   // Playlist
   ConcatenatingAudioSource playlist = ConcatenatingAudioSource(children: []);
@@ -65,10 +65,13 @@ class AudioServiceHandler extends BaseAudioHandler
     Duration position = await Storage().getCurrentPlayingPosition();
 
     await initSongs(songs: queueList);
+    await audioPlayer.setAudioSource(playlist);
+
     if (queueIndex != -1) {
-      skipToQueueItem(queueIndex, playAuto: false);
+      await audioPlayer.seek(position, index: queueIndex);
+    } else {
+      await audioPlayer.seek(position);
     }
-    seek(position);
   }
 
   //
@@ -82,7 +85,7 @@ class AudioServiceHandler extends BaseAudioHandler
         : useCacheAudioSource.value
             ? LockCachingAudioSource(
                 Uri.parse(
-                    "${AppConstants.SERVER_URL}play_song_caching/${item.id.split(".")[2]}"),
+                    "${AppConstants.SERVER_URL}play_song_caching/${kIsApple ? "" : "android/"}${item.id.split(".")[2]}"),
                 /* headers: {
                   "Authorization": "${accessTokenHandler.accessToken}",
                   "Content-Type": "application/json",
@@ -91,7 +94,7 @@ class AudioServiceHandler extends BaseAudioHandler
               )
             : AudioSource.uri(
                 Uri.parse(
-                    "${AppConstants.SERVER_URL}play_song/${item.id.split(".")[2]}"),
+                    "${AppConstants.SERVER_URL}play_song/${kIsApple ? "" : "android/"}${item.id.split(".")[2]}"),
                 /*  headers: {
                   "Authorization": "${accessTokenHandler.accessToken}",
                   "Content-Type": "application/json",
@@ -143,7 +146,6 @@ class AudioServiceHandler extends BaseAudioHandler
           // Keep a reference to the ad so you can show it later.
           interstitialAd = ad;
 
-          print(interstitialAd);
           if (interstitialAd != null) {
             await interstitialAd!.show();
           }

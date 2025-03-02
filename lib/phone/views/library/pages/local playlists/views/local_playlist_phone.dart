@@ -47,8 +47,8 @@ class LocalPlaylistPhone extends StatelessWidget {
                       children: [
                         Blurhash(
                           blurhash: localPlaylistDataManager.blurhash,
-                          sigmaX: 10,
-                          sigmaY: 10,
+                          sigmaX: 0,
+                          sigmaY: 0,
                           child: Container(),
                         ),
                         Container(
@@ -84,53 +84,68 @@ class LocalPlaylistPhone extends StatelessWidget {
                                         child: Padding(
                                           padding: const EdgeInsets.only(
                                               left: 15, right: 15, top: 5),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(60),
-                                            child: BackdropFilter(
-                                              filter: ImageFilter.blur(
-                                                  sigmaX: 10, sigmaY: 10),
-                                              child:
-                                                  PlayShuffleHaltLocalPlaylist(
-                                                lpid: lpid,
-                                                allSelected:
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(60),
+                                                color: useBlur.value
+                                                    ? Col.transp
+                                                    : Col.realBackground
+                                                        .withAlpha(
+                                                            AppConstants()
+                                                                .noBlur)),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(60),
+                                              child: BackdropFilter(
+                                                filter: ImageFilter.blur(
+                                                    sigmaX:
+                                                        useBlur.value ? 10 : 0,
+                                                    sigmaY:
+                                                        useBlur.value ? 10 : 0),
+                                                child:
+                                                    PlayShuffleHaltLocalPlaylist(
+                                                  lpid: lpid,
+                                                  allSelected:
+                                                      localPlaylistDataManager
+                                                              .selectedStids
+                                                              .length ==
+                                                          localPlaylistDataManager
+                                                              .tracks.length,
+                                                  missingTracks:
+                                                      localPlaylistDataManager
+                                                          .missingTracks,
+                                                  loadingShuffle:
+                                                      localPlaylistDataManager
+                                                          .loadingShuffle,
+                                                  edit: localPlaylistDataManager
+                                                      .edit,
+                                                  frontWidget: const SizedBox(),
+                                                  endWidget: const SizedBox(),
+                                                  play: () {
                                                     localPlaylistDataManager
-                                                            .selectedStids
-                                                            .length ==
-                                                        localPlaylistDataManager
-                                                            .tracks.length,
-                                                missingTracks:
-                                                    localPlaylistDataManager
-                                                        .missingTracks,
-                                                loadingShuffle:
-                                                    localPlaylistDataManager
-                                                        .loadingShuffle,
-                                                edit: localPlaylistDataManager
-                                                    .edit,
-                                                frontWidget: const SizedBox(),
-                                                endWidget: const SizedBox(),
-                                                play: () {
-                                                  localPlaylistDataManager.play(
-                                                      index: 0);
-                                                },
-                                                shuffle:
-                                                    localPlaylistDataManager
-                                                        .playShuffle,
-                                                stopEdit:
-                                                    localPlaylistDataManager
-                                                        .stopEdit,
-                                                remove: localPlaylistDataManager
-                                                    .remove,
-                                                addToPlaylist:
-                                                    localPlaylistDataManager
-                                                        .addToPlaylist,
-                                                show: localPlaylistDataManager
-                                                    .showSelected,
-                                                hide: localPlaylistDataManager
-                                                    .hideSelected,
-                                                selectAll:
-                                                    localPlaylistDataManager
-                                                        .selectAll,
+                                                        .play(index: 0);
+                                                  },
+                                                  shuffle:
+                                                      localPlaylistDataManager
+                                                          .playShuffle,
+                                                  stopEdit:
+                                                      localPlaylistDataManager
+                                                          .stopEdit,
+                                                  remove:
+                                                      localPlaylistDataManager
+                                                          .remove,
+                                                  addToPlaylist:
+                                                      localPlaylistDataManager
+                                                          .addToPlaylist,
+                                                  show: localPlaylistDataManager
+                                                      .showSelected,
+                                                  hide: localPlaylistDataManager
+                                                      .hideSelected,
+                                                  selectAll:
+                                                      localPlaylistDataManager
+                                                          .selectAll,
+                                                ),
                                               ),
                                             ),
                                           ),

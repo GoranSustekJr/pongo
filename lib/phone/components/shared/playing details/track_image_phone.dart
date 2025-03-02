@@ -81,9 +81,15 @@ class TrackImagePhone extends StatelessWidget {
                                                     image: image,
                                                   ),
                                                 )
-                                              : SizedBox(
+                                              : Container(
                                                   height: size.width - 40,
                                                   width: size.width - 40,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15),
+                                                      color: Col.primaryCard
+                                                          .withAlpha(150)),
                                                   child: Center(
                                                     child: Icon(
                                                       AppIcons.blankTrack,

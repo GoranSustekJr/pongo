@@ -2,7 +2,9 @@ import 'package:pongo/exports.dart';
 
 class PlayingDetailsPhone extends StatelessWidget {
   final Function(String) showAlbum;
-  const PlayingDetailsPhone({super.key, required this.showAlbum});
+  final Function(String) showArtist;
+  const PlayingDetailsPhone(
+      {super.key, required this.showAlbum, required this.showArtist});
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +99,7 @@ class PlayingDetailsPhone extends StatelessWidget {
                                   changeShowQueue:
                                       mediaItemManager.toggleShowQueue,
                                   showAlbum: showAlbum,
+                                  showArtist: showArtist,
                                 ),
                                 TrackImagePhone(
                                   lyricsOn: mediaItemManager.lyricsOn,

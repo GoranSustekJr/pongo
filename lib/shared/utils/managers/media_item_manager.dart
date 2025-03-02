@@ -34,7 +34,7 @@ class MediaItemManager with ChangeNotifier {
 
     // Blurhash
     try {
-      blurhash = mediaItem.artUri != null
+      blurhash = mediaItem.artUri != null && mediaItem.artUri != Uri.parse("")
           ? await BlurhashFFI.encode(
               currentMediaItem!.artUri.toString().contains("file:///")
                   ? FileImage(File(currentMediaItem!.artUri!.toFilePath()))

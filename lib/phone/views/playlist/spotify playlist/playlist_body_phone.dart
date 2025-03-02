@@ -28,7 +28,7 @@ class _PlaylistBodyPhoneState extends State<PlaylistBodyPhone> {
       child: Padding(
         padding: const EdgeInsets.only(
           top: 35,
-          left: 15,
+          left: 0,
           right: 0,
         ),
         child: Column(

@@ -30,7 +30,7 @@ class RecommendationsDataManager with ChangeNotifier {
 
   // Suggestion header
   final TextStyle suggestionHeader = TextStyle(
-    fontSize: kIsApple ? 24 : 19,
+    fontSize: kIsApple ? 24 : 25,
     fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w700,
     color: Colors.white,
   );

@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:pdfx/pdfx.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/settings/about/pdf_view.dart';
 
@@ -45,6 +44,9 @@ class _AboutPhoneState extends State<AboutPhone> with WidgetsBindingObserver {
               snap: true,
               floating: true,
               pinned: true,
+              backgroundColor: useBlur.value
+                  ? Col.transp
+                  : Col.realBackground.withAlpha(AppConstants().noBlur),
               stretch: true,
               automaticallyImplyLeading: false,
               expandedHeight: kIsApple ? size.height / 5 : size.height / 4,
@@ -58,7 +60,10 @@ class _AboutPhoneState extends State<AboutPhone> with WidgetsBindingObserver {
               ),
               flexibleSpace: ClipRRect(
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  filter: ImageFilter.blur(
+                    sigmaX: useBlur.value ? 10 : 0,
+                    sigmaY: useBlur.value ? 10 : 0,
+                  ),
                   child: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Text(

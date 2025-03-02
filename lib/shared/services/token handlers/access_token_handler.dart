@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'package:pongo/exports.dart';
 
 class AccessTokenhandler {
-  updateSystemWide(context, accessToken) async {
+  Future<void> updateSystemWide(context, accessToken) async {
     await Storage().writeAccessToken(accessToken);
     final accessTokenProvided =
         Provider.of<AccessToken>(context, listen: false);

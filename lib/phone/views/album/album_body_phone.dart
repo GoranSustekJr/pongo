@@ -28,7 +28,7 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
       child: Padding(
         padding: const EdgeInsets.only(
           top: 35,
-          left: 15,
+          left: 0,
           right: 0,
         ),
         child: Column(

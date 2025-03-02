@@ -13,7 +13,8 @@ class OAuth2 {
     // Create mobile sign in session
     final GoogleSignIn googleSignInMobile = GoogleSignIn(
       scopes: ['email', 'profile', 'openid'],
-      clientId: oauth2APIClientID,
+      clientId: kIsApple ? oauth2APIClientID : null,
+      serverClientId: !kIsApple ? oauth2APIClientID : null,
     );
 
     // Sign in to an account
@@ -62,6 +63,10 @@ class OAuth2 {
             AccessTokenhandler().updateSystemWide(context, accessToken);
 
             RefreshTokenhandler().updateSystemWide(context, refreshToken);
+
+            bool premim = (await Premium().isPremium(mainContext.value,
+                accessToken: accessToken))["premium"];
+            premium.value = premim;
           } else if (response.statusCode == 401) {
             // Auth failed
             AccessTokenhandler().renew(context);
@@ -112,9 +117,13 @@ class OAuth2 {
       if (accessToken != null && refreshToken != null) {
         SignInHandler().updateSystemWide(true);
 
-        AccessTokenhandler().updateSystemWide(context, accessToken);
+        await AccessTokenhandler().updateSystemWide(context, accessToken);
 
-        RefreshTokenhandler().updateSystemWide(context, refreshToken);
+        await RefreshTokenhandler().updateSystemWide(context, refreshToken);
+
+        bool premim = (await Premium()
+            .isPremium(context, accessToken: accessToken))["premium"];
+        premium.value = premim;
       } else if (response.statusCode == 401) {
         // Auth failed
         AccessTokenhandler().renew(context);

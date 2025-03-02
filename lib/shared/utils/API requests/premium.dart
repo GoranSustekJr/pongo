@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class Premium {
   // Check if premium is aquired
-  Future<bool> isPremium(context) async {
+  Future<Map> isPremium(context, {String? accessToken}) async {
     int tries = 0;
 
     try {
@@ -16,15 +16,14 @@ class Premium {
           Uri.parse("${AppConstants.SERVER_URL}get_if_premium"),
           body: jsonEncode(
             {
-              "at+JWT": accessTokenHandler.accessToken,
+              "at+JWT": accessToken ?? accessTokenHandler.accessToken,
             },
           ),
         );
 
         if (response.statusCode == 200) {
           Map<String, dynamic> data = jsonDecode(response.body);
-          print(data["premium"]);
-          return data["premium"];
+          return data;
         } else if (response.statusCode == 401) {
           if (tries < 2) {
             await AccessTokenhandler().renew(context);
@@ -32,14 +31,14 @@ class Premium {
             break; // Exit the loop after the second attempt
           }
         } else {
-          return false; // Handle other status codes as needed
+          return {"premium": false}; // Handle other status codes as needed
         }
       }
     } catch (e) {
       // print(e);
-      return false;
+      return {"premium": false};
     }
-    return false;
+    return {"premium": false};
   }
 
   // Buy premium
@@ -66,7 +65,6 @@ class Premium {
 
         if (response.statusCode == 200) {
           Map<String, dynamic> data = jsonDecode(response.body);
-          print(data["premium"]);
           if (data["premium"]) {
             premium.value = true;
           }

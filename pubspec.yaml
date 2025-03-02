@@ -131,8 +131,9 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
 
-flutter_icons:
-  android: true
+flutter_launcher_icons:
+  android: "launcher_icon"
+  min_sdk_android: 21
   ios: true
   remove_alpha_ios: true
   image_path: "assets/images/pongo_icon.png"
@@ -143,6 +144,10 @@ flutter_native_splash:
   web: false
   background_image: "assets/images/pongo_background_10k.png"
   image: "assets/images/pongo_logo_tranparent.png"
+
+  android_12:
+    background_image: "assets/images/pongo_background_10k.png"
+    image: "assets/images/pongo_logo_tranparent.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

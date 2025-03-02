@@ -19,6 +19,11 @@ void main() async {
   final session = await AudioSession.instance;
   await session.configure(const AudioSessionConfiguration.music());
 
+  bool subscription = await Storage()
+      .getSubscription(); // Premium subscription -> Needed to initialize before AudioHanlder because it depends on premium.value
+
+  premium.value = subscription;
+
   // Initialize the audio handle
   late AudioHandler audioHandler;
   audioHandler = await AudioService.init(
@@ -86,6 +91,8 @@ void main() async {
   enableLyrics.value = enblLyrics;
   bool cacheImags = await Storage().getCacheImages(); // Cache images
   cacheImages.value = cacheImags;
+  bool enablUeseBlur = await Storage().getUseBlur(); // Usage of blur
+  useBlur.value = enablUeseBlur;
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();

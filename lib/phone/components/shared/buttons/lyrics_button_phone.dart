@@ -41,7 +41,10 @@ class LyricsButtonPhone extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(60),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                filter: ImageFilter.blur(
+                  sigmaX: useBlur.value ? 10 : 0,
+                  sigmaY: useBlur.value ? 10 : 0,
+                ),
                 child: Container(
                   width: 40,
                   height: 40,
@@ -50,7 +53,10 @@ class LyricsButtonPhone extends StatelessWidget {
                     color: kIsDesktop
                         ? const MacosColor.fromRGBO(
                             40, 40, 40, 0.8) // Add transparency here
-                        : Col.transp,
+                        : useBlur.value
+                            ? Col.transp
+                            : Col.realBackground
+                                .withAlpha(AppConstants().noBlur),
                   ),
                   child: CupertinoButton(
                     padding: EdgeInsets.zero,
@@ -66,7 +72,10 @@ class LyricsButtonPhone extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(60),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                filter: ImageFilter.blur(
+                  sigmaX: useBlur.value ? 10 : 0,
+                  sigmaY: useBlur.value ? 10 : 0,
+                ),
                 child: Container(
                   height: 40,
                   width: 150,
@@ -75,7 +84,10 @@ class LyricsButtonPhone extends StatelessWidget {
                     color: kIsDesktop
                         ? const MacosColor.fromRGBO(
                             40, 40, 40, 0.8) // Add transparency here
-                        : Col.transp,
+                        : useBlur.value
+                            ? Col.transp
+                            : Col.realBackground
+                                .withAlpha(AppConstants().noBlur),
                   ),
                   child: Row(
                     children: [
@@ -156,7 +168,10 @@ class LyricsButtonPhone extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(60),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                filter: ImageFilter.blur(
+                  sigmaX: useBlur.value ? 10 : 0,
+                  sigmaY: useBlur.value ? 10 : 0,
+                ),
                 child: Container(
                   width: 40,
                   height: 40,
@@ -165,7 +180,10 @@ class LyricsButtonPhone extends StatelessWidget {
                     color: kIsDesktop
                         ? const MacosColor.fromRGBO(
                             40, 40, 40, 0.8) // Add transparency here
-                        : Col.transp,
+                        : useBlur.value
+                            ? Col.transp
+                            : Col.realBackground
+                                .withAlpha(AppConstants().noBlur),
                   ),
                   child: CupertinoButton(
                     padding: EdgeInsets.zero,

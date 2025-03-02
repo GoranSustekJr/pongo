@@ -51,6 +51,9 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   // Cache Images
   bool useCacheImages = false;
 
+  // Use blur
+  bool useBlr = false;
+
   @override
   void initState() {
     super.initState();
@@ -82,6 +85,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final useCacheAudioSource = await Storage().getUseCachingAudioSource();
     final enblLyrics = await Storage().getEnableLyrics();
     final useCachImages = await Storage().getCacheImages();
+    final usBlur = await Storage().getUseBlur();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -97,6 +101,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       useCachingAudioSource = useCacheAudioSource;
       enbleLyrics = enblLyrics;
       useCacheImages = useCachImages;
+      useBlr = usBlur;
     });
   }
 
@@ -121,6 +126,9 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                       floating: true,
                       pinned: true,
                       stretch: true,
+                      backgroundColor: useBlur.value
+                          ? Col.transp
+                          : Col.realBackground.withAlpha(AppConstants().noBlur),
                       automaticallyImplyLeading: false,
                       expandedHeight:
                           kIsApple ? size.height / 5 : size.height / 4,
@@ -134,7 +142,10 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                       ),
                       flexibleSpace: ClipRRect(
                         child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          filter: ImageFilter.blur(
+                            sigmaX: useBlur.value ? 10 : 0,
+                            sigmaY: useBlur.value ? 10 : 0,
+                          ),
                           child: FlexibleSpaceBar(
                             centerTitle: true,
                             title: Text(
@@ -511,6 +522,27 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 manager.emptyCache();
                                 PaintingBinding.instance.imageCache.clear();
                               }),
+                              razh(20),
+                              settingsText(
+                                  AppLocalizations.of(context)!.userinterface),
+                              settingsTileSwitcher(
+                                context,
+                                true,
+                                true,
+                                CupertinoIcons.arrow_down_doc_fill,
+                                useBlr, // AppIcons.edit,
+                                AppLocalizations.of(context)!.useblur,
+                                AppLocalizations.of(context)!
+                                    .turnoffifyourdeviceisgettinghotorhaslag,
+                                (use) async {
+                                  setState(() {
+                                    useBlr = use;
+                                  });
+
+                                  useBlur.value = use;
+                                  await Storage().writeUseBlur(use);
+                                },
+                              ),
                               razh(50),
                             ],
                           );

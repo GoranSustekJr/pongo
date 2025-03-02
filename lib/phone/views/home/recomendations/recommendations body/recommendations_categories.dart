@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/home/recomendations/recommendations_data_manager.dart';
@@ -86,7 +88,7 @@ class RecommendationsCategories extends StatelessWidget {
               return kIsApple
                   ? CupertinoButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () async {
+                      onPressed: () {
                         if (searchDataManagr.value != null) {
                           searchDataManagr.value!.search(
                             dataManager.categories[index].name,
@@ -99,7 +101,15 @@ class RecommendationsCategories extends StatelessWidget {
                     )
                   : CupertinoButton(
                       padding: EdgeInsets.zero,
-                      onPressed: () {},
+                      onPressed: () {
+                        if (searchDataManagr.value != null) {
+                          searchDataManagr.value!.search(
+                            dataManager.categories[index].name,
+                          );
+                          navigationBarIndex.value = 0;
+                          searchBarIsSearching.value = true;
+                        }
+                      },
                       child: child,
                     );
             },
