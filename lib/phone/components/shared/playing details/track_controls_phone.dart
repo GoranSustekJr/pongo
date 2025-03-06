@@ -102,8 +102,10 @@ class TrackControlsPhone extends StatelessWidget {
                             // razh(50),
                             TitleArtistVisualizerPhone(
                               name: currentMediaItem.title,
+                              stid: currentMediaItem.id.split('.')[2],
                               artistJson: currentMediaItem.extras!["artists"],
                               playbackState: playbackState,
+                              mix: currentMediaItem.extras!["mix"] ?? false,
                               showArtist: showArtist,
                             ),
                             TrackProgressPhone(

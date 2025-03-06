@@ -99,28 +99,6 @@ class _HomePhoneState extends State<HomePhone> {
                   child: const RecommendationsPhone(),
                 ),
                 // 3. - Search history screen
-                /*  Positioned(
-                    top: showSearchHistory
-                        ? 0
-                        : -MediaQuery.of(context).size.height,
-                    child: */
-                /* AnimatedSwitcher(
-                    duration:
-                        Duration(milliseconds: showSearchHistory ? 400 : 350),
-                    child: showSearchHistory
-                        ? */
-                /*    */
-                /*  : const SizedBox(),
-                  ), */
-                // ),
-                /* AnimatedPositioned(
-                    top: showSearchHistory
-                        ? 0
-                        : -MediaQuery.of(context).size.height,
-                    curve: Curves.fastEaseInToSlowEaseOut,
-                    duration:
-                        Duration(milliseconds: showSearchHistory ? 400 : 350),
-                    child: */
                 Positioned(
                   top: showSearchHistory
                       ? 0

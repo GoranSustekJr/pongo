@@ -228,6 +228,10 @@ class SearchBodyPhone extends StatelessWidget {
                           loadingAdd,
                           loadingRemove,
                         );
+
+                        if (useMix.value) {
+                          Mix().getMix(context, tracks[index]);
+                        }
                       },
                     );
                   },

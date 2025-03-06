@@ -15,6 +15,11 @@
         "description": "Cancel"
     },
 
+    "shazamfailed": "Shazam failed to recognize the song",
+    "@shazamfailed": {
+        "description": "Shazam failed"
+    },
+
     "premiumisneededtodownloadatrack": "Premium is needed to download a track",
     "@premiumisneededtodownloadatrack": {
         "description": "premiumisneededtodownloadatrack"

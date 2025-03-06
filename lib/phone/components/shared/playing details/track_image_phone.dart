@@ -73,7 +73,7 @@ class TrackImagePhone extends StatelessWidget {
                                               lyricsOn || showQueue ? 0 : 1,
                                           duration: const Duration(
                                               milliseconds: 1000),
-                                          child: image != ""
+                                          child: image != "" && image != "null"
                                               ? SizedBox(
                                                   height: size.width - 40,
                                                   width: size.width - 40,

@@ -105,3 +105,12 @@ ValueNotifier<bool> premium = ValueNotifier(true);
 
 // Use blur
 ValueNotifier<bool> useBlur = ValueNotifier(true);
+
+// Use detailed blurhash
+ValueNotifier<bool> detailedBlurhash = ValueNotifier(true);
+
+// Use Mix
+ValueNotifier<bool> useMix = ValueNotifier(true);
+
+// Shazaming
+bool shazaming = false;

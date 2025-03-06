@@ -39,6 +39,8 @@ class Storage {
   static String subscriptionKey = "SUBSCRIPTIONKEY";
   static String subscriptionEndKey = "SUBSCRIPTIONENDKEY";
   static String useBlurKey = "USEBLURKEY";
+  static String useMixKey = "USEMIXKEY";
+  static String useDetailedBlurhashKey = " USEDETAILEDBLURHASHKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -528,13 +530,42 @@ class Storage {
     }
   }
 
-  // Subscription
+  // Blur usage
   Future<void> writeUseBlur(bool useBlur) async {
     await storage.write(key: useBlurKey, value: useBlur.toString());
   }
 
   Future<bool> getUseBlur() async {
     String? key = await storage.read(key: useBlurKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Mix usage
+  Future<void> writeUseMix(bool useMix) async {
+    await storage.write(key: useMixKey, value: useMix.toString());
+  }
+
+  Future<bool> getUseMix() async {
+    String? key = await storage.read(key: useMixKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Use detailed blurhash
+  Future<void> writeUseDetailedBlurhash(bool useDetailedBlurhash) async {
+    await storage.write(
+        key: useDetailedBlurhashKey, value: useDetailedBlurhash.toString());
+  }
+
+  Future<bool> getUseDetailedBlurhash() async {
+    String? key = await storage.read(key: useDetailedBlurhashKey);
     if (key == null) {
       return true;
     } else {

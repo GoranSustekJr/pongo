@@ -180,6 +180,9 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                           widget.tracks[index],
                           widget.loadingAdd,
                           widget.loadingRemove);
+                      if (useMix.value) {
+                        Mix().getMix(context, widget.tracks[index]);
+                      }
                     },
                   );
                 },

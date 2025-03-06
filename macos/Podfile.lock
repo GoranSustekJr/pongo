@@ -47,6 +47,9 @@ PODS:
   - GTMSessionFetcher/Core (3.5.0)
   - GTMSessionFetcher/Full (3.5.0):
     - GTMSessionFetcher/Core
+  - in_app_purchase_storekit (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - irondash_engine_context (0.0.1):
     - FlutterMacOS
   - just_audio (0.0.1):
@@ -58,7 +61,11 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - pdfx (1.0.0):
+    - FlutterMacOS
   - screen_retriever (0.0.1):
+    - FlutterMacOS
+  - sign_in_with_apple (0.0.1):
     - FlutterMacOS
   - sqflite (0.0.3):
     - Flutter
@@ -85,12 +92,15 @@ DEPENDENCIES:
   - flutter_secure_storage_macos (from `Flutter/ephemeral/.symlinks/plugins/flutter_secure_storage_macos/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - google_sign_in_ios (from `Flutter/ephemeral/.symlinks/plugins/google_sign_in_ios/darwin`)
+  - in_app_purchase_storekit (from `Flutter/ephemeral/.symlinks/plugins/in_app_purchase_storekit/darwin`)
   - irondash_engine_context (from `Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos`)
   - just_audio (from `Flutter/ephemeral/.symlinks/plugins/just_audio/macos`)
   - macos_ui (from `Flutter/ephemeral/.symlinks/plugins/macos_ui/macos`)
   - macos_window_utils (from `Flutter/ephemeral/.symlinks/plugins/macos_window_utils/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
+  - pdfx (from `Flutter/ephemeral/.symlinks/plugins/pdfx/macos`)
   - screen_retriever (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos`)
+  - sign_in_with_apple (from `Flutter/ephemeral/.symlinks/plugins/sign_in_with_apple/macos`)
   - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/darwin`)
   - super_native_extensions (from `Flutter/ephemeral/.symlinks/plugins/super_native_extensions/macos`)
   - webview_flutter_wkwebview (from `Flutter/ephemeral/.symlinks/plugins/webview_flutter_wkwebview/darwin`)
@@ -130,6 +140,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral
   google_sign_in_ios:
     :path: Flutter/ephemeral/.symlinks/plugins/google_sign_in_ios/darwin
+  in_app_purchase_storekit:
+    :path: Flutter/ephemeral/.symlinks/plugins/in_app_purchase_storekit/darwin
   irondash_engine_context:
     :path: Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos
   just_audio:
@@ -140,8 +152,12 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/macos_window_utils/macos
   path_provider_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
+  pdfx:
+    :path: Flutter/ephemeral/.symlinks/plugins/pdfx/macos
   screen_retriever:
     :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever/macos
+  sign_in_with_apple:
+    :path: Flutter/ephemeral/.symlinks/plugins/sign_in_with_apple/macos
   sqflite:
     :path: Flutter/ephemeral/.symlinks/plugins/sqflite/darwin
   super_native_extensions:
@@ -153,33 +169,36 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
-  appkit_ui_element_colors: 39bb2d80be3f19b152ccf4c70d5bbe6cba43d74a
-  audio_service: b88ff778e0e3915efd4cd1a5ad6f0beef0c950a9
-  audio_session: dea1f41890dbf1718f04a56f1d6150fd50039b72
-  blurhash_ffi: 08654b437e9dc2a8a4ce476a7fa4898b3a333fb6
-  connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
-  device_info_plus: ce1b7762849d3ec103d0e0517299f2db7ad60720
-  file_selector_macos: 54fdab7caa3ac3fc43c9fac4d7d8d231277f8cf2
-  flutter_image_compress_macos: c26c3c13ea0f28ae6dea4e139b3292e7729f99f1
-  flutter_local_notifications: 3805ca215b2fb7f397d78b66db91f6a747af52e4
-  flutter_platform_alert: b21b2b7d801e71c12ce9ffab618ff114ca9fc903
-  flutter_secure_storage_macos: 59459653abe1adb92abbc8ea747d79f8d19866c9
+  appkit_ui_element_colors: 711e7a2aa027790964e6fd90c78a666efe631432
+  audio_service: 0d9e4e25347bb3efb768f3b9f005911a81e587a7
+  audio_session: 48ab6500f7a5e7c64363e206565a5dfe5a0c1441
+  blurhash_ffi: 9eaec3fd96c2935bd92fbcd70d7f33f7f98b0428
+  connectivity_plus: 3f6c9057f4cd64198dc826edfb0542892f825343
+  device_info_plus: a56e6e74dbbd2bb92f2da12c64ddd4f67a749041
+  file_selector_macos: 585232b688707857504f9cb5f985a7c97fe4dd30
+  flutter_image_compress_macos: e68daf54bb4bf2144c580fd4d151c949cbf492f0
+  flutter_local_notifications: 453432cd6399a07d072885bc7828fb2307868856
+  flutter_platform_alert: 0373c95e18cdeda110eddcc3cb78fdd64f59dce0
+  flutter_secure_storage_macos: b2d62a774c23b060f0b99d0173b0b36abb4a8632
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  google_sign_in_ios: 07375bfbf2620bc93a602c0e27160d6afc6ead38
+  google_sign_in_ios: 0ab078e60da6dfe23cbc55c83502b52bba1aad63
   GoogleSignIn: d4281ab6cf21542b1cfaff85c191f230b399d2db
   GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
-  irondash_engine_context: da62996ee25616d2f01bbeb85dc115d813359478
-  just_audio: 9b67ca7b97c61cfc9784ea23cd8cc55eb226d489
-  macos_ui: 6229a8922cd97bafb7d9636c8eb8dfb0744183ca
-  macos_window_utils: 933f91f64805e2eb91a5bd057cf97cd097276663
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  screen_retriever: 59634572a57080243dd1bf715e55b6c54f241a38
-  sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
-  super_native_extensions: 85efee3a7495b46b04befcfc86ed12069264ebf3
-  webview_flutter_wkwebview: 0982481e3d9c78fd5c6f62a002fcd24fc791f1e4
-  window_manager: 3a1844359a6295ab1e47659b1a777e36773cd6e8
+  in_app_purchase_storekit: d1a48cb0f8b29dbf5f85f782f5dd79b21b90a5e6
+  irondash_engine_context: 893c7d96d20ce361d7e996f39d360c4c2f9869ba
+  just_audio: eb8b016ac4493159ab24db4f7215e55303b39a84
+  macos_ui: 2047a8e6536a80491ef10684c53ca500e04f1bcf
+  macos_window_utils: 3bca8603c2a1cf2257351dfe6bbccc9accf739fd
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  pdfx: 1e79f57f7a6ce2f4a4c30f21fa54d3dc82441b51
+  screen_retriever: 4f97c103641aab8ce183fa5af3b87029df167936
+  sign_in_with_apple: 6673c03c9e3643f6c8d33601943fbfa9ae99f94e
+  sqflite: c35dad70033b8862124f8337cc994a809fcd9fa3
+  super_native_extensions: c2795d6d9aedf4a79fae25cb6160b71b50549189
+  webview_flutter_wkwebview: 44d4dee7d7056d5ad185d25b38404436d56c547c
+  window_manager: 1d01fa7ac65a6e6f83b965471b1a7fdd3f06166c
 
 PODFILE CHECKSUM: 9ebaf0ce3d369aaa26a9ea0e159195ed94724cf3
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

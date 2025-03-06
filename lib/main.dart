@@ -93,6 +93,11 @@ void main() async {
   cacheImages.value = cacheImags;
   bool enablUeseBlur = await Storage().getUseBlur(); // Usage of blur
   useBlur.value = enablUeseBlur;
+  bool enableDetailedBlurhash =
+      await Storage().getUseDetailedBlurhash(); // Detailed blurhash
+  detailedBlurhash.value = enableDetailedBlurhash;
+  bool enableUseMix = await Storage().getUseMix(); // Use mix
+  useMix.value = enableUseMix;
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();

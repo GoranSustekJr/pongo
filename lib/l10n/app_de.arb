@@ -41,6 +41,7 @@
     "offline": "Offline",
     "playlist": "Playlist",
     "hidden": "Verborgen",
+    "shazamfailed": "Shazam konnte das Lied nicht erkennen",
     "allofyourdataishidden": "Alle Ihre Informationen sind verborgen",
     "favouritesongs": "Lieblingslieder",
     "onlinefavouritesongs": "Lieblingslieder online",

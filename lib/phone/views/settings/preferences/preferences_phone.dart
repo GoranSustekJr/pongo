@@ -54,6 +54,12 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   // Use blur
   bool useBlr = false;
 
+  // Use detailed blurhash
+  bool useDetailedBlurhsh = true;
+
+  // Use mix
+  bool useMx = false;
+
   @override
   void initState() {
     super.initState();
@@ -86,6 +92,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final enblLyrics = await Storage().getEnableLyrics();
     final useCachImages = await Storage().getCacheImages();
     final usBlur = await Storage().getUseBlur();
+    final usDetailedBlurhash = await Storage().getUseDetailedBlurhash();
+    final usMix = await Storage().getUseMix();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -102,6 +110,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       enbleLyrics = enblLyrics;
       useCacheImages = useCachImages;
       useBlr = usBlur;
+      useDetailedBlurhsh = usDetailedBlurhash;
+      useMx = usMix;
     });
   }
 
@@ -460,6 +470,22 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 context,
                                 true,
                                 false,
+                                CupertinoIcons.music_albums_fill,
+                                useMx,
+                                "Mix",
+                                "Use mix feature when playing searched music",
+                                (use) async {
+                                  setState(() {
+                                    useMx = use;
+                                  });
+                                  useMix.value = use;
+                                  await Storage().writeUseMix(use);
+                                },
+                              ),
+                              settingsTileSwitcher(
+                                context,
+                                false,
+                                false,
                                 CupertinoIcons.arrow_down_doc_fill,
                                 useCachingAudioSource, // AppIcons.edit,
                                 AppLocalizations.of(context)!
@@ -528,7 +554,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                               settingsTileSwitcher(
                                 context,
                                 true,
-                                true,
+                                false,
                                 CupertinoIcons.arrow_down_doc_fill,
                                 useBlr, // AppIcons.edit,
                                 AppLocalizations.of(context)!.useblur,
@@ -541,6 +567,23 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
 
                                   useBlur.value = use;
                                   await Storage().writeUseBlur(use);
+                                },
+                              ),
+                              settingsTileSwitcher(
+                                context,
+                                false,
+                                true,
+                                CupertinoIcons.photo_on_rectangle,
+                                useDetailedBlurhsh, // AppIcons.edit,
+                                "Detailed blurahash",
+                                "Use detailed blurahash",
+                                (use) async {
+                                  setState(() {
+                                    useDetailedBlurhsh = use;
+                                  });
+
+                                  detailedBlurhash.value = use;
+                                  await Storage().writeUseDetailedBlurhash(use);
                                 },
                               ),
                               razh(50),

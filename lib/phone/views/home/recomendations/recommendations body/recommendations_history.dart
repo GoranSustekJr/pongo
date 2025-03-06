@@ -42,6 +42,9 @@ class RecommendationsHistory extends StatelessWidget {
                       dataManager.loadingAdd,
                       dataManager.loadingRemove,
                     );
+                    if (useMix.value) {
+                      Mix().getMix(context, dataManager.history[index]);
+                    }
                   },
                   doesNotExist: dataManager.loadingAdd,
                   doesNowExist: dataManager.loadingRemove,
@@ -114,6 +117,9 @@ class RecommendationsHistory extends StatelessWidget {
                       dataManager.loadingAdd,
                       dataManager.loadingRemove,
                     );
+                    if (useMix.value) {
+                      Mix().getMix(context, dataManager.history[index]);
+                    }
                   },
                   doesNotExist: dataManager.loadingAdd,
                   doesNowExist: dataManager.loadingRemove,

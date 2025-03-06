@@ -23,7 +23,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 24,
+      version: 29,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -129,12 +129,18 @@ class DatabaseHelper {
       ALTER TABLE downloaded_tracks ADD COLUMN time_added TEXT;
     '''); */
     await db.execute('''
-      DELETE FROM downloaded_tracks;
+      DELETE FROM lfh_tracks
+WHERE id IN (
+  SELECT id FROM lfh_tracks
+  ORDER BY id DESC
+  LIMIT 1
+);
+
     ''');
 
-    await db.execute('''
+    /* await db.execute('''
       DELETE FROM lpid_track_id;
-    ''');
+    '''); */
 
     // print(newVersion);
   }

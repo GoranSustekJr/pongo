@@ -2,8 +2,6 @@ import 'package:pongo/exports.dart';
 import 'package:http/http.dart' as http;
 
 class SearchSpotify {
-  // REMOVED     REMOVED
-
   Future<Map> search(context, String q) async {
     int tries = 0;
 

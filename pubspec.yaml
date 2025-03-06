@@ -180,6 +180,7 @@ flutter:
     - assets/images/pongo_premium_transparent.png
     - assets/images/your_image_transparent.png
     - assets/pdf/Terms_and_conditions_Pongo.pdf
+    - assets/icons/shazam.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

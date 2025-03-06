@@ -39,15 +39,17 @@ class MediaItemManager with ChangeNotifier {
               currentMediaItem!.artUri.toString().contains("file:///")
                   ? FileImage(File(currentMediaItem!.artUri!.toFilePath()))
                   : NetworkImage(currentMediaItem!.artUri.toString()),
-              componentX: 2,
-              componentY: 2)
+              componentX: detailedBlurhash.value ? 3 : 2,
+              componentY: detailedBlurhash.value ? 3 : 2)
           : AppConstants().BLURHASH;
       currentBlurhash.value = blurhash;
     } catch (e) {
       // print(e);
     }
     // Add to track history
-    await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
+    if (mediaItem.id.split(".")[1] != "mix") {
+      await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
+    }
 
     final internetConnectivityHandler =
         Provider.of<InternetConnectivityHandler>(context, listen: false);

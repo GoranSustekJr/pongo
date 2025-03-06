@@ -64,13 +64,15 @@ class AudioServiceHandler extends BaseAudioHandler
     int queueIndex = await Storage().getQueueIndex();
     Duration position = await Storage().getCurrentPlayingPosition();
 
-    await initSongs(songs: queueList);
-    await audioPlayer.setAudioSource(playlist);
+    if (queueList.isNotEmpty) {
+      await initSongs(songs: queueList);
+      await audioPlayer.setAudioSource(playlist);
 
-    if (queueIndex != -1) {
-      await audioPlayer.seek(position, index: queueIndex);
-    } else {
-      await audioPlayer.seek(position);
+      if (queueIndex != -1) {
+        await audioPlayer.seek(position, index: queueIndex);
+      } else {
+        await audioPlayer.seek(position);
+      }
     }
   }
 

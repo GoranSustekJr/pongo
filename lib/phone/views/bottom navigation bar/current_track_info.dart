@@ -220,9 +220,12 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                       .circular(
                                                                           7.5),
                                                               child: currentMediaItem
-                                                                          .artUri
-                                                                          .toString() !=
-                                                                      ""
+                                                                              .artUri
+                                                                              .toString() !=
+                                                                          "" &&
+                                                                      currentMediaItem
+                                                                              .artUri !=
+                                                                          null
                                                                   ? ImageCompatible(
                                                                       image: currentMediaItem
                                                                           .artUri
