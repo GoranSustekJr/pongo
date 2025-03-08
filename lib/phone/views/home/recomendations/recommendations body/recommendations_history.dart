@@ -118,7 +118,7 @@ class RecommendationsHistory extends StatelessWidget {
                       dataManager.loadingRemove,
                     );
                     if (useMix.value) {
-                      Mix().getMix(context, dataManager.history[index]);
+                      Mix().getMix(context, dataManager.history[25 + index]);
                     }
                   },
                   doesNotExist: dataManager.loadingAdd,

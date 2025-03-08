@@ -72,7 +72,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
 
     audioServiceHandler.positionStream.first.then((position) {
       setState(() {
-        _currentPosition = position;
+        _currentPosition = position + widget.syncTimeDelay.milliseconds;
       });
       if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
         findCurrentLyricIndex(_currentPosition, first: true);

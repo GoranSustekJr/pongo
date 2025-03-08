@@ -15,7 +15,7 @@ class PlaySingle {
     if (playNew) {
       queueAllowShuffle.value = true;
 
-      TrackPlay().playSingle(
+      await TrackPlay().playSingle(
           context,
           Track(
             id: track.id,

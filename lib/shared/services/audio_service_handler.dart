@@ -1,6 +1,7 @@
 // ignore_for_file: unused_import
 
 import '../../exports.dart';
+import 'dart:math';
 import 'package:path_provider/path_provider.dart' as syspaths;
 
 class AudioServiceHandler extends BaseAudioHandler
@@ -17,6 +18,9 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Songs played
   int songsPlayed = 0;
+
+  // Timer for sleep mode
+  Timer? volumeTimer;
 
   // Ad
   InterstitialAd? interstitialAd;
@@ -159,6 +163,144 @@ class AudioServiceHandler extends BaseAudioHandler
     );
   }
 
+  // Sleep mode --> Every minute turn a volume down 1% until it reaches 0% => pause the song and return volume to 100%
+  void sleep({
+    bool sleep = true,
+    int sleepDuration = 30,
+    bool sleepLinear = true,
+    bool alarmClock = false,
+    TimeOfDay wakeTime = const TimeOfDay(hour: 7, minute: 30),
+    int beforeEndTimeMin = 30,
+    bool alarmClockLinear = true,
+  }) async {
+    if (sleep) {
+      sleepIn(
+        sleepDuration: sleepDuration,
+        sleepLinear: sleepLinear,
+        alarmClock: alarmClock,
+        wakeTime: wakeTime,
+        beforeEndTimeMin: beforeEndTimeMin,
+        alarmClockLinear: alarmClockLinear,
+      );
+    } else if (alarmClock) {
+      alarmClockFunction(
+        wakeTime: wakeTime,
+        beforeEndTimeMin: beforeEndTimeMin,
+        alarmClockLinear: alarmClockLinear,
+      );
+    }
+  }
+
+  void sleepIn({
+    int sleepDuration = 30,
+    bool sleepLinear = true,
+    bool alarmClock = false,
+    TimeOfDay wakeTime = const TimeOfDay(hour: 7, minute: 30),
+    int beforeEndTimeMin = 30,
+    bool alarmClockLinear = true,
+  }) async {
+// Sleep in
+    double currentVolume = audioPlayer.volume; // Get current volume
+
+    int totalIterations = 100; // Fixed number of iterations
+    double timePerStep =
+        (sleepDuration * 60) / totalIterations; // Time per iteration in seconds
+
+    volumeTimer?.cancel(); // Cancel if one runs
+
+    volumeTimer = Timer.periodic(
+      Duration(milliseconds: (timePerStep * 1000).toInt()),
+      (timer) async {
+        if (audioPlayer.playing) {
+          if (currentVolume == 0) {
+            timer.cancel();
+            await audioPlayer.setVolume(0); // Mute the audio
+            await audioPlayer.pause(); // Pause playback
+            await audioPlayer.setVolume(1); // Reset volume for next play
+            if (alarmClock) {
+              alarmClockFunction(
+                wakeTime: wakeTime,
+                beforeEndTimeMin: beforeEndTimeMin,
+                alarmClockLinear: alarmClockLinear,
+              );
+            }
+          }
+
+          if (sleepLinear) {
+            currentVolume =
+                (currentVolume - 0.01).clamp(0.0, 1.0); // Linear decrease
+          } else {
+            if (currentVolume > 0.67) {
+              currentVolume = (currentVolume - 0.03).clamp(0, 1.0);
+            } else if (currentVolume > 0.4) {
+              currentVolume = (currentVolume - 0.02).clamp(0, 1.0);
+            } else {
+              currentVolume = (currentVolume - 0.00533).clamp(0, 1.0);
+            }
+          }
+
+          await audioPlayer.setVolume(currentVolume); // Apply new volume
+        }
+      },
+    );
+  }
+
+  void alarmClockFunction({
+    TimeOfDay wakeTime = const TimeOfDay(hour: 7, minute: 30),
+    int beforeEndTimeMin = 30,
+    bool alarmClockLinear = true,
+  }) async {
+    int now = TimeOfDay.now().minute + TimeOfDay.now().hour * 60;
+    int awake = wakeTime.minute + wakeTime.hour * 60;
+
+    Future.delayed(
+      Duration(
+          minutes: awake - now - beforeEndTimeMin < 0
+              ? 24 * 60 + awake - now - beforeEndTimeMin
+              : awake - now - beforeEndTimeMin),
+      () {
+        // Set volume to zero
+        audioPlayer.setVolume(0);
+
+        // Turn up the volume on the device
+        final volumeManager =
+            Provider.of<VolumeManager>(notificationsContext.value!);
+        volumeManager.setVolume(1);
+
+        double currentVolume = audioPlayer.volume; // Get current volume
+
+        volumeTimer?.cancel(); // Cancel if one runs
+
+        // Play the audio
+        audioPlayer.play();
+
+        volumeTimer = Timer.periodic(
+          Duration(
+              milliseconds: ((beforeEndTimeMin * 60 / 100) * 1000).toInt()),
+          (timer) async {
+            if (currentVolume == 1) {
+              timer.cancel();
+            }
+
+            if (alarmClockLinear) {
+              currentVolume = (currentVolume + 0.01).clamp(0.0, 1.0);
+            } else {
+              if (currentVolume > 0.67) {
+                currentVolume = (currentVolume + 0.03).clamp(0, 1.0);
+              } else if (currentVolume > 0.4) {
+                currentVolume = (currentVolume + 0.02).clamp(0, 1.0);
+              } else {
+                currentVolume = (currentVolume + 0.00533).clamp(0, 1.0);
+              }
+            }
+
+            await audioPlayer.setVolume(currentVolume); // Apply new volume
+          },
+        );
+      },
+    );
+  }
+
   // Listen for changes in the current song index and update the media item
   void listenForCurrentSongIndexChanges() {
     audioPlayer.currentIndexStream.listen((index) {
@@ -166,24 +308,6 @@ class AudioServiceHandler extends BaseAudioHandler
       if (index == null || playlist.isEmpty) return;
       mediaItem.add(playlist[index]);
     });
-
-    /* MediaItem? tempMediaItem;
-
-    mediaItem.stream.listen(
-      (mediaItem) async {
-if (mediaItem != null){
-        print("SHIT ${mediaItem.id != tempMediaItem?.id}");
-        print("One; $mediaItem");
-        print("Two: $tempMediaItem");
-
-        if (mediaItem.id != tempMediaItem?.id) {
-          tempMediaItem = mediaItem;
-          print(tempMediaItem);
-
-          await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
-                }
-      }}
-    ); */
   }
 
   void listenForNewTracks() async {

@@ -23,7 +23,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 29,
+      version: 30,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -107,6 +107,19 @@ class DatabaseHelper {
         sync_time_delay INTEGER
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE sleep (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sleep BOOLEAN,
+        sleep_duration INTEGER,
+        sleep_linear BOOLEAN,
+        alarm_clock BOOLEAN,
+        wake_time INTEGER,
+        before_end_time_min INTEGER,
+        alarm_clock_linear BOOLEAN
+      )
+      ''');
   }
 
   Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -128,7 +141,7 @@ class DatabaseHelper {
     /* await db.execute('''
       ALTER TABLE downloaded_tracks ADD COLUMN time_added TEXT;
     '''); */
-    await db.execute('''
+    /* await db.execute('''
       DELETE FROM lfh_tracks
 WHERE id IN (
   SELECT id FROM lfh_tracks
@@ -136,13 +149,25 @@ WHERE id IN (
   LIMIT 1
 );
 
-    ''');
+    '''); */
 
     /* await db.execute('''
       DELETE FROM lpid_track_id;
     '''); */
 
     // print(newVersion);
+    await db.execute('''
+      CREATE TABLE sleep (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sleep BOOLEAN,
+        sleep_duration INTEGER,
+        sleep_linear BOOLEAN,
+        alarm_clock BOOLEAN,
+        wake_time INTEGER,
+        before_end_time_min INTEGER,
+        alarm_clock_linear BOOLEAN
+      )
+      ''');
   }
 
   // Insert online playlist

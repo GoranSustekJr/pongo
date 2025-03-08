@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/introduction/introduction_phone.dart';
 import 'package:pongo/phone/views/settings/about/about_phone.dart';
@@ -13,6 +14,9 @@ class SettingsPhone extends StatefulWidget {
 }
 
 class _SettingsPhoneState extends State<SettingsPhone> {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

@@ -3,7 +3,6 @@ import 'package:pongo/shared/models/media_item.dart';
 
 class Mix {
   // Get mix endpoints
-
   getMix(context, Track track) async {
     // Init the audioServiceHandler
     final audioServiceHandler =
@@ -24,23 +23,25 @@ class Mix {
     int i = 0;
 
     channel.stream.listen((message) async {
-      i++;
-      var response = json.decode(message);
+      if (audioServiceHandler.queue.value[0].title == track.name) {
+        i++;
+        var response = json.decode(message);
 
-      // Create a media item
-      MediaItem mediaItem = MediaItemObject().create(
-        "online.mix.${response["ytvid"]}",
-        "Mix #$i - ${track.name}",
-        track,
-        Duration(milliseconds: (response["duration"]! * 1000).toInt()),
-        mix: true,
-      );
+        // Create a media item
+        MediaItem mediaItem = MediaItemObject().create(
+          "online.mix.${response["ytvid"]}",
+          "Mix #$i - ${track.name}",
+          track,
+          Duration(milliseconds: (response["duration"]! * 1000).toInt()),
+          mix: true,
+        );
 
-      // Extract video data and add to queue
-      changeTrackOnTap.value = false;
-      audioServiceHandler.queue.value.add(mediaItem);
-      await audioServiceHandler.playlist
-          .add(audioServiceHandler.createAudioSource(mediaItem));
+        // Extract video data and add to queue
+        changeTrackOnTap.value = false;
+        audioServiceHandler.queue.value.add(mediaItem);
+        await audioServiceHandler.playlist
+            .add(audioServiceHandler.createAudioSource(mediaItem));
+      }
     });
   }
 }

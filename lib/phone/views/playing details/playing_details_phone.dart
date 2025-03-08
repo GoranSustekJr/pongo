@@ -44,7 +44,7 @@ class PlayingDetailsPhone extends StatelessWidget {
                                   ),
                                 ),
                                 Container(
-                                  color: Colors.black.withAlpha(45),
+                                  color: Colors.black.withAlpha(65),
                                 ),
                                 LyricsPhone(
                                   plainLyrics:

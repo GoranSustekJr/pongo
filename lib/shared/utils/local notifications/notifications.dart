@@ -154,7 +154,11 @@ class Notifications {
                         width: 55,
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
-                            child: Image.network(image)),
+                            child: ImageCompatible(
+                              image: image,
+                              width: 55,
+                              height: 55,
+                            )),
                       ),
                       razw(10),
                       Expanded(

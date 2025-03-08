@@ -1,4 +1,6 @@
 import 'package:pongo/exports.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 Future<void> configureMacosWindowUtils() async {
   const config = MacosWindowUtilsConfig(
@@ -9,7 +11,7 @@ Future<void> configureMacosWindowUtils() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  tz.initializeTimeZones();
   // Ads
   MobileAds.instance.initialize();
   MobileAds.instance.updateRequestConfiguration(RequestConfiguration(

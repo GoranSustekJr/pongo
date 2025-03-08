@@ -25,7 +25,7 @@ class Shazam {
         if (response.statusCode == 200) {
           Map<String, dynamic> data = jsonDecode(response.body);
           Notifications().showShazamNotification(
-            context,
+            notificationsContext.value!,
             data["track"]["title"],
             data["track"]["subtitle"],
             data["track"]["images"]["coverart"],
@@ -39,18 +39,18 @@ class Shazam {
           }
         } else {
           Notifications().showErrorNotification(
-              context,
-              AppLocalizations.of(context)!.error,
-              AppLocalizations.of(context)!
+              notificationsContext.value!,
+              AppLocalizations.of(notificationsContext.value!)!.error,
+              AppLocalizations.of(notificationsContext.value!)!
                   .shazamfailed); // Handle other status codes as needed
         }
       }
     } catch (e) {
       //print(e);
       Notifications().showErrorNotification(
-          context,
-          AppLocalizations.of(context)!.error,
-          AppLocalizations.of(context)!
+          notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!)!.error,
+          AppLocalizations.of(notificationsContext.value!)!
               .shazamfailed); // Handle other status codes as needed
     }
   }

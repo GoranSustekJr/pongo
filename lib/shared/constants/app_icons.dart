@@ -54,6 +54,8 @@ class AppIcons {
 
   static const add = CupertinoIcons.add;
 
+  static const sleep = CupertinoIcons.moon_zzz;
+
   static final blankArtist =
       kIsApple ? CupertinoIcons.person : Icons.person_rounded;
 

@@ -4,6 +4,7 @@ import 'package:pongo/phone/views/library/pages/favourites/views/favourites_phon
 import 'package:pongo/phone/views/library/pages/online%20playlists/playlists/local_playlists_phone.dart';
 import 'package:pongo/phone/views/library/pages/locals/views/locals_phone.dart';
 import 'package:pongo/phone/views/library/pages/online%20playlists/playlists/online_playlists_phone.dart';
+import 'package:pongo/phone/views/library/pages/sleep/views/sleep_phone.dart';
 
 class LibraryPhone extends StatefulWidget {
   const LibraryPhone({super.key});
@@ -120,6 +121,23 @@ class _LibraryPhoneState extends State<LibraryPhone> {
                         () {
                           Navigations()
                               .nextScreen(context, const LocalPlaylistsPhone());
+                        },
+                      ),
+                      razh(25),
+                      settingsText(AppLocalizations.of(context)!.sleep),
+                      libraryTile(
+                        context,
+                        true,
+                        true,
+                        AppIcons.sleep,
+                        Icons.alarm,
+                        AppLocalizations.of(context)!.sleep,
+                        AppLocalizations.of(context)!.sleepandalarmclock,
+                        () {
+                          Navigations().nextScreen(
+                            context,
+                            const SleepPhone(),
+                          );
                         },
                       ),
                     ],

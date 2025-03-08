@@ -15,6 +15,16 @@
         "description": "Cancel"
     },
 
+    "sleep": "Sleep",
+    "@sleep": {
+        "description": "Sleep"
+    },
+
+    "sleepandalarmclock": "Sleep & alarm clock",
+    "@sleepandalarmclock": {
+        "description": "Sleep & alarm clock"
+    },
+
     "shazamfailed": "Shazam failed to recognize the song",
     "@shazamfailed": {
         "description": "Shazam failed"

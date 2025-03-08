@@ -234,7 +234,7 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_image_compress_common: 1697a328fd72bfb335507c6bca1a65fa5ad87df1
   flutter_inapp_purchase: 722da12971a50f306f37e62fc1aaf576b1cbecf6
-  flutter_local_notifications: ad39620c743ea4c15127860f4b5641649a988100
+  flutter_local_notifications: 395056b3175ba4f08480a7c5de30cd36d69827e4
   flutter_native_splash: 576fbd69b830a63594ae678396fa17e43abbc5f8
   flutter_platform_alert: 857a54f416124cc4fb913c1130d345b67ab8f6bb
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
