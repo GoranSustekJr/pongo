@@ -22,6 +22,7 @@ class AudioServiceHandler extends BaseAudioHandler
   // Timer for sleep mode
   Timer volumeTimer = Timer(const Duration(seconds: 0), () {});
   int activeSleepAlarm = -1;
+  bool stopSleepAlarm = false;
 
   // Ad
   InterstitialAd? interstitialAd;
@@ -166,6 +167,9 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Sleep mode --> Every minute turn a volume down 1% until it reaches 0% => pause the song and return volume to 100%
   void sleep(SleepAlarm sleepAlarm) async {
+    if (audioPlayer.loopMode == LoopMode.off) {
+      setRepeatMode(AudioServiceRepeatMode.all);
+    }
     if (sleepAlarm.sleep) {
       sleepIn(sleepAlarm);
     } else if (sleepAlarm.alarmClock) {
@@ -175,10 +179,7 @@ class AudioServiceHandler extends BaseAudioHandler
 
   void stopSleep() async {
     // Cancel previous timer if it exists and is active
-    if (volumeTimer.isActive) {
-      print("Cancelling existing timer... ${volumeTimer.isActive}");
-      volumeTimer.cancel(); // Properly cancel the old timer
-    }
+    stopSleepAlarm = true;
 
     // Check if the timer has been properly cancelled
     print("Timer cancelled: ${volumeTimer.isActive}");
@@ -193,20 +194,37 @@ class AudioServiceHandler extends BaseAudioHandler
         totalIterations; // Time per iteration in seconds
 
     // Cancel the old timer before assigning a new one
-    if (volumeTimer.isActive) {
-      volumeTimer.cancel();
-    }
 
     // Start playback (assuming this is what you want to do here)
     await play();
 
+    for (int i = 0; i < 100; i++) {
+      if (currentVolume <= 0.0) {
+        currentVolume = 0.0;
+        setVolume(1);
+        break;
+      }
+
+      await Future.delayed(Duration(milliseconds: (timePerStep * 1000).toInt()),
+          () {
+        if (!stopSleepAlarm) {
+          currentVolume -= 0.01; // Decrease volume by 1%
+          currentVolume = currentVolume < 0.0
+              ? 0.0
+              : currentVolume; // Ensure volume doesn't go below 0
+          setVolume(currentVolume); // Update volume
+        }
+      });
+    }
+
     // Now, create and assign the new periodic timer
-    volumeTimer = Timer.periodic(
+    /* volumeTimer = Timer.periodic(
       Duration(
           milliseconds: (timePerStep * 1000).toInt()), // Period for the timer
       (timer) async {
         print("Timer tick: ${timer.tick}");
         print("Current volume: ${audioPlayer.volume}");
+        volumeTimer = timer;
 
         if (audioPlayer.playing) {
           if (currentVolume == 0) {
@@ -237,7 +255,7 @@ class AudioServiceHandler extends BaseAudioHandler
           await audioPlayer.setVolume(currentVolume);
         }
       },
-    );
+    ); */
 
     // Check if the timer has been set correctly
     print("New timer is active: ${volumeTimer.isActive}");
@@ -273,6 +291,8 @@ class AudioServiceHandler extends BaseAudioHandler
               milliseconds:
                   ((sleepAlarm.beforeEndTimeMin * 60 / 100) * 1000).toInt()),
           (timer) async {
+            volumeTimer = timer;
+
             if (currentVolume == 1) {
               timer.cancel();
             }
