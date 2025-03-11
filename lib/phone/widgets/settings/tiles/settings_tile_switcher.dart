@@ -83,12 +83,6 @@ settingsTileSwitcher(
                                 value: boolean,
                                 activeColor: Col.onIcon,
                                 trackColor: Col.realBackground,
-                                /*    activeTrackColor: Col.onIcon,
-                                inactiveThumbColor: Col.onIcon,
-                                inactiveTrackColor: Col.realBackground,
-                                trackOutlineColor:
-                                    MaterialStateProperty.resolveWith<Color?>(
-                                        (states) => Col.realBackground), */
                                 onChanged: (value) {
                                   function(value);
                                 })),

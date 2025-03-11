@@ -1,61 +1,26 @@
 // Insert sleep alarm
 import 'package:pongo/exports.dart';
 
-Future<void> insertAlarm(
-  DatabaseHelper dbHelper, {
-  bool sleep = true,
-  int sleepDuration = 30,
-  bool sleepLinear = true,
-  bool alarmClock = false,
-  TimeOfDay wakeTime = const TimeOfDay(hour: 7, minute: 30),
-  int beforeEndTimeMin = 30,
-  bool alarmClockLinear = true,
-}) async {
+Future<int> insertSleepAlrm(
+    DatabaseHelper dbHelper, SleepAlarm sleepAlarm) async {
   // init db
   Database db = await dbHelper.database;
 
   // Insert sleep alarm
-  await db.transaction((txn) async {
-    await txn.insert(
+  return await db.transaction((txn) async {
+    int id = await txn.insert(
       'sleep',
       {
-        'sleep': sleep,
-        'sleep_duration': sleepDuration,
-        'sleep_linear': sleepLinear,
-        'alarm_clock': alarmClock,
-        'wake_time': wakeTime.hour * 60 + wakeTime.minute,
-        'before_end_time_min': beforeEndTimeMin,
-        'linear_alarm_clock': alarmClockLinear,
+        'sleep': sleepAlarm.sleep ? 1 : 0,
+        'sleep_duration': sleepAlarm.sleepDuration,
+        'sleep_linear': sleepAlarm.sleepLinear ? 1 : 0,
+        'alarm_clock': sleepAlarm.alarmClock ? 1 : 0,
+        'wake_time': sleepAlarm.wakeTime,
+        'before_end_time_min': sleepAlarm.beforeEndTimeMin,
+        'alarm_clock_linear': sleepAlarm.alarmClockLinear ? 1 : 0,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-
-    /*  final count = Sqflite.firstIntValue(
-      await txn.rawQuery('SELECT COUNT(*) FROM sleep'),
-    ); */
-
-    /*  if (count != null && count > 500) {
-      await txn.rawDelete('''
-          DELETE FROM sleep
-          WHERE id NOT IN (
-            SELECT id
-            FROM sleep
-            ORDER BY id DESC
-            LIMIT 500
-          )
-        ''');
-    } */
+    return id;
   });
 }
-/* 
-
-bool sleep = true,
-    int sleepDuration = 30,
-    bool sleepLinear = true,
-    bool alarmClock = false,
-    TimeOfDay wakeTime = const TimeOfDay(hour: 7, minute: 30),
-    int beforeEndTimeMin = 30,
-    bool alarmClockLinear = true,
-
-
- */

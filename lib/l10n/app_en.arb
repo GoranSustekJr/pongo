@@ -15,7 +15,7 @@
         "description": "Cancel"
     },
 
-    "sleep": "Sleep",
+    "sleep": "Sleep alarm",
     "@sleep": {
         "description": "Sleep"
     },

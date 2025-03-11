@@ -4,6 +4,10 @@ import 'package:path/path.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/shared/storage/database/lyrics_sync_time_delay/insert.dart';
 import 'package:pongo/shared/storage/database/lyrics_sync_time_delay/query.dart';
+import 'package:pongo/shared/storage/database/sleep/insert.dart';
+import 'package:pongo/shared/storage/database/sleep/query.dart';
+import 'package:pongo/shared/storage/database/sleep/remove.dart';
+import 'package:pongo/shared/storage/database/sleep/update.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper databaseHelper = DatabaseHelper.internal();
@@ -480,5 +484,26 @@ WHERE id IN (
 
   Future<int?> querySyncTimeDelay(String stid) async {
     return await querySyncTimeDlay(this, stid);
+  }
+
+  // Sleep alarm
+  Future<int> insertSleepAlarm(SleepAlarm sleepAlarm) async {
+    return await insertSleepAlrm(this, sleepAlarm);
+  }
+
+  Future<List<SleepAlarm>> querySleepAlarms() async {
+    return await querySleepAlrms(this);
+  }
+
+  Future<int> querySleepAlarmsLength() async {
+    return await querySleepAlrmsLength(this);
+  }
+
+  Future<void> updateSleepAlarm(SleepAlarm sleepAlarm) async {
+    return await updateSleepAlrm(this, sleepAlarm);
+  }
+
+  Future<void> removeSleepAlarm(int id) async {
+    return await removeSleepAlarmEtry(this, id);
   }
 }
