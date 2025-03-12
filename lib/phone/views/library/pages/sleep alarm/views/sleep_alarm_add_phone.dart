@@ -45,7 +45,9 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                 children: [
                   textButton(AppLocalizations.of(context)!.cancel, () {
                     Navigator.of(context).pop();
-                  }, const TextStyle(color: Colors.white)),
+                  },
+                      const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w700)),
                   Expanded(
                       child: textButton(AppLocalizations.of(context)!.sleep,
                           () {}, const TextStyle(color: Colors.white),
@@ -76,16 +78,20 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                       ));
                       Navigator.of(context).pop();
                     } else {
-                      Notifications().showWarningNotification(context,
-                          "Cannot create a sleep alarm without the 'sleep in' or 'alarm'");
+                      Notifications().showWarningNotification(
+                          context,
+                          AppLocalizations.of(context)!
+                              .cannotcreateasleepalarmwithoutthe);
                     }
-                  }, const TextStyle(color: Colors.white)),
+                  },
+                      const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w700)),
                 ],
               ),
               razh(20),
               Row(
                 children: [
-                  textButton("Sleep in", () {
+                  textButton(AppLocalizations.of(context)!.sleepin, () {
                     setState(() {
                       sleep = !sleep;
                     });
@@ -132,7 +138,7 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 15),
                         child: Text(
-                          "Pongo will gradually lower the valume for $sleepDuration min",
+                          "${AppLocalizations.of(context)!.pongowillgraduallylowerthevolumefor} $sleepDuration min",
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -150,7 +156,7 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
               razh(20),
               Row(
                 children: [
-                  textButton("Alarm", () {
+                  textButton(AppLocalizations.of(context)!.alarm, () {
                     setState(() {
                       alarmClock = !alarmClock;
                     });
@@ -249,7 +255,7 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 15),
                         child: Text(
-                          "Pongo will gradually increase the valume $beforeEndTimeMin min before you need to wake up at $wakeTimeHour:${(wakeTimeMin).toString().padLeft(2, '0')}",
+                          "${AppLocalizations.of(context)!.pongowillgraduallyincreasethevolume} $beforeEndTimeMin min ${AppLocalizations.of(context)!.beforeyouneedtowakeupat} $wakeTimeHour:${(wakeTimeMin).toString().padLeft(2, '0')}",
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -272,3 +278,27 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
     );
   }
 }
+
+
+/*
+  "donotterminatetheapp": "Do NOT terminate the app",
+  "cannotstartalarm": "Can't start the alarm",
+  "thequeuemustnotbeemptyinordertostartthealarm": "The queue must not be empty in order to start the alarm",
+  "maximumvolumeofthealarm": "Maximum volume of the alarm",
+  "createnewsleepalarm": "Create new sleep alarm",
+  "off": "Off",
+  "sleepin": "Sleep in",
+  "alarm": "Alarm",
+  "cannotcreateasleepalarmwithoutthe": "Cannot create a sleep alarm without the 'sleep in' or 'alarm'",
+  "pongowillgraduallylowerthevolumefor": "Pongo will gradually lower the volume for",
+  "pongowillgraduallyincreasethevolume": "Pongo will gradually increase the valume",
+  "beforeyouneedtowakeupat": "before you need to wake up at",
+  "about": "About",
+  "aboutpongo": "About Pongo",
+  "contactusviamail": "Contact us via mail",
+  "termsandconditions": "Terms & Conditions",
+  "ourtermsandconditions": "Our Terms & Conditions",
+  "privacypolicy": "Privacy Policy",
+  "ourprivacypolicy": "Our Privacy Policy",
+
+ */

@@ -67,7 +67,9 @@ sleepAlarmTile(
                                     child: Text(
                                       sleepAlarm.sleep
                                           ? "${sleepAlarm.sleepDuration} min"
-                                          : "Off",
+                                          : AppLocalizations.of(context)!.off,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                           color: Colors.white, fontSize: 20),
                                     ),
@@ -82,10 +84,10 @@ sleepAlarmTile(
                                     color: Col.onIcon.withAlpha(200),
                                   ),
                                 ),
-                                const Text(
-                                  "Sleep in",
+                                Text(
+                                  AppLocalizations.of(context)!.sleepin,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 13,
                                     color: Colors.white,
                                   ),
@@ -102,7 +104,9 @@ sleepAlarmTile(
                                     child: Text(
                                       sleepAlarm.alarmClock
                                           ? "${(sleepAlarm.wakeTime / 60).floor().toString()}:${(sleepAlarm.wakeTime % 60).toString().padLeft(2, '0')}"
-                                          : "Off",
+                                          : AppLocalizations.of(context)!.off,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                           color: Colors.white, fontSize: 20),
                                     ),
@@ -117,9 +121,9 @@ sleepAlarmTile(
                                     color: Col.onIcon.withAlpha(200),
                                   ),
                                 ),
-                                const Text("Alarm",
+                                Text(AppLocalizations.of(context)!.alarm,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 13,
                                       color: Colors.white,
                                     )),

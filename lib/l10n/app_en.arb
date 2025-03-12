@@ -880,6 +880,101 @@
         "description": "onlineplaylist"
     },
 
+    "donotterminatetheapp": "Do NOT terminate the app",
+    "@donotterminatetheapp": {
+        "description": "donotterminatetheapp"
+    },
+
+    "cannotstartalarm": "Can't start the alarm",
+    "@cannotstartalarm": {
+        "description": "cannotstartalarm"
+    },
+
+    "thequeuemustnotbeemptyinordertostartthealarm": "The queue must not be empty in order to start the alarm",
+    "@thequeuemustnotbeemptyinordertostartthealarm": {
+        "description": "thequeuemustnotbeemptyinordertostartthealarm"
+    },
+
+    "maximumvolumeofthealarm": "Maximum volume of the alarm",
+    "@maximumvolumeofthealarm": {
+        "description": "maximumvolumeofthealarm"
+    },
+
+    "createnewsleepalarm": "Create new sleep alarm",
+    "@createnewsleepalarm": {
+        "description": "createnewsleepalarm"
+    },
+
+    "off": "Off",
+    "@off": {
+        "description": "off"
+    },
+
+    "sleepin": "Sleep in",
+    "@sleepin": {
+        "description": "sleepin"
+    },
+
+    "alarm": "Alarm",
+    "@alarm": {
+        "description": "alarm"
+    },
+
+    "cannotcreateasleepalarmwithoutthe": "Cannot create a sleep alarm without the 'sleep in' or 'alarm'",
+    "@cannotcreateasleepalarmwithoutthe": {
+        "description": "cannotcreateasleepalarmwithoutthe"
+    },
+
+    "pongowillgraduallylowerthevolumefor": "Pongo will gradually lower the volume for",
+    "@pongowillgraduallylowerthevolumefor": {
+        "description": "pongowillgraduallylowerthevolumefor"
+    },
+
+    "pongowillgraduallyincreasethevolume": "Pongo will gradually increase the valume",
+    "@pongowillgraduallyincreasethevolume": {
+        "description": "pongowillgraduallyincreasethevolume"
+    },
+
+    "beforeyouneedtowakeupat": "before you need to wake up at",
+    "@beforeyouneedtowakeupat": {
+        "description": "beforeyouneedtowakeupat"
+    },
+
+    "about": "About",
+    "@about": {
+        "description": "about"
+    },
+
+    "aboutpongo": "About Pongo",
+    "@aboutpongo": {
+        "description": "aboutpongo"
+    },
+
+    "contactusviamail": "Contact us via mail",
+    "@contactusviamail": {
+        "description": "contactusviamail"
+    },
+
+    "termsandconditions": "Terms & Conditions",
+    "@termsandconditions": {
+        "description": "termsandconditions"
+    },
+
+    "ourtermsandconditions": "Our Terms & Conditions",
+    "@ourtermsandconditions": {
+        "description": "ourtermsandconditions"
+    },
+
+    "privacypolicy": "Privacy Policy",
+    "@privacypolicy": {
+        "description": "privacypolicy"
+    },
+
+    "ourprivacypolicy": "Our Privacy Policy",
+    "@ourprivacypolicy": {
+        "description": "ourprivacypolicy"
+    },
+
     "cropimage": "Crop image",
     "@cropimage": {
         "description": "cropimage"

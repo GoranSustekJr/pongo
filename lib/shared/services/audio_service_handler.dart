@@ -170,6 +170,10 @@ class AudioServiceHandler extends BaseAudioHandler
     if (audioPlayer.loopMode == LoopMode.off) {
       setRepeatMode(AudioServiceRepeatMode.all);
     }
+    Notifications().showWarningNotification(
+      notificationsContext.value!,
+      AppLocalizations.of(notificationsContext.value!)!.donotterminatetheapp,
+    );
     if (sleepAlarm.sleep) {
       sleepIn(sleepAlarm);
     } else if (sleepAlarm.alarmClock) {
@@ -179,11 +183,11 @@ class AudioServiceHandler extends BaseAudioHandler
 
   void stopSleep() async {
     // Cancel previous timer if it exists and is active
-    stopSleepAlarm = true;
-
-    // Check if the timer has been properly cancelled
-    print("Timer cancelled: ${volumeTimer.isActive}");
-    print("--------------------------------------------------------");
+    if (volumeTimer.isActive) {
+      volumeTimer.cancel(); // Properly cancel the old timer
+      await pause();
+      await setVolume(1);
+    }
   }
 
   void sleepIn(SleepAlarm sleepAlarm) async {
@@ -194,46 +198,30 @@ class AudioServiceHandler extends BaseAudioHandler
         totalIterations; // Time per iteration in seconds
 
     // Cancel the old timer before assigning a new one
+    if (volumeTimer.isActive) {
+      volumeTimer.cancel();
+    }
 
     // Start playback (assuming this is what you want to do here)
     await play();
 
-    for (int i = 0; i < 100; i++) {
-      if (currentVolume <= 0.0) {
-        currentVolume = 0.0;
-        setVolume(1);
-        break;
-      }
-
-      await Future.delayed(Duration(milliseconds: (timePerStep * 1000).toInt()),
-          () {
-        if (!stopSleepAlarm) {
-          currentVolume -= 0.01; // Decrease volume by 1%
-          currentVolume = currentVolume < 0.0
-              ? 0.0
-              : currentVolume; // Ensure volume doesn't go below 0
-          setVolume(currentVolume); // Update volume
-        }
-      });
-    }
-
     // Now, create and assign the new periodic timer
-    /* volumeTimer = Timer.periodic(
+    volumeTimer = Timer.periodic(
       Duration(
           milliseconds: (timePerStep * 1000).toInt()), // Period for the timer
       (timer) async {
-        print("Timer tick: ${timer.tick}");
-        print("Current volume: ${audioPlayer.volume}");
         volumeTimer = timer;
 
         if (audioPlayer.playing) {
           if (currentVolume == 0) {
             timer.cancel(); // Cancel the timer if volume is 0
-            await audioPlayer.setVolume(0); // Mute the audio
-            await audioPlayer.pause(); // Pause playback
-            await audioPlayer.setVolume(1); // Reset volume for next play
+            await setVolume(0); // Mute the audio
+            await pause(); // Pause playback
+            await setVolume(1); // Reset volume for next play
             if (sleepAlarm.alarmClock) {
               alarmClockFunction(sleepAlarm); // Perform additional action
+            } else {
+              activeSleepAlarm = -1;
             }
           }
 
@@ -252,39 +240,41 @@ class AudioServiceHandler extends BaseAudioHandler
           }
 
           // Apply the updated volume
-          await audioPlayer.setVolume(currentVolume);
+          await setVolume(currentVolume);
         }
       },
-    ); */
-
-    // Check if the timer has been set correctly
-    print("New timer is active: ${volumeTimer.isActive}");
+    );
   }
 
   void alarmClockFunction(SleepAlarm sleepAlarm) async {
-    int now = TimeOfDay.now().minute + TimeOfDay.now().hour * 60;
+    int now = DateTime.now().second +
+        TimeOfDay.now().minute * 60 +
+        TimeOfDay.now().hour * 3600;
     int awake = sleepAlarm.wakeTime;
 
     Future.delayed(
       Duration(
-          minutes: awake - now - sleepAlarm.beforeEndTimeMin < 0
-              ? 24 * 60 + awake - now - sleepAlarm.beforeEndTimeMin
-              : awake - now - sleepAlarm.beforeEndTimeMin),
-      () {
+          seconds: awake * 60 - now - sleepAlarm.beforeEndTimeMin * 60 < 0
+              ? 24 * 3600 + awake * 60 - now - sleepAlarm.beforeEndTimeMin * 60
+              : awake * 60 - now - sleepAlarm.beforeEndTimeMin * 60),
+      () async {
+        await pause();
+
         // Set volume to zero
-        audioPlayer.setVolume(0);
+        setVolume(0);
 
         // Turn up the volume on the device
-        final volumeManager =
-            Provider.of<VolumeManager>(notificationsContext.value!);
-        volumeManager.setVolume(1);
+        final volumeManager = Provider.of<VolumeManager>(
+            notificationsContext.value!,
+            listen: false);
+        volumeManager.setVolume(sleepAlarmDevVolume);
 
         double currentVolume = audioPlayer.volume; // Get current volume
 
         volumeTimer.cancel(); // Cancel if one runs
 
         // Play the audio
-        audioPlayer.play();
+        await play();
 
         volumeTimer = Timer.periodic(
           Duration(
@@ -295,6 +285,7 @@ class AudioServiceHandler extends BaseAudioHandler
 
             if (currentVolume == 1) {
               timer.cancel();
+              activeSleepAlarm = -1;
             }
 
             if (sleepAlarm.alarmClockLinear) {
@@ -309,7 +300,7 @@ class AudioServiceHandler extends BaseAudioHandler
               }
             }
 
-            await audioPlayer.setVolume(currentVolume); // Apply new volume
+            await setVolume(currentVolume); // Apply new volume
           },
         );
       },

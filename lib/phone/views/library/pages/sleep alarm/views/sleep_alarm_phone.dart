@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
+import 'package:interactive_slider/interactive_slider.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/library/pages/sleep%20alarm/data/sleep_alarm_data_manager.dart';
 import 'package:pongo/phone/widgets/settings/tiles/sleep_alarm_tile.dart';
@@ -72,12 +74,72 @@ class SleepAlarmPhone extends StatelessWidget {
                     ),
                   ),
                 ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: StickyHeaderDelegate(
+                    minHeight: 75,
+                    maxHeight: 75,
+                    child: ClipRRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(
+                            sigmaX: useBlur.value ? 10 : 0,
+                            sigmaY: useBlur.value ? 10 : 0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 75,
+                          color: useBlur.value
+                              ? Col.transp
+                              : Col.realBackground.withAlpha(
+                                  AppConstants().noBlur,
+                                ),
+                          child: Column(
+                            children: [
+                              StreamBuilder<double>(
+                                  stream: sleepAlarmDataManager.volumeStream,
+                                  initialData: sleepAlarmDevVolume,
+                                  builder: (context, snapshot) {
+                                    double volume = snapshot.data ?? 0.0;
+
+                                    return InteractiveSlider(
+                                      padding: const EdgeInsets.only(
+                                          top: 20, left: 10, right: 10),
+                                      initialProgress: volume,
+                                      focusedHeight: 10,
+                                      startIcon: const Icon(
+                                          CupertinoIcons.speaker_1_fill),
+                                      endIcon: const Icon(
+                                          CupertinoIcons.speaker_3_fill),
+                                      onChanged: (value) {
+                                        sleepAlarmDataManager
+                                            .updateSleepAlarmDeviceVolume(
+                                                value);
+                                      },
+                                    );
+                                  }),
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .maximumvolumeofthealarm,
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 10),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 SliverToBoxAdapter(
                   child: sleepAlarmDataManager.showBody
                       ? sleepAlarmDataManager.sleepAlarms.isNotEmpty
                           ? ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
+                              padding: EdgeInsets.only(
+                                top: 35,
+                                bottom:
+                                    MediaQuery.of(context).padding.bottom + 15,
+                              ),
                               itemCount:
                                   sleepAlarmDataManager.sleepAlarms.length,
                               itemBuilder: (context, index) {
@@ -118,8 +180,9 @@ class SleepAlarmPhone extends StatelessWidget {
                                     sleepAlarmDataManager.createNewSleepAlarm,
                                     size: 50,
                                   ),
-                                  const Text(
-                                    "Create new sleep alarm",
+                                  Text(
+                                    AppLocalizations.of(context)!
+                                        .createnewsleepalarm,
                                     textAlign: TextAlign.center,
                                   ),
                                 ],

@@ -225,6 +225,13 @@ class LocalsPhone extends StatelessWidget {
                                               ListView.builder(
                                                 itemCount: localsDataManager
                                                     .numOfTracks,
+                                                padding: EdgeInsets.only(
+                                                  top: 35,
+                                                  bottom: MediaQuery.of(context)
+                                                          .padding
+                                                          .bottom +
+                                                      15,
+                                                ),
                                                 shrinkWrap: true,
                                                 physics:
                                                     const NeverScrollableScrollPhysics(),

@@ -114,3 +114,6 @@ ValueNotifier<bool> useMix = ValueNotifier(true);
 
 // Shazaming
 bool shazaming = false;
+
+// Sleep alarm device volume
+double sleepAlarmDevVolume = 0.5;

@@ -17,11 +17,20 @@ class SleepAlarmDataManager with ChangeNotifier {
   // Show body
   bool showBody = false;
 
+  // Device volume
+  final StreamController<double> volumeController =
+      StreamController<double>.broadcast();
+  Stream<double> get volumeStream => volumeController.stream;
+
   SleepAlarmDataManager(this.context) {
     init();
   }
 
   void init() async {
+    // Get the prefered device volume
+    double devVolume = await Storage().getSleepAlarmDeviceVolume();
+    volumeController.add(devVolume);
+
     // Get the num of sleep alarms
     int len = await DatabaseHelper().querySleepAlarmsLength();
     numSleepAlarms = len;
@@ -46,7 +55,7 @@ class SleepAlarmDataManager with ChangeNotifier {
         insertSleepAlarm: (
           sleepAlarm,
         ) {
-          sleepAlarms.add(sleepAlarm);
+          sleepAlarms.insert(0, sleepAlarm);
           notifyListeners();
         },
       ),
@@ -57,11 +66,15 @@ class SleepAlarmDataManager with ChangeNotifier {
     AudioServiceHandler audioServiceHandler =
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
+
     if (index != -1) {
       List<MediaItem> queue = audioServiceHandler.queue.value;
       if (queue.isEmpty) {
-        Notifications().showErrorNotification(context, "Cannot start the alarm",
-            "The queue must not be empty in order to start the alarm");
+        Notifications().showErrorNotification(
+            context,
+            AppLocalizations.of(context)!.cannotstartalarm,
+            AppLocalizations.of(context)!
+                .thequeuemustnotbeemptyinordertostartthealarm);
       } else {
         activeAlarm = sleepAlarms[index].id;
         audioServiceHandler.activeSleepAlarm = sleepAlarms[index].id;
@@ -71,7 +84,7 @@ class SleepAlarmDataManager with ChangeNotifier {
     } else {
       activeAlarm = -1;
       audioServiceHandler.activeSleepAlarm = -1;
-      AudioServiceHandler().stopSleep();
+      audioServiceHandler.stopSleep();
     }
     notifyListeners();
   }
@@ -87,6 +100,14 @@ class SleepAlarmDataManager with ChangeNotifier {
     }
     DatabaseHelper().removeSleepAlarm(sleepAlarms[index].id);
     sleepAlarms.removeAt(index);
+    notifyListeners();
+  }
+
+  // Update sleep alarm device volume
+  void updateSleepAlarmDeviceVolume(double volume) async {
+    volumeController.add(volume);
+    sleepAlarmDevVolume = volume;
+    await Storage().writeSleepAlarmDeviceVolume(volume);
     notifyListeners();
   }
 }

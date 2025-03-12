@@ -104,15 +104,15 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                             );
                           }),
                       razh(20),
-                      settingsText("About"),
+                      settingsText(AppLocalizations.of(context)!.about),
                       settingsTile(
                         context,
                         true,
                         false,
                         CupertinoIcons.info_circle,
                         AppIcons.musicAlbums,
-                        "About",
-                        "About Pongo",
+                        AppLocalizations.of(context)!.about,
+                        AppLocalizations.of(context)!.aboutpongo,
                         () {
                           Navigations().nextScreen(
                             context,

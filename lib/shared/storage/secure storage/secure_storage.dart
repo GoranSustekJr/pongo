@@ -41,6 +41,7 @@ class Storage {
   static String useBlurKey = "USEBLURKEY";
   static String useMixKey = "USEMIXKEY";
   static String useDetailedBlurhashKey = " USEDETAILEDBLURHASHKEY";
+  static String sleepAlarmDeviceVolumeKey = "SLEEPALARMDEVICEVOLUMEKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -570,6 +571,26 @@ class Storage {
       return true;
     } else {
       return key == "true";
+    }
+  }
+
+  // sleep alarm device volume
+  Future<void> writeSleepAlarmDeviceVolume(
+      double sleepAlarmDeviceVolume) async {
+    await storage.write(
+        key: sleepAlarmDeviceVolumeKey,
+        value: sleepAlarmDeviceVolume.toString());
+  }
+
+  Future<double> getSleepAlarmDeviceVolume() async {
+    String? key = await storage.read(key: sleepAlarmDeviceVolumeKey);
+    if (key == null) {
+      final volumeManager = Provider.of<VolumeManager>(
+          notificationsContext.value!,
+          listen: false);
+      return volumeManager.currentVolume;
+    } else {
+      return double.parse(key);
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:pongo/exports.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 
 Future<void> configureMacosWindowUtils() async {
   const config = MacosWindowUtilsConfig(
@@ -100,6 +99,8 @@ void main() async {
   detailedBlurhash.value = enableDetailedBlurhash;
   bool enableUseMix = await Storage().getUseMix(); // Use mix
   useMix.value = enableUseMix;
+  double sleepAlarmDevicVolume = await Storage().getSleepAlarmDeviceVolume();
+  sleepAlarmDevVolume = sleepAlarmDevicVolume;
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();
