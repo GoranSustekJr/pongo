@@ -81,7 +81,7 @@ class Notifications {
       message: message,
       icon: AppIcons.warning,
       backgroundColor: Col.primaryCard,
-      durationInSeconds: 5,
+      durationInSeconds: 10,
     );
   }
 
@@ -95,7 +95,7 @@ class Notifications {
       message: message,
       icon: icon,
       backgroundColor: Col.primaryCard,
-      durationInSeconds: 5,
+      durationInSeconds: 10,
       iconColor: iconColor,
       onTap: onTap,
     );

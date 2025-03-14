@@ -69,16 +69,24 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
                     ? Colors.white.withAlpha(150)
                     : Colors.white,
                 () {
-                  if (audioServiceHandler.audioPlayer.loopMode.name == "all") {
-                    audioServiceHandler
-                        .setRepeatMode(AudioServiceRepeatMode.none);
-                  } else if (audioServiceHandler.audioPlayer.loopMode.name ==
-                      "off") {
-                    audioServiceHandler
-                        .setRepeatMode(AudioServiceRepeatMode.one);
+                  if (audioServiceHandler.activeSleepAlarm == -1) {
+                    if (audioServiceHandler.audioPlayer.loopMode.name ==
+                        "all") {
+                      audioServiceHandler
+                          .setRepeatMode(AudioServiceRepeatMode.none);
+                    } else if (audioServiceHandler.audioPlayer.loopMode.name ==
+                        "off") {
+                      audioServiceHandler
+                          .setRepeatMode(AudioServiceRepeatMode.one);
+                    } else {
+                      audioServiceHandler
+                          .setRepeatMode(AudioServiceRepeatMode.all);
+                    }
                   } else {
-                    audioServiceHandler
-                        .setRepeatMode(AudioServiceRepeatMode.all);
+                    Notifications().showWarningNotification(
+                        notificationsContext.value!,
+                        AppLocalizations.of(notificationsContext.value!)!
+                            .sleepalarmisenabled);
                   }
                 },
               ),

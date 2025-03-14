@@ -105,6 +105,22 @@
         "description": "or"
     },
 
+    "sleepalarmisenabled": "Sleep alarm is enabled",
+    "@sleepalarmisenabled": {
+        "description": "sleepalarmisenabled"
+    },
+
+
+    "unabletohaltthemusicplayer": "Unable to halt the music player",
+    "@unabletohaltthemusicplayer": {
+        "description": "unabletohaltthemusicplayer"
+    },
+
+    "unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon": "Unable to halt the music player because sleep alarm is currently on",
+    "@unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon": {
+        "description": "unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon"
+    },
+
     "profile": "Profile",
     "@profile": {
         "description": "profile"

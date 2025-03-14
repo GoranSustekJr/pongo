@@ -23,6 +23,7 @@ class AudioServiceHandler extends BaseAudioHandler
   Timer volumeTimer = Timer(const Duration(seconds: 0), () {});
   int activeSleepAlarm = -1;
   bool stopSleepAlarm = false;
+  bool mutePlay = false;
 
   // Ad
   InterstitialAd? interstitialAd;
@@ -185,9 +186,11 @@ class AudioServiceHandler extends BaseAudioHandler
     // Cancel previous timer if it exists and is active
     if (volumeTimer.isActive) {
       volumeTimer.cancel(); // Properly cancel the old timer
-      await pause();
-      await setVolume(1);
     }
+    await audioPlayer.pause();
+    await audioPlayer.setVolume(1);
+    mutePlay = false;
+    print("DONE; ${audioPlayer.volume}");
   }
 
   void sleepIn(SleepAlarm sleepAlarm) async {
@@ -203,7 +206,7 @@ class AudioServiceHandler extends BaseAudioHandler
     }
 
     // Start playback (assuming this is what you want to do here)
-    await play();
+    await audioPlayer.play();
 
     // Now, create and assign the new periodic timer
     volumeTimer = Timer.periodic(
@@ -215,32 +218,33 @@ class AudioServiceHandler extends BaseAudioHandler
         if (audioPlayer.playing) {
           if (currentVolume == 0) {
             timer.cancel(); // Cancel the timer if volume is 0
-            await setVolume(0); // Mute the audio
-            await pause(); // Pause playback
-            await setVolume(1); // Reset volume for next play
+            await audioPlayer.setVolume(0); // Mute the audio
+            await audioPlayer.pause(); // Pause playback
+
             if (sleepAlarm.alarmClock) {
               alarmClockFunction(sleepAlarm); // Perform additional action
             } else {
+              await audioPlayer.setVolume(1); // Reset volume for next play
               activeSleepAlarm = -1;
             }
-          }
-
-          // Adjust the volume depending on the settings
-          if (sleepAlarm.sleepLinear) {
-            currentVolume =
-                (currentVolume - 0.01).clamp(0.0, 1.0); // Linear decrease
           } else {
-            if (currentVolume > 0.67) {
-              currentVolume = (currentVolume - 0.03).clamp(0, 1.0);
-            } else if (currentVolume > 0.4) {
-              currentVolume = (currentVolume - 0.02).clamp(0, 1.0);
+            // Adjust the volume depending on the settings
+            if (sleepAlarm.sleepLinear) {
+              currentVolume =
+                  (currentVolume - 0.01).clamp(0.0, 1.0); // Linear decrease
             } else {
-              currentVolume = (currentVolume - 0.00533).clamp(0, 1.0);
+              if (currentVolume > 0.67) {
+                currentVolume = (currentVolume - 0.03).clamp(0, 1.0);
+              } else if (currentVolume > 0.4) {
+                currentVolume = (currentVolume - 0.02).clamp(0, 1.0);
+              } else {
+                currentVolume = (currentVolume - 0.00533).clamp(0, 1.0);
+              }
             }
-          }
 
-          // Apply the updated volume
-          await setVolume(currentVolume);
+            // Apply the updated volume
+            await audioPlayer.setVolume(currentVolume);
+          }
         }
       },
     );
@@ -250,7 +254,15 @@ class AudioServiceHandler extends BaseAudioHandler
     int now = DateTime.now().second +
         TimeOfDay.now().minute * 60 +
         TimeOfDay.now().hour * 3600;
+
     int awake = sleepAlarm.wakeTime;
+
+    mutePlay = true; // Enable pausing for the wake person
+
+    // Play at 0 volume so that the app does not self terminate
+    await audioPlayer.pause();
+    await audioPlayer.setVolume(0);
+    audioPlayer.play();
 
     Future.delayed(
       Duration(
@@ -258,51 +270,59 @@ class AudioServiceHandler extends BaseAudioHandler
               ? 24 * 3600 + awake * 60 - now - sleepAlarm.beforeEndTimeMin * 60
               : awake * 60 - now - sleepAlarm.beforeEndTimeMin * 60),
       () async {
-        await pause();
+        try {
+          if (activeSleepAlarm == sleepAlarm.id) {
+            await audioPlayer.pause();
+            mutePlay = false;
+            // Set volume to zero
+            audioPlayer.setVolume(0);
 
-        // Set volume to zero
-        setVolume(0);
+            // Turn up the volume on the device
+            final volumeManager = Provider.of<VolumeManager>(
+                notificationsContext.value!,
+                listen: false);
+            volumeManager.setVolume(sleepAlarmDevVolume);
 
-        // Turn up the volume on the device
-        final volumeManager = Provider.of<VolumeManager>(
-            notificationsContext.value!,
-            listen: false);
-        volumeManager.setVolume(sleepAlarmDevVolume);
+            audioPlayer.play();
+            double currentVolume = audioPlayer.volume; // Get current volume
+            volumeTimer.cancel(); // Cancel if one runs
+            volumeTimer = Timer.periodic(
+              Duration(
+                  milliseconds:
+                      ((sleepAlarm.beforeEndTimeMin * 60 / 100) * 1000)
+                          .toInt()),
+              (timer) async {
+                try {
+                  volumeTimer = timer;
+                  if (currentVolume == 1) {
+                    timer.cancel();
+                    activeSleepAlarm = -1;
+                    mutePlay = false;
+                  }
 
-        double currentVolume = audioPlayer.volume; // Get current volume
+                  if (sleepAlarm.alarmClockLinear) {
+                    currentVolume = (currentVolume + 0.01).clamp(0.0, 1.0);
+                  } else {
+                    if (currentVolume > 0.67) {
+                      currentVolume = (currentVolume + 0.03).clamp(0, 1.0);
+                    } else if (currentVolume > 0.4) {
+                      currentVolume = (currentVolume + 0.02).clamp(0, 1.0);
+                    } else {
+                      currentVolume = (currentVolume + 0.00533).clamp(0, 1.0);
+                    }
+                  }
 
-        volumeTimer.cancel(); // Cancel if one runs
-
-        // Play the audio
-        await play();
-
-        volumeTimer = Timer.periodic(
-          Duration(
-              milliseconds:
-                  ((sleepAlarm.beforeEndTimeMin * 60 / 100) * 1000).toInt()),
-          (timer) async {
-            volumeTimer = timer;
-
-            if (currentVolume == 1) {
-              timer.cancel();
-              activeSleepAlarm = -1;
-            }
-
-            if (sleepAlarm.alarmClockLinear) {
-              currentVolume = (currentVolume + 0.01).clamp(0.0, 1.0);
-            } else {
-              if (currentVolume > 0.67) {
-                currentVolume = (currentVolume + 0.03).clamp(0, 1.0);
-              } else if (currentVolume > 0.4) {
-                currentVolume = (currentVolume + 0.02).clamp(0, 1.0);
-              } else {
-                currentVolume = (currentVolume + 0.00533).clamp(0, 1.0);
-              }
-            }
-
-            await setVolume(currentVolume); // Apply new volume
-          },
-        );
+                  await audioPlayer
+                      .setVolume(currentVolume); // Apply new volume
+                } catch (e) {
+                  print("INSIDE ERROR: $e");
+                }
+              },
+            );
+          }
+        } catch (e) {
+          print("ERRROR: $e");
+        }
       },
     );
   }
@@ -474,25 +494,34 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Halt audio player
   Future<void> halt() async {
-    // Stop the audio player
-    await audioPlayer.stop();
+    if (activeSleepAlarm != -1) {
+      Notifications().showErrorNotification(
+          notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!)!
+              .unabletohaltthemusicplayer,
+          AppLocalizations.of(notificationsContext.value!)!
+              .unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon);
+    } else {
+      // Stop the audio player
+      await audioPlayer.stop();
 
-    // Empty playlist and queue
-    playlist.clear();
-    playlist.sequence.clear();
-    playlist.shuffleIndices.clear();
-    queue.value.clear();
-    if (audioPlayer.sequence != null) {
-      audioPlayer.sequence!.clear();
+      // Empty playlist and queue
+      playlist.clear();
+      playlist.sequence.clear();
+      playlist.shuffleIndices.clear();
+      queue.value.clear();
+      if (audioPlayer.sequence != null) {
+        audioPlayer.sequence!.clear();
+      }
+
+      volumeTimer.cancel();
+
+      // Remove current media item
+      mediaItem.value = null;
+
+      // Init empty playlist
+      audioPlayer.setAudioSource(playlist);
     }
-
-    volumeTimer.cancel();
-
-    // Remove current media item
-    mediaItem.value = null;
-
-    // Init empty playlist
-    audioPlayer.setAudioSource(playlist);
   }
 
   // Function to initialize the songs and set up the audio player
@@ -516,15 +545,29 @@ class AudioServiceHandler extends BaseAudioHandler
   // Play function to start playback
   @override
   Future<void> play() async {
-    audioPlayer.play();
-    startFadeIn();
+    if (!mutePlay) {
+      audioPlayer.play();
+      startFadeIn();
+    } else {
+      Notifications().showWarningNotification(
+          notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!)!
+              .sleepalarmisenabled);
+    }
   }
 
   // Pause function to pause playback
   @override
   Future<void> pause() async {
-    await startFadeOut();
-    audioPlayer.pause();
+    if (!mutePlay) {
+      await startFadeOut();
+      audioPlayer.pause();
+    } else {
+      Notifications().showWarningNotification(
+          notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!)!
+              .sleepalarmisenabled);
+    }
   }
 
   // Set volume
