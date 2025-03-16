@@ -101,8 +101,8 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
 
   void getTracks() async {
     // Get tracks count in the playlist
-    int len = await DatabaseHelper()
-        .queryOnlineTrackIdsLengthForPlaylist(widget.opid);
+    int len =
+        await DatabaseHelper().queryOnlineTracksLengthForPlaylist(widget.opid);
 
     // Set tracks length in order to show shimmer
     setState(() {
@@ -110,23 +110,31 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
     });
 
     // get the stid list
-    List<Map<String, dynamic>> stidss =
-        await DatabaseHelper().queryOnlineTrackIdsForPlaylist(widget.opid);
+    List<OnlinePlaylistTrack> onlinePlaylistTrackss =
+        await DatabaseHelper().queryOnlineTracksForPlaylist(widget.opid);
 
     // init the help variables
     List<String> stidList = [];
     Map<String, bool> hiddn = {};
 
     // get the stid list from the stidss list and set the hidden status in the help variables
-    for (var stid in stidss) {
-      stidList.add(stid['track_id']);
-      hiddn[stid['track_id']] = (stid['hidden'] == 1);
+    for (OnlinePlaylistTrack onlinePlaylistTrack in onlinePlaylistTrackss) {
+      stidList.add(onlinePlaylistTrack.stid);
+      hiddn[onlinePlaylistTrack.stid] = (onlinePlaylistTrack.hidden);
     }
 
     // Set states
     setState(() {
       stids = stidList;
       hidden = hiddn;
+      tracks = onlinePlaylistTrackss
+          .map((onlinePlaylistTrack) => Track(
+                id: onlinePlaylistTrack.stid,
+                name: onlinePlaylistTrack.title,
+                artists: onlinePlaylistTrack.artistTrack,
+                album: onlinePlaylistTrack.albumTrack,
+              ))
+          .toList();
       showBody = true;
     });
 
@@ -135,28 +143,20 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
   }
 
   getTrackData() async {
-    // Get the tracks data
-    final trackData = await SearializedData().tracks(
-      context,
-      stids,
-    );
+    if (stids.isNotEmpty) {
+      // Get the tracks data
+      final trackThatExist = await Tracks().getDurations(context, stids);
 
-    // Help var
-    final List<dynamic> trackss = trackData["tracks"]["tracks"];
+      setState(() {
+        existingTracks = {
+          for (var item in trackThatExist["durations"])
+            item[0] as String: item[1] as double
+        }; // existing tracks durations, runtimetype Map<String, double>
 
-    final List<Track> newTracks = Track.fromMapList(trackss);
-
-    setState(() {
-      tracks = newTracks; // Tracks, runntimetype List<Track>
-
-      existingTracks = {
-        for (var item in trackData["durations"])
-          item[0] as String: item[1] as double
-      }; // existing tracks durations, runtimetype Map<String, double>
-
-      missingTracks = (trackData["missing_tracks"] as List<dynamic>)
-          .cast<String>(); // Missing tracks stids
-    });
+        missingTracks = (trackThatExist["missing_tracks"] as List<dynamic>)
+            .cast<String>(); // Missing tracks stids
+      });
+    }
   }
 
   void addLoading(String stid) {
@@ -413,6 +413,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                           : track.album!.images,
                       150,
                       150),
+                  albumTrack: track.album,
                   playlistHandlerCoverType: PlaylistHandlerCoverType.url,
                 );
               }).toList()));
@@ -430,7 +431,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
     });
   }
 
-  void moveTrack(oldIndex, newIndex) {
+  void moveTrack(oldIndex, newIndex) async {
     if (oldIndex == newIndex || !edit) return;
     setState(() {
       final item = tracks.removeAt(oldIndex);
@@ -444,7 +445,33 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
         oldIndex < newIndex ? newIndex - 1 : newIndex,
         stid,
       );
-      DatabaseHelper().updateOnlinePlaylistOrder(widget.opid, stids);
+
+      // Get the new order
+      Map<String, Track> trackMap = {for (var track in tracks) track.id: track};
+      List<Track> newTrack = stids.map((stid) => trackMap[stid]!).toList();
+
+      DatabaseHelper().updateOnlinePlaylistOrder(
+        widget.opid,
+        newTrack
+            .map(
+              (track) => OnlinePlaylistTrack(
+                opid: widget.opid,
+                stid: track.id,
+                title: track.name,
+                artistTrack: track.artists,
+                albumTrack: track.album,
+                image: calculateWantedResolutionForTrack(
+                    track.album != null
+                        ? track.album!.images
+                        : track.album!.images,
+                    150,
+                    150),
+                orderNumber: -1,
+                hidden: hidden[track.id] ?? false,
+              ),
+            )
+            .toList(),
+      );
     });
   }
 
@@ -485,6 +512,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                 cover: calculateBestImageForTrack(
                   track.album!.images,
                 ),
+                albumTrack: track.album,
                 playlistHandlerCoverType: PlaylistHandlerCoverType.url,
               );
             },

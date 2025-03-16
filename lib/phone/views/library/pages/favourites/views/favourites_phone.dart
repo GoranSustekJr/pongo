@@ -12,7 +12,6 @@ class FavouritesPhone extends StatefulWidget {
 
 class _FavouritesPhoneState extends State<FavouritesPhone> {
   @override
-  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return ChangeNotifierProvider(
@@ -164,22 +163,16 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
 
                                                   await audioServiceHandler
                                                       .halt();
-                                                  setState(() {
-                                                    favouritesItemManager.edit =
-                                                        true;
-                                                  });
+                                                  favouritesItemManager
+                                                      .changeEdit(true);
                                                 }
                                               } else {
-                                                setState(() {
-                                                  favouritesItemManager.edit =
-                                                      true;
-                                                });
+                                                favouritesItemManager
+                                                    .changeEdit(true);
                                               }
                                             } else {
-                                              setState(() {
-                                                favouritesItemManager.edit =
-                                                    true;
-                                              });
+                                              favouritesItemManager
+                                                  .changeEdit(true);
                                             }
                                           },
                                           edgeInsets: EdgeInsets.zero,
@@ -190,9 +183,10 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                         shuffle:
                                             favouritesItemManager.playShuffle,
                                         stopEdit: () {
-                                          favouritesItemManager.edit = false;
-                                          favouritesItemManager.selectedTracks
-                                              .clear();
+                                          favouritesItemManager
+                                              .changeEdit(false);
+                                          favouritesItemManager
+                                              .clearSelectedTrack();
                                         },
                                         download:
                                             favouritesItemManager.download,
@@ -221,52 +215,59 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                           }
                                         },
                                         addToPlaylist: () {
-                                          OpenPlaylist().show(
-                                            context,
-                                            PlaylistHandler(
-                                                type:
-                                                    PlaylistHandlerType.online,
-                                                function:
-                                                    PlaylistHandlerFunction
-                                                        .addToPlaylist,
-                                                track: favouritesItemManager
-                                                    .selectedTracks
-                                                    .map((stid) {
-                                                  final favourite =
-                                                      favouritesItemManager
-                                                          .favourites
-                                                          .where((favourite) =>
-                                                              favourite.id ==
-                                                              stid)
-                                                          .toList()[0];
-                                                  return PlaylistHandlerOnlineTrack(
-                                                    id: favourite.id,
-                                                    name: favourite.name,
-                                                    artist: favourite.artists
-                                                        .map((artist) => {
-                                                              "id": artist.id,
-                                                              "name":
-                                                                  artist.name
-                                                            })
-                                                        .toList(),
-                                                    cover:
-                                                        calculateWantedResolutionForTrack(
-                                                            favourite.album !=
-                                                                    null
-                                                                ? favourite
-                                                                    .album!
-                                                                    .images
-                                                                : favourite
-                                                                    .album!
-                                                                    .images,
-                                                            150,
-                                                            150),
-                                                    playlistHandlerCoverType:
-                                                        PlaylistHandlerCoverType
-                                                            .url,
-                                                  );
-                                                }).toList()),
-                                          );
+                                          if (favouritesItemManager
+                                              .selectedTracks.isNotEmpty) {
+                                            OpenPlaylist().show(
+                                              context,
+                                              PlaylistHandler(
+                                                  type: PlaylistHandlerType
+                                                      .online,
+                                                  function:
+                                                      PlaylistHandlerFunction
+                                                          .addToPlaylist,
+                                                  track: favouritesItemManager
+                                                      .selectedTracks
+                                                      .map((stid) {
+                                                    final favourite =
+                                                        favouritesItemManager
+                                                            .favourites
+                                                            .where(
+                                                                (favourite) =>
+                                                                    favourite
+                                                                        .id ==
+                                                                    stid)
+                                                            .toList()[0];
+                                                    return PlaylistHandlerOnlineTrack(
+                                                      id: favourite.id,
+                                                      name: favourite.name,
+                                                      artist: favourite.artists
+                                                          .map((artist) => {
+                                                                "id": artist.id,
+                                                                "name":
+                                                                    artist.name
+                                                              })
+                                                          .toList(),
+                                                      cover:
+                                                          calculateWantedResolutionForTrack(
+                                                              favourite.album !=
+                                                                      null
+                                                                  ? favourite
+                                                                      .album!
+                                                                      .images
+                                                                  : favourite
+                                                                      .album!
+                                                                      .images,
+                                                              150,
+                                                              150),
+                                                      albumTrack:
+                                                          favourite.album,
+                                                      playlistHandlerCoverType:
+                                                          PlaylistHandlerCoverType
+                                                              .url,
+                                                    );
+                                                  }).toList()),
+                                            );
+                                          }
                                         },
                                       ),
                                     ),
@@ -333,19 +334,8 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                               selectedTracks:
                                                   favouritesItemManager
                                                       .selectedTracks,
-                                              select: (stid) {
-                                                if (favouritesItemManager
-                                                    .selectedTracks
-                                                    .contains(stid)) {
-                                                  favouritesItemManager
-                                                      .selectedTracks
-                                                      .remove(stid);
-                                                } else {
-                                                  favouritesItemManager
-                                                      .selectedTracks
-                                                      .add(stid);
-                                                }
-                                              },
+                                              select:
+                                                  favouritesItemManager.select,
                                             ),
                                     )
                                   : SingleChildScrollView(

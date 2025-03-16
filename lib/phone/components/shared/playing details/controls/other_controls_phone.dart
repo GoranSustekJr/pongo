@@ -7,7 +7,7 @@ import 'track_info_button.dart';
 class OtherControlsPhone extends StatefulWidget {
   final bool lyricsOn;
   final bool showQueue;
-  final String trackId;
+  final Track track;
   final Function() downloadTrack;
   final Function() changeLyricsOn;
   final Function() changeShowQueue;
@@ -15,7 +15,7 @@ class OtherControlsPhone extends StatefulWidget {
   const OtherControlsPhone({
     super.key,
     required this.lyricsOn,
-    required this.trackId,
+    required this.track,
     required this.downloadTrack,
     required this.changeLyricsOn,
     required this.showQueue,
@@ -32,14 +32,14 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
   @override
   void initState() {
     super.initState();
-    favouriteStatusFuture =
-        DatabaseHelper().favouriteTrackAlreadyExists(widget.trackId);
+    favouriteStatusFuture = DatabaseHelper()
+        .favouriteTrackAlreadyExists(widget.track.id.split('.')[2]);
   }
 
   void refreshFavouriteStatus() {
     setState(() {
-      favouriteStatusFuture =
-          DatabaseHelper().favouriteTrackAlreadyExists(widget.trackId);
+      favouriteStatusFuture = DatabaseHelper()
+          .favouriteTrackAlreadyExists(widget.track.id.split('.')[2]);
     });
   }
 
@@ -92,7 +92,7 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
               ),
               FutureBuilder<bool>(
                 future: DatabaseHelper()
-                    .favouriteTrackAlreadyExists(widget.trackId),
+                    .favouriteTrackAlreadyExists(widget.track.id.split('.')[2]),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return const Center(
@@ -103,7 +103,7 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
 
                     return trackInfoButton(
                       context,
-                      widget.trackId,
+                      widget.track,
                       isFavourite,
                       widget.downloadTrack,
                       refreshFavouriteStatus,

@@ -1,9 +1,10 @@
 import 'package:pongo/exports.dart';
 
-Future<List<Map<String, dynamic>>> queryAllFavouriteTrcks(
-    DatabaseHelper dbHelper) async {
+Future<List<Favourite>> queryAllFavouriteTrcks(DatabaseHelper dbHelper) async {
   Database db = await dbHelper.database;
-  return await db.rawQuery('SELECT * FROM favourites ORDER BY id DESC');
+  List<Map<String, dynamic>> result =
+      await db.rawQuery('SELECT * FROM favourites ORDER BY id DESC');
+  return result.map((res) => Favourite.fromMap(res)).toList();
 }
 
 Future<int> queryAllFavouriteTrcksLength(DatabaseHelper dbHelper) async {

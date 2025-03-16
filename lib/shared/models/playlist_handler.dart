@@ -1,3 +1,5 @@
+import 'package:pongo/shared/models/spotify/track.dart';
+
 class PlaylistHandler {
   final PlaylistHandlerType type;
   final PlaylistHandlerFunction function;
@@ -23,6 +25,7 @@ abstract class PlaylistHandlerTrack {
   final String name;
   final List<Map<String, dynamic>> artist;
   final String cover;
+
   final PlaylistHandlerCoverType playlistHandlerCoverType;
 
   PlaylistHandlerTrack({
@@ -35,11 +38,14 @@ abstract class PlaylistHandlerTrack {
 }
 
 class PlaylistHandlerOnlineTrack extends PlaylistHandlerTrack {
+  final AlbumTrack? albumTrack;
+
   PlaylistHandlerOnlineTrack({
     required super.id,
     required super.name,
     required super.artist,
     required super.cover,
+    required this.albumTrack,
     required super.playlistHandlerCoverType,
   });
 }

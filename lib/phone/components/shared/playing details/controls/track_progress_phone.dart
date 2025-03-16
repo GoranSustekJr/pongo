@@ -4,14 +4,12 @@ import '../../../../../exports.dart';
 
 class TrackProgressPhone extends StatefulWidget {
   final String album;
-  final String released;
   final Duration? duration;
   final Function(String) showAlbum;
 
   const TrackProgressPhone({
     super.key,
     required this.album,
-    required this.released,
     required this.duration,
     required this.showAlbum,
   });

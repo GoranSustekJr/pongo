@@ -1,24 +1,42 @@
 import 'package:pongo/exports.dart';
 
-Future<void> updateOnPlaylistOrder(
-    DatabaseHelper dbHelper, int opid, List<String> newTrackOrder) async {
+Future<void> updateOnPlaylistOrder(DatabaseHelper dbHelper, int opid,
+    List<OnlinePlaylistTrack> newTrackOrder) async {
   Database db = await dbHelper.database;
 
   // Start a transaction to ensure atomicity
   await db.transaction((txn) async {
     // Delete all existing order numbers for the given opid
     await txn.rawDelete(
-      "DELETE FROM opid_track_id WHERE opid = ?",
+      "DELETE FROM opid_stid WHERE opid = ?",
       [opid],
     );
 
     // Insert the tracks with the new order
     for (int i = 0; i < newTrackOrder.length; i++) {
       await txn.rawInsert(
-        "INSERT INTO opid_track_id (opid, track_id, order_number) VALUES (?, ?, ?)",
+        "INSERT INTO opid_stid (opid, stid, title, artists, image, album, order_number) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [
           opid,
-          newTrackOrder[i],
+          newTrackOrder[i].stid,
+          newTrackOrder[i].title,
+          jsonEncode(newTrackOrder[i].artistTrack),
+          newTrackOrder[i].image,
+          newTrackOrder[i].albumTrack != null
+              ? jsonEncode({
+                  "id": newTrackOrder[i].albumTrack!.id,
+                  "name": newTrackOrder[i].albumTrack!.name,
+                  "images": newTrackOrder[i]
+                      .albumTrack!
+                      .images
+                      .map((albumImagesTrack) => {
+                            "url": albumImagesTrack.url,
+                            "height": albumImagesTrack.height,
+                            "width": albumImagesTrack.width,
+                          })
+                      .toList(),
+                })
+              : null,
           i + 1
         ], // `i + 1` to set the order starting from 1
       );
@@ -57,7 +75,7 @@ Future<void> updateOnPlaylistShow(
   final placeholders = List.filled(stids.length, '?').join(', ');
 
   await db.rawUpdate(
-    'UPDATE opid_track_id SET hidden = ? WHERE opid = ? AND track_id IN ($placeholders)',
+    'UPDATE opid_stid SET hidden = ? WHERE opid = ? AND stid IN ($placeholders)',
     [false, opid, ...stids],
   );
 }
@@ -68,6 +86,6 @@ Future<void> updateOnPlaylistHide(
   final placeholders = List.filled(stids.length, '?').join(', ');
 
   await db.rawUpdate(
-      'UPDATE opid_track_id SET hidden = ? WHERE opid = ? AND track_id IN ($placeholders)',
+      'UPDATE opid_stid SET hidden = ? WHERE opid = ? AND stid IN ($placeholders)',
       [true, opid, ...stids]);
 }

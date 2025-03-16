@@ -13,11 +13,12 @@ Future<List<Map<String, dynamic>>> queryAllOnPlaylistsTitles(
       .rawQuery("SELECT opid, title FROM online_playlist ORDER BY opid DESC");
 }
 
-Future<List<Map<String, dynamic>>> queryOnTrackIdsForPlaylist(
+Future<List<OnlinePlaylistTrack>> queryOnTracksForPlaylist(
     DatabaseHelper dbHelper, int opid) async {
   Database db = await dbHelper.database;
-  return await db.query('opid_track_id',
+  List<Map<String, dynamic>> result = await db.query('opid_stid',
       where: 'opid = ?', whereArgs: [opid], orderBy: 'order_number ASC');
+  return result.map((res) => OnlinePlaylistTrack.fromMap(res)).toList();
 }
 
 Future<int> queryOnPlaylistsLength(DatabaseHelper dbHelper) async {
@@ -26,11 +27,11 @@ Future<int> queryOnPlaylistsLength(DatabaseHelper dbHelper) async {
   return Sqflite.firstIntValue(result) ?? 0;
 }
 
-Future<int> queryOnTrackIdsForPlaylistLength(
+Future<int> queryOnTracksForPlaylistLength(
     DatabaseHelper dbHelper, int opid) async {
   Database db = await dbHelper.database;
   final result = await db.rawQuery(
-      'SELECT COUNT(*) FROM opid_track_id WHERE opid = $opid AND hidden = ${false}');
+      'SELECT COUNT(*) FROM opid_stid WHERE opid = $opid AND hidden = ${false}');
   return Sqflite.firstIntValue(result) ?? 0;
 }
 
@@ -38,7 +39,7 @@ Future<int> queryOrderForOpid(DatabaseHelper dbHelper, int opid) async {
   Database db = await dbHelper.database;
   // Query the max order for the given opid
   List<Map<String, dynamic>> result = await db.rawQuery('''
-    SELECT MAX(order_number) as max_order FROM opid_track_id WHERE opid = ?
+    SELECT MAX(order_number) as max_order FROM opid_stid WHERE opid = ?
   ''', [opid]);
 
   int maxOrder = result.first['max_order'] ?? -1;

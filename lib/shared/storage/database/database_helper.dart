@@ -27,7 +27,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 30,
+      version: 35,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -41,9 +41,13 @@ class DatabaseHelper {
         cover BLOB
       )''');
     await db.execute('''
-      CREATE TABLE opid_track_id (
+      CREATE TABLE opid_stid (
         opid INTEGER,
-        track_id TEXT,
+        stid TEXT,
+        title TEXT,
+        artists TEXT,
+        image TEXT,
+        album TEXT,
         order_number INT,
         hidden BOOLEAN,
         FOREIGN KEY(opid) REFERENCES online_playlist(opid)
@@ -52,7 +56,11 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE favourites (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        stid TEXT
+        stid TEXT,
+        title TEXT,
+        artists TEXT,
+        image TEXT,
+        album TEXT
       )
     ''');
     await db.execute('''
@@ -155,12 +163,36 @@ WHERE id IN (
 
     '''); */
 
-    /* await db.execute('''
+    /*  await db.execute('''
       DELETE FROM lpid_track_id;
     '''); */
-
-    // print(newVersion);
+    await db.execute('''DROP TABLE favourites''');
     await db.execute('''
+      CREATE TABLE favourites (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        stid TEXT,
+        title TEXT,
+        artists TEXT,
+        image TEXT,
+        album TEXT
+      )
+    ''');
+    await db.execute('''DROP TABLE opid_track_id''');
+    await db.execute('''
+      CREATE TABLE opid_stid (
+        opid INTEGER,
+        stid TEXT,
+        title TEXT,
+        artists TEXT,
+        image TEXT,
+        album TEXT,
+        order_number INT,
+        hidden BOOLEAN,
+        FOREIGN KEY(opid) REFERENCES online_playlist(opid)
+      )
+    ''');
+    // print(newVersion);
+    /* await db.execute('''
       CREATE TABLE sleep (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         sleep BOOLEAN,
@@ -171,7 +203,7 @@ WHERE id IN (
         before_end_time_min INTEGER,
         alarm_clock_linear BOOLEAN
       )
-      ''');
+      '''); */
   }
 
   // Insert online playlist
@@ -180,12 +212,8 @@ WHERE id IN (
   }
 
   // Insert track id into online playlist
-  Future insertOnlineTrackId(int opid, String stid) async {
-    return insertOnTrackId(
-      this,
-      opid,
-      stid,
-    );
+  Future insertOnlineTrackId(OnlinePlaylistTrack onlinePlaylistTrack) async {
+    return insertOnTrackId(this, onlinePlaylistTrack);
   }
 
   Future<List<Map<String, dynamic>>> queryAllOnlinePlaylists() async {
@@ -196,13 +224,13 @@ WHERE id IN (
     return queryAllOnPlaylistsTitles(this);
   }
 
-  Future<List<Map<String, dynamic>>> queryOnlineTrackIdsForPlaylist(
+  Future<List<OnlinePlaylistTrack>> queryOnlineTracksForPlaylist(
       int opid) async {
-    return queryOnTrackIdsForPlaylist(this, opid);
+    return queryOnTracksForPlaylist(this, opid);
   }
 
-  Future<int> queryOnlineTrackIdsLengthForPlaylist(int opid) async {
-    return queryOnTrackIdsForPlaylistLength(this, opid);
+  Future<int> queryOnlineTracksLengthForPlaylist(int opid) async {
+    return queryOnTracksForPlaylistLength(this, opid);
   }
 
   Future<int> queryOnlinePlaylistsLength() async {
@@ -211,13 +239,13 @@ WHERE id IN (
 
   // Remove Online Playlist track
   Future<void> removeTrackFromOnlinePlaylist(
-      int opid, String trackId, int ordNum) async {
-    removeTrackFromOnPlaylist(this, opid, trackId, ordNum);
+      OnlinePlaylistTrack onlinePlaylistTrack) async {
+    removeTrackFromOnPlaylist(this, onlinePlaylistTrack);
   }
 
   Future<void> removeTracksFromOnlinePlaylist(
-      int opid, List<String> stid) async {
-    await removeTracksFromOnPlaylist(this, opid, stid);
+      int opid, List<String> stids) async {
+    await removeTracksFromOnPlaylist(this, opid, stids);
   }
 
   Future<void> removeOnlinePlaylist(int opid) async {
@@ -227,8 +255,8 @@ WHERE id IN (
   // Update online playlist
 
   Future<void> updateOnlinePlaylistOrder(
-      int opid, List<String> newTrackOrder) async {
-    await updateOnPlaylistOrder(this, opid, newTrackOrder);
+      int opid, List<OnlinePlaylistTrack> onlinePlaylistTracks) async {
+    await updateOnPlaylistOrder(this, opid, onlinePlaylistTracks);
   }
 
   Future<void> updateOnlinePlaylistName(int opid, String title) async {
@@ -449,12 +477,12 @@ WHERE id IN (
   }
 
   Future<void> insertFavouriteTrack(
-    String stid,
+    Favourite favourite,
   ) async {
-    await insertFavouriteTrck(this, stid);
+    await insertFavouriteTrck(this, favourite);
   }
 
-  Future<List<Map<String, dynamic>>> queryAllFavouriteTracks() async {
+  Future<List<Favourite>> queryAllFavouriteTracks() async {
     return await queryAllFavouriteTrcks(this);
   }
 
@@ -470,12 +498,12 @@ WHERE id IN (
     return await favouriteTrckAlreadyExists(this, stid);
   }
 
-  Future<void> removeFavouriteTrack(String stid) async {
-    await removeFavouriteTrck(this, stid);
+  Future<void> removeFavouriteTrack(Favourite favourite) async {
+    await removeFavouriteTrck(this, favourite);
   }
 
-  Future<void> removeFavouriteTracks(List<String> stid) async {
-    await removeFavouriteTrcks(this, stid);
+  Future<void> removeFavouriteTracks(List<String> stids) async {
+    await removeFavouriteTrcks(this, stids);
   }
 
   Future<void> insertSyncTimeDelay(String stid, int syncTimeDelay) async {

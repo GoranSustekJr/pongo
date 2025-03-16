@@ -75,6 +75,7 @@ class SliverAppBarPhone extends StatelessWidget {
                                                       : track.album!.images,
                                                   150,
                                                   150),
+                                          albumTrack: track.album,
                                           playlistHandlerCoverType:
                                               PlaylistHandlerCoverType.url,
                                         ))
@@ -113,6 +114,7 @@ class SliverAppBarPhone extends StatelessWidget {
                                                 ? track.album!.images
                                                 : track.album!.images,
                                           ),
+                                          albumTrack: track.album,
                                           playlistHandlerCoverType:
                                               PlaylistHandlerCoverType.url,
                                         ))

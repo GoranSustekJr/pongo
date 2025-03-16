@@ -225,6 +225,24 @@ class QueueBodyPhone extends StatelessWidget {
                                     cover: track.artUri != null
                                         ? track.artUri.toString()
                                         : "",
+                                    albumTrack: track.album != null
+                                        ? AlbumTrack(
+                                            id: track.album!.split('..Ææ..')[0],
+                                            name:
+                                                track.album!.split('..Ææ..')[1],
+                                            releaseDate:
+                                                track.extras!["released"],
+                                            images: track.artUri != null
+                                                ? [
+                                                    AlbumImagesTrack(
+                                                        url: track.artUri!
+                                                            .toString(),
+                                                        height: null,
+                                                        width: null)
+                                                  ]
+                                                : [],
+                                          )
+                                        : null,
                                     playlistHandlerCoverType: track.artUri
                                             .toString()
                                             .contains('file:///')

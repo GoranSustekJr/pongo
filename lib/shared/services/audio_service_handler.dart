@@ -190,7 +190,6 @@ class AudioServiceHandler extends BaseAudioHandler
     await audioPlayer.pause();
     await audioPlayer.setVolume(1);
     mutePlay = false;
-    print("DONE; ${audioPlayer.volume}");
   }
 
   void sleepIn(SleepAlarm sleepAlarm) async {
@@ -315,13 +314,13 @@ class AudioServiceHandler extends BaseAudioHandler
                   await audioPlayer
                       .setVolume(currentVolume); // Apply new volume
                 } catch (e) {
-                  print("INSIDE ERROR: $e");
+                  // print("INSIDE ERROR: $e");
                 }
               },
             );
           }
         } catch (e) {
-          print("ERRROR: $e");
+          // print("ERRROR: $e");
         }
       },
     );

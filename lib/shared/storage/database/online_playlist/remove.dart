@@ -1,18 +1,22 @@
 import 'package:pongo/exports.dart';
 
 Future<void> removeTrackFromOnPlaylist(
-    DatabaseHelper dbHelper, int opid, String trackId, int ordNum) async {
+    DatabaseHelper dbHelper, OnlinePlaylistTrack onlinePlaylistTrack) async {
   Database db = await dbHelper.database;
 
   await db.delete(
-    'opid_track_id',
-    where: 'opid = ? AND track_id = ? AND order_number = ?',
-    whereArgs: [opid, trackId, ordNum],
+    'opid_stid',
+    where: 'opid = ? AND stid = ? AND order_number = ?',
+    whereArgs: [
+      onlinePlaylistTrack.opid,
+      onlinePlaylistTrack.stid,
+      onlinePlaylistTrack.orderNumber
+    ],
   );
 
   await db.rawUpdate(
-    'UPDATE opid_track_id SET order_number = order_number - 1 WHERE opid = ? AND order_number > ?',
-    [opid, ordNum],
+    'UPDATE opid_stid SET order_number = order_number - 1 WHERE opid = ? AND order_number > ?',
+    [onlinePlaylistTrack.opid, onlinePlaylistTrack.orderNumber],
   );
 }
 
@@ -21,9 +25,9 @@ Future<void> removeTracksFromOnPlaylist(
   Database db = await dbHelper.database;
 
   await db.delete(
-    'opid_track_id',
+    'opid_stid',
     where:
-        'opid = ? AND track_id IN (${List.filled(stids.length, '?').join(', ')})',
+        'opid = ? AND stid IN (${List.filled(stids.length, '?').join(', ')})',
     whereArgs: [opid, ...stids],
   );
 }
@@ -35,7 +39,7 @@ Future<void> removeOnPlaylist(DatabaseHelper dbHelper, int opid) async {
   await db.transaction((txn) async {
     // Remove all tracks associated with the playlist
     await txn.delete(
-      'opid_track_id',
+      'opid_stid',
       where: 'opid = ?',
       whereArgs: [opid],
     );
@@ -48,5 +52,3 @@ Future<void> removeOnPlaylist(DatabaseHelper dbHelper, int opid) async {
     );
   });
 }
-
-//TODO: HAPTIC update!

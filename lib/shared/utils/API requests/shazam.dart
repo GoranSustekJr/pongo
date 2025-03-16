@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 class Shazam {
   Future<void> shazamIt(context, String stid) async {
     int tries = 0;
-
     try {
       while (tries < 2) {
         tries++;

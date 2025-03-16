@@ -11,7 +11,7 @@ class Download {
       // Save to directory
       final appDir = await syspaths.getApplicationDocumentsDirectory();
       final audioFile = File('${appDir.path}/$stid.m4a');
-      print(audioFile.path);
+
       audioFile.writeAsBytesSync(audio);
 
       // Get the cover image
@@ -103,7 +103,7 @@ class Download {
                   final appDir =
                       await syspaths.getApplicationDocumentsDirectory();
                   final audioFile = File('${appDir.path}/$id.m4a');
-                  print(audioFile.path);
+
                   audioFile.writeAsBytesSync(audio);
 
                   // Get the cover image

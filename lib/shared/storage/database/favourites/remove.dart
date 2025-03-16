@@ -1,13 +1,14 @@
 import 'package:pongo/exports.dart';
 
 // Track
-Future<void> removeFavouriteTrck(DatabaseHelper dbHelper, String stid) async {
+Future<void> removeFavouriteTrck(
+    DatabaseHelper dbHelper, Favourite favourite) async {
   Database db = await dbHelper.database;
 
   await db.delete(
     'favourites',
     where: 'stid = ?',
-    whereArgs: [stid],
+    whereArgs: [favourite.stid],
   );
 }
 

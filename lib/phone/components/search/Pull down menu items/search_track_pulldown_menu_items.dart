@@ -39,6 +39,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
                                 : track.album!.images,
                             150,
                             150),
+                        albumTrack: track.album,
                         playlistHandlerCoverType: PlaylistHandlerCoverType.url,
                       )
                     ],
@@ -86,7 +87,18 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
           const PullDownMenuDivider.large(),
           PullDownMenuItem(
             onTap: () async {
-              await Favourites().add(context, track.id);
+              await Favourites().add(
+                  context,
+                  Favourite(
+                    id: -1,
+                    stid: track.id,
+                    title: track.name,
+                    artistTrack: track.artists,
+                    albumTrack: track.album,
+                    image: track.album != null
+                        ? calculateBestImageForTrack(track.album!.images)
+                        : null,
+                  ));
               doesNotExist("");
               doesNowExist("");
 

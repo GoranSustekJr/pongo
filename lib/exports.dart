@@ -20,6 +20,7 @@ export 'package:pongo/shared/utils/API%20requests/recommendations.dart';
 export 'package:pongo/phone/components/shared/queue/queue_body_phone.dart';
 export 'package:pongo/phone/views/library/pages/buy%20premium/buy_premium_phone.dart';
 export 'package:pongo/shared/functions/queue/add_to_queue.dart';
+export 'package:pongo/shared/models/online_playlist_track.dart';
 export 'package:pongo/shared/utils/API%20requests/track_metadata.dart';
 export 'package:pongo/shared/utils/local%20notifications/notifications.dart';
 export 'package:pongo/phone/components/shared/other/trailing.dart';
@@ -41,6 +42,7 @@ export 'package:pongo/phone/components/recommended/Pull%20down%20menu%20items/re
 export 'package:pongo/phone/components/search/Pull%20down%20menu%20items/search_track_pulldown_menu_items.dart';
 export 'package:pongo/shared/widgets/ui/image/image_compatible.dart';
 export 'package:pongo/phone/views/home/recomendations/recommendations_phone.dart';
+export 'package:pongo/shared/models/favourite.dart';
 export 'package:pongo/phone/views/home/search%20bar/search_bar_android_phone.dart';
 export 'package:pongo/phone/views/home/search%20bar/search_bar_ios_phone.dart';
 export 'package:pongo/phone/views/home/search%20history/search_history_phone.dart';

@@ -24,7 +24,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
           // Add to Playlist
           CupertinoContextMenuAction(
             onPressed: () {
-              OpenPlaylist().open(
+              /* OpenPlaylist().open(
                 context,
                 id: track.id,
                 cover: calculateWantedResolutionForTrack(
@@ -38,7 +38,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
                     .map((artist) => artist.name)
                     .toList()
                     .join(', '),
-              );
+              ); */
               Navigator.of(context, rootNavigator: true).pop();
             },
             trailingIcon: AppIcons.musicAlbums,
@@ -93,7 +93,18 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
 
               return CupertinoContextMenuAction(
                 onPressed: () async {
-                  await Favourites().add(context, track.id);
+                  await Favourites().add(
+                      context,
+                      Favourite(
+                        id: -1,
+                        stid: track.id,
+                        title: track.name,
+                        artistTrack: track.artists,
+                        albumTrack: track.album,
+                        image: track.album != null
+                            ? calculateBestImageForTrack(track.album!.images)
+                            : null,
+                      ));
                   doesNowExist("");
 
                   doesNowExist("");

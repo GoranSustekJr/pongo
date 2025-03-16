@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
-trackInfoButton(context, String trackId, bool favourite, Function() download,
+trackInfoButton(context, Track track, bool favourite, Function() download,
     Function() refreshFavourite) {
   GlobalKey key = GlobalKey();
   return kIsApple
@@ -41,6 +41,21 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                                   .toList()
                               : [],
                           cover: mediaItem.artUri.toString(),
+                          albumTrack: mediaItem.album != null
+                              ? AlbumTrack(
+                                  id: mediaItem.album!.split('..Ææ..')[0],
+                                  name: mediaItem.album!.split('..Ææ..')[1],
+                                  releaseDate: mediaItem.extras!["released"],
+                                  images: mediaItem.artUri != null
+                                      ? [
+                                          AlbumImagesTrack(
+                                              url: mediaItem.artUri!.toString(),
+                                              height: null,
+                                              width: null)
+                                        ]
+                                      : [],
+                                )
+                              : null,
                           playlistHandlerCoverType:
                               !mediaItem.artUri.toString().contains('file:///')
                                   ? PlaylistHandlerCoverType.url
@@ -59,7 +74,18 @@ trackInfoButton(context, String trackId, bool favourite, Function() download,
                   : AppLocalizations.of(context)!.like,
               icon: favourite ? AppIcons.heartFill : AppIcons.heart,
               onTap: () async {
-                await Favourites().add(context, trackId.split('.')[2]);
+                await Favourites().add(
+                    context,
+                    Favourite(
+                      id: -1,
+                      stid: track.id.split('.')[2],
+                      title: track.name,
+                      artistTrack: track.artists,
+                      albumTrack: track.album,
+                      image: track.album != null
+                          ? calculateBestImageForTrack(track.album!.images)
+                          : null,
+                    ));
                 refreshFavourite();
               },
             ),

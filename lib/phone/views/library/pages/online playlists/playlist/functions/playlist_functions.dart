@@ -64,14 +64,14 @@ class PlaylistFunctions {
 
   void showSelected() async {
     if (selectedStids.isNotEmpty) {
-      await DatabaseHelper().updateOnlinePlaylistShow(opid, selectedStids);
+      /*  await DatabaseHelper().updateOnlinePlaylistShow(opid, selectedStids);  TODO: !!!!!!!!!!!!!!!!!!!!! */
       // handle UI update
     }
   }
 
   void hideSelected() async {
     if (selectedStids.isNotEmpty) {
-      await DatabaseHelper().updateOnlinePlaylistHide(opid, selectedStids);
+      /* await DatabaseHelper().updateOnlinePlaylistHide(opid, selectedStids); TODO: !!!!!!!!!!!!!!!!!!!!!*/
       // handle UI update
     }
   }

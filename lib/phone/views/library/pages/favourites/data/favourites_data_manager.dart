@@ -48,160 +48,7 @@ class FavouritesDataManager with ChangeNotifier {
 
   void init() async {
     scrollController = ScrollController();
-    scrollController.addListener(scrollControllerListener);
-
     initFavourites();
-
-    notifyListeners();
-  }
-
-  // If scrolled to bottom, get new tracks
-  scrollControllerListener() {
-    if (scrollController.offset < 0) {
-      scrollControllerOffset = 0;
-    } else {
-      scrollControllerOffset = scrollController.offset;
-    }
-    if (scrollController.position.maxScrollExtent == scrollController.offset &&
-        favouritesSTIDS.length > favourites.length) {
-      fetchTracks((favourites.length / numb).floor() + 1);
-    }
-
-    notifyListeners();
-  }
-
-  // Fetch next set of tracks
-  void fetchTracks(int index) async {
-    final start = numb * (index - 1);
-    final end = (start + numb) <= favouritesSTIDS.length
-        ? (start + numb)
-        : favouritesSTIDS.length;
-
-    // Ensure the indices are within valid bounds
-    if (start < 0 || start >= favouritesSTIDS.length) return;
-
-    List<String> tempStids = favouritesSTIDS
-        .map((entry) => entry["stid"].toString())
-        .toList()
-        .sublist(start, end);
-
-    final trackData = await SearializedData().tracks(
-      context,
-      tempStids,
-    );
-
-    final List<dynamic> page = trackData["tracks"]["tracks"];
-
-    final trackThatExist = await Tracks().getDurations(
-      context,
-      favouritesSTIDS
-          .map((entry) => entry["stid"].toString())
-          .toList()
-          .sublist(start, end),
-    );
-    final List<Track> newTracks =
-        page.map((item) => Track.fromMap(item)).toList();
-
-    // Add tracks to favourites list and update
-    favourites.addAll(newTracks);
-    existingTracks.addAll({
-      for (var item in trackThatExist["durations"])
-        item[0] as String: item[1] as double
-    });
-    missingTracks.addAll((trackThatExist["missing_tracks"] as List)
-        .map((item) => item.toString()));
-
-    newMediaItems(newTracks);
-  }
-
-  // Insert new media items
-  void newMediaItems(List<Track> newTracks) async {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context, listen: false)
-            as AudioServiceHandler;
-
-    if (audioServiceHandler.mediaItem.value != null) {
-      if ('${audioServiceHandler.mediaItem.value!.id.split('.')[0]}.${audioServiceHandler.mediaItem.value!.id.split('.')[1]}' ==
-          "library.favourites") {
-        bool reEnableShuffleMode =
-            audioServiceHandler.audioPlayer.shuffleModeEnabled;
-        audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
-        if (missingTracks.isNotEmpty) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            TrackPlay().playConcenating(
-              context,
-              newTracks,
-              existingTracks,
-              "library.favourites.",
-              cancel,
-              (stid) {
-                if (!loading.contains(stid)) {
-                  loading.add(stid);
-                }
-              },
-              (stid) {
-                loading.remove(stid);
-                missingTracks.remove(stid);
-              },
-              (mediaItem, i) async {
-                await audioServiceHandler.playlist
-                    .add(audioServiceHandler.createAudioSource(mediaItem));
-                audioServiceHandler.queue.value.add(mediaItem);
-              },
-            );
-          });
-        } else {
-          final data = await Tracks().getDurations(
-              context, newTracks.map((track) => track.id).toList());
-
-          if (data["durations"] != null) {
-            existingTracks.addAll({
-              for (var item in data["durations"])
-                item[0] as String: item[1] as double
-            });
-          }
-          final List<MediaItem> mediaItems = [];
-
-          for (int i = 0; i < newTracks.length; i++) {
-            final MediaItem mediaItem = MediaItem(
-              id: "library.newTracks.${newTracks[i].id}",
-              title: newTracks[i].name,
-              artist:
-                  favourites[i].artists.map((artist) => artist.name).join(', '),
-              album: newTracks[i].album != null
-                  ? "${newTracks[i].album!.id}..Ææ..${newTracks[i].album!.name}"
-                  : "..Ææ..",
-              duration: Duration(
-                  milliseconds:
-                      (existingTracks[newTracks[i].id]! * 1000).toInt()),
-              artUri: favourites[i].album != null
-                  ? Uri.parse(
-                      calculateBestImageForTrack(favourites[i].album!.images))
-                  : null,
-              extras: {
-                "artists": jsonEncode(favourites[i]
-                    .artists
-                    .map((artist) => {"id": artist.id, "name": artist.name})
-                    .toList()),
-                "released": newTracks[i].album != null
-                    ? newTracks[i].album!.releaseDate
-                    : "",
-              },
-            );
-            mediaItems.add(mediaItem);
-          }
-
-          audioServiceHandler.queue.value.addAll(mediaItems);
-          audioServiceHandler.playlist.addAll(
-              mediaItems.map(audioServiceHandler.createAudioSource).toList());
-        }
-        if (reEnableShuffleMode) {
-          audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);
-        }
-      }
-    }
-
-    notifyListeners();
   }
 
   // Initialize the favourites data
@@ -211,10 +58,37 @@ class FavouritesDataManager with ChangeNotifier {
     lengthOfFavourites = length;
     showBody = true;
 
-    final stids = await DatabaseHelper().queryAllFavouriteTracks();
+    final favourits = await DatabaseHelper().queryAllFavouriteTracks();
 
-    favouritesSTIDS = stids;
-    fetchTracks(1);
+    favouritesSTIDS =
+        favourits.map((favourite) => {favourite.stid: favourite}).toList();
+
+    favourites = favourits
+        .map((favourite) => Track(
+              id: favourite.stid,
+              name: favourite.title,
+              artists: favourite.artistTrack,
+              album: favourite.albumTrack,
+            ))
+        .toList();
+
+    if (lengthOfFavourites > 0) {
+      final trackThatExist = await Tracks().getDurations(
+          context, favourites.map((favourite) => favourite.id).toList());
+
+      // Add tracks to favourites list and update
+      existingTracks.addAll({
+        for (var item in trackThatExist["durations"])
+          item[0] as String: item[1] as double
+      });
+      if (trackThatExist["missing_tracks"].isNotEmpty) {
+        if (trackThatExist["missing_tracks"][0] != "null" ||
+            trackThatExist["missing_tracks"][0] != null) {
+          missingTracks.addAll((trackThatExist["missing_tracks"] as List)
+              .map((item) => item.toString()));
+        }
+      }
+    }
 
     notifyListeners();
   }
@@ -246,6 +120,7 @@ class FavouritesDataManager with ChangeNotifier {
                 cover: calculateBestImageForTrack(
                   track.album!.images,
                 ),
+                albumTrack: track.album,
                 playlistHandlerCoverType: PlaylistHandlerCoverType.url,
               );
             },
@@ -288,10 +163,12 @@ class FavouritesDataManager with ChangeNotifier {
                 if (!loading.contains(stid)) {
                   loading.add(stid);
                 }
+                notifyListeners();
               },
               (stid) {
                 loading.remove(stid);
                 missingTracks.remove(stid);
+                notifyListeners();
               },
               (mediaItem, i) async {
                 if (i == 0) {
@@ -305,6 +182,7 @@ class FavouritesDataManager with ChangeNotifier {
                 if (i == favourites.length - 1) {
                   queueAllowShuffle.value = true;
                 }
+                notifyListeners();
               },
             );
           });
@@ -317,6 +195,7 @@ class FavouritesDataManager with ChangeNotifier {
                 item[0] as String: item[1] as double
             });
           }
+          notifyListeners();
 
           final List<MediaItem> mediaItems = [];
 
@@ -420,6 +299,26 @@ class FavouritesDataManager with ChangeNotifier {
       audioServiceHandler.play();
 
       loadingShuffle = false;
+    }
+
+    notifyListeners();
+  }
+
+  void changeEdit(bool value) {
+    edit = value;
+    notifyListeners();
+  }
+
+  void clearSelectedTrack() {
+    selectedTracks.clear();
+    notifyListeners();
+  }
+
+  void select(String stid) {
+    if (selectedTracks.contains(stid)) {
+      selectedTracks.remove(stid);
+    } else {
+      selectedTracks.add(stid);
     }
 
     notifyListeners();

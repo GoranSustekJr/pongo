@@ -69,10 +69,10 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
       Map plylistTrackMap = {};
       for (int opid in opids) {
         final tracks =
-            await DatabaseHelper().queryOnlineTrackIdsForPlaylist(opid);
+            await DatabaseHelper().queryOnlineTracksForPlaylist(opid);
         plylistTrackMap[opid] = tracks.map((track) => {
-              "id": track["opid"],
-              "track_id": track["track_id"],
+              "id": track.opid,
+              "track_id": track.stid,
             });
       }
 
@@ -264,8 +264,26 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                                     i < widget.playlistHandler.track!.length;
                                     i++) {
                                   await DatabaseHelper().insertOnlineTrackId(
-                                      opid,
-                                      widget.playlistHandler.track![i].id);
+                                      OnlinePlaylistTrack(
+                                          opid: opid,
+                                          stid: widget
+                                              .playlistHandler.track![i].id,
+                                          title: widget
+                                              .playlistHandler.track![i].name,
+                                          artistTrack: widget
+                                              .playlistHandler.track![i].artist
+                                              .map((artistTrack) =>
+                                                  ArtistTrack.fromMap(
+                                                      artistTrack))
+                                              .toList(),
+                                          albumTrack: (widget
+                                                      .playlistHandler.track![i]
+                                                  as PlaylistHandlerOnlineTrack)
+                                              .albumTrack,
+                                          image: widget
+                                              .playlistHandler.track![i].cover,
+                                          orderNumber: -1,
+                                          hidden: false));
                                   if (i ==
                                       widget.playlistHandler.track!.length -
                                           1) {
@@ -392,11 +410,39 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                       for (int opid in selectedPlaylists) {
                         if (widget.playlistHandler.track!.length == 1) {
                           await DatabaseHelper().insertOnlineTrackId(
-                              opid, widget.playlistHandler.track![0].id);
+                              OnlinePlaylistTrack(
+                                  opid: opid,
+                                  stid: widget.playlistHandler.track![0].id,
+                                  title: widget.playlistHandler.track![0].name,
+                                  artistTrack: widget
+                                      .playlistHandler.track![0].artist
+                                      .map((artistTrack) =>
+                                          ArtistTrack.fromMap(artistTrack))
+                                      .toList(),
+                                  albumTrack: (widget.playlistHandler.track![0]
+                                          as PlaylistHandlerOnlineTrack)
+                                      .albumTrack,
+                                  image: widget.playlistHandler.track![0].cover,
+                                  orderNumber: -1,
+                                  hidden: false));
                         } else {
                           for (var track in widget.playlistHandler.track!) {
-                            await DatabaseHelper()
-                                .insertOnlineTrackId(opid, track.id);
+                            await DatabaseHelper().insertOnlineTrackId(
+                                OnlinePlaylistTrack(
+                                    opid: opid,
+                                    stid: track.id,
+                                    title: track.name,
+                                    artistTrack: widget
+                                        .playlistHandler.track![0].artist
+                                        .map((artistTrack) =>
+                                            ArtistTrack.fromMap(artistTrack))
+                                        .toList(),
+                                    albumTrack:
+                                        (track as PlaylistHandlerOnlineTrack)
+                                            .albumTrack,
+                                    image: track.cover,
+                                    orderNumber: -1,
+                                    hidden: false));
                           }
                         }
                       }

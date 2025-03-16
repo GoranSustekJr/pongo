@@ -2,23 +2,25 @@ import 'package:flutter/cupertino.dart';
 import '../../../exports.dart';
 
 class Favourites {
-  Future<void> add(context, String stid) async {
+  Future<void> add(context, Favourite favourite) async {
     final isAlreadyFavourite =
-        await DatabaseHelper().favouriteTrackAlreadyExists(stid);
+        await DatabaseHelper().favouriteTrackAlreadyExists(favourite.stid);
 
     if (isAlreadyFavourite) {
-      await DatabaseHelper().removeFavouriteTrack(stid);
+      await DatabaseHelper().removeFavouriteTrack(favourite);
       Notifications().showSpecialNotification(
-          context,
-          AppLocalizations.of(context)!.successful,
-          AppLocalizations.of(context)!.trackremovedfromfavourites,
+          notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!)!.successful,
+          AppLocalizations.of(notificationsContext.value!)!
+              .trackremovedfromfavourites,
           CupertinoIcons.heart_slash);
     } else {
-      await DatabaseHelper().insertFavouriteTrack(stid);
+      await DatabaseHelper().insertFavouriteTrack(favourite);
       Notifications().showSpecialNotification(
-          context,
-          AppLocalizations.of(context)!.successful,
-          AppLocalizations.of(context)!.trackisnowafavourite,
+          notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!)!.successful,
+          AppLocalizations.of(notificationsContext.value!)!
+              .trackisnowafavourite,
           AppIcons.heartFill);
     }
   }

@@ -105,12 +105,14 @@ class TrackControlsPhone extends StatelessWidget {
                               stid: currentMediaItem.id.split('.')[2],
                               artistJson: currentMediaItem.extras!["artists"],
                               playbackState: playbackState,
-                              mix: currentMediaItem.extras!["mix"] ?? false,
+                              mix: currentMediaItem.extras!["mix"] ??
+                                  false ||
+                                      RegExp(r'Mix #\d')
+                                          .hasMatch(currentMediaItem.title),
                               showArtist: showArtist,
                             ),
                             TrackProgressPhone(
                               album: currentMediaItem.album!,
-                              released: currentMediaItem.extras!["released"]!,
                               duration: currentMediaItem.duration,
                               showAlbum: showAlbum,
                             ),
@@ -122,7 +124,36 @@ class TrackControlsPhone extends StatelessWidget {
                             OtherControlsPhone(
                               lyricsOn: lyricsOn,
                               showQueue: showQueue,
-                              trackId: currentMediaItem.id,
+                              track: Track(
+                                id: currentMediaItem.id,
+                                name: currentMediaItem.title,
+                                artists: (jsonDecode(
+                                            currentMediaItem.extras!["artists"])
+                                        as List)
+                                    .map((artistMap) => ArtistTrack.fromMap(
+                                        artistMap as Map<String, dynamic>))
+                                    .toList(),
+                                album: currentMediaItem.album != null
+                                    ? AlbumTrack(
+                                        id: currentMediaItem.album!
+                                            .split('..Ææ..')[0],
+                                        name: currentMediaItem.album!
+                                            .split('..Ææ..')[1],
+                                        releaseDate: currentMediaItem
+                                            .extras!["released"],
+                                        images: currentMediaItem.artUri != null
+                                            ? [
+                                                AlbumImagesTrack(
+                                                    url: currentMediaItem
+                                                        .artUri!
+                                                        .toString(),
+                                                    height: null,
+                                                    width: null)
+                                              ]
+                                            : [],
+                                      )
+                                    : null,
+                              ),
                               downloadTrack: () async {
                                 await Download().single(currentMediaItem);
                               },

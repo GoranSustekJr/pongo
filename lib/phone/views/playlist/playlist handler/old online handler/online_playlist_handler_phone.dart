@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:ui';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/playing%20details/controls.dart';
@@ -46,8 +48,7 @@ class _OnlinePlaylistHandlerPhoneState
     final opids = playlsts.map((playlist) => playlist["opid"]).toList();
     Map plylistTrackMap = {};
     for (int opid in opids) {
-      final tracks =
-          await DatabaseHelper().queryOnlineTrackIdsForPlaylist(opid);
+      final tracks = await DatabaseHelper().queryOnlineTracksForPlaylist(opid);
       plylistTrackMap[opid] = tracks;
     }
 
@@ -192,8 +193,18 @@ class _OnlinePlaylistHandlerPhoneState
                               showPlaylistHandler.value = false;
                               for (String stid in playlistTrackToAddData
                                   .value!["playlist"]) {
-                                await DatabaseHelper()
-                                    .insertOnlineTrackId(opid, stid);
+                                /* await DatabaseHelper().insertOnlineTrackId(
+                                  OnlinePlaylistTrack(
+                                    opid: opid,
+                                    stid: stid,
+                                    title: title,
+                                    artistTrack: artistTrack,
+                                    albumTrack: albumTrack,
+                                    image: image,
+                                    orderNumber: orderNumber,
+                                    hidden: hidden,
+                                  ),
+                                ); */
                               }
                             } else {
                               await DatabaseHelper().insertOnlinePlaylist(
@@ -247,13 +258,13 @@ class _OnlinePlaylistHandlerPhoneState
                       addTracksToPlalists: () async {
                         for (int opid in selectedPlaylists) {
                           if (playlistTrackToAddData.value!["id"] != null) {
-                            await DatabaseHelper().insertOnlineTrackId(
-                                opid, playlistTrackToAddData.value!["id"]);
+                            /*  await DatabaseHelper().insertOnlineTrackId(  
+                                opid, playlistTrackToAddData.value!["id"]); */
                           } else {
                             for (var track
                                 in playlistTrackToAddData.value!["tracks"]) {
-                              await DatabaseHelper()
-                                  .insertOnlineTrackId(opid, track["id"]);
+                              /*  await DatabaseHelper() 
+                                  .insertOnlineTrackId(opid, track["id"]); */
                             }
                           }
                         }
