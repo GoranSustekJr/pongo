@@ -40,17 +40,23 @@ class TrackPlay {
             },
           ),
         );
-        // if stil this album playling
-        if (currentAlbumPlaylistId.value.split('.')[1] == id.split('.')[1] ||
-            id.split('.')[1] == "single") {
+
+        // if stil this album playling or a single
+        if (id.split('.')[1] == "single") {
           // Play the track using the mediaItem created from the source
           play(source.tag as MediaItem);
+        } else if (currentAlbumPlaylistId.value != "") {
+          if (currentAlbumPlaylistId.value.split('.')[1] == id.split('.')[1] ||
+              currentAlbumPlaylistId.value == id.split('.')[1]) {
+            // Play the track using the mediaItem created from the source
+            play(source.tag as MediaItem);
+          }
         }
 
         // Once everything is done, complete the completer
         completer.complete();
       },
-      //   );
+      //   ); //TODO: Disabled
       //   },
     );
 

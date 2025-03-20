@@ -31,10 +31,16 @@ class Shazam {
           );
           break;
         } else if (response.statusCode == 401) {
-          if (tries < 2) {
-            await AccessTokenhandler().renew(context);
+          if (jsonDecode(response.body)["detail"] == "Disabled") {
+            Notifications()
+                .showDisabledNotification(notificationsContext.value!);
+            break;
           } else {
-            break; // Exit the loop after the second attempt
+            if (tries < 2) {
+              await AccessTokenhandler().renew(context);
+            } else {
+              break; // Exit the loop after the second attempt
+            }
           }
         } else {
           Notifications().showErrorNotification(

@@ -111,6 +111,17 @@ class Notifications {
         icon: AppIcons.warning);
   }
 
+  // Show disabled notification
+  void showDisabledNotification(BuildContext context) {
+    showNotification(
+        context: context,
+        title: AppLocalizations.of(context)!.accountdisabled,
+        message: AppLocalizations.of(context)!
+            .pleasecontactinordertoenableyouraccountandusetheapp,
+        icon: AppIcons.warning,
+        durationInSeconds: 20);
+  }
+
   // Shazam notification
   void showShazamNotification(
     BuildContext context,

@@ -58,8 +58,6 @@ class _ProfilePhoneState extends State<ProfilePhone>
         hidden = data["hidden_auth"];
         showBody = true;
       });
-    } else {
-      Navigator.of(context).pop();
     }
   }
 
@@ -222,7 +220,28 @@ class _ProfilePhoneState extends State<ProfilePhone>
                       ),
                     ),
                   )
-                : loadingScaffold(context, const ValueKey(false)),
+                : Scaffold(
+                    key: const ValueKey(false),
+                    backgroundColor: Colors.black,
+                    appBar: AppBar(
+                      automaticallyImplyLeading: false,
+                      title: Row(
+                        children: [
+                          backButton(context),
+                          Expanded(
+                            child: Container(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    body: Center(
+                      child:
+                          textButton(AppLocalizations.of(context)!.signout, () {
+                        SignInHandler().signOut(context);
+                        Navigator.of(context).pop();
+                      }, const TextStyle(color: Colors.white, fontSize: 18)),
+                    ),
+                  ),
           );
         });
   }

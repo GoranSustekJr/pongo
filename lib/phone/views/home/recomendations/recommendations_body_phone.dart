@@ -41,7 +41,8 @@ class RecommendationsBodyPhone extends StatelessWidget {
                           dataManager: dataManager,
                           audioServiceHandler: audioServiceHandler,
                         ),
-                      if (dataManager.categories.isNotEmpty)
+                      if (dataManager.categories.isNotEmpty ||
+                          dataManager.newReleases.isNotEmpty)
                         RecommendationsCategories(
                           dataManager: dataManager,
                           audioServiceHandler: audioServiceHandler,

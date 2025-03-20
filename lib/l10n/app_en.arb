@@ -126,6 +126,16 @@
         "description": "profile"
     },
 
+    "accountdisabled": "Account disabled",
+    "@accountdisabled": {
+        "description": "accountdisabled"
+    },
+    
+    "pleasecontactinordertoenableyouraccountandusetheapp": "Please conntact pongo.group@gmail.com in order to enable your account and use the app",
+    "@pleasecontactinordertoenableyouraccountandusetheapp": {
+        "description": "pleasecontactinordertoenableyouraccountandusetheapp"
+    },
+
     "hidden": "Hidden",
     "@hidden": {
         "description": "hidden"

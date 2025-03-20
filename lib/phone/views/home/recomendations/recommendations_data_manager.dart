@@ -28,6 +28,9 @@ class RecommendationsDataManager with ChangeNotifier {
   // Loading
   List<String> loading = [];
 
+  // New releases
+  List<Album> newReleases = [];
+
   // Suggestion header
   final TextStyle suggestionHeader = TextStyle(
     fontSize: kIsApple ? 24 : 25,
@@ -57,6 +60,22 @@ class RecommendationsDataManager with ChangeNotifier {
         // Set the history
         if (data["history"] != null) {
           history = Track.fromMapList(data["history"]["tracks"]);
+        }
+
+        if (data["new_releases"] != null) {
+          newReleases =
+              (data["new_releases"]["albums"]["items"] as List<dynamic>)
+                  .map((album) {
+            return Album(
+              id: album["id"],
+              name: album["name"],
+              type: album["album_type"],
+              artists: album["artists"].map((artist) {
+                return artist["name"]; //{artist["id"]: artist["name"]};
+              }).toList(),
+              image: calculateWantedResolution(album["images"], 300, 300),
+            );
+          }).toList();
         }
       } else {
         failed = true;

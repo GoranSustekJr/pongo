@@ -59,7 +59,8 @@ class _BuyPremiumPhoneState extends State<BuyPremiumPhone>
               child: textButton(
                   "${AppLocalizations.of(context)!.buypremium}: ${subscriptionModels.isNotEmpty ? subscriptionModels[0].price : ""} ${subscriptionModels.isNotEmpty ? subscriptionModels[0].currencyCode : ""}",
                   () {
-                subscribe(product: subscriptionModels[0]);
+                Notifications()
+                    .showDisabledNotification(notificationsContext.value!);
               }, const TextStyle(color: Colors.white)),
             ),
             Padding(

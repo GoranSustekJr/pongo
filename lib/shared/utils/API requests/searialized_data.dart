@@ -25,10 +25,16 @@ class SearializedData {
           Map<String, dynamic> data = jsonDecode(response.body);
           return data;
         } else if (response.statusCode == 401) {
-          if (tries < 2) {
-            await AccessTokenhandler().renew(context);
+          if (jsonDecode(response.body)["detail"] == "Disabled") {
+            Notifications()
+                .showDisabledNotification(notificationsContext.value!);
+            break;
           } else {
-            break; // Exit the loop after the second attempt
+            if (tries < 2) {
+              await AccessTokenhandler().renew(context);
+            } else {
+              break; // Exit the loop after the second attempt
+            }
           }
         } else {
           return {}; // Handle other status codes as needed
@@ -66,10 +72,16 @@ class SearializedData {
 
           return data;
         } else if (response.statusCode == 401) {
-          if (tries < 2) {
-            await AccessTokenhandler().renew(context);
+          if (jsonDecode(response.body)["detail"] == "Disabled") {
+            Notifications()
+                .showDisabledNotification(notificationsContext.value!);
+            break;
           } else {
-            break; // Exit the loop after the second attempt
+            if (tries < 2) {
+              await AccessTokenhandler().renew(context);
+            } else {
+              break; // Exit the loop after the second attempt
+            }
           }
         } else {
           return {}; // Handle other status codes as needed

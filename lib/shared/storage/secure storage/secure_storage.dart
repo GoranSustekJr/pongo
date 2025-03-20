@@ -585,10 +585,14 @@ class Storage {
   Future<double> getSleepAlarmDeviceVolume() async {
     String? key = await storage.read(key: sleepAlarmDeviceVolumeKey);
     if (key == null) {
+      //----------------------------------------------------------------
+      return VolumeManager()
+          .currentVolume; /* 
       final volumeManager = Provider.of<VolumeManager>(
           notificationsContext.value!,
           listen: false);
-      return volumeManager.currentVolume;
+           */
+      //----------------------------------------------------------------
     } else {
       return double.parse(key);
     }

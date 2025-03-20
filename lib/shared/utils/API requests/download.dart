@@ -141,10 +141,16 @@ class Download {
 
                   tries++;
                 } else if (response.statusCode == 401) {
-                  if (tries < 2) {
-                    await AccessTokenhandler().renew(mainContext.value)!;
+                  if (jsonDecode(response.body)["detail"] == "Disabled") {
+                    Notifications()
+                        .showDisabledNotification(notificationsContext.value!);
+                    break;
                   } else {
-                    break; // Exit the loop after the second attempt
+                    if (tries < 2) {
+                      await AccessTokenhandler().renew(mainContext.value)!;
+                    } else {
+                      break; // Exit the loop after the second attempt
+                    }
                   }
                 } else if (response.statusCode == 403) {
                   Notifications().showSpecialNotification(
@@ -210,10 +216,16 @@ class Download {
 
           return data;
         } else if (response.statusCode == 401) {
-          if (tries < 2) {
-            await AccessTokenhandler().renew(context);
+          if (jsonDecode(response.body)["detail"] == "Disabled") {
+            Notifications()
+                .showDisabledNotification(notificationsContext.value!);
+            break;
           } else {
-            break; // Exit the loop after the second attempt
+            if (tries < 2) {
+              await AccessTokenhandler().renew(context);
+            } else {
+              break; // Exit the loop after the second attempt
+            }
           }
         } else if (response.statusCode == 403) {
           Notifications().showSpecialNotification(

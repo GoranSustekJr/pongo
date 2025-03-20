@@ -47,6 +47,8 @@
     "maximumvolumeofthealarm": "Maximale Lautstärke des Alarms",
     "createnewsleepalarm": "Neuen Schlafalarm erstellen",
     "off": "Aus",
+    "accountdisabled": "Konto deaktiviert",
+    "pleasecontactinordertoenableyouraccountandusetheapp": "Bitte kontaktieren Sie pongo.group@gmail.com, um Ihr Konto zu aktivieren und die App zu nutzen",
     "sleepin": "Einschlafmodus",
     "alarm": "Alarm",
     "sleepalarmisenabled": "Schlafalarm ist eingeschaltet",

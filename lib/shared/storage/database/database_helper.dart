@@ -27,7 +27,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 35,
+      version: 37,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -166,7 +166,9 @@ WHERE id IN (
     /*  await db.execute('''
       DELETE FROM lpid_track_id;
     '''); */
-    await db.execute('''DROP TABLE favourites''');
+    /* try {
+      await db.execute('''DROP TABLE favourites''');
+    } catch (e) {}
     await db.execute('''
       CREATE TABLE favourites (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -190,7 +192,7 @@ WHERE id IN (
         hidden BOOLEAN,
         FOREIGN KEY(opid) REFERENCES online_playlist(opid)
       )
-    ''');
+    '''); */
     // print(newVersion);
     /* await db.execute('''
       CREATE TABLE sleep (
