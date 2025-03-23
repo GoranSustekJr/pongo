@@ -5,7 +5,8 @@ import 'package:timezone/data/latest.dart' as tz;
 
 Future<void> configureMacosWindowUtils() async {
   const config = MacosWindowUtilsConfig(
-    toolbarStyle: NSWindowToolbarStyle.unified,
+    toolbarStyle: NSWindowToolbarStyle.expanded,
+    autoHideToolbarAndMenuBarInFullScreenMode: false,
   );
   await config.apply();
 }
@@ -14,9 +15,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
   // Ads
-  MobileAds.instance.initialize();
-  MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
-      testDeviceIds: ["F28981DD-9820-4986-BD79-8839334AF568"]));
+  if (kIsMobile) {
+    MobileAds.instance.initialize();
+    MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
+        testDeviceIds: ["F28981DD-9820-4986-BD79-8839334AF568"]));
+  }
 
   // Audio Session Configuration
   final session = await AudioSession.instance;
@@ -42,6 +45,23 @@ void main() async {
   if (kIsMacOS) {
     await configureMacosWindowUtils();
   }
+
+  if (kIsDesktop) {
+    await windowManager.ensureInitialized();
+    await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+    //await windowManager.setPreventClose(true);
+    WindowOptions windowOptions = const WindowOptions(
+      size: Size(1066, 625),
+      minimumSize: Size(1066, 625),
+      titleBarStyle: TitleBarStyle.hidden,
+      center: true,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
+
   // DB init
   final DatabaseHelper databaseHelper = DatabaseHelper();
 
@@ -59,7 +79,6 @@ void main() async {
   }
 
   // Init Access TokenÞ
-
   AccessToken accessTokenJWT = AccessToken();
   await accessTokenJWT.initializeAccessToken();
 
@@ -113,8 +132,8 @@ void main() async {
     await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
     //await windowManager.setPreventClose(true);
     WindowOptions windowOptions = const WindowOptions(
-      size: Size(1066, 625),
-      minimumSize: Size(1066, 625),
+      size: Size(938, 550),
+      minimumSize: Size(938, 550),
       center: true,
     );
     windowManager.waitUntilReadyToShow(windowOptions, () async {
@@ -136,7 +155,7 @@ void main() async {
         ],
         child: Builder(
           builder: (context) {
-            return const MyAppPhone();
+            return kIsMobile ? const MyAppPhone() : const MyAppDesktop();
           },
         ),
       ),

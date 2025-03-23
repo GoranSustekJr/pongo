@@ -1,5 +1,4 @@
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/views/home/recomendations/recommendations_data_manager.dart';
 
 class RecommendationsHistory extends StatelessWidget {
   final RecommendationsDataManager dataManager;
@@ -19,7 +18,7 @@ class RecommendationsHistory extends StatelessWidget {
         if (dataManager.history.isNotEmpty) razh(10),
         if (dataManager.history.isNotEmpty)
           SizedBox(
-            height: 160,
+            height: kIsDesktop ? 200 : 160,
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               padding: const EdgeInsets.only(left: 10, right: 10),
@@ -34,6 +33,7 @@ class RecommendationsHistory extends StatelessWidget {
                       .contains(dataManager.history[index].id),
                   type: TileType.track,
                   onTap: () async {
+                    //print(calculateBestImageForTrack(dataManager.history[index]));
                     await PlaySingle().onlineTrack(
                       context,
                       audioServiceHandler,
@@ -94,7 +94,7 @@ class RecommendationsHistory extends StatelessWidget {
           razh(10),
         if (dataManager.history.isNotEmpty && dataManager.history.length > 25)
           SizedBox(
-            height: 160,
+            height: kIsDesktop ? 200 : 160,
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               padding: const EdgeInsets.only(left: 10, right: 10),

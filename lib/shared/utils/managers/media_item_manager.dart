@@ -9,7 +9,7 @@ class MediaItemManager with ChangeNotifier {
   String blurhash = AppConstants().BLURHASH;
   String syncedLyrics = "";
   String plainLyrics = "";
-  bool lyricsOn = false;
+  bool lyricsOn = kIsDesktop;
   bool useSyncedLyric = true;
   bool showQueue = false;
   int syncTimeDelay = 0;
@@ -30,6 +30,7 @@ class MediaItemManager with ChangeNotifier {
     if (mediaItem.id.split('.')[2] == currentMediaItemId) return;
 
     currentMediaItemId = mediaItem.id.split(".")[2];
+    currentStid.value = currentMediaItemId!;
     currentMediaItem = mediaItem;
 
     // Blurhash
@@ -51,12 +52,15 @@ class MediaItemManager with ChangeNotifier {
       await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
     }
 
-    final internetConnectivityHandler =
-        Provider.of<InternetConnectivityHandler>(context, listen: false);
-
     // Fetch lyrics and update blurhash asynchronously.
     try {
-      if (enableLyrics.value && internetConnectivityHandler.isConnected) {
+      bool connected = true;
+      if (kIsMobile) {
+        final internetConnectivityHandler =
+            Provider.of<InternetConnectivityHandler>(context, listen: false);
+        connected = internetConnectivityHandler.isConnected;
+      }
+      if (enableLyrics.value && connected) {
         final lyrics = await TrackMetadata().getLyrics(
           context,
           mediaItem.title,

@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:ui';
 import 'package:pongo/exports.dart';
 
 class AppConstants {
@@ -23,4 +24,16 @@ class AppConstants {
   );
 
   int noBlur = 150;
+}
+
+class CustomScrollBehaviour extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.stylus,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.invertedStylus,
+      };
 }

@@ -1,7 +1,6 @@
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/home/recomendations/recommendations%20body/recommendations_categories.dart';
 import 'package:pongo/phone/views/home/recomendations/recommendations%20body/recommendations_history.dart';
-import 'package:pongo/phone/views/home/recomendations/recommendations_data_manager.dart';
 
 class RecommendationsBodyPhone extends StatelessWidget {
   final RecommendationsDataManager dataManager;

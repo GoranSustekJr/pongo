@@ -55,7 +55,7 @@ class RecommendedShimmer extends StatelessWidget {
                   if (history) razh(10),
                   if (history)
                     SizedBox(
-                      height: 160,
+                      height: kIsDesktop ? 200 : 160,
                       width: MediaQuery.of(context).size.width,
                       child: ListView.builder(
                         padding: const EdgeInsets.only(left: 10, right: 10),
@@ -66,12 +66,13 @@ class RecommendedShimmer extends StatelessWidget {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 7.5),
                             child: SizedBox(
-                              height: 160,
-                              width: 120,
+                              height: kIsDesktop ? 200 : 160,
+                              width: kIsDesktop ? 160 : 120,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  shimmContainer(120, 120, radius),
+                                  shimmContainer(kIsDesktop ? 160 : 120,
+                                      kIsDesktop ? 160 : 120, radius),
                                   razh(7.5),
                                   shimmContainer(100, 8, radius),
                                   razh(5),
@@ -86,7 +87,7 @@ class RecommendedShimmer extends StatelessWidget {
                   if (history) razh(10),
                   if (history)
                     SizedBox(
-                      height: 160,
+                      height: kIsDesktop ? 200 : 160,
                       width: MediaQuery.of(context).size.width,
                       child: ListView.builder(
                         padding: const EdgeInsets.only(left: 10, right: 10),
@@ -97,12 +98,13 @@ class RecommendedShimmer extends StatelessWidget {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 7.5),
                             child: SizedBox(
-                              height: 160,
-                              width: 120,
+                              height: kIsDesktop ? 200 : 160,
+                              width: kIsDesktop ? 160 : 120,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  shimmContainer(120, 120, radius),
+                                  shimmContainer(kIsDesktop ? 160 : 120,
+                                      kIsDesktop ? 160 : 120, radius),
                                   razh(7.5),
                                   shimmContainer(100, 8, radius),
                                   razh(5),
@@ -133,8 +135,12 @@ class RecommendedShimmer extends StatelessWidget {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: kIsDesktop
+                                ? MediaQuery.of(context).size.width > 1200
+                                    ? 4
+                                    : 3
+                                : 2,
                             childAspectRatio: 120 / 80,
                             crossAxisSpacing: 15,
                             mainAxisSpacing: 15,

@@ -114,7 +114,7 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Check if to show add
   void checkToShowAdd() async {
-    if (!premium.value) {
+    if (!premium.value && kIsMobile) {
       songsPlayed++;
 
       if (songsPlayed > 1) {
@@ -125,45 +125,47 @@ class AudioServiceHandler extends BaseAudioHandler
   }
 
   void showAdd() async {
-    await InterstitialAd.load(
-      adUnitId: adUnitId,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) async {
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-              // Called when the ad showed the full screen content.
-              onAdShowedFullScreenContent: (ad) {
-                pause();
-              },
-              // Called when an impression occurs on the ad.
-              onAdImpression: (ad) {},
-              // Called when the ad failed to show full screen content.
-              onAdFailedToShowFullScreenContent: (ad, err) {
-                // Dispose the ad here to free resources.
-                ad.dispose();
-              },
-              // Called when the ad dismissed full screen content.
-              onAdDismissedFullScreenContent: (ad) {
-                // Dispose the ad here to free resources.
-                play();
-                ad.dispose();
-              },
-              // Called when a click is recorded for an ad.
-              onAdClicked: (ad) {});
+    if (kIsMobile) {
+      await InterstitialAd.load(
+        adUnitId: adUnitId,
+        request: const AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (ad) async {
+            ad.fullScreenContentCallback = FullScreenContentCallback(
+                // Called when the ad showed the full screen content.
+                onAdShowedFullScreenContent: (ad) {
+                  pause();
+                },
+                // Called when an impression occurs on the ad.
+                onAdImpression: (ad) {},
+                // Called when the ad failed to show full screen content.
+                onAdFailedToShowFullScreenContent: (ad, err) {
+                  // Dispose the ad here to free resources.
+                  ad.dispose();
+                },
+                // Called when the ad dismissed full screen content.
+                onAdDismissedFullScreenContent: (ad) {
+                  // Dispose the ad here to free resources.
+                  play();
+                  ad.dispose();
+                },
+                // Called when a click is recorded for an ad.
+                onAdClicked: (ad) {});
 
-          debugPrint('$ad loaded.');
-          // Keep a reference to the ad so you can show it later.
-          interstitialAd = ad;
+            debugPrint('$ad loaded.');
+            // Keep a reference to the ad so you can show it later.
+            interstitialAd = ad;
 
-          if (interstitialAd != null) {
-            await interstitialAd!.show();
-          }
-        },
-        onAdFailedToLoad: (LoadAdError error) {
-          debugPrint('InterstitialAd failed to load: $error');
-        },
-      ),
-    );
+            if (interstitialAd != null) {
+              await interstitialAd!.show();
+            }
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            debugPrint('InterstitialAd failed to load: $error');
+          },
+        ),
+      );
+    }
   }
 
   // Sleep mode --> Every minute turn a volume down 1% until it reaches 0% => pause the song and return volume to 100%
@@ -578,7 +580,7 @@ class AudioServiceHandler extends BaseAudioHandler
   // Seek function to change the playback position
   @override
   Future<void> seek(Duration position) async =>
-      premium.value ? audioPlayer.seek(position) : null;
+      premium.value || !kIsMobile ? audioPlayer.seek(position) : null;
 
   // Skip to a specific item in the queue and start playback
   @override

@@ -76,8 +76,8 @@ class RecommendedTile extends StatelessWidget {
         ? Padding(
             padding: const EdgeInsets.symmetric(horizontal: 7.5),
             child: SizedBox(
-              height: 160,
-              width: 120,
+              height: kIsDesktop ? 200 : 160,
+              width: kIsDesktop ? 160 : 120,
               child: GestureDetector(
                 onLongPressStart: (LongPressStartDetails details) async {
                   bool isFavourite = await DatabaseHelper()
@@ -118,8 +118,8 @@ class RecommendedTile extends StatelessWidget {
                         : CrossAxisAlignment.start,
                     children: [
                       Container(
-                        height: 120,
-                        width: 120,
+                        height: kIsDesktop ? 160 : 120,
+                        width: kIsDesktop ? 160 : 120,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
                               type == TileType.artist ? 360 : 7.5),

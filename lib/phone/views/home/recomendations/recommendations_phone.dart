@@ -1,6 +1,5 @@
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/shimmer/recommended_shimmer.dart';
-import 'package:pongo/phone/views/home/recomendations/recommendations_data_manager.dart';
 
 class RecommendationsPhone extends StatefulWidget {
   const RecommendationsPhone({super.key});

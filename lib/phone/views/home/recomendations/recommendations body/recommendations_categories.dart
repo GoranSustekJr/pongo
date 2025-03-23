@@ -2,7 +2,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/phone/views/home/recomendations/recommendations_data_manager.dart';
 
 class RecommendationsCategories extends StatelessWidget {
   final RecommendationsDataManager dataManager;
@@ -16,6 +15,7 @@ class RecommendationsCategories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Column(
       children: [
         if (dataManager.categories.isNotEmpty ||
@@ -27,7 +27,7 @@ class RecommendationsCategories extends StatelessWidget {
           razh(10),
         if (dataManager.newReleases.isNotEmpty)
           SizedBox(
-            height: 160,
+            height: kIsDesktop ? 200 : 160,
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               padding: const EdgeInsets.only(left: 10, right: 10),
@@ -50,6 +50,7 @@ class RecommendationsCategories extends StatelessWidget {
               },
             ),
           ),
+        if (dataManager.categories.isNotEmpty) razh(10),
         if (dataManager.categories.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 7.5),
@@ -60,8 +61,12 @@ class RecommendationsCategories extends StatelessWidget {
               ),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: kIsDesktop
+                    ? size.width > 1200
+                        ? 4
+                        : 3
+                    : 2,
                 childAspectRatio: 120 / 80,
                 crossAxisSpacing: 15,
                 mainAxisSpacing: 15,
