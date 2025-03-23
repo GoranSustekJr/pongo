@@ -20,9 +20,11 @@ class SliverAppBarPhone extends StatelessWidget {
     return SliverAppBar(
       snap: false,
       collapsedHeight: kToolbarHeight,
-      expandedHeight: MediaQuery.of(context).size.height / 2,
+      expandedHeight: kIsMacOS ? 400 : MediaQuery.of(context).size.height / 2,
       floating: false,
       pinned: true,
+      backgroundColor: Col.transp,
+      surfaceTintColor: Col.transp,
       stretch: true,
       title: Row(
         children: [
@@ -37,6 +39,7 @@ class SliverAppBarPhone extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             ),
@@ -139,49 +142,57 @@ class SliverAppBarPhone extends StatelessWidget {
         ],
       ),
       automaticallyImplyLeading: false,
-      flexibleSpace: FlexibleSpaceBar(
-        titlePadding: EdgeInsets.zero,
-        centerTitle: true,
-        title: AppBar(
-          backgroundColor: useBlur.value
-              ? Col.transp
-              : Col.realBackground.withAlpha(
-                  ((MediaQuery.of(context).size.height / 2 <=
-                                  scrollControllerOffset
-                              ? 1
-                              : scrollControllerOffset /
-                                  (MediaQuery.of(context).size.height / 2)) *
-                          AppConstants().noBlur)
-                      .toInt()),
-          automaticallyImplyLeading: false,
-          flexibleSpace: Opacity(
-            opacity:
-                MediaQuery.of(context).size.height / 2 <= scrollControllerOffset
-                    ? 1
-                    : scrollControllerOffset /
-                        (MediaQuery.of(context).size.height / 2),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: useBlur.value ? 10 : 0,
-                sigmaY: useBlur.value ? 10 : 0,
+      flexibleSpace: ClipRRect(
+        borderRadius:
+            kIsDesktop ? BorderRadius.circular(15) : BorderRadius.zero,
+        child: FlexibleSpaceBar(
+          titlePadding: EdgeInsets.zero,
+          centerTitle: true,
+          title: AppBar(
+            backgroundColor: useBlur.value
+                ? Col.transp
+                : Col.realBackground.withAlpha(
+                    ((MediaQuery.of(context).size.height / 2 <=
+                                    scrollControllerOffset
+                                ? 1
+                                : scrollControllerOffset /
+                                    (MediaQuery.of(context).size.height / 2)) *
+                            AppConstants().noBlur)
+                        .toInt()),
+            automaticallyImplyLeading: false,
+            flexibleSpace: Opacity(
+              opacity: MediaQuery.of(context).size.height / 2 <=
+                      scrollControllerOffset
+                  ? 1
+                  : scrollControllerOffset /
+                      (MediaQuery.of(context).size.height / 2),
+              child: ClipRRect(
+                borderRadius:
+                    kIsDesktop ? BorderRadius.circular(15) : BorderRadius.zero,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: useBlur.value ? 10 : 0,
+                    sigmaY: useBlur.value ? 10 : 0,
+                  ),
+                  child: Container(),
+                ),
               ),
-              child: Container(),
             ),
           ),
-        ),
-        background: Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width - 60,
-            height: MediaQuery.of(context).size.width - 60,
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                  child: ImageCompatible(
-                    image: image,
+          background: Center(
+            child: SizedBox(
+              width: kIsMacOS ? 300 : MediaQuery.of(context).size.width - 60,
+              height: kIsMacOS ? 300 : MediaQuery.of(context).size.width - 60,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: ImageCompatible(
+                      image: image,
+                    ),
                   ),
                 ),
               ),

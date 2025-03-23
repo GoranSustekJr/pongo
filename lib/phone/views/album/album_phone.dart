@@ -173,88 +173,121 @@ class _AlbumPhoneState extends State<AlbumPhone> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 400),
-      child: showBody
-          ? Stack(
-              key: ValueKey(blurhash),
-              children: [
-                BlurHash(
-                  hash: blurhash,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  color: Colors.black.withAlpha(50),
-                  child: Scaffold(
-                    extendBodyBehindAppBar: true,
-                    extendBody: true,
-                    body: Scrollbar(
-                      controller: scrollController,
-                      child: CustomScrollView(
-                        controller: scrollController,
-                        slivers: <Widget>[
-                          SliverAppBarPhone(
-                              name: widget.album.name,
-                              tracks: tracks,
-                              scrollControllerOffset: scrollControllerOffset,
-                              image: widget.album.image),
-                          SliverPersistentHeader(
-                            pinned: true,
-                            delegate: StickyHeaderDelegate(
-                              minHeight: 40,
-                              maxHeight: 40,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 15, right: 15, top: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(60),
-                                      color: useBlur.value
-                                          ? Col.transp
-                                          : Col.realBackground.withAlpha(
-                                              AppConstants().noBlur)),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(60),
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                        sigmaX: useBlur.value ? 10 : 0,
-                                        sigmaY: useBlur.value ? 10 : 0,
-                                      ),
-                                      child: PlayShuffleHaltAlbum(
-                                        album: widget.album,
-                                        missingTracks: missingTracks,
-                                        loadingShuffle: loadingShuffle,
-                                        play: () {
-                                          play(index: 0);
-                                        },
-                                        shuffle: playShuffle,
+    Size size = MediaQuery.of(context).size;
+    return ClipRRect(
+      borderRadius: kIsDesktop ? BorderRadius.circular(15) : BorderRadius.zero,
+      child: SizedBox(
+        width: kIsDesktop ? 800 : size.width,
+        height: kIsDesktop ? 500 : size.height,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 400),
+          child: showBody
+              ? Stack(
+                  key: ValueKey(blurhash),
+                  children: [
+                    SizedBox(
+                      width: kIsDesktop ? 800 : size.width,
+                      height: kIsDesktop ? 500 : size.height,
+                      child: ClipRRect(
+                        borderRadius: kIsDesktop
+                            ? BorderRadius.circular(15)
+                            : BorderRadius.zero,
+                        child: BlurHash(
+                          hash: blurhash,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: kIsDesktop ? 800 : size.width,
+                      height: kIsDesktop ? 500 : size.height,
+                      decoration: BoxDecoration(
+                          color: Colors.black.withAlpha(50),
+                          borderRadius:
+                              kIsDesktop ? BorderRadius.circular(15) : null),
+                      child: Scaffold(
+                        extendBodyBehindAppBar: true,
+                        extendBody: true,
+                        backgroundColor: Col.transp,
+                        body: Theme(
+                          data: ThemeData(
+                              scrollbarTheme: kIsDesktop
+                                  ? ScrollbarThemeData(
+                                      thumbColor: MaterialStateProperty.all(
+                                          Colors.white.withAlpha(100)),
+                                    )
+                                  : null),
+                          child: Scrollbar(
+                            controller: scrollController,
+                            child: CustomScrollView(
+                              controller: scrollController,
+                              slivers: <Widget>[
+                                SliverAppBarPhone(
+                                    name: widget.album.name,
+                                    tracks: tracks,
+                                    scrollControllerOffset:
+                                        scrollControllerOffset,
+                                    image: widget.album.image),
+                                SliverPersistentHeader(
+                                  pinned: true,
+                                  delegate: StickyHeaderDelegate(
+                                    minHeight: 40,
+                                    maxHeight: 40,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 15, right: 15, top: 5),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(60),
+                                            color: useBlur.value
+                                                ? Col.transp
+                                                : Col.realBackground.withAlpha(
+                                                    AppConstants().noBlur)),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(60),
+                                          child: BackdropFilter(
+                                            filter: ImageFilter.blur(
+                                              sigmaX: useBlur.value ? 10 : 0,
+                                              sigmaY: useBlur.value ? 10 : 0,
+                                            ),
+                                            child: PlayShuffleHaltAlbum(
+                                              album: widget.album,
+                                              missingTracks: missingTracks,
+                                              loadingShuffle: loadingShuffle,
+                                              play: () {
+                                                play(index: 0);
+                                              },
+                                              shuffle: playShuffle,
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
+                                SliverToBoxAdapter(
+                                  child: AlbumBodyPhone(
+                                    album: widget.album,
+                                    tracks: tracks,
+                                    missingTracks: missingTracks,
+                                    loading: loading,
+                                    play: (index) {
+                                      play(index: index);
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          SliverToBoxAdapter(
-                            child: AlbumBodyPhone(
-                              album: widget.album,
-                              tracks: tracks,
-                              missingTracks: missingTracks,
-                              loading: loading,
-                              play: (index) {
-                                play(index: index);
-                              },
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            )
-          : loadingScaffold(context, const ValueKey(false)),
+                  ],
+                )
+              : loadingScaffold(context, const ValueKey(false)),
+        ),
+      ),
     );
   }
 }

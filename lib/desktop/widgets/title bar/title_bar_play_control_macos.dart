@@ -75,7 +75,6 @@ class TitleBarPlayControlMacos extends StatelessWidget {
           itemHeight: 30,
           icon: CupertinoIcons.ellipsis_circle,
           items: [
-            const MacosPulldownMenuDivider(),
             MacosPulldownMenuItem(
               title: SizedBox(
                 width: 150,

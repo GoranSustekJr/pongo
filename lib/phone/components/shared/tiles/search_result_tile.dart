@@ -60,36 +60,7 @@ class SearchResultTile extends StatelessWidget {
     }
 
     return kIsApple
-        ? /*SwipeActionCell(
-             key: key!,
-            trailingActions: type == TileType.track
-                ? [
-                    SwipeAction(
-                      content: iconButton(
-                          AppIcons.addToQueue, Colors.white, addToQueue!),
-                      onTap: (CompletionHandler handler) {
-                        //handler.call(null);
-                      },
-                      color: Col.transp,
-                      backgroundRadius: 360,
-                    ),
-                  ]
-                : [],
-            child: CupertinoContextMenu(
-              actions: [
-                CupertinoContextMenuAction(
-                  isDestructiveAction: true,
-                  isDefaultAction: true,
-                  onPressed: () {
-                    print("object");
-                    //   Navigator.pop(context);
-                  },
-                  child: const Text("ACtion"),
-                )
-              ],
-              enableHapticFeedback: true,
-              child: */
-        SizedBox(
+        ? SizedBox(
             height: 85,
             width: MediaQuery.of(context).size.width,
             child: CupertinoButton(

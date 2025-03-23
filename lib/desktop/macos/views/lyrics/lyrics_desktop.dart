@@ -166,7 +166,7 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                                 child: SizedBox(
                                   child: Container(
                                     height: 30,
-                                    width: 120,
+                                    width: 125,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(60),
                                       color: kIsDesktop

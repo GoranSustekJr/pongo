@@ -93,6 +93,9 @@ class AppLocalizationsHr extends AppLocalizations {
   String get hidden => 'Sakriveno';
 
   @override
+  String get queue => 'Red čekanja';
+
+  @override
   String get allofyourdataishidden => 'Sve vaše informacije su sakrivene';
 
   @override

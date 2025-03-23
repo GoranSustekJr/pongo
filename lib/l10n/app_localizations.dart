@@ -265,6 +265,12 @@ abstract class AppLocalizations {
   /// **'Hidden'**
   String get hidden;
 
+  /// queue
+  ///
+  /// In en, this message translates to:
+  /// **'Queue'**
+  String get queue;
+
   /// allofyourdataishidden
   ///
   /// In en, this message translates to:

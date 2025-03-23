@@ -26,8 +26,8 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.only(
-          top: 35,
+        padding: EdgeInsets.only(
+          top: kIsDesktop ? 5 : 35,
           left: 0,
           right: 0,
         ),

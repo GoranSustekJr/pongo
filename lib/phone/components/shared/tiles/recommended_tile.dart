@@ -1,7 +1,9 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_desktop_context_menu/flutter_desktop_context_menu.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/components/recommended/Pull%20down%20menu%20items/recommended_track_pulldown_menu_items_desktop.dart';
 
 class RecommendedTile extends StatelessWidget {
   final dynamic data;
@@ -79,34 +81,53 @@ class RecommendedTile extends StatelessWidget {
               height: kIsDesktop ? 200 : 160,
               width: kIsDesktop ? 160 : 120,
               child: GestureDetector(
+                onSecondaryTap: () async {
+                  if (kIsDesktop) {
+                    if (type == TileType.track) {
+                      bool favourite = await DatabaseHelper()
+                          .favouriteTrackAlreadyExists(data.id);
+                      popUpContextMenu(
+                        recommendedTrackPulldownMenuItemsDesktop(
+                            context,
+                            data,
+                            "recommended.single",
+                            favourite,
+                            doesNotExist!,
+                            doesNowExist!),
+                      );
+                    }
+                  }
+                },
                 onLongPressStart: (LongPressStartDetails details) async {
-                  bool isFavourite = await DatabaseHelper()
-                      .favouriteTrackAlreadyExists(data.id);
-                  if (type == TileType.track) {
-                    showPullDownMenu(
-                      context: context,
-                      items: searchTrackPulldownMenuItems(
-                        context,
-                        data,
-                        "recommended.single.",
-                        isFavourite,
-                        doesNotExist!,
-                        doesNowExist!,
-                      ),
-                      position: RelativeRect.fromLTRB(
-                        details.globalPosition.dx >= 260
-                            ? details.globalPosition.dx
-                            : size.width - details.globalPosition.dx,
-                        size.height - details.globalPosition.dy - 300 > 150
-                            ? details.globalPosition.dy
-                            : 400,
-                        details.globalPosition.dx >= 260
-                            ? size.width - details.globalPosition.dx
-                            : details.globalPosition.dx,
-                        details.globalPosition.dy,
-                      ),
-                      topWidget: const SizedBox(),
-                    );
+                  if (kIsMobile) {
+                    bool isFavourite = await DatabaseHelper()
+                        .favouriteTrackAlreadyExists(data.id);
+                    if (type == TileType.track) {
+                      showPullDownMenu(
+                        context: context,
+                        items: searchTrackPulldownMenuItems(
+                          context,
+                          data,
+                          "recommended.single.",
+                          isFavourite,
+                          doesNotExist!,
+                          doesNowExist!,
+                        ),
+                        position: RelativeRect.fromLTRB(
+                          details.globalPosition.dx >= 260
+                              ? details.globalPosition.dx
+                              : size.width - details.globalPosition.dx,
+                          size.height - details.globalPosition.dy - 300 > 150
+                              ? details.globalPosition.dy
+                              : 400,
+                          details.globalPosition.dx >= 260
+                              ? size.width - details.globalPosition.dx
+                              : details.globalPosition.dx,
+                          details.globalPosition.dy,
+                        ),
+                        topWidget: const SizedBox(),
+                      );
+                    }
                   }
                 },
                 child: CupertinoButton(

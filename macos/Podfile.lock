@@ -20,6 +20,8 @@ PODS:
     - FlutterMacOS
   - file_selector_macos (0.0.1):
     - FlutterMacOS
+  - flutter_desktop_context_menu (0.0.1):
+    - FlutterMacOS
   - flutter_image_compress_macos (1.0.0):
     - FlutterMacOS
   - flutter_local_notifications (0.0.1):
@@ -88,6 +90,7 @@ DEPENDENCIES:
   - connectivity_plus (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus/darwin`)
   - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
   - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
+  - flutter_desktop_context_menu (from `Flutter/ephemeral/.symlinks/plugins/flutter_desktop_context_menu/macos`)
   - flutter_image_compress_macos (from `Flutter/ephemeral/.symlinks/plugins/flutter_image_compress_macos/macos`)
   - flutter_local_notifications (from `Flutter/ephemeral/.symlinks/plugins/flutter_local_notifications/macos`)
   - flutter_platform_alert (from `Flutter/ephemeral/.symlinks/plugins/flutter_platform_alert/macos`)
@@ -131,6 +134,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos
   file_selector_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos
+  flutter_desktop_context_menu:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_desktop_context_menu/macos
   flutter_image_compress_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_image_compress_macos/macos
   flutter_local_notifications:
@@ -181,6 +186,7 @@ SPEC CHECKSUMS:
   connectivity_plus: 3f6c9057f4cd64198dc826edfb0542892f825343
   device_info_plus: a56e6e74dbbd2bb92f2da12c64ddd4f67a749041
   file_selector_macos: 585232b688707857504f9cb5f985a7c97fe4dd30
+  flutter_desktop_context_menu: 0d56e999e2ce55b51a503350878b8b46965eaf33
   flutter_image_compress_macos: e68daf54bb4bf2144c580fd4d151c949cbf492f0
   flutter_local_notifications: 13862b132e32eb858dea558a86d45d08daeacfe7
   flutter_platform_alert: 0373c95e18cdeda110eddcc3cb78fdd64f59dce0

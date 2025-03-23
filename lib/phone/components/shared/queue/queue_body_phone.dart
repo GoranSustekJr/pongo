@@ -61,7 +61,7 @@ class QueueBodyPhone extends StatelessWidget {
                         return ReorderableListView.builder(
                           key: ValueKey("$shuffleModeEnabled"),
                           padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).padding.top + 50,
+                              top: MediaQuery.of(context).padding.top + 55,
                               bottom: 300),
                           itemCount: queue!.length,
                           shrinkWrap: true,

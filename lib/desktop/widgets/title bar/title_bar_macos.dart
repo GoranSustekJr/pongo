@@ -3,8 +3,8 @@ import 'package:pongo/desktop/widgets/title%20bar/title_bar_play_control_macos.d
 import 'package:pongo/desktop/widgets/title%20bar/title_bar_title_macos.dart';
 import 'package:pongo/exports.dart';
 
-TitleBar titleBarMacos(
-    BuildContext context, AudioServiceHandler audioServiceHandler) {
+TitleBar titleBarMacos(BuildContext context,
+    AudioServiceHandler audioServiceHandler, bool queue, Function() showQueue) {
   return TitleBar(
     height: 60,
     decoration: const BoxDecoration(color: Col.transp),
@@ -37,7 +37,10 @@ TitleBar titleBarMacos(
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            TitleBarMacos(currentMediaItem: currentMediaItem),
+                            TitleBarMacos(
+                                currentMediaItem: currentMediaItem,
+                                queue: queue,
+                                showQueue: showQueue),
                             Expanded(
                               child: Container(),
                             ),

@@ -8,6 +8,5 @@ Future<CustomButton> queueAlert(context) async {
     positiveButtonTitle: AppLocalizations.of(context)!.okey,
     windowPosition: AlertWindowPosition.screenCenter,
   );
-  print("OK: $ok");
   return ok;
 }

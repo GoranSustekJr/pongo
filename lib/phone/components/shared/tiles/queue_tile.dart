@@ -23,7 +23,7 @@ class QueueTile extends StatelessWidget {
             height: 85,
             width: MediaQuery.of(context).size.width,
             child: CupertinoButton(
-                padding: const EdgeInsets.only(left: 15),
+                padding: EdgeInsets.only(left: kIsMobile ? 15 : 10),
                 onPressed: onTap,
                 child: Row(
                   children: [
@@ -110,7 +110,10 @@ class QueueTile extends StatelessWidget {
                     borderRadius: BorderRadius.circular(7.5),
                     child: imageUrl == ""
                         ? Center(
-                            child: Icon(AppIcons.blankTrack),
+                            child: Icon(
+                              AppIcons.blankTrack,
+                              color: Colors.white,
+                            ),
                           )
                         : CachedNetworkImage(
                             imageUrl: imageUrl,

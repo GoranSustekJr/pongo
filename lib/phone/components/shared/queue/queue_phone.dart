@@ -93,7 +93,8 @@ class _QueuePhoneState extends State<QueuePhone> {
                           },
                           removeItemsFromQueue: () async {
                             final selectedIndexes = selectedQueueIndexes;
-                            for (int index in selectedIndexes) {
+                            selectedIndexes.sort();
+                            for (int index in selectedIndexes.reversed) {
                               if (audioServiceHandler
                                       .audioPlayer.currentIndex !=
                                   index) {

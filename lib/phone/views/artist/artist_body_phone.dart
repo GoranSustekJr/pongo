@@ -55,7 +55,6 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (widget.albums.isNotEmpty) razh(15),
             if (widget.albums.isNotEmpty)
               searchResultText(
                   AppLocalizations.of(context)!.albums, suggestionHeader),
@@ -74,19 +73,35 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                     type: TileType.album,
                     onTap: () {
                       Navigator.pop(context);
-                      Navigations().nextScreen(
+                      /*  Navigations().nextScreen(
                           context,
                           AlbumPhone(
                             album: widget.albums[index],
                             context: widget.context,
-                          ));
+                          )); */
+                      if (kIsMobile) {
+                        Navigations().nextScreen(
+                            context,
+                            AlbumPhone(
+                              context: context,
+                              album: widget.albums[index],
+                            ));
+                      } else {
+                        showMacosSheet(
+                          context: context,
+                          builder: (contextt) => AlbumPhone(
+                            context: context,
+                            album: widget.albums[index],
+                          ),
+                          routeSettings: const RouteSettings(),
+                        );
+                      }
                     },
                   );
                 },
               ),
             if (widget.albums.isNotEmpty) razh(50),
-            if (widget.albums.isNotEmpty) razh(15),
-            if (widget.albums.isNotEmpty)
+            if (widget.otherAlbums.isNotEmpty)
               searchResultText(
                   AppLocalizations.of(context)!.singlesandcompilations,
                   suggestionHeader),
@@ -106,12 +121,23 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                     type: TileType.album,
                     onTap: () {
                       Navigator.pop(context);
-                      Navigations().nextScreen(
-                          context,
-                          AlbumPhone(
+                      if (kIsMobile) {
+                        Navigations().nextScreen(
+                            context,
+                            AlbumPhone(
+                              context: context,
+                              album: widget.otherAlbums[index],
+                            ));
+                      } else {
+                        showMacosSheet(
+                          context: context,
+                          builder: (contextt) => AlbumPhone(
+                            context: context,
                             album: widget.otherAlbums[index],
-                            context: widget.context,
-                          ));
+                          ),
+                          routeSettings: const RouteSettings(),
+                        );
+                      }
                     },
                   );
                 },

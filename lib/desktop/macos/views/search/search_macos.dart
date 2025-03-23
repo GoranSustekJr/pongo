@@ -27,6 +27,7 @@ class _SearchMacosState extends State<SearchMacos> {
     super.initState();
     initSearchHistory();
     focusNode.addListener(focusNodeListener);
+    searchFocusNode.value = focusNode;
   }
 
   initSearchHistory() async {
@@ -94,95 +95,114 @@ class _SearchMacosState extends State<SearchMacos> {
       children: [
         ContentArea(
           builder: (context, scrollController) {
-            return Container(
-              height: size.height,
-              width: size.width,
-              color: Col.transp,
-              child: Stack(
-                children: [
-                  AnimatedOpacity(
-                    opacity: showSearching ? 1 : 0,
-                    duration: const Duration(milliseconds: 500),
-                    child: SearchingMacos(
-                      query: qry,
-                    ),
-                  ),
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 500),
-                    bottom: showSearching ? size.height * 2 : null,
-                    child: AnimatedOpacity(
-                      opacity: showSearching ? 0 : 1,
-                      duration: const Duration(milliseconds: 500),
-                      child: const RecommendationsMacos(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                  child: MacosSearchField(
-                                maxLines: 1,
-                                placeholder:
-                                    AppLocalizations.of(context)!.search,
-                                placeholderStyle: TextStyle(
-                                    color: Colors.white.withAlpha(150)),
-                                decoration: BoxDecoration(
-                                    color: Col.primaryCard.withAlpha(200),
-                                    borderRadius: BorderRadius.circular(5)),
-                                focusNode: focusNode,
-                                results: searchHistory,
-                                controller: searchController,
-                                expands: false,
-                              )),
-                              if (searchBarIsSearching.value ||
-                                  focusNode.hasFocus ||
-                                  showSearching)
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: CupertinoButton(
-                                    padding: EdgeInsets.zero,
-                                    onPressed: () {
-                                      if (searchBarIsSearching.value ||
-                                          focusNode.hasFocus ||
-                                          showSearching) {
-                                        setState(() {
-                                          searching = false;
-                                          searchBarIsSearching.value = false;
-                                          showSearching = false;
-                                        });
-                                        focusNode.unfocus();
-                                        searchController.clear();
-                                        onFieldSubmitted(
-                                            ""); // Set Empty Query In Parent Widget
-                                      }
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(right: 5),
-                                      child: Text(
-                                        AppLocalizations.of(context)!.cancel,
-                                        style: TextStyle(
-                                            color: Colors.white.withAlpha(200),
-                                            fontSize: 20),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                            ],
+            return ValueListenableBuilder(
+                valueListenable: searchBarIsSearching,
+                builder: (context, value, child) {
+                  return Container(
+                    height: size.height,
+                    width: size.width,
+                    color: Col.transp,
+                    child: Stack(
+                      children: [
+                        AnimatedOpacity(
+                          opacity: showSearching || searchBarIsSearching.value
+                              ? 1
+                              : 0,
+                          duration: const Duration(milliseconds: 500),
+                          child: SearchingMacos(
+                            query: qry,
                           ),
                         ),
-                      ),
+                        AnimatedPositioned(
+                          duration: const Duration(milliseconds: 500),
+                          bottom: showSearching || searchBarIsSearching.value
+                              ? size.height * 2
+                              : null,
+                          child: AnimatedOpacity(
+                            opacity: showSearching || searchBarIsSearching.value
+                                ? 0
+                                : 1,
+                            duration: const Duration(milliseconds: 500),
+                            child: const RecommendationsMacos(),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 50,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                        child: MacosSearchField(
+                                      maxLines: 1,
+                                      placeholder:
+                                          AppLocalizations.of(context)!.search,
+                                      placeholderStyle: TextStyle(
+                                          color: Colors.white.withAlpha(150)),
+                                      decoration: BoxDecoration(
+                                          color: Col.primaryCard.withAlpha(200),
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      focusNode: focusNode,
+                                      results: searchHistory,
+                                      controller: searchController,
+                                      expands: false,
+                                      onTap: () {
+                                        //TODO: SOmething
+                                      },
+                                    )),
+                                    if (searchBarIsSearching.value ||
+                                        focusNode.hasFocus ||
+                                        showSearching)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: CupertinoButton(
+                                          padding: EdgeInsets.zero,
+                                          onPressed: () {
+                                            if (searchBarIsSearching.value ||
+                                                focusNode.hasFocus ||
+                                                showSearching) {
+                                              setState(() {
+                                                searching = false;
+                                                searchBarIsSearching.value =
+                                                    false;
+                                                showSearching = false;
+                                              });
+                                              focusNode.unfocus();
+                                              searchController.clear();
+                                              onFieldSubmitted(
+                                                  ""); // Set Empty Query In Parent Widget
+                                            }
+                                          },
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(right: 5),
+                                            child: Text(
+                                              AppLocalizations.of(context)!
+                                                  .cancel,
+                                              style: TextStyle(
+                                                  color: Colors.white
+                                                      .withAlpha(200),
+                                                  fontSize: 20),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            );
+                  );
+                });
           },
         )
       ],

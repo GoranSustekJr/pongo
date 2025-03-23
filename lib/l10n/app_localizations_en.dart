@@ -93,6 +93,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hidden => 'Hidden';
 
   @override
+  String get queue => 'Queue';
+
+  @override
   String get allofyourdataishidden => 'All of your data is hidden';
 
   @override

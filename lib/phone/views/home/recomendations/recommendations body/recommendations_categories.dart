@@ -39,12 +39,23 @@ class RecommendationsCategories extends StatelessWidget {
                   type: TileType.album,
                   showLoading: false,
                   onTap: () {
-                    Navigations().nextScreen(
-                        context,
-                        AlbumPhone(
+                    if (kIsMobile) {
+                      Navigations().nextScreen(
+                          context,
+                          AlbumPhone(
+                            album: dataManager.newReleases[index],
+                            context: context,
+                          ));
+                    } else {
+                      showMacosSheet(
+                        context: context,
+                        builder: (contextt) => AlbumPhone(
                           album: dataManager.newReleases[index],
-                          context: context,
-                        ));
+                          context: contextt,
+                        ),
+                        routeSettings: const RouteSettings(),
+                      );
+                    }
                   },
                 );
               },
@@ -125,11 +136,19 @@ class RecommendationsCategories extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         onPressed: () {
                           if (searchDataManagr.value != null) {
-                            searchDataManagr.value!.search(
-                              dataManager.categories[index].name,
-                            );
-                            navigationBarIndex.value = 0;
-                            searchBarIsSearching.value = true;
+                            if (kIsMobile) {
+                              searchDataManagr.value!.search(
+                                dataManager.categories[index].name,
+                              );
+                              navigationBarIndex.value = 0;
+                              searchBarIsSearching.value = true;
+                            } else {
+                              searchDataManagr.value!.search(
+                                dataManager.categories[index].name,
+                              );
+                              navigationBarIndex.value = 0;
+                              searchBarIsSearching.value = true;
+                            }
                           }
                         },
                         child: child,

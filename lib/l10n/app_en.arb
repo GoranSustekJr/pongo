@@ -105,6 +105,9 @@
         "description": "or"
     },
 
+    
+
+
     "sleepalarmisenabled": "Sleep alarm is enabled",
     "@sleepalarmisenabled": {
         "description": "sleepalarmisenabled"
@@ -139,6 +142,11 @@
     "hidden": "Hidden",
     "@hidden": {
         "description": "hidden"
+    },
+
+    "queue": "Queue",
+    "@queue": {
+        "description": "queue"
     },
 
     "allofyourdataishidden": "All of your data is hidden",

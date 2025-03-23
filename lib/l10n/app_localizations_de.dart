@@ -93,6 +93,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get hidden => 'Verborgen';
 
   @override
+  String get queue => 'Warteschlange';
+
+  @override
   String get allofyourdataishidden => 'Alle Ihre Informationen sind verborgen';
 
   @override

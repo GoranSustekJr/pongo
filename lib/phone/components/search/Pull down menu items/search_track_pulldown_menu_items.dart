@@ -103,7 +103,6 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
               doesNowExist("");
 
               // The UI will not auto-refresh since there is no stateful management here
-              // You may need to manually update the parent widget's state
             },
             title: favourite
                 ? AppLocalizations.of(context)!.unlike

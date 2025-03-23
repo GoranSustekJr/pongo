@@ -3,7 +3,13 @@ import '../../../exports.dart';
 
 class TitleBarMacos extends StatelessWidget {
   final MediaItem currentMediaItem;
-  const TitleBarMacos({super.key, required this.currentMediaItem});
+  final bool queue;
+  final Function() showQueue;
+  const TitleBarMacos(
+      {super.key,
+      required this.currentMediaItem,
+      required this.queue,
+      required this.showQueue});
 
   @override
   Widget build(BuildContext context) {
@@ -112,12 +118,12 @@ class TitleBarMacos extends StatelessWidget {
           width: 30,
           child: CupertinoButton(
             padding: const EdgeInsets.symmetric(vertical: 15),
+            onPressed: showQueue,
             child: Icon(
-              AppIcons.musicQueue,
+              queue ? AppIcons.musicQueueFill : AppIcons.musicQueue,
               size: 20,
               color: Colors.white,
             ),
-            onPressed: () {},
           ),
         ),
       ],

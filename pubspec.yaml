@@ -115,6 +115,7 @@ dependencies:
   pdfx: ^2.8.0
   googleapis_auth: ^1.6.0
   url_launcher: ^6.3.1
+  flutter_desktop_context_menu: ^0.2.0
 
   
 

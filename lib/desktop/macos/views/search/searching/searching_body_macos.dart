@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/components/search/Pull%20down%20menu%20items/search_track_pulldown_menu_items_macos.dart';
 
 class SearchingBodyMacos extends StatelessWidget {
   final List<Track> tracks;
@@ -65,12 +66,23 @@ class SearchingBodyMacos extends StatelessWidget {
                       data: artists[index],
                       type: TileType.artist,
                       onTap: () {
-                        Navigations().nextScreen(
-                            context,
-                            ArtistPhone(
+                        if (kIsMobile) {
+                          Navigations().nextScreen(
+                              context,
+                              ArtistPhone(
+                                context: context,
+                                artist: artists[index],
+                              ));
+                        } else {
+                          showMacosSheet(
+                            context: context,
+                            builder: (contextt) => ArtistPhone(
                               context: context,
                               artist: artists[index],
-                            ));
+                            ),
+                            routeSettings: const RouteSettings(),
+                          );
+                        }
                       },
                     );
                   },
@@ -96,12 +108,23 @@ class SearchingBodyMacos extends StatelessWidget {
                       data: albums[index],
                       type: TileType.album,
                       onTap: () {
-                        Navigations().nextScreen(
-                            context,
-                            AlbumPhone(
+                        if (kIsMobile) {
+                          Navigations().nextScreen(
+                              context,
+                              AlbumPhone(
+                                album: albums[index],
+                                context: context,
+                              ));
+                        } else {
+                          showMacosSheet(
+                            context: context,
+                            builder: (contextt) => AlbumPhone(
                               album: albums[index],
-                              context: context,
-                            ));
+                              context: contextt,
+                            ),
+                            routeSettings: const RouteSettings(),
+                          );
+                        }
                       },
                     );
                   },
@@ -190,28 +213,43 @@ class SearchingBodyMacos extends StatelessWidget {
                                 return SizedBox(
                                   width: 50,
                                   height: 50,
-                                  child: PullDownButton(
-                                    offset: const Offset(30, 30),
-                                    position: PullDownMenuPosition.automatic,
-                                    itemBuilder: (context) =>
-                                        searchTrackPulldownMenuItems(
-                                      context,
-                                      tracks[index],
-                                      "search.single.",
-                                      isFavourite,
-                                      loadingAdd,
-                                      loadingRemove,
-                                    ),
-                                    buttonBuilder: (context, showMenu) =>
-                                        CupertinoButton(
-                                      onPressed: showMenu,
-                                      padding: EdgeInsets.zero,
-                                      child: const Icon(
-                                        CupertinoIcons.ellipsis,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
+                                  child: kIsMobile
+                                      ? PullDownButton(
+                                          offset: const Offset(30, 30),
+                                          position:
+                                              PullDownMenuPosition.automatic,
+                                          itemBuilder: (context) =>
+                                              searchTrackPulldownMenuItems(
+                                            context,
+                                            tracks[index],
+                                            "search.single.",
+                                            isFavourite,
+                                            loadingAdd,
+                                            loadingRemove,
+                                          ),
+                                          buttonBuilder: (context, showMenu) =>
+                                              CupertinoButton(
+                                            onPressed: showMenu,
+                                            padding: EdgeInsets.zero,
+                                            child: const Icon(
+                                              CupertinoIcons.ellipsis,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        )
+                                      : MacosPulldownButton(
+                                          icon: AppIcons.more,
+                                          itemHeight: 30,
+                                          items:
+                                              searchTrackPulldownMenuItemsMacos(
+                                            context,
+                                            tracks[index],
+                                            "search.single.",
+                                            isFavourite,
+                                            loadingAdd,
+                                            loadingRemove,
+                                          ),
+                                        ),
                                 );
                               }
                             },
@@ -257,12 +295,21 @@ class SearchingBodyMacos extends StatelessWidget {
                       data: playlists[index],
                       type: TileType.playlist,
                       onTap: () {
-                        Navigations().nextScreen(
-                            context,
-                            PlaylistPhone(
-                              playlist: playlists[index],
+                        if (kIsMobile) {
+                          Navigations().nextScreen(
+                              context,
+                              PlaylistPhone(
+                                playlist: playlists[index],
+                                context: context,
+                              ));
+                        } else {
+                          showMacosSheet(
                               context: context,
-                            ));
+                              builder: (_) => PlaylistPhone(
+                                    playlist: playlists[index],
+                                    context: context,
+                                  ));
+                        }
                       },
                     );
                   },

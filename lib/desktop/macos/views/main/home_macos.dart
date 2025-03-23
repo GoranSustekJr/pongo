@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:pongo/desktop/macos/views/queue/queue_buttons_macos.dart';
+import 'package:pongo/desktop/macos/views/queue/queue_macos.dart';
 import 'package:pongo/exports.dart';
 
 class MainMacos extends StatefulWidget {
@@ -17,6 +19,9 @@ class _HomeStateMacos extends State<MainMacos> {
   String email = "";
   String? image;
 
+  // Queue
+  bool queue = false;
+
   // Style
   TextStyle titleStyle = TextStyle(
     color: Colors.white.withAlpha(150),
@@ -27,6 +32,7 @@ class _HomeStateMacos extends State<MainMacos> {
     color: Colors.white.withAlpha(200),
     fontSize: 15,
   );
+
   // Navigation bar - index map
   Map<int, int> indexMap = {
     1: 0,
@@ -51,6 +57,24 @@ class _HomeStateMacos extends State<MainMacos> {
 
   // Locale
   String locale = "en";
+
+  // Queue \\
+  // Edit queue state
+  bool editQueue = false;
+
+  // Selected queue indexes state
+  final List<int> selectedQueueIndexes = [];
+
+  // Function to toggle selection
+  void selectQueueIndex(int ind) {
+    setState(() {
+      if (selectedQueueIndexes.contains(ind)) {
+        selectedQueueIndexes.remove(ind);
+      } else {
+        selectedQueueIndexes.add(ind);
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -104,7 +128,15 @@ class _HomeStateMacos extends State<MainMacos> {
           valueListenable: navigationBarIndex,
           builder: (context, index, child) {
             return MacosWindow(
-              titleBar: titleBarMacos(context, audioServiceHandler),
+              titleBar:
+                  titleBarMacos(context, audioServiceHandler, queue, () async {
+                bool empty = await audioServiceHandler.queue.isEmpty;
+                if (!empty) {
+                  setState(() {
+                    queue = !queue;
+                  });
+                }
+              }),
               backgroundColor: Col.transp,
               disableWallpaperTinting: true,
               sidebar: Sidebar(
@@ -372,6 +404,69 @@ class _HomeStateMacos extends State<MainMacos> {
                     )
                   ],
                 ),
+              ),
+              endSidebar: Sidebar(
+                startWidth: queue ? 400 : 0,
+                maxWidth: queue ? 400 : 0,
+                minWidth: queue ? 300 : 0,
+                dragClosed: false,
+                topOffset: 0,
+                top: razh(61),
+                bottom: QueueButtonsMacos(
+                  edit: editQueue,
+                  changeEditQueue: (p) {
+                    setState(() {
+                      editQueue = p;
+                    });
+                  },
+                  closeQueue: () {
+                    setState(() {
+                      queue = false;
+                    });
+                  },
+                  clearSelectedQueueIndexes: () {
+                    setState(() {
+                      selectedQueueIndexes.clear();
+                    });
+                  },
+                  removeItemsFromQueue: () async {
+                    List<int> selectedIndexes = selectedQueueIndexes;
+                    selectedIndexes.sort();
+                    for (int index in selectedIndexes.reversed) {
+                      if (audioServiceHandler.audioPlayer.currentIndex !=
+                          index) {
+                        audioServiceHandler.queue.value.removeAt(index);
+                        await audioServiceHandler.playlist.removeAt(index);
+                      }
+                      changeTrackOnTap.value = false;
+                    }
+
+                    setState(() {
+                      editQueue = false;
+                      selectedQueueIndexes.clear();
+                    });
+                  },
+                ),
+                decoration: const BoxDecoration(color: Col.transp),
+                builder: (context, scrollController) {
+                  return SingleChildScrollView(
+                      controller: scrollController,
+                      child: QueueMacos(
+                        editQueue: editQueue,
+                        selectedQueueIndexes: selectedQueueIndexes,
+                        selectQueueIndex: (ind) {
+                          if (selectedQueueIndexes.contains(ind)) {
+                            setState(() {
+                              selectedQueueIndexes.remove(ind);
+                            });
+                          } else {
+                            setState(() {
+                              selectedQueueIndexes.add(ind);
+                            });
+                          }
+                        },
+                      ));
+                },
               ),
               child: Stack(
                 children: [

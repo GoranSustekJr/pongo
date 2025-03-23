@@ -19,3 +19,14 @@ divider(double x) {
     color: Col.onIcon,
   );
 }
+
+dividerVertical(double y, double x, double padding) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: padding),
+    child: Container(
+      width: x,
+      height: y,
+      color: Colors.white,
+    ),
+  );
+}

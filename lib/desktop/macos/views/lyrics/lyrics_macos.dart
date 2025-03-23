@@ -39,6 +39,8 @@ class _LyricsMacosState extends State<LyricsMacos> {
                                       duration:
                                           const Duration(milliseconds: 400),
                                       child: Stack(
+                                        key:
+                                            ValueKey(mediaItemManager.blurhash),
                                         children: [
                                           Blurhash(
                                             sigmaX: 0,
@@ -57,8 +59,9 @@ class _LyricsMacosState extends State<LyricsMacos> {
                                                         .currentMediaItem),
                                                 alignment: Alignment.topLeft,
                                                 child: LyricsBodyMacos(
-                                                  mediaItem: mediaItemManager
-                                                      .currentMediaItem!,
+                                                  size: size,
+                                                  mediaItem:
+                                                      streamMediaItem.data!,
                                                   audioServiceHandler:
                                                       mediaItemManager
                                                           .audioServiceHandler,
