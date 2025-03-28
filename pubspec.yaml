@@ -139,6 +139,13 @@ flutter_launcher_icons:
   ios: true
   remove_alpha_ios: true
   image_path: "assets/images/pongo_icon.png"
+  macos:
+    generate: true
+    image_path: "assets/images/pongo_icon_macos.png"
+  windows:
+    generate: true
+    image_path: "assets/images/pongo_icon.png"
+    icon_size: 48
 
 flutter_native_splash:
   ios: true
@@ -183,6 +190,7 @@ flutter:
     - assets/images/your_image_transparent.png
     - assets/pdf/Terms_and_conditions_Pongo.pdf
     - assets/icons/shazam.png
+    - assets/images/pongo_icon_macos.png
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

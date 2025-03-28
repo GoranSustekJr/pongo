@@ -129,7 +129,6 @@ class _SearchMacosState extends State<SearchMacos> {
                         SizedBox(
                           height: 50,
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
                             child: BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                               child: Padding(

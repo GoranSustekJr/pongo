@@ -33,13 +33,6 @@ class TrackImageDesktop extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(7.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(75),
-            spreadRadius: 0.1,
-            blurRadius: 15,
-          ),
-        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(7.5),

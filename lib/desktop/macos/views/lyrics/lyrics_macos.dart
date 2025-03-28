@@ -22,7 +22,7 @@ class _LyricsMacosState extends State<LyricsMacos> {
         builder: (context, mediaItemManager, child) {
           return mediaItemManager.currentMediaItem != null
               ? ValueListenableBuilder(
-                  valueListenable: currentTrackHeight,
+                  valueListenable: navigationBarIndex,
                   builder: (context, index, child) {
                     return MacosScaffold(
                       children: [
@@ -54,22 +54,30 @@ class _LyricsMacosState extends State<LyricsMacos> {
                                               duration: const Duration(
                                                   milliseconds: 400),
                                               child: Align(
-                                                key: ValueKey<dynamic>(
-                                                    mediaItemManager
-                                                        .currentMediaItem),
                                                 alignment: Alignment.topLeft,
-                                                child: LyricsBodyMacos(
-                                                  size: size,
-                                                  mediaItem:
-                                                      streamMediaItem.data!,
-                                                  audioServiceHandler:
-                                                      mediaItemManager
-                                                          .audioServiceHandler,
-                                                  artistJson: mediaItemManager
-                                                      .currentMediaItem!
-                                                      .extras!["artists"],
-                                                  mediaItemManager:
-                                                      mediaItemManager,
+                                                child: AnimatedSwitcher(
+                                                  duration: const Duration(
+                                                      milliseconds: 400),
+                                                  child: index == 6
+                                                      ? LyricsBodyMacos(
+                                                          key: const ValueKey(
+                                                              true),
+                                                          size: size,
+                                                          mediaItem:
+                                                              streamMediaItem
+                                                                  .data!,
+                                                          audioServiceHandler:
+                                                              mediaItemManager
+                                                                  .audioServiceHandler,
+                                                          artistJson: mediaItemManager
+                                                              .currentMediaItem!
+                                                              .extras!["artists"],
+                                                          mediaItemManager:
+                                                              mediaItemManager,
+                                                        )
+                                                      : const SizedBox(
+                                                          key: ValueKey(false),
+                                                        ),
                                                 ),
                                               ),
                                             ),

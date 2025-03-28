@@ -123,26 +123,68 @@ class TitleBarPlayControlMacos extends StatelessWidget {
             ),
             const MacosPulldownMenuDivider(),
             MacosPulldownMenuItem(
-              title: SizedBox(
-                width: 150,
-                child: Row(
-                  children: [
-                    const MacosIcon(
-                      AppIcons.heart,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        AppLocalizations.of(context)!.like,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              onTap: () => debugPrint('Tags...'),
+              title: FutureBuilder(
+                  future: DatabaseHelper().favouriteTrackAlreadyExists(
+                      currentMediaItem.id.split('.')[2]),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Icon(CupertinoIcons.exclamationmark_circle),
+                      );
+                    } else {
+                      bool isFavourite = snapshot.data ?? false;
+
+                      return SizedBox(
+                        width: 150,
+                        child: Row(
+                          children: [
+                            MacosIcon(
+                              isFavourite ? AppIcons.heartFill : AppIcons.heart,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                isFavourite
+                                    ? AppLocalizations.of(context)!.unlike
+                                    : AppLocalizations.of(context)!.like,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  }),
+              onTap: () async {
+                await Favourites().add(
+                    context,
+                    Favourite(
+                      id: -1,
+                      stid: currentMediaItem.id.split('.')[2],
+                      title: currentMediaItem.title,
+                      artistTrack: (jsonDecode(
+                                  currentMediaItem.extras?["artists"])
+                              as List<dynamic>)
+                          .map((artistJson) => ArtistTrack.fromMap(artistJson))
+                          .toList(),
+                      albumTrack: currentMediaItem.album != null
+                          ? AlbumTrack(
+                              id: currentMediaItem.album!.split('..Ææ..')[0],
+                              name: currentMediaItem.album!.split('..Ææ..')[0],
+                              images: [
+                                AlbumImagesTrack(
+                                    url: currentMediaItem.artUri.toString(),
+                                    height: null,
+                                    width: null)
+                              ],
+                              releaseDate: currentMediaItem.extras?["released"],
+                            )
+                          : null,
+                      image: currentMediaItem.artUri.toString(),
+                    ));
+              },
             ),
           ],
         ),
