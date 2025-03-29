@@ -67,7 +67,7 @@ class FullScreenBodyMacos extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 20),
                   child: SizedBox(
                     width: showLyrics
-                        ? 150
+                        ? size.width * 1 / 4 - 20 - 150
                         : size.height * 0.8 > 685
                             ? size.width - ((size.height * 0.8 - 60) - 190) - 40
                             : (size.height * 0.8 - 60) - 130 <
@@ -312,7 +312,8 @@ class FullScreenBodyMacos extends StatelessWidget {
                               message: AppLocalizations.of(context)!
                                   .doublecliktoadjustvolume,
                               child: MacosSlider(
-                                color: CupertinoColors.inactiveGray,
+                                color: CupertinoColors.white,
+                                thumbColor: Colors.white,
                                 //activeColor: CupertinoColors.inactiveGray,
                                 value: volume,
                                 onChanged: (volume) async {

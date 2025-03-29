@@ -12,8 +12,7 @@ class PlayingDetailsPhone extends StatelessWidget {
 
     return ChangeNotifierProvider(
       create: (_) => MediaItemManager(
-        Provider.of<AudioHandler>(context, listen: false)
-            as AudioServiceHandler,
+        Provider.of<AudioHandler>(context, listen: true) as AudioServiceHandler,
         context,
       ),
       child: Consumer<MediaItemManager>(

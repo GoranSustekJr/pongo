@@ -53,8 +53,7 @@ class _FullScreenMacosState extends State<FullScreenMacos> {
     Size size = MediaQuery.of(context).size;
     return ChangeNotifierProvider(
       create: (_) => MediaItemManager(
-        Provider.of<AudioHandler>(context, listen: false)
-            as AudioServiceHandler,
+        Provider.of<AudioHandler>(context) as AudioServiceHandler,
         context,
       ),
       child: Consumer<MediaItemManager>(

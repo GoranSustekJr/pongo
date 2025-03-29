@@ -80,135 +80,223 @@ class RecommendedTile extends StatelessWidget {
             child: SizedBox(
               height: kIsDesktop ? 200 : 160,
               width: kIsDesktop ? 160 : 120,
-              child: GestureDetector(
-                onSecondaryTap: () async {
-                  if (kIsDesktop) {
-                    if (type == TileType.track) {
-                      bool favourite = await DatabaseHelper()
-                          .favouriteTrackAlreadyExists(data.id);
-                      popUpContextMenu(
-                        recommendedTrackPulldownMenuItemsDesktop(
-                            context,
-                            data,
-                            "recommended.single",
-                            favourite,
-                            doesNotExist!,
-                            doesNowExist!),
-                      );
-                    }
-                  }
-                },
-                onLongPressStart: (LongPressStartDetails details) async {
-                  if (kIsMobile) {
-                    bool isFavourite = await DatabaseHelper()
-                        .favouriteTrackAlreadyExists(data.id);
-                    if (type == TileType.track) {
-                      showPullDownMenu(
-                        context: context,
-                        items: searchTrackPulldownMenuItems(
-                          context,
-                          data,
-                          "recommended.single.",
-                          isFavourite,
-                          doesNotExist!,
-                          doesNowExist!,
-                        ),
-                        position: RelativeRect.fromLTRB(
-                          details.globalPosition.dx >= 260
-                              ? details.globalPosition.dx
-                              : size.width - details.globalPosition.dx,
-                          size.height - details.globalPosition.dy - 300 > 150
-                              ? details.globalPosition.dy
-                              : 400,
-                          details.globalPosition.dx >= 260
-                              ? size.width - details.globalPosition.dx
-                              : details.globalPosition.dx,
-                          details.globalPosition.dy,
-                        ),
-                        topWidget: const SizedBox(),
-                      );
-                    }
-                  }
-                },
-                child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: onTap,
-                  child: Column(
-                    crossAxisAlignment: type == TileType.artist
-                        ? CrossAxisAlignment.center
-                        : CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: kIsDesktop ? 160 : 120,
-                        width: kIsDesktop ? 160 : 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(
-                              type == TileType.artist ? 360 : 7.5),
-                          color: Col.realBackground.withAlpha(150),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              type == TileType.artist ? 360 : 7.5),
-                          child: imageUrl == ""
-                              ? Center(
-                                  child: Icon(noImage, color: Colors.white),
-                                )
-                              : SizedBox(
-                                  child: ImageCompatible(image: imageUrl),
-                                ),
-                        ),
-                      ),
-                      razh(2.5),
-                      Flexible(
-                        child: Row(
+              child: kIsDesktop
+                  ? GestureDetector(
+                      onSecondaryTap: () async {
+                        if (kIsDesktop) {
+                          if (type == TileType.track) {
+                            bool favourite = await DatabaseHelper()
+                                .favouriteTrackAlreadyExists(data.id);
+                            popUpContextMenu(
+                              recommendedTrackPulldownMenuItemsDesktop(
+                                  context,
+                                  data,
+                                  "recommended.single",
+                                  favourite,
+                                  doesNotExist!,
+                                  doesNowExist!),
+                            );
+                          }
+                        }
+                      },
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: onTap,
+                        child: Column(
+                          crossAxisAlignment: type == TileType.artist
+                              ? CrossAxisAlignment.center
+                              : CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 18,
-                                    //   width: 120,
-                                    child: Text(
-                                      title,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: kIsApple ? 14 : 15,
-                                        fontWeight: kIsApple
-                                            ? FontWeight.w500
-                                            : FontWeight.w600,
-                                        color: Colors.white,
+                            Container(
+                              height: kIsDesktop ? 160 : 120,
+                              width: kIsDesktop ? 160 : 120,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    type == TileType.artist ? 360 : 7.5),
+                                color: Col.realBackground.withAlpha(150),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                    type == TileType.artist ? 360 : 7.5),
+                                child: imageUrl == ""
+                                    ? Center(
+                                        child:
+                                            Icon(noImage, color: Colors.white),
+                                      )
+                                    : SizedBox(
+                                        child: ImageCompatible(image: imageUrl),
                                       ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 17,
-                                    // width: 120,
-                                    child: Text(
-                                      subtitle,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: kIsApple ? 12 : 13,
-                                        fontWeight: kIsApple
-                                            ? FontWeight.w400
-                                            : FontWeight.w500,
-                                        color: Colors.white.withAlpha(175),
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
-                            if (trailing != null) trailing!,
+                            razh(2.5),
+                            Flexible(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 18,
+                                          //   width: 120,
+                                          child: Text(
+                                            title,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: kIsApple ? 14 : 15,
+                                              fontWeight: kIsApple
+                                                  ? FontWeight.w500
+                                                  : FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 17,
+                                          // width: 120,
+                                          child: Text(
+                                            subtitle,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: kIsApple ? 12 : 13,
+                                              fontWeight: kIsApple
+                                                  ? FontWeight.w400
+                                                  : FontWeight.w500,
+                                              color:
+                                                  Colors.white.withAlpha(175),
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (trailing != null) trailing!,
+                                ],
+                              ),
+                            )
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+                      ),
+                    )
+                  : GestureDetector(
+                      onLongPressStart: (LongPressStartDetails details) async {
+                        if (kIsMobile) {
+                          bool isFavourite = await DatabaseHelper()
+                              .favouriteTrackAlreadyExists(data.id);
+                          if (type == TileType.track) {
+                            showPullDownMenu(
+                              context: context,
+                              items: searchTrackPulldownMenuItems(
+                                context,
+                                data,
+                                "recommended.single.",
+                                isFavourite,
+                                doesNotExist!,
+                                doesNowExist!,
+                              ),
+                              position: RelativeRect.fromLTRB(
+                                details.globalPosition.dx >= 260
+                                    ? details.globalPosition.dx
+                                    : size.width - details.globalPosition.dx,
+                                size.height - details.globalPosition.dy - 300 >
+                                        150
+                                    ? details.globalPosition.dy
+                                    : 400,
+                                details.globalPosition.dx >= 260
+                                    ? size.width - details.globalPosition.dx
+                                    : details.globalPosition.dx,
+                                details.globalPosition.dy,
+                              ),
+                              topWidget: const SizedBox(),
+                            );
+                          }
+                        }
+                      },
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: onTap,
+                        child: Column(
+                          crossAxisAlignment: type == TileType.artist
+                              ? CrossAxisAlignment.center
+                              : CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: kIsDesktop ? 160 : 120,
+                              width: kIsDesktop ? 160 : 120,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    type == TileType.artist ? 360 : 7.5),
+                                color: Col.realBackground.withAlpha(150),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                    type == TileType.artist ? 360 : 7.5),
+                                child: imageUrl == ""
+                                    ? Center(
+                                        child:
+                                            Icon(noImage, color: Colors.white),
+                                      )
+                                    : SizedBox(
+                                        child: ImageCompatible(image: imageUrl),
+                                      ),
+                              ),
+                            ),
+                            razh(2.5),
+                            Flexible(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: 18,
+                                          //   width: 120,
+                                          child: Text(
+                                            title,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: kIsApple ? 14 : 15,
+                                              fontWeight: kIsApple
+                                                  ? FontWeight.w500
+                                                  : FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 17,
+                                          // width: 120,
+                                          child: Text(
+                                            subtitle,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: kIsApple ? 12 : 13,
+                                              fontWeight: kIsApple
+                                                  ? FontWeight.w400
+                                                  : FontWeight.w500,
+                                              color:
+                                                  Colors.white.withAlpha(175),
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (trailing != null) trailing!,
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
             ),
           )
         : Padding(

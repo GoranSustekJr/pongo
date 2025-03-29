@@ -33,6 +33,7 @@ class MediaItemManager with ChangeNotifier {
     currentMediaItemId = mediaItem.id.split(".")[2];
     currentStid.value = currentMediaItemId!;
     currentMediaItem = mediaItem;
+    notifyListeners();
 
     // Blurhash
     try {
@@ -49,6 +50,7 @@ class MediaItemManager with ChangeNotifier {
                 componentY: detailedBlurhash.value ? 3 : 2)
             : AppConstants().BLURHASH;
         currentBlurhash.value = blurhash;
+        notifyListeners();
       }
     } catch (e) {
       // print(e);

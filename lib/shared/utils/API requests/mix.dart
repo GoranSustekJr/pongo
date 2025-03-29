@@ -20,6 +20,8 @@ class Mix {
       "at+JWT": accessTokenHandler.accessToken,
     }));
 
+    await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
+
     int i = 0;
 
     channel.stream.listen((message) async {

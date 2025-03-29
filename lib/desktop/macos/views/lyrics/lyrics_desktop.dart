@@ -183,7 +183,8 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                                     width: 125,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(60),
-                                      color: kIsDesktop
+                                      color: kIsDesktop &&
+                                              !widget.fullscreenPlaying
                                           ? const MacosColor.fromRGBO(40, 40,
                                               40, 0.8) // Add transparency here
                                           : useBlur.value

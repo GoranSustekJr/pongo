@@ -111,6 +111,8 @@ PODS:
   - super_native_extensions (0.0.1):
     - Flutter
   - TOCropViewController (2.7.4)
+  - url_launcher_ios (0.0.1):
+    - Flutter
   - volume_controller (0.0.1):
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
@@ -145,6 +147,7 @@ DEPENDENCIES:
   - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/darwin`)
   - super_native_extensions (from `.symlinks/plugins/super_native_extensions/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - volume_controller (from `.symlinks/plugins/volume_controller/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
@@ -218,6 +221,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/darwin"
   super_native_extensions:
     :path: ".symlinks/plugins/super_native_extensions/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
   volume_controller:
     :path: ".symlinks/plugins/volume_controller/ios"
   webview_flutter_wkwebview:
@@ -263,6 +268,7 @@ SPEC CHECKSUMS:
   sqflite: c35dad70033b8862124f8337cc994a809fcd9fa3
   super_native_extensions: b763c02dc3a8fd078389f410bf15149179020cb4
   TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
+  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
   volume_controller: ca1cde542ee70fad77d388f82e9616488110942b
   webview_flutter_wkwebview: 44d4dee7d7056d5ad185d25b38404436d56c547c
 
