@@ -9,11 +9,34 @@ Future<void> configureMacosWindowUtils() async {
     autoHideToolbarAndMenuBarInFullScreenMode: false,
   );
   await config.apply();
+  //await windowManager.ensureInitialized();
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
+
+// Macos config
+  if (kIsMacOS) {
+    await configureMacosWindowUtils();
+  }
+
+  if (kIsDesktop && !kIsMacOS) {
+    await windowManager.ensureInitialized();
+    await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+    //await windowManager.setPreventClose(true);
+    WindowOptions windowOptions = const WindowOptions(
+      size: Size(1066, 625),
+      minimumSize: Size(1066, 625),
+      titleBarStyle: TitleBarStyle.hidden,
+      center: true,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
+
   // Ads
   if (kIsMobile) {
     MobileAds.instance.initialize();
@@ -40,27 +63,6 @@ void main() async {
       androidNotificationChannelName: 'Music playback Pongo',
     ),
   );
-
-  // Macos config
-  if (kIsMacOS) {
-    await configureMacosWindowUtils();
-  }
-
-  if (kIsDesktop) {
-    await windowManager.ensureInitialized();
-    await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-    //await windowManager.setPreventClose(true);
-    WindowOptions windowOptions = const WindowOptions(
-      size: Size(1066, 625),
-      minimumSize: Size(1066, 625),
-      titleBarStyle: TitleBarStyle.hidden,
-      center: true,
-    );
-    windowManager.waitUntilReadyToShow(windowOptions, () async {
-      await windowManager.show();
-      await windowManager.focus();
-    });
-  }
 
   // DB init
   final DatabaseHelper databaseHelper = DatabaseHelper();
@@ -127,7 +129,7 @@ void main() async {
     await FlutterDisplayMode.setHighRefreshRate();
   }
 
-  if (kIsDesktop) {
+  if (kIsDesktop && !kIsMacOS) {
     await windowManager.ensureInitialized();
     await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
     //await windowManager.setPreventClose(true);

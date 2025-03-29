@@ -4,6 +4,7 @@ import 'package:interactive_slider_path/interactive_slider.dart' as isf;
 
 class DesktopTrackProgress extends StatefulWidget {
   final String album;
+  final bool fullscreen;
   final Duration? duration;
   final Function(String) showAlbum;
   const DesktopTrackProgress({
@@ -11,6 +12,7 @@ class DesktopTrackProgress extends StatefulWidget {
     required this.album,
     required this.duration,
     required this.showAlbum,
+    required this.fullscreen,
   });
 
   @override
@@ -74,7 +76,9 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
             children: [
               // Progress slider widget
               SizedBox(
-                width: (size.width - 180) / 2,
+                width: widget.fullscreen
+                    ? size.width - 50
+                    : (size.width - 180) / 2,
                 height: 15,
                 child: isf.InteractiveSlider(
                   padding: EdgeInsets.zero,
@@ -82,7 +86,7 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
                   controller: progressController,
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.white.withAlpha(50),
-                  focusedHeight: 11.5,
+                  focusedHeight: 12,
                   enabled: premium.value || kIsDesktop,
                   onProgressUpdated: (position) async {
                     updateProgress(position);
@@ -98,7 +102,9 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
               // Time display and album name
               SizedBox(
                 height: 30,
-                width: (size.width - 180) / 2,
+                width: widget.fullscreen
+                    ? size.width - 50
+                    : (size.width - 180) / 2,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

@@ -1,4 +1,5 @@
 import 'package:pongo/desktop/macos/views/auth/sign_in_macos.dart';
+import 'package:pongo/desktop/macos/views/full%20screen/full_screen_macos.dart';
 import 'package:pongo/desktop/macos/views/main/home_macos.dart';
 import 'package:pongo/exports.dart';
 
@@ -132,9 +133,16 @@ class _MyAppDesktopState extends State<MyAppDesktop>
                     duration: const Duration(milliseconds: 500),
                     switchInCurve: Curves.easeInOut,
                     child: signedIn
-                        ? const MainMacos(
-                            key: ValueKey(false),
-                          )
+                        ? ValueListenableBuilder(
+                            key: const ValueKey(false),
+                            valueListenable: fullscreenPlaying,
+                            builder: (context, _, __) {
+                              return fullscreenPlaying.value
+                                  ? const FullScreenMacos()
+                                  : const MainMacos(
+                                      key: ValueKey(false),
+                                    );
+                            })
                         : const SignInMacos(
                             key: ValueKey(true),
                           ),

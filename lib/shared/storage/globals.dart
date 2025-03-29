@@ -117,3 +117,6 @@ bool shazaming = false;
 
 // Sleep alarm device volume
 double sleepAlarmDevVolume = 0.5;
+
+// Fullscreen Playing
+ValueNotifier<bool> fullscreenPlaying = ValueNotifier(false);

@@ -10,6 +10,7 @@ class LyricsDesktop extends StatefulWidget {
   final bool lyricsOn;
   final bool useSyncedLyrics;
   final int syncTimeDelay;
+  final bool fullscreenPlaying;
   final String stid;
   final Function() onChangeUseSyncedLyrics;
   final Function() plus;
@@ -27,6 +28,7 @@ class LyricsDesktop extends StatefulWidget {
     required this.plus,
     required this.minus,
     required this.resetSyncTimeDelay,
+    required this.fullscreenPlaying,
   });
 
   @override
@@ -74,11 +76,18 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                                   ? TrackPlainLyricsDesktop(
                                       key: const ValueKey(true),
                                       lyrics: widget.plainLyrics)
-                                  : TrackSyncLyricsDesktop(
-                                      key: const ValueKey(false),
-                                      lyricsOn: widget.lyricsOn,
-                                      lyrics: widget.syncedLyrics,
-                                      syncTimeDelay: widget.syncTimeDelay,
+                                  : SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Center(
+                                        child: TrackSyncLyricsDesktop(
+                                          key: const ValueKey(false),
+                                          lyricsOn: widget.lyricsOn,
+                                          lyrics: widget.syncedLyrics,
+                                          syncTimeDelay: widget.syncTimeDelay,
+                                          fullscreenPlaying:
+                                              widget.fullscreenPlaying,
+                                        ),
+                                      ),
                                     ),
                         )
                       : const SizedBox(
@@ -86,7 +95,9 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                         ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 15),
+                  padding: EdgeInsets.only(
+                      top: widget.fullscreenPlaying ? 5 : 15,
+                      right: widget.fullscreenPlaying ? 5 : 0),
                   child: Material(
                     color: Col.transp,
                     child: Row(
@@ -95,63 +106,66 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                       children: [
                         Column(
                           children: [
-                            Theme(
-                              data: ThemeData(
-                                splashColor: Col.transp,
-                                hoverColor: Col.transp,
-                                highlightColor: Col.transp,
-                              ),
-                              child: SizedBox(
-                                width: 115,
-                                height: 30,
-                                child: CustomSlidingSegmentedControl<int>(
-                                  fixedWidth: 55,
-                                  initialValue: widget.useSyncedLyrics ? 0 : 1,
-                                  children: {
-                                    0: SizedBox(
-                                      width: 55,
-                                      child: Center(
-                                        child: Text(
-                                          AppLocalizations.of(context)!.sync,
+                            if (!widget.fullscreenPlaying)
+                              Theme(
+                                data: ThemeData(
+                                  splashColor: Col.transp,
+                                  hoverColor: Col.transp,
+                                  highlightColor: Col.transp,
+                                ),
+                                child: SizedBox(
+                                  width: 115,
+                                  height: 30,
+                                  child: CustomSlidingSegmentedControl<int>(
+                                    fixedWidth: 55,
+                                    initialValue:
+                                        widget.useSyncedLyrics ? 0 : 1,
+                                    children: {
+                                      0: SizedBox(
+                                        width: 55,
+                                        child: Center(
+                                          child: Text(
+                                            AppLocalizations.of(context)!.sync,
+                                            style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                      1: SizedBox(
+                                        width: 55,
+                                        child: Center(
+                                            child: Text(
+                                          AppLocalizations.of(context)!.plain,
                                           style: const TextStyle(
                                               fontSize: 12,
                                               color: Colors.white),
-                                        ),
+                                        )),
                                       ),
+                                    },
+                                    decoration: BoxDecoration(
+                                      color: const MacosColor.fromRGBO(
+                                          40, 40, 40, 1),
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
-                                    1: SizedBox(
-                                      width: 55,
-                                      child: Center(
-                                          child: Text(
-                                        AppLocalizations.of(context)!.plain,
-                                        style: const TextStyle(
-                                            fontSize: 12, color: Colors.white),
-                                      )),
+                                    thumbDecoration: BoxDecoration(
+                                      color: const MacosColor.fromRGBO(
+                                          30, 30, 30, 1),
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
-                                  },
-                                  decoration: BoxDecoration(
-                                    color: const MacosColor.fromRGBO(
-                                        40, 40, 40, 1),
-                                    borderRadius: BorderRadius.circular(15),
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInToLinear,
+                                    onValueChanged: (v) {
+                                      if (widget.useSyncedLyrics && v == 1) {
+                                        widget.onChangeUseSyncedLyrics();
+                                      } else if (!widget.useSyncedLyrics &&
+                                          v == 0) {
+                                        widget.onChangeUseSyncedLyrics();
+                                      }
+                                    },
                                   ),
-                                  thumbDecoration: BoxDecoration(
-                                    color: const MacosColor.fromRGBO(
-                                        30, 30, 30, 1),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInToLinear,
-                                  onValueChanged: (v) {
-                                    if (widget.useSyncedLyrics && v == 1) {
-                                      widget.onChangeUseSyncedLyrics();
-                                    } else if (!widget.useSyncedLyrics &&
-                                        v == 0) {
-                                      widget.onChangeUseSyncedLyrics();
-                                    }
-                                  },
                                 ),
                               ),
-                            ),
                             razh(5),
                             AnimatedOpacity(
                               duration: const Duration(milliseconds: 500),

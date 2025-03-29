@@ -13,6 +13,7 @@ class MediaItemManager with ChangeNotifier {
   bool useSyncedLyric = true;
   bool showQueue = false;
   int syncTimeDelay = 0;
+  String currentArtUri = "";
 
   MediaItemManager(this.audioServiceHandler, this.context) {
     _init();
@@ -35,15 +36,20 @@ class MediaItemManager with ChangeNotifier {
 
     // Blurhash
     try {
-      blurhash = mediaItem.artUri != null && mediaItem.artUri != Uri.parse("")
-          ? await BlurhashFFI.encode(
-              currentMediaItem!.artUri.toString().contains("file:///")
-                  ? FileImage(File(currentMediaItem!.artUri!.toFilePath()))
-                  : NetworkImage(currentMediaItem!.artUri.toString()),
-              componentX: detailedBlurhash.value ? 3 : 2,
-              componentY: detailedBlurhash.value ? 3 : 2)
-          : AppConstants().BLURHASH;
-      currentBlurhash.value = blurhash;
+      if (mediaItem.artUri.toString() != currentArtUri) {
+        currentArtUri = mediaItem.artUri.toString();
+        notifyListeners();
+
+        blurhash = mediaItem.artUri != null && mediaItem.artUri != Uri.parse("")
+            ? await BlurhashFFI.encode(
+                currentMediaItem!.artUri.toString().contains("file:///")
+                    ? FileImage(File(currentMediaItem!.artUri!.toFilePath()))
+                    : NetworkImage(currentMediaItem!.artUri.toString()),
+                componentX: detailedBlurhash.value ? 3 : 2,
+                componentY: detailedBlurhash.value ? 3 : 2)
+            : AppConstants().BLURHASH;
+        currentBlurhash.value = blurhash;
+      }
     } catch (e) {
       // print(e);
     }

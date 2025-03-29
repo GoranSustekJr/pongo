@@ -28,65 +28,56 @@ class _LyricsMacosState extends State<LyricsMacos> {
                       children: [
                         ContentArea(
                           builder: (context, scrollController) {
-                            return StreamBuilder(
-                                stream: mediaItemManager
-                                    .audioServiceHandler.mediaItem.stream,
-                                builder: (context, streamMediaItem) {
-                                  return SizedBox(
-                                    height: size.height,
-                                    width: size.width - 180,
-                                    child: AnimatedSwitcher(
-                                      duration:
-                                          const Duration(milliseconds: 400),
-                                      child: Stack(
-                                        key:
-                                            ValueKey(mediaItemManager.blurhash),
-                                        children: [
-                                          Blurhash(
-                                            sigmaX: 0,
-                                            sigmaY: 0,
-                                            blurhash: mediaItemManager.blurhash,
-                                            child: const SizedBox(),
+                            return SizedBox(
+                              height: size.height,
+                              width: size.width - 180,
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 400),
+                                child: Stack(
+                                  key: ValueKey(mediaItemManager.blurhash),
+                                  children: [
+                                    Blurhash(
+                                      sigmaX: 0,
+                                      sigmaY: 0,
+                                      blurhash: mediaItemManager.blurhash,
+                                      child: const SizedBox(),
+                                    ),
+                                    Container(
+                                      color: Colors.black.withAlpha(65),
+                                      child: AnimatedSwitcher(
+                                        duration:
+                                            const Duration(milliseconds: 400),
+                                        child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: AnimatedSwitcher(
+                                            duration: const Duration(
+                                                milliseconds: 400),
+                                            child: index == 6
+                                                ? LyricsBodyMacos(
+                                                    key: const ValueKey(true),
+                                                    size: size,
+                                                    mediaItem: mediaItemManager
+                                                        .currentMediaItem!,
+                                                    audioServiceHandler:
+                                                        mediaItemManager
+                                                            .audioServiceHandler,
+                                                    artistJson: mediaItemManager
+                                                        .currentMediaItem!
+                                                        .extras!["artists"],
+                                                    mediaItemManager:
+                                                        mediaItemManager,
+                                                  )
+                                                : const SizedBox(
+                                                    key: ValueKey(false),
+                                                  ),
                                           ),
-                                          Container(
-                                            color: Colors.black.withAlpha(65),
-                                            child: AnimatedSwitcher(
-                                              duration: const Duration(
-                                                  milliseconds: 400),
-                                              child: Align(
-                                                alignment: Alignment.topLeft,
-                                                child: AnimatedSwitcher(
-                                                  duration: const Duration(
-                                                      milliseconds: 400),
-                                                  child: index == 6
-                                                      ? LyricsBodyMacos(
-                                                          key: const ValueKey(
-                                                              true),
-                                                          size: size,
-                                                          mediaItem:
-                                                              streamMediaItem
-                                                                  .data!,
-                                                          audioServiceHandler:
-                                                              mediaItemManager
-                                                                  .audioServiceHandler,
-                                                          artistJson: mediaItemManager
-                                                              .currentMediaItem!
-                                                              .extras!["artists"],
-                                                          mediaItemManager:
-                                                              mediaItemManager,
-                                                        )
-                                                      : const SizedBox(
-                                                          key: ValueKey(false),
-                                                        ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
                                     ),
-                                  );
-                                });
+                                  ],
+                                ),
+                              ),
+                            );
                           },
                         )
                       ],

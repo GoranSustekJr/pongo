@@ -39,6 +39,8 @@ class LyricsBodyMacos extends StatelessWidget {
                           ? (size.height - 60) - 130
                           : null,
                   child: TrackImageDesktop(
+                    lyricsOn: false,
+                    fullscreenPlay: false,
                     image: mediaItem.artUri.toString(),
                     stid: currentStid.value,
                     audioServiceHandler: audioServiceHandler,
@@ -52,118 +54,153 @@ class LyricsBodyMacos extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 5),
-                        child: Column(
+                        child: Stack(
                           children: [
-                            SizedBox(
-                              width: size.width - 30,
-                              child: AnimatedAlign(
-                                alignment: playbackState.data != null
-                                    ? playbackState.data!.playing
-                                        ? Alignment.center
-                                        : Alignment.centerLeft
-                                    : Alignment.centerLeft,
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.fastEaseInToSlowEaseOut,
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        mediaItem.title,
-                                        style: const TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: size.width - 30,
-                              height: 22,
-                              child: AnimatedAlign(
-                                alignment: playbackState.data != null
-                                    ? playbackState.data!.playing
-                                        ? Alignment.center
-                                        : Alignment.centerLeft
-                                    : Alignment.centerLeft,
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.fastEaseInToSlowEaseOut,
-                                child: SingleChildScrollView(
-                                  scrollDirection:
-                                      Axis.horizontal, // Prevents wrapping
-                                  child: Row(
-                                    children: List.generate(
-                                      jsonDecode(artistJson).length,
-                                      (index) {
-                                        var artist =
-                                            jsonDecode(artistJson)[index];
-                                        return CupertinoButton(
-                                          padding: EdgeInsets.zero,
-                                          onPressed: () async {
-                                            Map artistData =
-                                                await ArtistSpotify().getImage(
-                                                    context, artist["id"]);
-                                            showMacosSheet(
-                                              context: context,
-                                              builder: (_) => ArtistPhone(
-                                                artist: Artist(
-                                                  id: artist["id"],
-                                                  name: artist["name"],
-                                                  image:
-                                                      calculateBestImageForTrack(
-                                                    (artistData["images"]
-                                                            as List<dynamic>)
-                                                        .map((image) =>
-                                                            AlbumImagesTrack(
-                                                              url: image["url"],
-                                                              height: image[
-                                                                  "height"],
-                                                              width: image[
-                                                                  "width"],
-                                                            ))
-                                                        .toList(),
-                                                  ),
-                                                ),
-                                                context: context,
-                                              ),
-                                            );
-                                          },
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                artist["name"],
-                                                style: const TextStyle(
-                                                  fontSize: 18.5,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              if (index !=
-                                                  jsonDecode(artistJson)
-                                                          .length -
-                                                      1)
-                                                const Text(
-                                                  ", ",
-                                                  style: TextStyle(
-                                                    fontSize: 18.5,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                            ],
+                            Column(
+                              children: [
+                                SizedBox(
+                                  width: size.width - 30,
+                                  child: AnimatedAlign(
+                                    alignment: playbackState.data != null
+                                        ? playbackState.data!.playing
+                                            ? Alignment.center
+                                            : Alignment.centerLeft
+                                        : Alignment.centerLeft,
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.fastEaseInToSlowEaseOut,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            mediaItem.title,
+                                            style: const TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.white,
+                                            ),
                                           ),
-                                        );
-                                      },
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
+                                SizedBox(
+                                  width: size.width - 30,
+                                  height: 22,
+                                  child: AnimatedAlign(
+                                    alignment: playbackState.data != null
+                                        ? playbackState.data!.playing
+                                            ? Alignment.center
+                                            : Alignment.centerLeft
+                                        : Alignment.centerLeft,
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.fastEaseInToSlowEaseOut,
+                                    child: SingleChildScrollView(
+                                      scrollDirection:
+                                          Axis.horizontal, // Prevents wrapping
+                                      child: Row(
+                                        children: List.generate(
+                                          jsonDecode(artistJson).length,
+                                          (index) {
+                                            var artist =
+                                                jsonDecode(artistJson)[index];
+                                            return CupertinoButton(
+                                              padding: EdgeInsets.zero,
+                                              onPressed: () async {
+                                                Map artistData =
+                                                    await ArtistSpotify()
+                                                        .getImage(context,
+                                                            artist["id"]);
+                                                showMacosSheet(
+                                                  context: context,
+                                                  builder: (_) => ArtistPhone(
+                                                    artist: Artist(
+                                                      id: artist["id"],
+                                                      name: artist["name"],
+                                                      image:
+                                                          calculateBestImageForTrack(
+                                                        (artistData["images"]
+                                                                as List<
+                                                                    dynamic>)
+                                                            .map((image) =>
+                                                                AlbumImagesTrack(
+                                                                  url: image[
+                                                                      "url"],
+                                                                  height: image[
+                                                                      "height"],
+                                                                  width: image[
+                                                                      "width"],
+                                                                ))
+                                                            .toList(),
+                                                      ),
+                                                    ),
+                                                    context: context,
+                                                  ),
+                                                );
+                                              },
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    artist["name"],
+                                                    style: const TextStyle(
+                                                      fontSize: 18.5,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  if (index !=
+                                                      jsonDecode(artistJson)
+                                                              .length -
+                                                          1)
+                                                    const Text(
+                                                      ", ",
+                                                      style: TextStyle(
+                                                        fontSize: 18.5,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
+                            Positioned(
+                                left: 0,
+                                top: 0,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(60),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:
+                                                    Colors.black.withAlpha(200),
+                                                spreadRadius: 3,
+                                                blurRadius: 10),
+                                          ]),
+                                      child: iconButton(
+                                          CupertinoIcons.fullscreen,
+                                          Colors.white, () {
+                                        fullscreenPlaying.value = true;
+                                      }, edgeInsets: EdgeInsets.zero),
+                                    ),
+                                  ],
+                                ))
                           ],
                         ),
                       );
@@ -171,6 +208,7 @@ class LyricsBodyMacos extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   child: DesktopTrackProgress(
+                    fullscreen: false,
                     album: mediaItem.album!,
                     duration: mediaItem.duration,
                     showAlbum: (_) async {
@@ -228,6 +266,7 @@ class LyricsBodyMacos extends StatelessWidget {
                   useSyncedLyrics: mediaItemManager.useSyncedLyric,
                   syncTimeDelay: mediaItemManager.syncTimeDelay,
                   stid: mediaItem.id.split('.')[2],
+                  fullscreenPlaying: false,
                   onChangeUseSyncedLyrics:
                       mediaItemManager.toggleUseSyncedLyrics,
                   plus: mediaItemManager.increaseSyncTimeDelay,

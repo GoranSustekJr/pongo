@@ -6,11 +6,13 @@ class TrackSyncLyricsDesktop extends StatefulWidget {
   final bool lyricsOn;
   final List<dynamic> lyrics;
   final int syncTimeDelay;
+  final bool fullscreenPlaying;
   const TrackSyncLyricsDesktop({
     super.key,
     required this.lyrics,
     required this.syncTimeDelay,
     required this.lyricsOn,
+    required this.fullscreenPlaying,
   });
 
   @override
@@ -180,8 +182,12 @@ class _TrackSyncLyricsDesktopState extends State<TrackSyncLyricsDesktop> {
     return Stack(
       children: [
         SizedBox(
-          height: size.height < 685 ? size.height - 120 : size.height - 60,
-          width: size.width,
+          height: widget.fullscreenPlaying
+              ? size.height
+              : size.height < 685
+                  ? size.height - 120
+                  : size.height - 60,
+          width: widget.fullscreenPlaying ? size.width / 2 : size.width,
           child: widget.lyrics.length <= 2
               ? SingleChildScrollView(
                   child: Padding(
