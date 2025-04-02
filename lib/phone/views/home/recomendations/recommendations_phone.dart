@@ -164,7 +164,7 @@ class _RecommendationsPhoneState extends State<RecommendationsPhone> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(AppLocalizations.of(context)!.error),
+                        Text(AppLocalizations.of(context).error),
                         iconButton(
                             AppIcons.repeat, Colors.white, dataManager.init),
                       ],

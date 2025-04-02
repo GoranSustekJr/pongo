@@ -40,11 +40,32 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
   // Loading shuffle boolean
   bool loadingShuffle = false;
 
+  // Current media item
+  MediaItem? currentMediaItem;
+
+  // Audio subscription
+  late StreamSubscription<MediaItem?> mediaItemSubscription;
+
   @override
   void initState() {
     super.initState();
     scrollController = ScrollController();
     scrollController.addListener(scrollControllerListener);
+    final audioServiceHandler =
+        Provider.of<AudioHandler>(context, listen: false)
+            as AudioServiceHandler;
+
+    // Init media item and its listener
+    currentMediaItem = audioServiceHandler.mediaItem.value;
+    mediaItemSubscription = audioServiceHandler.mediaItem.listen((mediaItem) {
+      if (mounted && mediaItem?.id != currentMediaItem?.id) {
+        setState(() {
+          currentMediaItem = mediaItem;
+        });
+      }
+    });
+
+    // Init tracks
     getTracks();
   }
 
@@ -160,6 +181,7 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
     cancel = true;
     scrollController.removeListener(scrollControllerListener);
     scrollController.dispose();
+    mediaItemSubscription.cancel();
     super.dispose();
   }
 
@@ -263,6 +285,7 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                                     tracks: tracks,
                                     missingTracks: missingTracks,
                                     loading: loading,
+                                    mediaItem: currentMediaItem,
                                     play: (index) {
                                       play(index: index);
                                     },

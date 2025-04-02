@@ -22,7 +22,7 @@ class RecommendationsMacos extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(AppLocalizations.of(context)!.error),
+                          Text(AppLocalizations.of(context).error),
                           iconButton(
                               AppIcons.repeat, Colors.white, dataManager.init),
                         ],

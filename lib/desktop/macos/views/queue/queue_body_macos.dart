@@ -29,7 +29,7 @@ class QueueBodyMacos extends StatelessWidget {
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
     return SizedBox(
-      height: size.height,
+      height: size.height - 130,
       width: size.width - 20,
       child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 200),

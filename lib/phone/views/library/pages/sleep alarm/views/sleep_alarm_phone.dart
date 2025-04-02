@@ -56,7 +56,7 @@ class SleepAlarmPhone extends StatelessWidget {
                       child: FlexibleSpaceBar(
                         centerTitle: true,
                         title: Text(
-                          AppLocalizations.of(context)!.sleep,
+                          AppLocalizations.of(context).sleep,
                           style: TextStyle(
                             fontSize: kIsApple ? 25 : 30,
                             fontWeight:
@@ -117,7 +117,7 @@ class SleepAlarmPhone extends StatelessWidget {
                                     );
                                   }),
                               Text(
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context)
                                     .maximumvolumeofthealarm,
                                 style: const TextStyle(
                                     color: Colors.white, fontSize: 10),
@@ -181,7 +181,7 @@ class SleepAlarmPhone extends StatelessWidget {
                                     size: 50,
                                   ),
                                   Text(
-                                    AppLocalizations.of(context)!
+                                    AppLocalizations.of(context)
                                         .createnewsleepalarm,
                                     textAlign: TextAlign.center,
                                   ),

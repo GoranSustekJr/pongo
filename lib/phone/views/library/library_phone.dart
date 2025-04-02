@@ -32,7 +32,7 @@ class _LibraryPhoneState extends State<LibraryPhone> {
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: Text(
-                AppLocalizations.of(context)!.library,
+                AppLocalizations.of(context).library,
                 style: TextStyle(
                   fontSize: kIsApple ? 30 : 40,
                   fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w800,
@@ -57,15 +57,15 @@ class _LibraryPhoneState extends State<LibraryPhone> {
                   child: Column(
                     children: [
                       razh(kIsApple ? size.width / 5 : size.width / 4),
-                      settingsText(AppLocalizations.of(context)!.online),
+                      settingsText(AppLocalizations.of(context).online),
                       libraryTile(
                         context,
                         true,
                         false,
                         CupertinoIcons.heart_fill,
                         Icons.wifi_rounded,
-                        AppLocalizations.of(context)!.favouritesongs,
-                        AppLocalizations.of(context)!.onlinefavouritesongs,
+                        AppLocalizations.of(context).favouritesongs,
+                        AppLocalizations.of(context).onlinefavouritesongs,
                         () {
                           Navigations().nextScreen(
                             context,
@@ -79,8 +79,8 @@ class _LibraryPhoneState extends State<LibraryPhone> {
                           true,
                           Icons.queue_music_rounded,
                           Icons.wifi_rounded,
-                          AppLocalizations.of(context)!.playlists,
-                          AppLocalizations.of(context)!.onlineplaylists, () {
+                          AppLocalizations.of(context).playlists,
+                          AppLocalizations.of(context).onlineplaylists, () {
                         Navigations().nextScreen(
                           context,
                           const OnlinePlaylistsPhone(),
@@ -92,15 +92,15 @@ class _LibraryPhoneState extends State<LibraryPhone> {
                             .nextScreen(context, '/online_playlists_screen', {}); */
                       }),
                       razh(25),
-                      settingsText(AppLocalizations.of(context)!.offline),
+                      settingsText(AppLocalizations.of(context).offline),
                       libraryTile(
                         context,
                         true,
                         false,
                         Icons.music_note_rounded,
                         Icons.wifi_off_rounded,
-                        AppLocalizations.of(context)!.songs,
-                        AppLocalizations.of(context)!.offlinesongs,
+                        AppLocalizations.of(context).songs,
+                        AppLocalizations.of(context).offlinesongs,
                         () {
                           Navigations().nextScreen(
                             context,
@@ -116,23 +116,23 @@ class _LibraryPhoneState extends State<LibraryPhone> {
                         true,
                         Icons.queue_music_rounded,
                         Icons.wifi_off_rounded,
-                        AppLocalizations.of(context)!.playlists,
-                        AppLocalizations.of(context)!.offlineplaylists,
+                        AppLocalizations.of(context).playlists,
+                        AppLocalizations.of(context).offlineplaylists,
                         () {
                           Navigations()
                               .nextScreen(context, const LocalPlaylistsPhone());
                         },
                       ),
                       razh(25),
-                      settingsText(AppLocalizations.of(context)!.sleep),
+                      settingsText(AppLocalizations.of(context).sleep),
                       libraryTile(
                         context,
                         true,
                         true,
                         AppIcons.sleep,
                         Icons.alarm,
-                        AppLocalizations.of(context)!.sleep,
-                        AppLocalizations.of(context)!.sleepandalarmclock,
+                        AppLocalizations.of(context).sleep,
+                        AppLocalizations.of(context).sleepandalarmclock,
                         () {
                           Navigations().nextScreen(
                             context,

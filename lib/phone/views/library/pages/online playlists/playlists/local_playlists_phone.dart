@@ -121,7 +121,7 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                           child: FlexibleSpaceBar(
                             centerTitle: true,
                             title: Text(
-                              AppLocalizations.of(context)!.offlineplaylists,
+                              AppLocalizations.of(context).offlineplaylists,
                               style: TextStyle(
                                 fontSize: kIsApple ? 25 : 30,
                                 fontWeight: kIsApple
@@ -167,7 +167,7 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                                         last: index == playlists.length - 1,
                                         cover: coverImages[index]?.bytes,
                                         title: playlists[index]["title"],
-                                        subtitle: AppLocalizations.of(context)!
+                                        subtitle: AppLocalizations.of(context)
                                             .offlineplaylist,
                                         function: () async {
                                           final String blurHash =
@@ -212,9 +212,9 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                                         removePlaylist: () {
                                           continueCancelActionSheet(
                                               context,
-                                              AppLocalizations.of(context)!
+                                              AppLocalizations.of(context)
                                                   .areyousure,
-                                              AppLocalizations.of(context)!
+                                              AppLocalizations.of(context)
                                                   .removeplaylist, () async {
                                             await DatabaseHelper()
                                                 .removeLocalPlaylist(
@@ -239,7 +239,7 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                                     AppIcons.add, Colors.white, newPlaylist,
                                     size: 60),
                                 textButton(
-                                    AppLocalizations.of(context)!
+                                    AppLocalizations.of(context)
                                         .createnewplaylistnow,
                                     newPlaylist,
                                     const TextStyle(color: Colors.white),

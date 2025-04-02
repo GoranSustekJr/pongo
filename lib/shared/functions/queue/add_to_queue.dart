@@ -313,7 +313,7 @@ class AddToQueue {
             as AudioServiceHandler;
     if (audioServiceHandler.audioPlayer.shuffleModeEnabled) {
       Notifications().showWarningNotification(
-          context, AppLocalizations.of(context)!.shufflemodeison);
+          context, AppLocalizations.of(context).shufflemodeison);
     }
   }
 }

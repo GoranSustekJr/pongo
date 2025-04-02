@@ -40,7 +40,7 @@ class _LyricsPhoneState extends State<LyricsPhone> {
                       child: !enableLyrics.value
                           ? Center(
                               child: Text(
-                                AppLocalizations.of(context)!.lyricsdisabled,
+                                AppLocalizations.of(context).lyricsdisabled,
                                 style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w700,

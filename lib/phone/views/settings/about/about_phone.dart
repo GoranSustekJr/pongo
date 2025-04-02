@@ -90,7 +90,7 @@ class _AboutPhoneState extends State<AboutPhone> with WidgetsBindingObserver {
                   children: [
                     razh(AppBar().preferredSize.height / 2),
                     razh(AppBar().preferredSize.height),
-                    settingsText(AppLocalizations.of(context)!.about),
+                    settingsText(AppLocalizations.of(context).about),
                     settingsTile(
                         context,
                         true,
@@ -98,7 +98,7 @@ class _AboutPhoneState extends State<AboutPhone> with WidgetsBindingObserver {
                         AppIcons.mail,
                         Icons.copy,
                         "pongo.group@gmail.com",
-                        AppLocalizations.of(context)!.contactusviamail,
+                        AppLocalizations.of(context).contactusviamail,
                         () async {
                       await Clipboard.setData(
                           const ClipboardData(text: "pongo.group@gmail.com"));
@@ -109,8 +109,8 @@ class _AboutPhoneState extends State<AboutPhone> with WidgetsBindingObserver {
                         false,
                         CupertinoIcons.bookmark_fill,
                         CupertinoIcons.envelope_open,
-                        AppLocalizations.of(context)!.termsandconditions,
-                        AppLocalizations.of(context)!.ourtermsandconditions,
+                        AppLocalizations.of(context).termsandconditions,
+                        AppLocalizations.of(context).ourtermsandconditions,
                         () async {
                       Navigations().nextScreen(context, const PDFView());
                     }),
@@ -120,8 +120,8 @@ class _AboutPhoneState extends State<AboutPhone> with WidgetsBindingObserver {
                         true,
                         CupertinoIcons.lock_shield,
                         CupertinoIcons.envelope_open,
-                        AppLocalizations.of(context)!.privacypolicy,
-                        AppLocalizations.of(context)!.ourprivacypolicy,
+                        AppLocalizations.of(context).privacypolicy,
+                        AppLocalizations.of(context).ourprivacypolicy,
                         () {}),
                   ],
                 );

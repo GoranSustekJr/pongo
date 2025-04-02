@@ -54,7 +54,7 @@ class RecommendationsBodyMacos extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Text(
-                  AppLocalizations.of(context)!.recommendationsdisabled,
+                  AppLocalizations.of(context).recommendationsdisabled,
                   style: const TextStyle(
                       fontSize: 17.5, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,

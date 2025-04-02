@@ -85,7 +85,7 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
                   } else {
                     Notifications().showWarningNotification(
                         notificationsContext.value!,
-                        AppLocalizations.of(notificationsContext.value!)!
+                        AppLocalizations.of(notificationsContext.value!)
                             .sleepalarmisenabled);
                   }
                 },

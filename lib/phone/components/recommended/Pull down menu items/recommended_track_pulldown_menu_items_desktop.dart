@@ -12,26 +12,26 @@ Menu recommendedTrackPulldownMenuItemsDesktop(
   return Menu(
     items: [
       MenuItem(
-          label: AppLocalizations.of(context)!.download,
+          label: AppLocalizations.of(context).download,
           onClick: (menuItem) async {
             await Download().single(track);
           }),
       MenuItem.separator(),
       MenuItem(
-        label: AppLocalizations.of(context)!.addtoplaylist,
+        label: AppLocalizations.of(context).addtoplaylist,
         onClick: (menuItem) {
           // TODO: Add too playlist
         },
       ),
       MenuItem.separator(),
       MenuItem(
-          label: AppLocalizations.of(context)!.firsttoqueue,
+          label: AppLocalizations.of(context).firsttoqueue,
           onClick: (menuItem) async {
             await AddToQueue().addTypeTrackFirst(
                 context, track, id, doesNotExist, doesNowExist);
           }),
       MenuItem(
-          label: AppLocalizations.of(context)!.lasttoqueue,
+          label: AppLocalizations.of(context).lasttoqueue,
           onClick: (menuItem) async {
             await AddToQueue().addTypeTrackLast(
                 context, track, id, doesNotExist, doesNowExist);
@@ -39,8 +39,8 @@ Menu recommendedTrackPulldownMenuItemsDesktop(
       MenuItem.separator(),
       MenuItem(
           label: favourite
-              ? AppLocalizations.of(context)!.unlike
-              : AppLocalizations.of(context)!.like,
+              ? AppLocalizations.of(context).unlike
+              : AppLocalizations.of(context).like,
           onClick: (menuItem) async {
             await Favourites().add(
                 context,

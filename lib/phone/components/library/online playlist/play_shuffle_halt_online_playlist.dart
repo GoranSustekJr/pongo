@@ -97,13 +97,13 @@ class _PlayShuffleHaltOnlinePlaylistState
                             return [
                               PullDownMenuItem(
                                 onTap: widget.show,
-                                title: AppLocalizations.of(context)!.show,
+                                title: AppLocalizations.of(context).show,
                                 icon: AppIcons.unhideFill,
                               ),
                               const PullDownMenuDivider(),
                               PullDownMenuItem(
                                 onTap: widget.hide,
-                                title: AppLocalizations.of(context)!.hide,
+                                title: AppLocalizations.of(context).hide,
                                 icon: AppIcons.hideFill,
                               ),
                             ];

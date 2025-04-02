@@ -57,7 +57,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
           children: [
             if (widget.albums.isNotEmpty)
               searchResultText(
-                  AppLocalizations.of(context)!.albums, suggestionHeader),
+                  AppLocalizations.of(context).albums, suggestionHeader),
             if (widget.albums.isNotEmpty) razh(10),
             if (widget.albums.isNotEmpty)
               ListView.builder(
@@ -103,7 +103,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
             if (widget.albums.isNotEmpty) razh(50),
             if (widget.otherAlbums.isNotEmpty)
               searchResultText(
-                  AppLocalizations.of(context)!.singlesandcompilations,
+                  AppLocalizations.of(context).singlesandcompilations,
                   suggestionHeader),
             if (widget.otherAlbums.isNotEmpty) razh(10),
             if (widget.otherAlbums.isNotEmpty)
@@ -146,7 +146,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
             if (widget.tracks.isNotEmpty) razh(15),
             if (widget.tracks.isNotEmpty)
               searchResultText(
-                  AppLocalizations.of(context)!.topten, suggestionHeader),
+                  AppLocalizations.of(context).topten, suggestionHeader),
             if (widget.tracks.isNotEmpty) razh(10),
             if (widget.tracks.isNotEmpty)
               ListView.builder(
@@ -215,7 +215,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
               ),
             if (widget.artists.isNotEmpty) razh(50),
             if (widget.artists.isNotEmpty)
-              searchResultText(AppLocalizations.of(context)!.relatedartists,
+              searchResultText(AppLocalizations.of(context).relatedartists,
                   suggestionHeader),
             if (widget.artists.isNotEmpty) razh(10),
             if (widget.artists.isNotEmpty)

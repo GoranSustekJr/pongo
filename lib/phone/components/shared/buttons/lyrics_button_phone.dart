@@ -120,8 +120,8 @@ class LyricsButtonPhone extends StatelessWidget {
                                 .insertSyncTimeDelay(stid, syncTimeDelay);
                             Notifications().showSpecialNotification(
                               context,
-                              AppLocalizations.of(context)!.successful,
-                              AppLocalizations.of(context)!
+                              AppLocalizations.of(context).successful,
+                              AppLocalizations.of(context)
                                   .successfullysavedsynctimedelay,
                               CupertinoIcons.time,
                             );

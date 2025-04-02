@@ -25,7 +25,7 @@ class _SignInMacosState extends State<SignInMacos> {
                   children: [
                     razh(AppBar().preferredSize.height),
                     Text(
-                      AppLocalizations.of(context)!.signin,
+                      AppLocalizations.of(context).signin,
                       style: TextStyle(
                         fontSize: kIsApple ? 30 : 40,
                         fontWeight:
@@ -33,7 +33,7 @@ class _SignInMacosState extends State<SignInMacos> {
                       ),
                     ),
                     Text(
-                      AppLocalizations.of(context)!.klemen,
+                      AppLocalizations.of(context).klemen,
                       style: TextStyle(
                         fontSize: kIsApple ? 17 : 18,
                         fontWeight:
@@ -48,7 +48,7 @@ class _SignInMacosState extends State<SignInMacos> {
                       child: signInButtonPhone(
                           context,
                           GoogleLogoPainter(),
-                          "${AppLocalizations.of(context)!.signinwith} Google",
+                          "${AppLocalizations.of(context).signinwith} Google",
                           "Google"),
                     ),
                     Row(
@@ -62,7 +62,7 @@ class _SignInMacosState extends State<SignInMacos> {
                           ),
                         ),
                         Text(
-                          AppLocalizations.of(context)!.or,
+                          AppLocalizations.of(context).or,
                           style: TextStyle(color: Col.fadeIcon),
                         ),
                         Expanded(
@@ -80,7 +80,7 @@ class _SignInMacosState extends State<SignInMacos> {
                       child: signInButtonPhone(
                           context,
                           GoogleLogoPainter(),
-                          "${AppLocalizations.of(context)!.signinwith} Apple",
+                          "${AppLocalizations.of(context).signinwith} Apple",
                           "Apple"),
                     ),
                     Expanded(
@@ -93,7 +93,7 @@ class _SignInMacosState extends State<SignInMacos> {
                         bottom: 20,
                       ),
                       child: Text(
-                        AppLocalizations.of(context)!.bysigninginyou,
+                        AppLocalizations.of(context).bysigninginyou,
                         textAlign: TextAlign.left,
                       ),
                     ),

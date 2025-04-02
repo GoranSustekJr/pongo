@@ -13,7 +13,7 @@ class RecommendationsHistory extends StatelessWidget {
     return Column(
       children: [
         if (dataManager.history.isNotEmpty)
-          searchResultText(AppLocalizations.of(context)!.lastlistenedto,
+          searchResultText(AppLocalizations.of(context).lastlistenedto,
               dataManager.suggestionHeader),
         if (dataManager.history.isNotEmpty) razh(10),
         if (dataManager.history.isNotEmpty)

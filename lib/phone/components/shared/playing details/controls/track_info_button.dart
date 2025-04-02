@@ -8,7 +8,7 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
       ? PullDownButton(
           itemBuilder: (context) => [
             PullDownMenuItem(
-              title: AppLocalizations.of(context)!.download,
+              title: AppLocalizations.of(context).download,
               icon: CupertinoIcons.cloud_download,
               onTap: () {
                 download();
@@ -16,7 +16,7 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
             ),
             const PullDownMenuDivider(),
             PullDownMenuItem(
-              title: AppLocalizations.of(context)!.addtoplaylist,
+              title: AppLocalizations.of(context).addtoplaylist,
               icon: AppIcons.musicAlbums,
               onTap: () {
                 final audioServiceHandler =
@@ -70,8 +70,8 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
             const PullDownMenuDivider.large(),
             PullDownMenuItem(
               title: favourite
-                  ? AppLocalizations.of(context)!.unlike
-                  : AppLocalizations.of(context)!.like,
+                  ? AppLocalizations.of(context).unlike
+                  : AppLocalizations.of(context).like,
               icon: favourite ? AppIcons.heartFill : AppIcons.heart,
               onTap: () async {
                 await Favourites().add(
@@ -102,7 +102,7 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
                   await audioServiceHandler.halt();
                 }
               },
-              title: AppLocalizations.of(context)!.halt,
+              title: AppLocalizations.of(context).halt,
               icon: AppIcons.halt,
               itemTheme: const PullDownMenuItemTheme(
                 textStyle: TextStyle(
@@ -141,13 +141,13 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
                 ),
                 items: [
                   PopUpMenuItem(
-                      title: AppLocalizations.of(context)!.download,
+                      title: AppLocalizations.of(context).download,
                       image: Icon(
                         AppIcons.download,
                         color: Colors.white,
                       )),
                   PopUpMenuItem(
-                      title: AppLocalizations.of(context)!.addtoplaylist,
+                      title: AppLocalizations.of(context).addtoplaylist,
                       image: const Icon(
                         AppIcons.musicAlbums,
                         color: Colors.white,
@@ -156,7 +156,7 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
                     title: "",
                     image: Row(
                       children: [
-                        Text(AppLocalizations.of(context)!.like),
+                        Text(AppLocalizations.of(context).like),
                         Icon(
                           favourite ? AppIcons.heartFill : AppIcons.heart,
                           color: Colors.white,

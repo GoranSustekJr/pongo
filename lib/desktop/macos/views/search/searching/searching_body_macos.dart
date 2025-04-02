@@ -48,7 +48,7 @@ class SearchingBodyMacos extends StatelessWidget {
             children: [
               if (artists.isNotEmpty && numberOfSearchArtists.value > 0)
                 searchResultText(
-                    AppLocalizations.of(context)!.artists, suggestionHeader),
+                    AppLocalizations.of(context).artists, suggestionHeader),
               if (artists.isNotEmpty && numberOfSearchArtists.value > 0)
                 razh(10),
               if (artists.isNotEmpty && numberOfSearchArtists.value > 0)
@@ -91,7 +91,7 @@ class SearchingBodyMacos extends StatelessWidget {
                 razh(50),
               if (albums.isNotEmpty && numberOfSearchAlbums.value > 0)
                 searchResultText(
-                    AppLocalizations.of(context)!.albums, suggestionHeader),
+                    AppLocalizations.of(context).albums, suggestionHeader),
               if (albums.isNotEmpty && numberOfSearchAlbums.value > 0) razh(10),
               if (albums.isNotEmpty && numberOfSearchAlbums.value > 0)
                 ListView.builder(
@@ -132,151 +132,159 @@ class SearchingBodyMacos extends StatelessWidget {
               if (albums.isNotEmpty && numberOfSearchAlbums.value > 0) razh(50),
               if (tracks.isNotEmpty && numberOfSearchTracks.value > 0)
                 searchResultText(
-                    AppLocalizations.of(context)!.tracks, suggestionHeader),
+                    AppLocalizations.of(context).tracks, suggestionHeader),
               if (tracks.isNotEmpty && numberOfSearchTracks.value > 0) razh(10),
               if (tracks.isNotEmpty && numberOfSearchTracks.value > 0)
-                ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemCount: tracks.length > numberOfSearchTracks.value
-                      ? numberOfSearchTracks.value
-                      : tracks.length,
-                  shrinkWrap: true,
-                  addAutomaticKeepAlives: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return SearchResultTile(
-                      key: ValueKey("track.${tracks[index].id}"),
-                      data: tracks[index],
-                      type: TileType.track,
-                      trailing: Row(
-                        children: [
-                          SizedBox(
-                            height: 40,
-                            width: 20,
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              child: loading.contains(tracks[index].id)
-                                  ? const CircularProgressIndicator.adaptive(
-                                      key: ValueKey(true),
-                                    )
-                                  : StreamBuilder(
-                                      key: const ValueKey(false),
-                                      stream:
-                                          audioServiceHandler.mediaItem.stream,
-                                      builder: (context, snapshot) {
-                                        final String id = snapshot.data != null
-                                            ? snapshot.data!.id.split(".")[2]
-                                            : "";
+                StreamBuilder(
+                    stream: audioServiceHandler.audioPlayer.playingStream,
+                    builder: (context, playingStream) {
+                      return StreamBuilder(
+                          key: const ValueKey(false),
+                          stream: audioServiceHandler.mediaItem.stream,
+                          builder: (context, snapshot) {
+                            final String id = snapshot.data != null
+                                ? snapshot.data!.id.split(".")[2]
+                                : "";
 
-                                        return id == tracks[index].id
-                                            ? StreamBuilder(
-                                                stream: audioServiceHandler
-                                                    .audioPlayer.playingStream,
-                                                builder:
-                                                    (context, playingStream) {
-                                                  return Trailing(
-                                                    show: !loading.contains(
-                                                        tracks[index].id),
-                                                    showThis:
-                                                        id == tracks[index].id,
-                                                    trailing: const Padding(
-                                                      padding: EdgeInsets.only(
-                                                          right: 10),
-                                                      child:
-                                                          CircularProgressIndicator
-                                                              .adaptive(
-                                                        key: ValueKey(true),
+                            return ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount:
+                                  tracks.length > numberOfSearchTracks.value
+                                      ? numberOfSearchTracks.value
+                                      : tracks.length,
+                              shrinkWrap: true,
+                              addAutomaticKeepAlives: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return SearchResultTile(
+                                  key: ValueKey("track.${tracks[index].id}"),
+                                  data: tracks[index],
+                                  type: TileType.track,
+                                  trailing: Row(
+                                    children: [
+                                      SizedBox(
+                                        height: 40,
+                                        width: 20,
+                                        child: AnimatedSwitcher(
+                                          duration:
+                                              const Duration(milliseconds: 200),
+                                          child: loading
+                                                  .contains(tracks[index].id)
+                                              ? const CircularProgressIndicator
+                                                  .adaptive(
+                                                  key: ValueKey(true),
+                                                )
+                                              : id == tracks[index].id
+                                                  ? Trailing(
+                                                      show: !loading.contains(
+                                                          tracks[index].id),
+                                                      showThis: id ==
+                                                          tracks[index].id,
+                                                      trailing: const Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                right: 10),
+                                                        child:
+                                                            CircularProgressIndicator
+                                                                .adaptive(
+                                                          key: ValueKey(true),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : const SizedBox(),
+                                        ),
+                                      ),
+                                      FutureBuilder<bool>(
+                                        future: DatabaseHelper()
+                                            .favouriteTrackAlreadyExists(
+                                                tracks[index].id),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasError) {
+                                            return const SizedBox(
+                                              width: 50,
+                                              height: 20,
+                                              child: Center(
+                                                  child: Icon(CupertinoIcons
+                                                      .exclamationmark_circle)),
+                                            );
+                                          } else {
+                                            bool isFavourite =
+                                                snapshot.data ?? false;
+
+                                            return SizedBox(
+                                              width: 50,
+                                              height: 50,
+                                              child: kIsMobile
+                                                  ? PullDownButton(
+                                                      offset:
+                                                          const Offset(30, 30),
+                                                      position:
+                                                          PullDownMenuPosition
+                                                              .automatic,
+                                                      itemBuilder: (context) =>
+                                                          searchTrackPulldownMenuItems(
+                                                        context,
+                                                        tracks[index],
+                                                        "search.single.",
+                                                        isFavourite,
+                                                        loadingAdd,
+                                                        loadingRemove,
+                                                      ),
+                                                      buttonBuilder:
+                                                          (context, showMenu) =>
+                                                              CupertinoButton(
+                                                        onPressed: showMenu,
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        child: const Icon(
+                                                          CupertinoIcons
+                                                              .ellipsis,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : MacosPulldownButton(
+                                                      icon: AppIcons.more,
+                                                      itemHeight: 30,
+                                                      items:
+                                                          searchTrackPulldownMenuItemsMacos(
+                                                        context,
+                                                        tracks[index],
+                                                        "search.single.",
+                                                        isFavourite,
+                                                        loadingAdd,
+                                                        loadingRemove,
                                                       ),
                                                     ),
-                                                  );
-                                                })
-                                            : const SizedBox();
-                                      },
-                                    ),
-                            ),
-                          ),
-                          FutureBuilder<bool>(
-                            future: DatabaseHelper()
-                                .favouriteTrackAlreadyExists(tracks[index].id),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                return const SizedBox(
-                                  width: 50,
-                                  height: 20,
-                                  child: Center(
-                                      child: Icon(CupertinoIcons
-                                          .exclamationmark_circle)),
-                                );
-                              } else {
-                                bool isFavourite = snapshot.data ?? false;
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () async {
+                                    await PlaySingle().onlineTrack(
+                                      context,
+                                      audioServiceHandler,
+                                      "search.single.",
+                                      tracks[index],
+                                      loadingAdd,
+                                      loadingRemove,
+                                    );
 
-                                return SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: kIsMobile
-                                      ? PullDownButton(
-                                          offset: const Offset(30, 30),
-                                          position:
-                                              PullDownMenuPosition.automatic,
-                                          itemBuilder: (context) =>
-                                              searchTrackPulldownMenuItems(
-                                            context,
-                                            tracks[index],
-                                            "search.single.",
-                                            isFavourite,
-                                            loadingAdd,
-                                            loadingRemove,
-                                          ),
-                                          buttonBuilder: (context, showMenu) =>
-                                              CupertinoButton(
-                                            onPressed: showMenu,
-                                            padding: EdgeInsets.zero,
-                                            child: const Icon(
-                                              CupertinoIcons.ellipsis,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        )
-                                      : MacosPulldownButton(
-                                          icon: AppIcons.more,
-                                          itemHeight: 30,
-                                          items:
-                                              searchTrackPulldownMenuItemsMacos(
-                                            context,
-                                            tracks[index],
-                                            "search.single.",
-                                            isFavourite,
-                                            loadingAdd,
-                                            loadingRemove,
-                                          ),
-                                        ),
+                                    if (useMix.value) {
+                                      Mix().getMix(context, tracks[index]);
+                                    }
+                                  },
                                 );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      onTap: () async {
-                        await PlaySingle().onlineTrack(
-                          context,
-                          audioServiceHandler,
-                          "search.single.",
-                          tracks[index],
-                          loadingAdd,
-                          loadingRemove,
-                        );
-
-                        if (useMix.value) {
-                          Mix().getMix(context, tracks[index]);
-                        }
-                      },
-                    );
-                  },
-                ),
+                              },
+                            );
+                          });
+                    }),
               if (tracks.isNotEmpty && numberOfSearchTracks.value > 0) razh(50),
               if (playlists.isNotEmpty && numberOfSearchPlaylists.value > 0)
                 searchResultText(
-                    AppLocalizations.of(context)!.playlists, suggestionHeader),
+                    AppLocalizations.of(context).playlists, suggestionHeader),
               if (playlists.isNotEmpty && numberOfSearchPlaylists.value > 0)
                 razh(10),
               if (playlists.isNotEmpty && numberOfSearchPlaylists.value > 0)

@@ -19,7 +19,7 @@ List<MacosPulldownMenuEntry> searchTrackPulldownMenuItemsMacos(
               razw(10),
               Expanded(
                 child: Text(
-                  AppLocalizations.of(context)!.download,
+                  AppLocalizations.of(context).download,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -41,7 +41,7 @@ List<MacosPulldownMenuEntry> searchTrackPulldownMenuItemsMacos(
               razw(10),
               Expanded(
                 child: Text(
-                  AppLocalizations.of(context)!.addtoplaylist,
+                  AppLocalizations.of(context).addtoplaylist,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -63,7 +63,7 @@ List<MacosPulldownMenuEntry> searchTrackPulldownMenuItemsMacos(
               razw(10),
               Expanded(
                 child: Text(
-                  AppLocalizations.of(context)!.firsttoqueue,
+                  AppLocalizations.of(context).firsttoqueue,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -85,7 +85,7 @@ List<MacosPulldownMenuEntry> searchTrackPulldownMenuItemsMacos(
               razw(10),
               Expanded(
                 child: Text(
-                  AppLocalizations.of(context)!.lasttoqueue,
+                  AppLocalizations.of(context).lasttoqueue,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -110,8 +110,8 @@ List<MacosPulldownMenuEntry> searchTrackPulldownMenuItemsMacos(
               Expanded(
                 child: Text(
                   favourite
-                      ? AppLocalizations.of(context)!.unlike
-                      : AppLocalizations.of(context)!.like,
+                      ? AppLocalizations.of(context).unlike
+                      : AppLocalizations.of(context).like,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),

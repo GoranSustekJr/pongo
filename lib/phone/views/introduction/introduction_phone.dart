@@ -291,17 +291,17 @@ class _IntroductionPhoneState extends State<IntroductionPhone> {
 
         // Button
         renderSkipBtn: Text(
-          AppLocalizations.of(context)!.skip,
+          AppLocalizations.of(context).skip,
           style: const TextStyle(
               color: Colors.white, overflow: TextOverflow.ellipsis),
         ),
         renderDoneBtn: Text(
-          AppLocalizations.of(context)!.done,
+          AppLocalizations.of(context).done,
           style: const TextStyle(
               color: Colors.white, overflow: TextOverflow.ellipsis),
         ),
         renderNextBtn: Text(
-          AppLocalizations.of(context)!.next,
+          AppLocalizations.of(context).next,
           style: const TextStyle(
               color: Colors.white, overflow: TextOverflow.ellipsis),
         ),

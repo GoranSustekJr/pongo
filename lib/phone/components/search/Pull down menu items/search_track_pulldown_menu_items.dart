@@ -14,7 +14,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
             onTap: () async {
               await Download().single(track);
             },
-            title: AppLocalizations.of(context)!.download,
+            title: AppLocalizations.of(context).download,
             icon: AppIcons.download,
           ),
           const PullDownMenuDivider.large(),
@@ -45,7 +45,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
                     ],
                   ));
             },
-            title: AppLocalizations.of(context)!.addtoplaylist,
+            title: AppLocalizations.of(context).addtoplaylist,
             icon: AppIcons.musicAlbums,
             itemTheme: const PullDownMenuItemTheme(
               textStyle: TextStyle(
@@ -60,7 +60,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
               await AddToQueue().addTypeTrackFirst(
                   context, track, id, doesNotExist, doesNowExist);
             },
-            title: AppLocalizations.of(context)!.firsttoqueue,
+            title: AppLocalizations.of(context).firsttoqueue,
             icon: AppIcons.firstToQueue,
             itemTheme: const PullDownMenuItemTheme(
               textStyle: TextStyle(
@@ -75,7 +75,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
               await AddToQueue().addTypeTrackLast(
                   context, track, id, doesNotExist, doesNowExist);
             },
-            title: AppLocalizations.of(context)!.lasttoqueue,
+            title: AppLocalizations.of(context).lasttoqueue,
             icon: AppIcons.lastToQueue,
             itemTheme: const PullDownMenuItemTheme(
               textStyle: TextStyle(
@@ -105,8 +105,8 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItems(
               // The UI will not auto-refresh since there is no stateful management here
             },
             title: favourite
-                ? AppLocalizations.of(context)!.unlike
-                : AppLocalizations.of(context)!.like,
+                ? AppLocalizations.of(context).unlike
+                : AppLocalizations.of(context).like,
             icon: favourite ? AppIcons.heartFill : AppIcons.heart,
             itemTheme: const PullDownMenuItemTheme(
               textStyle: TextStyle(

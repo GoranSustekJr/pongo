@@ -79,19 +79,21 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return Row(
                               children: [
-                                textButton(
-                                  jsonDecode(artistJson)[index]["name"],
-                                  () {
+                                CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
                                     showArtist(
                                       jsonEncode(jsonDecode(artistJson)[index]),
                                     );
                                   },
-                                  const TextStyle(
-                                    fontSize: 18.5,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.white,
+                                  child: Text(
+                                    jsonDecode(artistJson)[index]["name"],
+                                    style: const TextStyle(
+                                      fontSize: 18.5,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                  edgeInsets: EdgeInsets.zero,
                                 ),
                                 if (index != jsonDecode(artistJson).length - 1)
                                   const Text(

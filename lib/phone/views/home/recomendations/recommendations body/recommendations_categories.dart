@@ -20,7 +20,7 @@ class RecommendationsCategories extends StatelessWidget {
       children: [
         if (dataManager.categories.isNotEmpty ||
             dataManager.newReleases.isNotEmpty)
-          searchResultText(AppLocalizations.of(context)!.explore,
+          searchResultText(AppLocalizations.of(context).explore,
               dataManager.suggestionHeader),
         if (dataManager.categories.isNotEmpty ||
             dataManager.newReleases.isNotEmpty)

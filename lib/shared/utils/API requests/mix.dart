@@ -41,7 +41,8 @@ class Mix {
           // Extract video data and add to queue
           changeTrackOnTap.value = false;
           audioServiceHandler.queue.value.add(mediaItem);
-          await audioServiceHandler.playlist
+
+          audioServiceHandler.playlist
               .add(audioServiceHandler.createAudioSource(mediaItem));
         }
       }

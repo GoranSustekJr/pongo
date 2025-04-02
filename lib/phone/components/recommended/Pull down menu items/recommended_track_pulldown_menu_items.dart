@@ -17,7 +17,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
             },
             trailingIcon: AppIcons.download,
             child: Text(
-              AppLocalizations.of(context)!.download,
+              AppLocalizations.of(context).download,
               maxLines: 1,
             ),
           ),
@@ -43,7 +43,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
             },
             trailingIcon: AppIcons.musicAlbums,
             child: Text(
-              AppLocalizations.of(context)!.addtoplaylist,
+              AppLocalizations.of(context).addtoplaylist,
               maxLines: 1,
             ),
           ),
@@ -57,7 +57,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
             },
             trailingIcon: AppIcons.firstToQueue,
             child: Text(
-              AppLocalizations.of(context)!.firsttoqueue,
+              AppLocalizations.of(context).firsttoqueue,
               maxLines: 1,
             ),
           ),
@@ -70,7 +70,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
             },
             trailingIcon: AppIcons.lastToQueue,
             child: Text(
-              AppLocalizations.of(context)!.lasttoqueue,
+              AppLocalizations.of(context).lasttoqueue,
               maxLines: 1,
             ),
           ),
@@ -85,7 +85,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
                   onPressed: () {},
                   trailingIcon: AppIcons.heart,
                   child: Text(
-                    AppLocalizations.of(context)!.like,
+                    AppLocalizations.of(context).like,
                     maxLines: 1,
                   ),
                 );
@@ -114,8 +114,8 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
                 trailingIcon: isFavorite ? AppIcons.heartFill : AppIcons.heart,
                 child: Text(
                   isFavorite
-                      ? AppLocalizations.of(context)!.unlike
-                      : AppLocalizations.of(context)!.like,
+                      ? AppLocalizations.of(context).unlike
+                      : AppLocalizations.of(context).like,
                   maxLines: 1,
                 ),
               );

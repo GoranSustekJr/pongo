@@ -104,7 +104,6 @@ class PlaylistSongTile extends StatelessWidget {
         ),
       ],
     );
-
     return Padding(
       padding: EdgeInsets.zero,
       child: AnimatedOpacity(

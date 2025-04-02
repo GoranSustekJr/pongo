@@ -10,13 +10,13 @@ List<PullDownMenuEntry> queueEditPullDownMenuItems(
       ? [
           PullDownMenuItem(
             onTap: edit,
-            title: AppLocalizations.of(context)!.cancel,
+            title: AppLocalizations.of(context).cancel,
             icon: AppIcons.cancel,
           ),
           const PullDownMenuDivider.large(),
           PullDownMenuItem(
             onTap: remove,
-            title: AppLocalizations.of(context)!.clear,
+            title: AppLocalizations.of(context).clear,
             icon: AppIcons.trash,
             itemTheme: const PullDownMenuItemTheme(
               textStyle: TextStyle(
@@ -28,7 +28,7 @@ List<PullDownMenuEntry> queueEditPullDownMenuItems(
           const PullDownMenuDivider.large(),
           PullDownMenuItem(
             onTap: download,
-            title: AppLocalizations.of(context)!.download,
+            title: AppLocalizations.of(context).download,
             icon: AppIcons.download,
             itemTheme: const PullDownMenuItemTheme(
               textStyle: TextStyle(

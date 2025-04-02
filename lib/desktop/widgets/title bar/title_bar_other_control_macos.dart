@@ -92,10 +92,11 @@ class TitleBarMacos extends StatelessWidget {
                   SizedBox(
                     width: 100,
                     child: Tooltip(
-                      message: AppLocalizations.of(context)!
-                          .doublecliktoadjustvolume,
+                      message:
+                          AppLocalizations.of(context).doublecliktoadjustvolume,
                       child: MacosSlider(
-                        color: CupertinoColors.inactiveGray,
+                        color: Colors.white,
+                        thumbColor: Colors.white,
                         //activeColor: CupertinoColors.inactiveGray,
                         value: volume,
                         onChanged: (volume) async {

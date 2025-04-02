@@ -124,7 +124,7 @@ class SelectedTracksPhone extends StatelessWidget {
                             children: [
                               razh(5),
                               Text(
-                                "${playlistHandlerTracks.length} ${AppLocalizations.of(context)!.plustracks}",
+                                "${playlistHandlerTracks.length} ${AppLocalizations.of(context).plustracks}",
                                 style: const TextStyle(
                                   fontSize: 17,
                                   fontWeight: FontWeight.w600,

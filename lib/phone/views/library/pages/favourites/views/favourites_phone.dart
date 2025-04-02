@@ -78,8 +78,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                 child: FlexibleSpaceBar(
                                   centerTitle: true,
                                   title: Text(
-                                    AppLocalizations.of(context)!
-                                        .favouritesongs,
+                                    AppLocalizations.of(context).favouritesongs,
                                     style: TextStyle(
                                       fontSize: kIsApple ? 25 : 30,
                                       fontWeight: kIsApple
@@ -300,7 +299,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                                   }, size: 60),
                                                   textButton(
                                                       AppLocalizations.of(
-                                                              context)!
+                                                              context)
                                                           .findyourfavouritesongsnow,
                                                       () {
                                                     navigationBarIndex.value =

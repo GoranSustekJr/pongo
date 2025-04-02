@@ -175,7 +175,7 @@ class AudioServiceHandler extends BaseAudioHandler
     }
     Notifications().showWarningNotification(
       notificationsContext.value!,
-      AppLocalizations.of(notificationsContext.value!)!.donotterminatetheapp,
+      AppLocalizations.of(notificationsContext.value!).donotterminatetheapp,
     );
     if (sleepAlarm.sleep) {
       sleepIn(sleepAlarm);
@@ -498,9 +498,9 @@ class AudioServiceHandler extends BaseAudioHandler
     if (activeSleepAlarm != -1) {
       Notifications().showErrorNotification(
           notificationsContext.value!,
-          AppLocalizations.of(notificationsContext.value!)!
+          AppLocalizations.of(notificationsContext.value!)
               .unabletohaltthemusicplayer,
-          AppLocalizations.of(notificationsContext.value!)!
+          AppLocalizations.of(notificationsContext.value!)
               .unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon);
     } else {
       // Stop the audio player
@@ -550,10 +550,8 @@ class AudioServiceHandler extends BaseAudioHandler
       audioPlayer.play();
       startFadeIn();
     } else {
-      Notifications().showWarningNotification(
-          notificationsContext.value!,
-          AppLocalizations.of(notificationsContext.value!)!
-              .sleepalarmisenabled);
+      Notifications().showWarningNotification(notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!).sleepalarmisenabled);
     }
   }
 
@@ -564,10 +562,8 @@ class AudioServiceHandler extends BaseAudioHandler
       await startFadeOut();
       audioPlayer.pause();
     } else {
-      Notifications().showWarningNotification(
-          notificationsContext.value!,
-          AppLocalizations.of(notificationsContext.value!)!
-              .sleepalarmisenabled);
+      Notifications().showWarningNotification(notificationsContext.value!,
+          AppLocalizations.of(notificationsContext.value!).sleepalarmisenabled);
     }
   }
 
@@ -623,8 +619,8 @@ class AudioServiceHandler extends BaseAudioHandler
         if (notify) {
           Notifications().showSpecialNotification(
             notificationsContext.value!,
-            AppLocalizations.of(notificationsContext.value!)!.successful,
-            AppLocalizations.of(notificationsContext.value!)!.repeatoff,
+            AppLocalizations.of(notificationsContext.value!).successful,
+            AppLocalizations.of(notificationsContext.value!).repeatoff,
             AppIcons.repeat,
             iconColor: Colors.white.withAlpha(150),
           );
@@ -635,8 +631,8 @@ class AudioServiceHandler extends BaseAudioHandler
         if (notify) {
           Notifications().showSpecialNotification(
             notificationsContext.value!,
-            AppLocalizations.of(notificationsContext.value!)!.successful,
-            AppLocalizations.of(notificationsContext.value!)!.repeatthissong,
+            AppLocalizations.of(notificationsContext.value!).successful,
+            AppLocalizations.of(notificationsContext.value!).repeatthissong,
             AppIcons.repeatOne,
           );
         }
@@ -646,8 +642,8 @@ class AudioServiceHandler extends BaseAudioHandler
         if (notify) {
           Notifications().showSpecialNotification(
             notificationsContext.value!,
-            AppLocalizations.of(notificationsContext.value!)!.successful,
-            AppLocalizations.of(notificationsContext.value!)!.repeatthequeue,
+            AppLocalizations.of(notificationsContext.value!).successful,
+            AppLocalizations.of(notificationsContext.value!).repeatthequeue,
             AppIcons.repeat,
           );
         }

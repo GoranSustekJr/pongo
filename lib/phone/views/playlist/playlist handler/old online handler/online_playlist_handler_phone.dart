@@ -74,7 +74,7 @@ class _OnlinePlaylistHandlerPhoneState
       if (e.toString().contains("access_denied")) {
         Notifications().showWarningNotification(
           context,
-          AppLocalizations.of(context)!.pleaseallowaccesstophotogalery,
+          AppLocalizations.of(context).pleaseallowaccesstophotogalery,
         );
         return;
       }
@@ -93,15 +93,15 @@ class _OnlinePlaylistHandlerPhoneState
 
         uiSettings: [
           AndroidUiSettings(
-            toolbarTitle: AppLocalizations.of(context)!.cropimage,
+            toolbarTitle: AppLocalizations.of(context).cropimage,
             toolbarColor: Colors.black,
             toolbarWidgetColor: Colors.white,
             hideBottomControls: true,
           ),
           IOSUiSettings(
-            title: AppLocalizations.of(context)!.cropimage,
-            cancelButtonTitle: AppLocalizations.of(context)!.cancel,
-            doneButtonTitle: AppLocalizations.of(context)!.okey,
+            title: AppLocalizations.of(context).cropimage,
+            cancelButtonTitle: AppLocalizations.of(context).cancel,
+            doneButtonTitle: AppLocalizations.of(context).okey,
           ),
         ],
       );
@@ -227,7 +227,7 @@ class _OnlinePlaylistHandlerPhoneState
                             });
                             Notifications().showWarningNotification(
                                 context,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context)
                                     .playlistnamealreadyexists);
                           }
                         } else {

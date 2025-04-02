@@ -105,7 +105,7 @@ class _HomeStateMacos extends State<MainMacos> {
         image = data["picture"];
       });
     } else {
-      Navigator.of(context).pop();
+      SignInHandler().signOut(context);
     }
   }
 
@@ -164,7 +164,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 // Title: Search
                                 selectedColor: Col.transp,
                                 label: Text(
-                                  AppLocalizations.of(context)!.search,
+                                  AppLocalizations.of(context).search,
                                   style: titleStyle,
                                 )),
                             SidebarItem(
@@ -175,7 +175,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 size: 15,
                               ),
                               label: Text(
-                                AppLocalizations.of(context)!.search,
+                                AppLocalizations.of(context).search,
                                 style: cardStyle,
                               ),
                             ),
@@ -183,7 +183,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 // Title: Library
                                 selectedColor: Col.transp,
                                 label: Text(
-                                  AppLocalizations.of(context)!.library,
+                                  AppLocalizations.of(context).library,
                                   style: titleStyle,
                                 )),
                             SidebarItem(
@@ -196,7 +196,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 size: 15,
                               ),
                               label: Text(
-                                AppLocalizations.of(context)!.favouritesongs,
+                                AppLocalizations.of(context).favouritesongs,
                                 style: cardStyle,
                               ),
                             ),
@@ -208,7 +208,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 size: 15,
                               ),
                               label: Text(
-                                AppLocalizations.of(context)!.onlineplaylists,
+                                AppLocalizations.of(context).onlineplaylists,
                                 style: cardStyle,
                               ),
                             ),
@@ -220,7 +220,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 size: 15,
                               ),
                               label: Text(
-                                AppLocalizations.of(context)!.offlinesongs,
+                                AppLocalizations.of(context).offlinesongs,
                                 style: cardStyle,
                               ),
                             ),
@@ -232,7 +232,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 size: 15,
                               ),
                               label: Text(
-                                AppLocalizations.of(context)!.offlineplaylists,
+                                AppLocalizations.of(context).offlineplaylists,
                                 style: cardStyle,
                               ),
                             ),
@@ -244,7 +244,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 size: 15,
                               ),
                               label: Text(
-                                AppLocalizations.of(context)!.sleep,
+                                AppLocalizations.of(context).sleep,
                                 style: cardStyle,
                               ),
                             ),
@@ -252,7 +252,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 // Title: Lyrics
                                 selectedColor: Col.transp,
                                 label: Text(
-                                  AppLocalizations.of(context)!.lyrics,
+                                  AppLocalizations.of(context).lyrics,
                                   style: titleStyle,
                                 )),
                             SidebarItem(
@@ -288,7 +288,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                     });
                               }),
                               label: Text(
-                                AppLocalizations.of(context)!.lyrics,
+                                AppLocalizations.of(context).lyrics,
                                 style: cardStyle,
                               ),
                             ),
@@ -296,7 +296,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 // Title: Settings
                                 selectedColor: Col.transp,
                                 label: Text(
-                                  AppLocalizations.of(context)!.settings,
+                                  AppLocalizations.of(context).settings,
                                   style: titleStyle,
                                 )),
                             SidebarItem(
@@ -307,7 +307,7 @@ class _HomeStateMacos extends State<MainMacos> {
                                 size: 15,
                               ),
                               label: Text(
-                                AppLocalizations.of(context)!.settings,
+                                AppLocalizations.of(context).settings,
                                 style: cardStyle,
                               ),
                             ),

@@ -10,17 +10,16 @@ class Favourites {
       await DatabaseHelper().removeFavouriteTrack(favourite);
       Notifications().showSpecialNotification(
           notificationsContext.value!,
-          AppLocalizations.of(notificationsContext.value!)!.successful,
-          AppLocalizations.of(notificationsContext.value!)!
+          AppLocalizations.of(notificationsContext.value!).successful,
+          AppLocalizations.of(notificationsContext.value!)
               .trackremovedfromfavourites,
           CupertinoIcons.heart_slash);
     } else {
       await DatabaseHelper().insertFavouriteTrack(favourite);
       Notifications().showSpecialNotification(
           notificationsContext.value!,
-          AppLocalizations.of(notificationsContext.value!)!.successful,
-          AppLocalizations.of(notificationsContext.value!)!
-              .trackisnowafavourite,
+          AppLocalizations.of(notificationsContext.value!).successful,
+          AppLocalizations.of(notificationsContext.value!).trackisnowafavourite,
           AppIcons.heartFill);
     }
   }

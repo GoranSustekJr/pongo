@@ -45,8 +45,8 @@ class Shazam {
         } else {
           Notifications().showErrorNotification(
               notificationsContext.value!,
-              AppLocalizations.of(notificationsContext.value!)!.error,
-              AppLocalizations.of(notificationsContext.value!)!
+              AppLocalizations.of(notificationsContext.value!).error,
+              AppLocalizations.of(notificationsContext.value!)
                   .shazamfailed); // Handle other status codes as needed
         }
       }
@@ -54,8 +54,8 @@ class Shazam {
       //print(e);
       Notifications().showErrorNotification(
           notificationsContext.value!,
-          AppLocalizations.of(notificationsContext.value!)!.error,
-          AppLocalizations.of(notificationsContext.value!)!
+          AppLocalizations.of(notificationsContext.value!).error,
+          AppLocalizations.of(notificationsContext.value!)
               .shazamfailed); // Handle other status codes as needed
     }
   }

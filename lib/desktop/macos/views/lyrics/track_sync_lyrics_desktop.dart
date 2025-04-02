@@ -59,8 +59,10 @@ class _TrackSyncLyricsDesktopState extends State<TrackSyncLyricsDesktop> {
         setState(() {
           _currentPosition = position;
         });
-
-        findCurrentLyricIndex(_currentPosition);
+        if (WidgetsBinding.instance.lifecycleState ==
+            AppLifecycleState.resumed) {
+          findCurrentLyricIndex(_currentPosition);
+        }
       });
     });
   }
@@ -74,7 +76,9 @@ class _TrackSyncLyricsDesktopState extends State<TrackSyncLyricsDesktop> {
       setState(() {
         _currentPosition = position + widget.syncTimeDelay.milliseconds;
       });
-      findCurrentLyricIndex(_currentPosition, first: true);
+      if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+        findCurrentLyricIndex(_currentPosition, first: true);
+      }
     });
   }
 
@@ -198,13 +202,13 @@ class _TrackSyncLyricsDesktopState extends State<TrackSyncLyricsDesktop> {
                             AppBar().preferredSize.height -
                             MediaQuery.of(context).padding.top),
                         Text(
-                          AppLocalizations.of(context)!.nosynclyrics,
+                          AppLocalizations.of(context).nosynclyrics,
                           textAlign: currentLyricsTextAlignment.value,
                           style: const TextStyle(
                               fontWeight: FontWeight.w700, fontSize: 29),
                         ),
                         Text(
-                          AppLocalizations.of(context)!.wanttohelpoutlyrics,
+                          AppLocalizations.of(context).wanttohelpoutlyrics,
                           textAlign: currentLyricsTextAlignment.value,
                           style: const TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 15),
@@ -240,6 +244,8 @@ class _TrackSyncLyricsDesktopState extends State<TrackSyncLyricsDesktop> {
                         }
                       },
                       child: AutoScrollTag(
+                        color: Col.transp,
+                        highlightColor: Col.transp,
                         key: ValueKey(index),
                         controller: autoScrollController,
                         index: index,

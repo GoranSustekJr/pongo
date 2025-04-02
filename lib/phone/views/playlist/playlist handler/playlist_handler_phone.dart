@@ -149,7 +149,7 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
       if (e.toString().contains("access_denied")) {
         Notifications().showWarningNotification(
           context,
-          AppLocalizations.of(context)!.pleaseallowaccesstophotogalery,
+          AppLocalizations.of(context).pleaseallowaccesstophotogalery,
         );
         return;
       }
@@ -168,15 +168,15 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
 
         uiSettings: [
           AndroidUiSettings(
-            toolbarTitle: AppLocalizations.of(context)!.cropimage,
+            toolbarTitle: AppLocalizations.of(context).cropimage,
             toolbarColor: Colors.black,
             toolbarWidgetColor: Colors.white,
             hideBottomControls: true,
           ),
           IOSUiSettings(
-            title: AppLocalizations.of(context)!.cropimage,
-            cancelButtonTitle: AppLocalizations.of(context)!.cancel,
-            doneButtonTitle: AppLocalizations.of(context)!.okey,
+            title: AppLocalizations.of(context).cropimage,
+            cancelButtonTitle: AppLocalizations.of(context).cancel,
+            doneButtonTitle: AppLocalizations.of(context).okey,
           ),
         ],
       );
@@ -320,8 +320,8 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                                 // Download and add
                                 Notifications().showSpecialNotification(
                                     context,
-                                    AppLocalizations.of(context)!.downloading,
-                                    AppLocalizations.of(context)!
+                                    AppLocalizations.of(context).downloading,
+                                    AppLocalizations.of(context)
                                         .downloadhasstarted,
                                     AppIcons.download);
 
@@ -364,17 +364,16 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                                   // Notify the user
                                   Notifications().showSpecialNotification(
                                       context,
-                                      AppLocalizations.of(context)!.successful,
-                                      AppLocalizations.of(context)!
+                                      AppLocalizations.of(context).successful,
+                                      AppLocalizations.of(context)
                                           .downloadsucceeded,
                                       AppIcons.download);
                                 }
                               } catch (e) {
                                 Notifications().showSpecialNotification(
                                     context,
-                                    AppLocalizations.of(context)!.error,
-                                    AppLocalizations.of(context)!
-                                        .downloadfailed,
+                                    AppLocalizations.of(context).error,
+                                    AppLocalizations.of(context).downloadfailed,
                                     AppIcons.warning);
                               }
                             }
@@ -393,7 +392,7 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                       } else {
                         Notifications().showWarningNotification(
                             context,
-                            AppLocalizations.of(context)!
+                            AppLocalizations.of(context)
                                 .playlistnamealreadyexists);
                       }
                     }
@@ -464,8 +463,8 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                           // Download and add
                           Notifications().showSpecialNotification(
                               context,
-                              AppLocalizations.of(context)!.downloading,
-                              AppLocalizations.of(context)!.downloadhasstarted,
+                              AppLocalizations.of(context).downloading,
+                              AppLocalizations.of(context).downloadhasstarted,
                               AppIcons.download);
 
                           final downloaded = await Download().playlist(
@@ -503,15 +502,15 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                             // Notify the user
                             Notifications().showSpecialNotification(
                                 context,
-                                AppLocalizations.of(context)!.successful,
-                                AppLocalizations.of(context)!.downloadsucceeded,
+                                AppLocalizations.of(context).successful,
+                                AppLocalizations.of(context).downloadsucceeded,
                                 AppIcons.download);
                           }
                         } catch (e) {
                           Notifications().showSpecialNotification(
                               context,
-                              AppLocalizations.of(context)!.error,
-                              AppLocalizations.of(context)!.downloadfailed,
+                              AppLocalizations.of(context).error,
+                              AppLocalizations.of(context).downloadfailed,
                               AppIcons.warning);
                         }
                       }

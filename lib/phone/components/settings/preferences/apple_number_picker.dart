@@ -5,8 +5,8 @@ appleNumberPicker(context, int number, Function(int) function) {
   showCupertinoModalPopup(
     context: context,
     builder: (context) => CupertinoActionSheet(
-      title: Text(AppLocalizations.of(context)!.selectmarket),
-      message: Text(AppLocalizations.of(context)!.selectmarketbody),
+      title: Text(AppLocalizations.of(context).selectmarket),
+      message: Text(AppLocalizations.of(context).selectmarketbody),
       actions: List.generate(
         51,
         (index) => CupertinoActionSheetAction(
@@ -33,7 +33,7 @@ appleNumberPicker(context, int number, Function(int) function) {
           Navigator.pop(context);
         },
         child: Text(
-          AppLocalizations.of(context)!.cancel,
+          AppLocalizations.of(context).cancel,
           style: TextStyle(
             fontSize: kIsApple ? 22.5 : 18,
             fontWeight: kIsApple ? FontWeight.w500 : FontWeight.w600,

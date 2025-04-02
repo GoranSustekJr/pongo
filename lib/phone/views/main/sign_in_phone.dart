@@ -23,7 +23,7 @@ class _SignInPhoneState extends State<SignInPhone> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.signin,
+                  AppLocalizations.of(context).signin,
                   style: TextStyle(
                     fontSize: kIsApple ? 30 : 40,
                     fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w800,
@@ -35,7 +35,7 @@ class _SignInPhoneState extends State<SignInPhone> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.klemen,
+                  AppLocalizations.of(context).klemen,
                   style: TextStyle(
                     fontSize: kIsApple ? 17 : 18,
                     fontWeight: kIsApple ? FontWeight.w400 : FontWeight.w500,
@@ -47,7 +47,7 @@ class _SignInPhoneState extends State<SignInPhone> {
               child: Container(),
             ),
             signInButtonPhone(context, GoogleLogoPainter(),
-                "${AppLocalizations.of(context)!.signinwith} Google", "Google"),
+                "${AppLocalizations.of(context).signinwith} Google", "Google"),
             Row(
               children: [
                 const Expanded(
@@ -59,7 +59,7 @@ class _SignInPhoneState extends State<SignInPhone> {
                   ),
                 ),
                 Text(
-                  AppLocalizations.of(context)!.or,
+                  AppLocalizations.of(context).or,
                   //      style: TextStyle(color: Col.fadeIcon),
                 ),
                 const Expanded(
@@ -73,7 +73,7 @@ class _SignInPhoneState extends State<SignInPhone> {
               ],
             ),
             signInButtonPhone(context, GoogleLogoPainter(),
-                "${AppLocalizations.of(context)!.signinwith} Apple", "Apple"),
+                "${AppLocalizations.of(context).signinwith} Apple", "Apple"),
             Expanded(
               child: Container(),
             ),
@@ -83,7 +83,7 @@ class _SignInPhoneState extends State<SignInPhone> {
                   right: 15,
                   bottom: MediaQuery.of(context).padding.bottom),
               child: Text(
-                AppLocalizations.of(context)!.bysigninginyou,
+                AppLocalizations.of(context).bysigninginyou,
                 textAlign: TextAlign.left,
               ),
             ),

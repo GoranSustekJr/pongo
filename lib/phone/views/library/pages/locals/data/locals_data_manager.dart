@@ -201,7 +201,7 @@ class LocalsDataManager with ChangeNotifier {
             notifyListeners();
             await Storage().writeLocalsSort("First added");
           },
-          title: AppLocalizations.of(context)!.firstadded,
+          title: AppLocalizations.of(context).firstadded,
         ),
         const PullDownMenuDivider(),
         PullDownMenuItem(
@@ -211,7 +211,7 @@ class LocalsDataManager with ChangeNotifier {
             notifyListeners();
             await Storage().writeLocalsSort("Last added");
           },
-          title: AppLocalizations.of(context)!.lastadded,
+          title: AppLocalizations.of(context).lastadded,
         ),
       ],
       position: RelativeRect.fromLTRB(

@@ -13,24 +13,21 @@ class Trailing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
-      child: show
-          ? AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: showThis
-                  ? const SizedBox(
-                      width: 20,
-                      height: 40,
-                      child: Center(
-                        child: Icon(
-                          CupertinoIcons.circle_filled,
-                          color: Colors.white,
-                        ),
-                      ))
-                  : const SizedBox(),
-            )
-          : trailing,
-    );
+    return show
+        ? AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: showThis
+                ? const SizedBox(
+                    width: 20,
+                    height: 40,
+                    child: Center(
+                      child: Icon(
+                        CupertinoIcons.circle_filled,
+                        color: Colors.white,
+                      ),
+                    ))
+                : const SizedBox(),
+          )
+        : trailing;
   }
 }

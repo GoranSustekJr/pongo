@@ -21,7 +21,7 @@ class RecommendedShimmer extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Text(
-            AppLocalizations.of(context)!.recommendationsdisabled,
+            AppLocalizations.of(context).recommendationsdisabled,
             style: const TextStyle(fontSize: 17.5, fontWeight: FontWeight.w600),
             textAlign: TextAlign.center,
           ),
@@ -50,7 +50,7 @@ class RecommendedShimmer extends StatelessWidget {
                 children: [
                   if (history)
                     searchResultText(
-                        AppLocalizations.of(context)!.lastlistenedto,
+                        AppLocalizations.of(context).lastlistenedto,
                         suggestionHeader),
                   if (history) razh(10),
                   if (history)
@@ -118,8 +118,8 @@ class RecommendedShimmer extends StatelessWidget {
                     ),
                   if (history) razh(30),
                   if (categories)
-                    searchResultText(AppLocalizations.of(context)!.explore,
-                        suggestionHeader),
+                    searchResultText(
+                        AppLocalizations.of(context).explore, suggestionHeader),
                   if (categories) razh(10),
                   if (categories)
                     Padding(

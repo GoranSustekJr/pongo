@@ -79,7 +79,7 @@ class Notifications {
   void showWarningNotification(BuildContext context, String message) {
     showNotification(
       context: context,
-      title: AppLocalizations.of(context)!.warning,
+      title: AppLocalizations.of(context).warning,
       message: message,
       icon: AppIcons.warning,
       backgroundColor: Col.primaryCard,
@@ -117,8 +117,8 @@ class Notifications {
   void showDisabledNotification(BuildContext context) {
     showNotification(
         context: context,
-        title: AppLocalizations.of(context)!.accountdisabled,
-        message: AppLocalizations.of(context)!
+        title: AppLocalizations.of(context).accountdisabled,
+        message: AppLocalizations.of(context)
             .pleasecontactinordertoenableyouraccountandusetheapp,
         icon: AppIcons.warning,
         durationInSeconds: 20);

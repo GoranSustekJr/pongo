@@ -1,10 +1,11 @@
 import 'package:pongo/exports.dart';
 
-class PlaylistBodyPhone extends StatefulWidget {
+class PlaylistBodyPhone extends StatelessWidget {
   final Playlist playlist;
   final List<Track> tracks;
   final List missingTracks;
   final List<String> loading;
+  final MediaItem? mediaItem;
   final Function(int) play;
   const PlaylistBodyPhone({
     super.key,
@@ -13,15 +14,12 @@ class PlaylistBodyPhone extends StatefulWidget {
     required this.missingTracks,
     required this.loading,
     required this.play,
+    required this.mediaItem,
   });
 
   @override
-  State<PlaylistBodyPhone> createState() => _PlaylistBodyPhoneState();
-}
-
-class _PlaylistBodyPhoneState extends State<PlaylistBodyPhone> {
-  @override
   Widget build(BuildContext context) {
+    String id = mediaItem != null ? mediaItem!.id : "";
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return SingleChildScrollView(
@@ -37,31 +35,28 @@ class _PlaylistBodyPhoneState extends State<PlaylistBodyPhone> {
             ListView.builder(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).padding.bottom),
-              itemCount: widget.tracks.length,
+              itemCount: tracks.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return PlaylistSongTile(
-                  track: widget.tracks[index],
+                  track: tracks[index],
                   first: index == 0,
-                  last: index == widget.tracks.length - 1,
-                  exists:
-                      !widget.missingTracks.contains(widget.tracks[index].id),
+                  last: index == tracks.length - 1,
+                  exists: !missingTracks.contains(tracks[index].id),
                   function: () async {
-                    final playNew = audioServiceHandler.mediaItem.value != null
-                        ? "${audioServiceHandler.mediaItem.value!.id.split(".")[0]}.${audioServiceHandler.mediaItem.value!.id.split(".")[1]}" !=
-                            "online.playlist:${widget.playlist.id}"
+                    final playNew = mediaItem != null
+                        ? "${mediaItem!.id.split(".")[0]}.${mediaItem!.id.split(".")[1]}" !=
+                            "online.playlist:${playlist.id}"
                         : true;
 
-                    final skipTo = audioServiceHandler.mediaItem.value != null
-                        ? audioServiceHandler.mediaItem.value!.id
-                                .split(".")[2] !=
-                            widget.tracks[index].id
+                    final skipTo = mediaItem != null
+                        ? mediaItem!.id.split(".")[2] != tracks[index].id
                         : false;
 
                     if (playNew) {
                       changeTrackOnTap.value = true;
-                      widget.play(index);
+                      play(index);
                     } else if (skipTo &&
                         (audioServiceHandler.playlist.length - 1) >= index &&
                         changeTrackOnTap.value) {
@@ -81,40 +76,30 @@ class _PlaylistBodyPhoneState extends State<PlaylistBodyPhone> {
                       width: 20,
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 200),
-                        child: widget.loading.contains(widget.tracks[index].id)
+                        child: loading.contains(tracks[index].id)
                             ? const Icon(
                                 key: ValueKey(true),
                                 AppIcons.loading,
                                 color: Colors.white,
                               )
-                            : StreamBuilder(
-                                key: const ValueKey(false),
-                                stream: audioServiceHandler.mediaItem.stream,
-                                builder: (context, snapshot) {
-                                  final String id = snapshot.data != null
-                                      ? snapshot.data!.id
-                                      : "";
-
-                                  return Trailing(
-                                    show: !widget.loading
-                                        .contains(widget.tracks[index].id),
-                                    showThis: id ==
-                                            "online.playlist:${widget.playlist.id}.${widget.tracks[index].id}" &&
-                                        audioServiceHandler
-                                                .audioPlayer.currentIndex ==
-                                            index,
-                                    trailing: const Icon(
-                                      key: ValueKey(true),
-                                      AppIcons.loading,
-                                      color: Colors.white,
-                                    ),
-                                  );
-                                },
+                            : Trailing(
+                                show: !loading.contains(tracks[index].id),
+                                showThis: id ==
+                                        "online.playlist:${playlist.id}.${tracks[index].id}" &&
+                                    audioServiceHandler
+                                            .audioPlayer.currentIndex ==
+                                        index,
+                                trailing: const Icon(
+                                  key: ValueKey(true),
+                                  AppIcons.loading,
+                                  color: Colors.white,
+                                ),
                               ),
                       ),
                     ),
                   ),
                 );
+                const SizedBox();
               },
             ),
             razh(15),

@@ -203,13 +203,13 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                             AppBar().preferredSize.height -
                             MediaQuery.of(context).padding.top),
                         Text(
-                          AppLocalizations.of(context)!.nosynclyrics,
+                          AppLocalizations.of(context).nosynclyrics,
                           textAlign: currentLyricsTextAlignment.value,
                           style: const TextStyle(
                               fontWeight: FontWeight.w700, fontSize: 29),
                         ),
                         Text(
-                          AppLocalizations.of(context)!.wanttohelpoutlyrics,
+                          AppLocalizations.of(context).wanttohelpoutlyrics,
                           textAlign: currentLyricsTextAlignment.value,
                           style: const TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 15),
@@ -299,7 +299,7 @@ class _TrackSyncLyricsPhoneState extends State<TrackSyncLyricsPhone> {
                                                   ? Colors.white.withAlpha(150)
                                                   : Colors.white.withAlpha(100),
                                       fontWeight: FontWeight.bold,
-                                      fontSize: kIsApple ? 35 : 40,
+                                      fontSize: kIsApple ? 35 : 45,
                                       height: 1,
                                     ),
                                   ),

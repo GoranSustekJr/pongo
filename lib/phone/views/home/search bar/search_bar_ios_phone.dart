@@ -86,7 +86,7 @@ class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
                       widget.onFieldSubmitted(qry); // Callback
                       widget.focusNode.unfocus();
                     },
-                    placeholder: AppLocalizations.of(context)!.search,
+                    placeholder: AppLocalizations.of(context).search,
                     backgroundColor:
                         Col.primaryCard.withAlpha(useBlur.value ? 150 : 245),
                     style: const TextStyle(color: Colors.white),
@@ -112,7 +112,7 @@ class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 5),
                   child: Text(
-                    AppLocalizations.of(context)!.cancel,
+                    AppLocalizations.of(context).cancel,
                     style: TextStyle(
                         color: Colors.white.withAlpha(200), fontSize: 20),
                   ),

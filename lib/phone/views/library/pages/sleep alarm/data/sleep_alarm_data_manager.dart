@@ -72,8 +72,8 @@ class SleepAlarmDataManager with ChangeNotifier {
       if (queue.isEmpty) {
         Notifications().showErrorNotification(
             context,
-            AppLocalizations.of(context)!.cannotstartalarm,
-            AppLocalizations.of(context)!
+            AppLocalizations.of(context).cannotstartalarm,
+            AppLocalizations.of(context)
                 .thequeuemustnotbeemptyinordertostartthealarm);
       } else {
         activeAlarm = sleepAlarms[index].id;

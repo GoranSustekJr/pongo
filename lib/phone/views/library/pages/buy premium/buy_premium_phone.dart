@@ -57,7 +57,7 @@ class _BuyPremiumPhoneState extends State<BuyPremiumPhone>
                   border: Border.all(color: Colors.red),
                   borderRadius: BorderRadius.circular(35)),
               child: textButton(
-                  "${AppLocalizations.of(context)!.buypremium}: ${subscriptionModels.isNotEmpty ? subscriptionModels[0].price : ""} ${subscriptionModels.isNotEmpty ? subscriptionModels[0].currencyCode : ""}",
+                  "${AppLocalizations.of(context).buypremium}: ${subscriptionModels.isNotEmpty ? subscriptionModels[0].price : ""} ${subscriptionModels.isNotEmpty ? subscriptionModels[0].currencyCode : ""}",
                   () {
                 Notifications()
                     .showDisabledNotification(notificationsContext.value!);
@@ -66,13 +66,13 @@ class _BuyPremiumPhoneState extends State<BuyPremiumPhone>
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                AppLocalizations.of(context)!
+                AppLocalizations.of(context)
                     .pleaseleavethepageafterasuccessfullpurchase,
                 textAlign: TextAlign.center,
               ),
             ),
             Expanded(child: Container()),
-            textButton(AppLocalizations.of(context)!.cancel, () {
+            textButton(AppLocalizations.of(context).cancel, () {
               Navigator.of(context).pop();
             }, const TextStyle(color: Colors.white)),
             razh(kBottomNavigationBarHeight)

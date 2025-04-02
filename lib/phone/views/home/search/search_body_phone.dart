@@ -48,7 +48,7 @@ class SearchBodyPhone extends StatelessWidget {
             children: [
               if (artists.isNotEmpty && numberOfSearchArtists.value > 0)
                 searchResultText(
-                    AppLocalizations.of(context)!.artists, suggestionHeader),
+                    AppLocalizations.of(context).artists, suggestionHeader),
               if (artists.isNotEmpty && numberOfSearchArtists.value > 0)
                 razh(10),
               if (artists.isNotEmpty && numberOfSearchArtists.value > 0)
@@ -80,7 +80,7 @@ class SearchBodyPhone extends StatelessWidget {
                 razh(50),
               if (albums.isNotEmpty && numberOfSearchAlbums.value > 0)
                 searchResultText(
-                    AppLocalizations.of(context)!.albums, suggestionHeader),
+                    AppLocalizations.of(context).albums, suggestionHeader),
               if (albums.isNotEmpty && numberOfSearchAlbums.value > 0) razh(10),
               if (albums.isNotEmpty && numberOfSearchAlbums.value > 0)
                 ListView.builder(
@@ -110,7 +110,7 @@ class SearchBodyPhone extends StatelessWidget {
               if (albums.isNotEmpty && numberOfSearchAlbums.value > 0) razh(50),
               if (tracks.isNotEmpty && numberOfSearchTracks.value > 0)
                 searchResultText(
-                    AppLocalizations.of(context)!.tracks, suggestionHeader),
+                    AppLocalizations.of(context).tracks, suggestionHeader),
               if (tracks.isNotEmpty && numberOfSearchTracks.value > 0) razh(10),
               if (tracks.isNotEmpty && numberOfSearchTracks.value > 0)
                 ListView.builder(
@@ -239,7 +239,7 @@ class SearchBodyPhone extends StatelessWidget {
               if (tracks.isNotEmpty && numberOfSearchTracks.value > 0) razh(50),
               if (playlists.isNotEmpty && numberOfSearchPlaylists.value > 0)
                 searchResultText(
-                    AppLocalizations.of(context)!.playlists, suggestionHeader),
+                    AppLocalizations.of(context).playlists, suggestionHeader),
               if (playlists.isNotEmpty && numberOfSearchPlaylists.value > 0)
                 razh(10),
               if (playlists.isNotEmpty && numberOfSearchPlaylists.value > 0)

@@ -43,16 +43,16 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
             children: [
               Row(
                 children: [
-                  textButton(AppLocalizations.of(context)!.cancel, () {
+                  textButton(AppLocalizations.of(context).cancel, () {
                     Navigator.of(context).pop();
                   },
                       const TextStyle(
                           color: Colors.white, fontWeight: FontWeight.w700)),
                   Expanded(
-                      child: textButton(AppLocalizations.of(context)!.sleep,
+                      child: textButton(AppLocalizations.of(context).sleep,
                           () {}, const TextStyle(color: Colors.white),
                           edgeInsets: EdgeInsets.zero)),
-                  textButton(AppLocalizations.of(context)!.create, () async {
+                  textButton(AppLocalizations.of(context).create, () async {
                     if (sleep || alarmClock) {
                       SleepAlarm sleepAlarm = SleepAlarm(
                         id: -1,
@@ -80,7 +80,7 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                     } else {
                       Notifications().showWarningNotification(
                           context,
-                          AppLocalizations.of(context)!
+                          AppLocalizations.of(context)
                               .cannotcreateasleepalarmwithoutthe);
                     }
                   },
@@ -91,7 +91,7 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
               razh(20),
               Row(
                 children: [
-                  textButton(AppLocalizations.of(context)!.sleepin, () {
+                  textButton(AppLocalizations.of(context).sleepin, () {
                     setState(() {
                       sleep = !sleep;
                     });
@@ -138,7 +138,7 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 15),
                         child: Text(
-                          "${AppLocalizations.of(context)!.pongowillgraduallylowerthevolumefor} $sleepDuration min",
+                          "${AppLocalizations.of(context).pongowillgraduallylowerthevolumefor} $sleepDuration min",
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -156,7 +156,7 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
               razh(20),
               Row(
                 children: [
-                  textButton(AppLocalizations.of(context)!.alarm, () {
+                  textButton(AppLocalizations.of(context).alarm, () {
                     setState(() {
                       alarmClock = !alarmClock;
                     });
@@ -255,7 +255,7 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 15),
                         child: Text(
-                          "${AppLocalizations.of(context)!.pongowillgraduallyincreasethevolume} $beforeEndTimeMin min ${AppLocalizations.of(context)!.beforeyouneedtowakeupat} $wakeTimeHour:${(wakeTimeMin).toString().padLeft(2, '0')}",
+                          "${AppLocalizations.of(context).pongowillgraduallyincreasethevolume} $beforeEndTimeMin min ${AppLocalizations.of(context).beforeyouneedtowakeupat} $wakeTimeHour:${(wakeTimeMin).toString().padLeft(2, '0')}",
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,

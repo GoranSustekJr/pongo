@@ -64,8 +64,7 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                           child: !enableLyrics.value
                               ? Center(
                                   child: Text(
-                                    AppLocalizations.of(context)!
-                                        .lyricsdisabled,
+                                    AppLocalizations.of(context).lyricsdisabled,
                                     style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w700,
@@ -125,7 +124,7 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                                         width: 55,
                                         child: Center(
                                           child: Text(
-                                            AppLocalizations.of(context)!.sync,
+                                            AppLocalizations.of(context).sync,
                                             style: const TextStyle(
                                                 fontSize: 12,
                                                 color: Colors.white),
@@ -136,7 +135,7 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                                         width: 55,
                                         child: Center(
                                             child: Text(
-                                          AppLocalizations.of(context)!.plain,
+                                          AppLocalizations.of(context).plain,
                                           style: const TextStyle(
                                               fontSize: 12,
                                               color: Colors.white),
@@ -218,9 +217,9 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                                               Notifications()
                                                   .showSpecialNotification(
                                                 context,
-                                                AppLocalizations.of(context)!
+                                                AppLocalizations.of(context)
                                                     .successful,
-                                                AppLocalizations.of(context)!
+                                                AppLocalizations.of(context)
                                                     .successfullysavedsynctimedelay,
                                                 CupertinoIcons.time,
                                               );

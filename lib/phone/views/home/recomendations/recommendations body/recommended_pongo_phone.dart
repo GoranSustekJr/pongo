@@ -35,7 +35,7 @@ class RecommendedPongoPhone extends StatelessWidget {
           razh(30),
         if (pTracks.isNotEmpty)
           searchResultText(
-              AppLocalizations.of(context)!.tracks, suggestionHeader),
+              AppLocalizations.of(context).tracks, suggestionHeader),
         if (pTracks.isNotEmpty) razh(10),
         if (pTracks.isNotEmpty)
           SizedBox(
@@ -172,7 +172,7 @@ class RecommendedPongoPhone extends StatelessWidget {
           razh(30),
         if (pArtists.isNotEmpty)
           searchResultText(
-              AppLocalizations.of(context)!.artists, suggestionHeader),
+              AppLocalizations.of(context).artists, suggestionHeader),
         if (pArtists.isNotEmpty) razh(10),
         if (pArtists.isNotEmpty)
           SizedBox(
@@ -207,7 +207,7 @@ class RecommendedPongoPhone extends StatelessWidget {
           razh(30),
         if (pAlbums.isNotEmpty)
           searchResultText(
-              AppLocalizations.of(context)!.newalbums, suggestionHeader),
+              AppLocalizations.of(context).newalbums, suggestionHeader),
         if (pAlbums.isNotEmpty) razh(10),
         if (pAlbums.isNotEmpty)
           if (pArtists.isNotEmpty)
@@ -244,7 +244,7 @@ class RecommendedPongoPhone extends StatelessWidget {
           razh(30),
         if (pPlaylists.isNotEmpty)
           searchResultText(
-              AppLocalizations.of(context)!.playlists, suggestionHeader),
+              AppLocalizations.of(context).playlists, suggestionHeader),
         if (pPlaylists.isNotEmpty) razh(10),
         if (pPlaylists.isNotEmpty)
           Padding(

@@ -17,7 +17,7 @@ continueCancelActionSheet(
                   Navigator.pop(context);
                 },
                 child: Text(
-                  AppLocalizations.of(context)!.continuee,
+                  AppLocalizations.of(context).continuee,
                   style: const TextStyle(color: Colors.blue),
                 ),
               ),
@@ -28,7 +28,7 @@ continueCancelActionSheet(
                 Navigator.pop(context);
               },
               child: Text(
-                AppLocalizations.of(context)!.cancel,
+                AppLocalizations.of(context).cancel,
                 style: const TextStyle(color: Colors.red),
               ),
             ),
@@ -44,7 +44,7 @@ continueCancelActionSheet(
                 Row(
                   children: [
                     textButton(
-                      AppLocalizations.of(context)!.cancel,
+                      AppLocalizations.of(context).cancel,
                       () {
                         Navigator.of(context).pop();
                       },
@@ -54,7 +54,7 @@ continueCancelActionSheet(
                       child: Container(),
                     ),
                     textButton(
-                      AppLocalizations.of(context)!.continuee,
+                      AppLocalizations.of(context).continuee,
                       () {
                         function();
                         Navigator.of(context).pop();

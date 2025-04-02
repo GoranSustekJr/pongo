@@ -67,7 +67,7 @@ sleepAlarmTile(
                                     child: Text(
                                       sleepAlarm.sleep
                                           ? "${sleepAlarm.sleepDuration} min"
-                                          : AppLocalizations.of(context)!.off,
+                                          : AppLocalizations.of(context).off,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -85,7 +85,7 @@ sleepAlarmTile(
                                   ),
                                 ),
                                 Text(
-                                  AppLocalizations.of(context)!.sleepin,
+                                  AppLocalizations.of(context).sleepin,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     fontSize: 13,
@@ -104,7 +104,7 @@ sleepAlarmTile(
                                     child: Text(
                                       sleepAlarm.alarmClock
                                           ? "${(sleepAlarm.wakeTime / 60).floor().toString()}:${(sleepAlarm.wakeTime % 60).toString().padLeft(2, '0')}"
-                                          : AppLocalizations.of(context)!.off,
+                                          : AppLocalizations.of(context).off,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -121,7 +121,7 @@ sleepAlarmTile(
                                     color: Col.onIcon.withAlpha(200),
                                   ),
                                 ),
-                                Text(AppLocalizations.of(context)!.alarm,
+                                Text(AppLocalizations.of(context).alarm,
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       fontSize: 13,

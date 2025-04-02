@@ -10,7 +10,7 @@ List<PullDownMenuEntry> queueMorePullDownMenuItems(
       ? [
           PullDownMenuItem(
             onTap: edit,
-            title: AppLocalizations.of(context)!.edit,
+            title: AppLocalizations.of(context).edit,
             icon: AppIcons.edit,
           ),
           const PullDownMenuDivider.large(),
@@ -30,7 +30,7 @@ List<PullDownMenuEntry> queueMorePullDownMenuItems(
           const PullDownMenuDivider.large(), */
           PullDownMenuItem(
             onTap: saveAsPlaylist,
-            title: AppLocalizations.of(context)!.saveasplaylist,
+            title: AppLocalizations.of(context).saveasplaylist,
             icon: AppIcons.playlist,
             itemTheme: const PullDownMenuItemTheme(
               textStyle: TextStyle(
@@ -42,7 +42,7 @@ List<PullDownMenuEntry> queueMorePullDownMenuItems(
           const PullDownMenuDivider(),
           PullDownMenuItem(
             onTap: download,
-            title: AppLocalizations.of(context)!.download,
+            title: AppLocalizations.of(context).download,
             icon: AppIcons.download,
             itemTheme: const PullDownMenuItemTheme(
               textStyle: TextStyle(
@@ -64,7 +64,7 @@ List<PullDownMenuEntry> queueMorePullDownMenuItems(
                 await audioServiceHandler.halt();
               }
             },
-            title: AppLocalizations.of(context)!.halt,
+            title: AppLocalizations.of(context).halt,
             icon: AppIcons.halt,
             itemTheme: const PullDownMenuItemTheme(
               textStyle: TextStyle(

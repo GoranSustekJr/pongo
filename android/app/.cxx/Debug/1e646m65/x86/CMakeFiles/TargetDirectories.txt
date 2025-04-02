@@ -1,0 +1,2 @@
+/Users/goransustek/Documents/goransha/projects/pongo/android/app/.cxx/Debug/1e646m65/x86/CMakeFiles/edit_cache.dir
+/Users/goransustek/Documents/goransha/projects/pongo/android/app/.cxx/Debug/1e646m65/x86/CMakeFiles/rebuild_cache.dir

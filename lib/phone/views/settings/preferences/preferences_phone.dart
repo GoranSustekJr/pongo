@@ -159,7 +159,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                           child: FlexibleSpaceBar(
                             centerTitle: true,
                             title: Text(
-                              AppLocalizations.of(context)!.preferences,
+                              AppLocalizations.of(context).preferences,
                               style: TextStyle(
                                 fontSize: kIsApple ? 25 : 30,
                                 fontWeight: kIsApple
@@ -184,7 +184,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                             children: [
                               razh(AppBar().preferredSize.height / 2),
                               razh(AppBar().preferredSize.height),
-                              settingsText(AppLocalizations.of(context)!
+                              settingsText(AppLocalizations.of(context)
                                   .searchpreferences),
                               settingsTile(
                                 context,
@@ -193,7 +193,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 AppIcons.world,
                                 AppIcons.edit,
                                 "${marketsCountryNames[market]} - $market",
-                                AppLocalizations.of(context)!.searchmarket,
+                                AppLocalizations.of(context).searchmarket,
                                 () {
                                   kIsApple
                                       ? appleMarketPopup(
@@ -225,8 +225,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   false,
                                   AppIcons.blankArtist,
                                   numOfSearchArtists,
-                                  AppLocalizations.of(context)!.artists,
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context).artists,
+                                  AppLocalizations.of(context)
                                       .howmanyartistsshownwhensearching, () {
                                 appleNumberPicker(context, numOfSearchArtists,
                                     (number) async {
@@ -244,8 +244,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   false,
                                   AppIcons.blankAlbum,
                                   numOfSearchAlbums,
-                                  AppLocalizations.of(context)!.albums,
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context).albums,
+                                  AppLocalizations.of(context)
                                       .howmanyalbumsshownwhensearching, () {
                                 appleNumberPicker(context, numOfSearchAlbums,
                                     (number) async {
@@ -263,8 +263,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   false,
                                   AppIcons.blankTrack,
                                   numOfSearchTracks,
-                                  AppLocalizations.of(context)!.tracks,
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context).tracks,
+                                  AppLocalizations.of(context)
                                       .howmanytracksshownwhensearching, () {
                                 appleNumberPicker(context, numOfSearchTracks,
                                     (number) async {
@@ -283,8 +283,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   true,
                                   AppIcons.blankAlbum,
                                   numOfSearchPlaylists,
-                                  AppLocalizations.of(context)!.playlists,
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context).playlists,
+                                  AppLocalizations.of(context)
                                       .howmanyplaylistsshownwhensearching, () {
                                 appleNumberPicker(context, numOfSearchPlaylists,
                                     (number) async {
@@ -299,15 +299,15 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                               }),
                               razh(20),
                               settingsText(
-                                  AppLocalizations.of(context)!.startpage),
+                                  AppLocalizations.of(context).startpage),
                               settingsTileSwitcher(
                                 context,
                                 true,
                                 false,
                                 CupertinoIcons.arrow_down_doc_fill,
                                 showHistory, // AppIcons.edit,
-                                AppLocalizations.of(context)!.showhistory,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context).showhistory,
+                                AppLocalizations.of(context)
                                     .showhistoryonstartpage,
                                 (use) async {
                                   setState(() {
@@ -322,8 +322,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 true,
                                 CupertinoIcons.arrow_up_doc_fill,
                                 showExplore, // AppIcons.edit,
-                                AppLocalizations.of(context)!.showexplore,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context).showexplore,
+                                AppLocalizations.of(context)
                                     .showexploreonstartpage,
                                 (use) async {
                                   setState(() {
@@ -333,16 +333,15 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 },
                               ),
                               razh(20),
-                              settingsText(
-                                  AppLocalizations.of(context)!.lyrics),
+                              settingsText(AppLocalizations.of(context).lyrics),
                               settingsTileSwitcher(
                                 context,
                                 true,
                                 false,
                                 AppIcons.lyrics,
                                 enbleLyrics,
-                                AppLocalizations.of(context)!.enablelyrics,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context).enablelyrics,
+                                AppLocalizations.of(context)
                                     .enableusageoflyrics,
                                 (enable) async {
                                   setState(() {
@@ -358,9 +357,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 false,
                                 CupertinoIcons.hourglass,
                                 syncTimeDelay, // AppIcons.edit,
-                                AppLocalizations.of(context)!.synctimedelay,
-                                AppLocalizations.of(context)!
-                                    .prefersyncedlyrics,
+                                AppLocalizations.of(context).synctimedelay,
+                                AppLocalizations.of(context).prefersyncedlyrics,
                                 (use) async {
                                   setState(() {
                                     syncTimeDelay = use;
@@ -377,9 +375,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                     ? CupertinoIcons.hourglass_tophalf_fill
                                     : CupertinoIcons.hourglass_bottomhalf_fill,
                                 syncedLyrics, // AppIcons.edit,
-                                AppLocalizations.of(context)!
-                                    .prefersyncedlyrics,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context).prefersyncedlyrics,
+                                AppLocalizations.of(context)
                                     .preferusageofsyncedlyrics,
                                 (use) async {
                                   setState(() {
@@ -400,17 +397,16 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                         : CupertinoIcons.text_aligncenter,
                                 AppIcons.edit,
                                 lyricsTextAlign == TextAlign.left
-                                    ? AppLocalizations.of(context)!
-                                        .lefttextalign
+                                    ? AppLocalizations.of(context).lefttextalign
                                     : lyricsTextAlign == TextAlign.center
-                                        ? AppLocalizations.of(context)!
+                                        ? AppLocalizations.of(context)
                                             .centertextalign
                                         : lyricsTextAlign == TextAlign.right
-                                            ? AppLocalizations.of(context)!
+                                            ? AppLocalizations.of(context)
                                                 .righttextalign
-                                            : AppLocalizations.of(context)!
+                                            : AppLocalizations.of(context)
                                                 .justifytextalign,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context)
                                     .lyircstextalignment,
                                 () {
                                   /* kIsApple
@@ -465,7 +461,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                               ),
                               razh(20),
                               settingsText(
-                                  AppLocalizations.of(context)!.audioplayer),
+                                  AppLocalizations.of(context).audioplayer),
                               settingsTileSwitcher(
                                 context,
                                 true,
@@ -488,9 +484,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 false,
                                 CupertinoIcons.arrow_down_doc_fill,
                                 useCachingAudioSource, // AppIcons.edit,
-                                AppLocalizations.of(context)!
-                                    .audioplayercaching,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context).audioplayercaching,
+                                AppLocalizations.of(context)
                                     .letaudioplayercachethesongs,
                                 (use) async {
                                   setState(() {
@@ -506,25 +501,24 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 true,
                                 AppIcons.audioPlayer,
                                 AppIcons.trash,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context)
                                     .clearaudioplayercache,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context)
                                     .clearyouraudioplayercache,
                                 () async {
                                   await AudioPlayer.clearAssetCache();
                                 },
                               ),
                               razh(20),
-                              settingsText(
-                                  AppLocalizations.of(context)!.images),
+                              settingsText(AppLocalizations.of(context).images),
                               settingsTileSwitcher(
                                 context,
                                 true,
                                 false,
                                 CupertinoIcons.arrow_down_doc_fill,
                                 useCacheImages, // AppIcons.edit,
-                                AppLocalizations.of(context)!.imagecaching,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context).imagecaching,
+                                AppLocalizations.of(context)
                                     .cacheimagestoreducenetworkactivity,
                                 (use) async {
                                   setState(() {
@@ -540,8 +534,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   true,
                                   AppIcons.image,
                                   AppIcons.trash,
-                                  AppLocalizations.of(context)!.clearimagecache,
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context).clearimagecache,
+                                  AppLocalizations.of(context)
                                       .clearyourassetimagecache, () async {
                                 DefaultCacheManager manager =
                                     DefaultCacheManager();
@@ -550,15 +544,15 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                               }),
                               razh(20),
                               settingsText(
-                                  AppLocalizations.of(context)!.userinterface),
+                                  AppLocalizations.of(context).userinterface),
                               settingsTileSwitcher(
                                 context,
                                 true,
                                 false,
                                 CupertinoIcons.arrow_down_doc_fill,
                                 useBlr, // AppIcons.edit,
-                                AppLocalizations.of(context)!.useblur,
-                                AppLocalizations.of(context)!
+                                AppLocalizations.of(context).useblur,
+                                AppLocalizations.of(context)
                                     .turnoffifyourdeviceisgettinghotorhaslag,
                                 (use) async {
                                   setState(() {

@@ -180,7 +180,7 @@ class LocalPlaylistPhone extends StatelessWidget {
                                                           }, size: 60),
                                                           textButton(
                                                               AppLocalizations.of(
-                                                                      context)!
+                                                                      context)
                                                                   .addtrackstoyoutplaylist,
                                                               () {
                                                             navigationBarIndex

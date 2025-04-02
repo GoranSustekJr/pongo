@@ -86,7 +86,7 @@ class SliverAppBarPhone extends StatelessWidget {
                               ),
                             );
                           },
-                          title: AppLocalizations.of(context)!.addtoplaylist),
+                          title: AppLocalizations.of(context).addtoplaylist),
                       PullDownMenuItem(
                           icon: AppIcons.download,
                           onTap: () async {
@@ -125,7 +125,7 @@ class SliverAppBarPhone extends StatelessWidget {
                               ),
                             );
                           },
-                          title: AppLocalizations.of(context)!.download),
+                          title: AppLocalizations.of(context).download),
                     ],
                     position: RelativeRect.fromLTRB(
                         30,

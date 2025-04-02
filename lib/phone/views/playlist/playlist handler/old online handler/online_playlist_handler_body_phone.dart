@@ -174,14 +174,14 @@ class _OnlinePlaylistHandlerBodyPhoneState
                                   ),
                                 ),
                                 hintText:
-                                    AppLocalizations.of(context)!.playlistname,
+                                    AppLocalizations.of(context).playlistname,
                               ),
                             ),
                           ),
                         ),
                         razh(25),
                         textButton(
-                          AppLocalizations.of(context)!.create,
+                          AppLocalizations.of(context).create,
                           widget.createPlaylistFunction,
                           const TextStyle(color: Colors.white),
                         ),
@@ -314,7 +314,7 @@ class _OnlinePlaylistHandlerBodyPhoneState
                           color: Colors.white,
                         ),
                         textButton(
-                          AppLocalizations.of(context)!.cancel,
+                          AppLocalizations.of(context).cancel,
                           () {
                             showPlaylistHandler.value = false;
                           },

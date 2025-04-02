@@ -33,7 +33,7 @@ class RecommendationsForYouPhone extends StatelessWidget {
       children: [
         if (euTracks.isNotEmpty || euArtists.isNotEmpty)
           searchResultText(
-              AppLocalizations.of(context)!.foryou, suggestionHeader),
+              AppLocalizations.of(context).foryou, suggestionHeader),
         if (euTracks.isNotEmpty) razh(10),
         if (euTracks.isNotEmpty)
           SizedBox(

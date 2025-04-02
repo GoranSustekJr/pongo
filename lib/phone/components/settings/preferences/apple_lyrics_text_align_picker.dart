@@ -27,7 +27,7 @@ appleLyricsTextAlignPicker(context, int initial, Function(int) onChanged) {
                     ),
                     Center(
                       child: Text(
-                        AppLocalizations.of(context)!.leftalignment,
+                        AppLocalizations.of(context).leftalignment,
                         textAlign: TextAlign.left,
                       ),
                     ),
@@ -35,7 +35,7 @@ appleLyricsTextAlignPicker(context, int initial, Function(int) onChanged) {
                 ),
                 Center(
                   child: Text(
-                    AppLocalizations.of(context)!.centeralignment,
+                    AppLocalizations.of(context).centeralignment,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -44,7 +44,7 @@ appleLyricsTextAlignPicker(context, int initial, Function(int) onChanged) {
                     Expanded(child: Container()),
                     Center(
                       child: Text(
-                        AppLocalizations.of(context)!.rightalignment,
+                        AppLocalizations.of(context).rightalignment,
                         textAlign: TextAlign.right,
                       ),
                     ),
@@ -58,7 +58,7 @@ appleLyricsTextAlignPicker(context, int initial, Function(int) onChanged) {
                     Expanded(
                       child: Center(
                         child: Text(
-                          AppLocalizations.of(context)!.justify,
+                          AppLocalizations.of(context).justify,
                           textAlign: TextAlign.justify,
                         ),
                       ),
@@ -66,7 +66,7 @@ appleLyricsTextAlignPicker(context, int initial, Function(int) onChanged) {
                     Expanded(
                       child: Center(
                         child: Text(
-                          AppLocalizations.of(context)!.alignment,
+                          AppLocalizations.of(context).alignment,
                           textAlign: TextAlign.justify,
                         ),
                       ),

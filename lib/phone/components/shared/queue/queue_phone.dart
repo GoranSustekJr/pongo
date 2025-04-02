@@ -164,10 +164,10 @@ class _QueuePhoneState extends State<QueuePhone> {
                                 Notifications().showSpecialNotification(
                                     notificationsContext.value!,
                                     AppLocalizations.of(
-                                            notificationsContext.value!)!
+                                            notificationsContext.value!)
                                         .error,
                                     AppLocalizations.of(
-                                            notificationsContext.value!)!
+                                            notificationsContext.value!)
                                         .premiumisneededtosavethequeue,
                                     AppIcons.warning, onTap: () {
                                   if (!premium.value) {

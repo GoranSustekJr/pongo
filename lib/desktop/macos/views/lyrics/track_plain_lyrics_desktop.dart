@@ -29,12 +29,12 @@ class TrackPlainLyricsDesktop extends StatelessWidget {
                   ? Column(
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.noplainlyrics,
+                          AppLocalizations.of(context).noplainlyrics,
                           style: const TextStyle(
                               fontWeight: FontWeight.w700, fontSize: 29),
                         ),
                         Text(
-                          AppLocalizations.of(context)!.wanttohelpoutlyrics,
+                          AppLocalizations.of(context).wanttohelpoutlyrics,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 15),

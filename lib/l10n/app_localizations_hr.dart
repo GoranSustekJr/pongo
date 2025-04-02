@@ -543,7 +543,7 @@ class AppLocalizationsHr extends AppLocalizations {
   String get playlistnamealreadyexists => 'Istoimena playlista već postoji';
 
   @override
-  String get pleaseenablepongoaccesstophotos => 'Please enable Pongo access to photos';
+  String get pleaseenablepongoaccesstophotos => 'Molimo omogućite Pongu pristup galeriji slika';
 
   @override
   String get onlineplaylist => 'Online playlista';

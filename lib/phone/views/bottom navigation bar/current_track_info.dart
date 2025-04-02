@@ -13,14 +13,14 @@ class _TrackInfoState extends State<TrackInfo> {
   double horizontalPositionCurrent = 0;
 
   // Text styles
-  final TextStyle bottomTitle = TextStyle(
-    fontSize: kIsApple ? 17 : 20.5,
-    fontWeight: kIsApple ? FontWeight.w500 : FontWeight.w700,
+  final TextStyle bottomTitle = const TextStyle(
+    fontSize: 17,
+    fontWeight: FontWeight.w500,
   );
 
   final TextStyle bottomArtist = TextStyle(
-    fontSize: kIsApple ? 14 : 16,
-    fontWeight: kIsApple ? FontWeight.w300 : FontWeight.w400,
+    fontSize: 14,
+    fontWeight: FontWeight.w300,
     color: Colors.white.withAlpha(200),
   );
 
@@ -50,9 +50,7 @@ class _TrackInfoState extends State<TrackInfo> {
                 padding: const EdgeInsets.all(1),
                 height: currentMediaItem == null || playbackState.data == null
                     ? 55
-                    : kIsApple
-                        ? 110
-                        : 115,
+                    : 110,
                 constraints: const BoxConstraints(maxWidth: 768),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
@@ -172,7 +170,7 @@ class _TrackInfoState extends State<TrackInfo> {
                                                 : 0,
                                             child: RepaintBoundary(
                                               child: Container(
-                                                height: kIsApple ? 70 : 90,
+                                                height: 70,
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .width -
@@ -181,18 +179,16 @@ class _TrackInfoState extends State<TrackInfo> {
                                                 child: Column(
                                                   children: [
                                                     Container(
-                                                      height:
-                                                          kIsApple ? 55 : 65,
+                                                      height: 55,
                                                       width:
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width -
                                                               10,
-                                                      padding:
-                                                          EdgeInsets.symmetric(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
                                                         horizontal: 15,
-                                                        vertical:
-                                                            kIsApple ? 5 : 10,
+                                                        vertical: 5,
                                                       ),
                                                       child: Row(
                                                         children: [
@@ -252,17 +248,8 @@ class _TrackInfoState extends State<TrackInfo> {
                                                           const SizedBox(
                                                               width: 10),
                                                           SizedBox(
-                                                            width: kIsApple
-                                                                ? MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width -
-                                                                    155
-                                                                : MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width -
-                                                                    160,
+                                                            width: size.width -
+                                                                155,
                                                             child: Column(
                                                               mainAxisSize:
                                                                   MainAxisSize
@@ -276,20 +263,14 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                   bottomTitle,
                                                                   1,
                                                                   null,
-                                                                  height:
-                                                                      kIsApple
-                                                                          ? 22
-                                                                          : 27,
+                                                                  height: 22,
                                                                 ),
                                                                 marquee(
                                                                   "${currentMediaItem.artist}  ",
                                                                   bottomArtist,
                                                                   1,
                                                                   null,
-                                                                  height:
-                                                                      kIsApple
-                                                                          ? 20
-                                                                          : 25,
+                                                                  height: 20,
                                                                 ),
                                                               ],
                                                             ),

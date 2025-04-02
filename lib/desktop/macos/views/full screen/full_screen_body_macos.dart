@@ -185,8 +185,7 @@ class FullScreenBodyMacos extends StatelessWidget {
                           } else {
                             Notifications().showWarningNotification(
                                 notificationsContext.value!,
-                                AppLocalizations.of(
-                                        notificationsContext.value!)!
+                                AppLocalizations.of(notificationsContext.value!)
                                     .sleepalarmisenabled);
                           }
                         },
@@ -309,7 +308,7 @@ class FullScreenBodyMacos extends StatelessWidget {
                           SizedBox(
                             width: 100,
                             child: Tooltip(
-                              message: AppLocalizations.of(context)!
+                              message: AppLocalizations.of(context)
                                   .doublecliktoadjustvolume,
                               child: MacosSlider(
                                 color: CupertinoColors.white,

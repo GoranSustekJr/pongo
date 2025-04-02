@@ -88,7 +88,7 @@ class LocalsPhone extends StatelessWidget {
                                     child: FlexibleSpaceBar(
                                       centerTitle: true,
                                       title: Text(
-                                        AppLocalizations.of(context)!
+                                        AppLocalizations.of(context)
                                             .offlinesongs,
                                         style: TextStyle(
                                           fontSize: kIsApple ? 25 : 30,
@@ -176,7 +176,7 @@ class LocalsPhone extends StatelessWidget {
                                     onChanged: localsDataManager.onSearched,
                                     onSuffixTap: localsDataManager.clearSearch,
                                     placeholder:
-                                        AppLocalizations.of(context)!.search,
+                                        AppLocalizations.of(context).search,
                                     backgroundColor:
                                         Col.primaryCard.withAlpha(150),
                                     style: const TextStyle(color: Colors.white),
@@ -204,7 +204,7 @@ class LocalsPhone extends StatelessWidget {
                                                         size: 60),
                                                     textButton(
                                                         AppLocalizations.of(
-                                                                context)!
+                                                                context)
                                                             .downloadtracksnow,
                                                         localsDataManager
                                                             .newTracks,

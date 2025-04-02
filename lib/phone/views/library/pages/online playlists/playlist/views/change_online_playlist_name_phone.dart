@@ -12,7 +12,7 @@ newPlaylistTitle(context, int opid, Function(String) function) {
               content: Column(
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.changeplaylisttile,
+                    AppLocalizations.of(context).changeplaylisttile,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -21,7 +21,7 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                   ),
                   razh(2),
                   Text(
-                    AppLocalizations.of(context)!.changeplaylisttilebody,
+                    AppLocalizations.of(context).changeplaylisttilebody,
                     style: TextStyle(
                       color: Colors.white.withAlpha(200),
                       fontSize: 13,
@@ -45,7 +45,7 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                     }
                   },
                   child: Text(
-                    AppLocalizations.of(context)!.change,
+                    AppLocalizations.of(context).change,
                     style: const TextStyle(color: Colors.blue),
                   ),
                 ),
@@ -54,7 +54,7 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                     Navigator.of(context).pop();
                   },
                   child: Text(
-                    AppLocalizations.of(context)!.cancel,
+                    AppLocalizations.of(context).cancel,
                     style: const TextStyle(color: Colors.blue),
                   ),
                 ),
@@ -71,7 +71,7 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    AppLocalizations.of(context)!.changeplaylisttile,
+                    AppLocalizations.of(context).changeplaylisttile,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -80,7 +80,7 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                   ),
                   razh(2),
                   Text(
-                    AppLocalizations.of(context)!.changeplaylisttilebody,
+                    AppLocalizations.of(context).changeplaylisttilebody,
                     style: TextStyle(
                       color: Colors.white.withAlpha(200),
                       fontSize: 13,
@@ -101,7 +101,7 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                         Navigator.of(context).pop();
                       },
                       child: Text(
-                        AppLocalizations.of(context)!.cancel,
+                        AppLocalizations.of(context).cancel,
                         textAlign: TextAlign.center,
                         style: const TextStyle(color: Colors.blue),
                       ),
@@ -120,7 +120,7 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                         }
                       },
                       child: Text(
-                        AppLocalizations.of(context)!.change,
+                        AppLocalizations.of(context).change,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.blue,

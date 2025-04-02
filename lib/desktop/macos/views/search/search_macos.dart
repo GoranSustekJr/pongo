@@ -139,7 +139,7 @@ class _SearchMacosState extends State<SearchMacos> {
                                         child: MacosSearchField(
                                       maxLines: 1,
                                       placeholder:
-                                          AppLocalizations.of(context)!.search,
+                                          AppLocalizations.of(context).search,
                                       placeholderStyle: TextStyle(
                                           color: Colors.white.withAlpha(150)),
                                       decoration: BoxDecoration(
@@ -182,7 +182,7 @@ class _SearchMacosState extends State<SearchMacos> {
                                             padding:
                                                 const EdgeInsets.only(right: 5),
                                             child: Text(
-                                              AppLocalizations.of(context)!
+                                              AppLocalizations.of(context)
                                                   .cancel,
                                               style: TextStyle(
                                                   color: Colors.white

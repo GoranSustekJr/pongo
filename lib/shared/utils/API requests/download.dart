@@ -133,9 +133,9 @@ class Download {
 
                   Notifications().showSpecialNotification(
                       notificationsContext.value!,
-                      AppLocalizations.of(notificationsContext.value!)!
+                      AppLocalizations.of(notificationsContext.value!)
                           .successful,
-                      AppLocalizations.of(notificationsContext.value!)!
+                      AppLocalizations.of(notificationsContext.value!)
                           .successfullydownloadedthetrack,
                       AppIcons.download);
 
@@ -155,8 +155,8 @@ class Download {
                 } else if (response.statusCode == 403) {
                   Notifications().showSpecialNotification(
                       notificationsContext.value!,
-                      AppLocalizations.of(notificationsContext.value!)!.error,
-                      AppLocalizations.of(notificationsContext.value!)!
+                      AppLocalizations.of(notificationsContext.value!).error,
+                      AppLocalizations.of(notificationsContext.value!)
                           .premiumisneededtodownloadatrack,
                       AppIcons.warning, onTap: () {
                     if (!premium.value) {
@@ -179,14 +179,14 @@ class Download {
       } else {
         Notifications().showSpecialNotification(
             notificationsContext.value!,
-            AppLocalizations.of(notificationsContext.value!)!.notification,
-            AppLocalizations.of(notificationsContext.value!)!
+            AppLocalizations.of(notificationsContext.value!).notification,
+            AppLocalizations.of(notificationsContext.value!)
                 .trackalreadydownloaded,
             AppIcons.download);
       }
     } catch (e) {
       Notifications().showWarningNotification(notificationsContext.value!,
-          AppLocalizations.of(notificationsContext.value!)!.downloadfailed);
+          AppLocalizations.of(notificationsContext.value!).downloadfailed);
       //print(e);
     }
   }
@@ -230,8 +230,8 @@ class Download {
         } else if (response.statusCode == 403) {
           Notifications().showSpecialNotification(
             notificationsContext.value!,
-            AppLocalizations.of(notificationsContext.value!)!.error,
-            AppLocalizations.of(notificationsContext.value!)!
+            AppLocalizations.of(notificationsContext.value!).error,
+            AppLocalizations.of(notificationsContext.value!)
                 .premiumisneededtodownloadatrack,
             AppIcons.warning,
             onTap: () {

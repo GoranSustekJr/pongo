@@ -49,7 +49,9 @@ class _MyAppDesktopState extends State<MyAppDesktop>
     Map response = await Premium().isPremium(context);
     premium.value = response["premium"];
     await Storage().writeSubscription(response["premium"]);
-    await Storage().writeSubscriptionEnd(response["expires"]);
+    if (premium.value) {
+      await Storage().writeSubscriptionEnd(response["expires"]);
+    }
   }
 
   // Set locale

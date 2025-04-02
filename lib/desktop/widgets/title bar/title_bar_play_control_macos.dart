@@ -36,7 +36,7 @@ class TitleBarPlayControlMacos extends StatelessWidget {
                   } else {
                     Notifications().showWarningNotification(
                         notificationsContext.value!,
-                        AppLocalizations.of(notificationsContext.value!)!
+                        AppLocalizations.of(notificationsContext.value!)
                             .sleepalarmisenabled);
                   }
                 },
@@ -88,7 +88,7 @@ class TitleBarPlayControlMacos extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        AppLocalizations.of(context)!.download,
+                        AppLocalizations.of(context).download,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1, // Ensure single line with ellipsis
                       ),
@@ -111,7 +111,7 @@ class TitleBarPlayControlMacos extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        AppLocalizations.of(context)!.addtoplaylist,
+                        AppLocalizations.of(context).addtoplaylist,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
@@ -146,8 +146,8 @@ class TitleBarPlayControlMacos extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 isFavourite
-                                    ? AppLocalizations.of(context)!.unlike
-                                    : AppLocalizations.of(context)!.like,
+                                    ? AppLocalizations.of(context).unlike
+                                    : AppLocalizations.of(context).like,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                               ),

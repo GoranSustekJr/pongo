@@ -94,34 +94,30 @@ class PlayMultiple {
       });
     } else {
       // All songs already exist
-      final List<MediaItem> mediaItems = [];
-
-      // Add each track as a MediaItem
-      for (int i = 0; i < tracks.length; i++) {
-        final MediaItem mediaItem = MediaItem(
-          id: "$baseId.${tracks[i].id}",
-          title: tracks[i].name,
-          artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-          album: tracks[i].album != null
-              ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+      List<MediaItem> mediaItems = tracks.map((track) {
+        return MediaItem(
+          id: "$baseId.${track.id}",
+          title: track.name,
+          artist: track.artists.map((artist) => artist.name).join(', '),
+          album: track.album != null
+              ? "${track.album!.id}..Ææ..${track.album!.name}"
               : "..Ææ..",
           duration: Duration(
-              milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
-          artUri: tracks[i].album != null
-              ? Uri.parse(calculateBestImageForTrack(tracks[i].album!.images))
+              milliseconds: (existingTracks[track.id]! * 1000).toInt()),
+          artUri: track.album != null
+              ? Uri.parse(calculateBestImageForTrack(track.album!.images))
               : null,
           extras: {
-            "artists": jsonEncode(tracks[i]
-                .artists
-                .map((artist) => {"id": artist.id, "name": artist.name})
-                .toList()),
+            "artists": jsonEncode(
+              track.artists
+                  .map((artist) => {"id": artist.id, "name": artist.name})
+                  .toList(),
+            ),
             "online": online,
-            "released":
-                tracks[i].album != null ? tracks[i].album!.releaseDate : "",
+            "released": track.album?.releaseDate ?? "",
           },
         );
-        mediaItems.add(mediaItem);
-      }
+      }).toList();
 
       if (shuffle) {
         await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.all);

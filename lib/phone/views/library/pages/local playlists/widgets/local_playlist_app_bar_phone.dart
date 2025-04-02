@@ -49,7 +49,7 @@ class LocalPlaylistAppBarPhone extends StatelessWidget {
                     ? SizedBox(
                         key: const ValueKey(true),
                         child: textButton(
-                            AppLocalizations.of(context)!.changename,
+                            AppLocalizations.of(context).changename,
                             changeTitle,
                             const TextStyle(color: Colors.white)),
                       )

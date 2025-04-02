@@ -63,8 +63,8 @@ class SearchHistoryPhone extends StatelessWidget {
                               children: [
                                 textButtonNoPadding(
                                   clear
-                                      ? AppLocalizations.of(context)!.cancel
-                                      : AppLocalizations.of(context)!
+                                      ? AppLocalizations.of(context).cancel
+                                      : AppLocalizations.of(context)
                                           .clearallhistory,
                                   changeClear,
                                   TextStyle(

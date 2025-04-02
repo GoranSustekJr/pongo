@@ -76,7 +76,7 @@ class _SearchBarAndroidPhoneState extends State<SearchBarAndroidPhone> {
                 decoration: InputDecoration(
                   enabledBorder: border,
                   border: border,
-                  hintText: AppLocalizations.of(context)!.search,
+                  hintText: AppLocalizations.of(context).search,
                   hintStyle: const TextStyle(
                     color: Col.onIcon, // Hint text color
                   ),
@@ -114,7 +114,7 @@ class _SearchBarAndroidPhoneState extends State<SearchBarAndroidPhone> {
                           child: Padding(
                             padding: const EdgeInsets.only(right: 15),
                             child: Text(
-                              AppLocalizations.of(context)!.cancel,
+                              AppLocalizations.of(context).cancel,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,

@@ -38,7 +38,7 @@ class _SettingsPhoneState extends State<SettingsPhone> {
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
                 title: Text(
-                  AppLocalizations.of(context)!.settings,
+                  AppLocalizations.of(context).settings,
                   style: TextStyle(
                     fontSize: kIsApple ? 30 : 40,
                     fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w800,
@@ -58,15 +58,15 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                   return Column(
                     children: [
                       razh(kIsApple ? size.width / 5 : size.width / 4),
-                      settingsText(AppLocalizations.of(context)!.profile),
+                      settingsText(AppLocalizations.of(context).profile),
                       settingsTile(
                           context,
                           true,
                           false,
                           AppIcons.profile,
                           AppIcons.settings,
-                          AppLocalizations.of(context)!.profile,
-                          AppLocalizations.of(context)!.yourprofile, () {
+                          AppLocalizations.of(context).profile,
+                          AppLocalizations.of(context).yourprofile, () {
                         //Navigationss().nextScreen(context, '/profile', {});
                         Navigations().nextScreen(context, const ProfilePhone());
                       }),
@@ -81,8 +81,8 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                                     premium.value,
                                     AppIcons.preferences,
                                     AppIcons.settings,
-                                    AppLocalizations.of(context)!.preferences,
-                                    AppLocalizations.of(context)!
+                                    AppLocalizations.of(context).preferences,
+                                    AppLocalizations.of(context)
                                         .yourpreferences, () {
                                   Navigations().nextScreen(
                                       context, const PreferencesPhone());
@@ -94,9 +94,8 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                                       true,
                                       CupertinoIcons.shopping_cart,
                                       CupertinoIcons.creditcard,
-                                      AppLocalizations.of(context)!.buypremium,
-                                      AppLocalizations.of(context)!.premium,
-                                      () {
+                                      AppLocalizations.of(context).buypremium,
+                                      AppLocalizations.of(context).premium, () {
                                     Navigations().nextScreen(
                                         context, const BuyPremiumPhone());
                                   }),
@@ -104,15 +103,15 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                             );
                           }),
                       razh(20),
-                      settingsText(AppLocalizations.of(context)!.about),
+                      settingsText(AppLocalizations.of(context).about),
                       settingsTile(
                         context,
                         true,
                         false,
                         CupertinoIcons.info_circle,
                         AppIcons.musicAlbums,
-                        AppLocalizations.of(context)!.about,
-                        AppLocalizations.of(context)!.aboutpongo,
+                        AppLocalizations.of(context).about,
+                        AppLocalizations.of(context).aboutpongo,
                         () {
                           Navigations().nextScreen(
                             context,

@@ -118,7 +118,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                             razw(size.width),
                             razh(AppBar().preferredSize.height / 2),
                             Text(
-                              AppLocalizations.of(context)!.profile,
+                              AppLocalizations.of(context).profile,
                               style: const TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.w500,
@@ -154,7 +154,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                   AppIcons.profile,
                                   null,
                                   name,
-                                  AppLocalizations.of(context)!.name,
+                                  AppLocalizations.of(context).name,
                                   () {}),
                             if (hidden)
                               settingsTile(
@@ -163,8 +163,8 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                   false,
                                   AppIcons.hide,
                                   null,
-                                  AppLocalizations.of(context)!.hidden,
-                                  AppLocalizations.of(context)!
+                                  AppLocalizations.of(context).hidden,
+                                  AppLocalizations.of(context)
                                       .allofyourdataishidden,
                                   () {}),
                             settingsTile(
@@ -174,7 +174,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                 AppIcons.mail,
                                 null,
                                 email,
-                                AppLocalizations.of(context)!.email,
+                                AppLocalizations.of(context).email,
                                 () {}),
                             settingsTile(
                               context,
@@ -183,9 +183,9 @@ class _ProfilePhoneState extends State<ProfilePhone>
                               AppIcons.premium,
                               null,
                               premium.value
-                                  ? AppLocalizations.of(context)!.subscribed
-                                  : AppLocalizations.of(context)!.buypremium,
-                              AppLocalizations.of(context)!.premium,
+                                  ? AppLocalizations.of(context).subscribed
+                                  : AppLocalizations.of(context).buypremium,
+                              AppLocalizations.of(context).premium,
                               () {
                                 if (!premium.value) {
                                   Navigator.of(context).pop();
@@ -198,8 +198,8 @@ class _ProfilePhoneState extends State<ProfilePhone>
                               true,
                               AppIcons.trash,
                               null,
-                              AppLocalizations.of(context)!.delete,
-                              AppLocalizations.of(context)!.deleteyouraccount,
+                              AppLocalizations.of(context).delete,
+                              AppLocalizations.of(context).deleteyouraccount,
                               () async {
                                 final ok = await deleteAccountAlert(context);
                                 if (ok == CustomButton.positiveButton) {
@@ -208,7 +208,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                               },
                             ),
                             razh(25),
-                            textButton(AppLocalizations.of(context)!.signout,
+                            textButton(AppLocalizations.of(context).signout,
                                 () {
                               SignInHandler().signOut(context);
                               Navigator.of(context).pop();
@@ -236,7 +236,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                     ),
                     body: Center(
                       child:
-                          textButton(AppLocalizations.of(context)!.signout, () {
+                          textButton(AppLocalizations.of(context).signout, () {
                         SignInHandler().signOut(context);
                         Navigator.of(context).pop();
                       }, const TextStyle(color: Colors.white, fontSize: 18)),

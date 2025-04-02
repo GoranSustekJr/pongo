@@ -128,7 +128,7 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
                         ),
                       ),
                       textButton(
-                        AppLocalizations.of(context)!.cancel,
+                        AppLocalizations.of(context).cancel,
                         () {
                           if (!widget.working) {
                             playlistHandler.value = null;
