@@ -14,43 +14,48 @@ class TitleBarPlayControlMacos extends StatelessWidget {
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return Row(
       children: [
-        StreamBuilder(
-            stream: audioServiceHandler.loopModeStream,
-            builder: (context, loopMode) {
-              return CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () {
-                  if (audioServiceHandler.activeSleepAlarm == -1) {
-                    if (audioServiceHandler.audioPlayer.loopMode.name ==
-                        "all") {
-                      audioServiceHandler
-                          .setRepeatMode(AudioServiceRepeatMode.none);
-                    } else if (audioServiceHandler.audioPlayer.loopMode.name ==
-                        "off") {
-                      audioServiceHandler
-                          .setRepeatMode(AudioServiceRepeatMode.one);
+        Tooltip(
+          message: AppLocalizations.of(context).repeat,
+          child: StreamBuilder(
+              stream: audioServiceHandler.loopModeStream,
+              builder: (context, loopMode) {
+                return CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    if (audioServiceHandler.activeSleepAlarm == -1) {
+                      if (audioServiceHandler.audioPlayer.loopMode.name ==
+                          "all") {
+                        audioServiceHandler
+                            .setRepeatMode(AudioServiceRepeatMode.none);
+                      } else if (audioServiceHandler
+                              .audioPlayer.loopMode.name ==
+                          "off") {
+                        audioServiceHandler
+                            .setRepeatMode(AudioServiceRepeatMode.one);
+                      } else {
+                        audioServiceHandler
+                            .setRepeatMode(AudioServiceRepeatMode.all);
+                      }
                     } else {
-                      audioServiceHandler
-                          .setRepeatMode(AudioServiceRepeatMode.all);
+                      Notifications().showWarningNotification(
+                          notificationsContext.value!,
+                          AppLocalizations.of(notificationsContext.value!)
+                              .sleepalarmisenabled);
                     }
-                  } else {
-                    Notifications().showWarningNotification(
-                        notificationsContext.value!,
-                        AppLocalizations.of(notificationsContext.value!)
-                            .sleepalarmisenabled);
-                  }
-                },
-                child: Icon(
-                  audioServiceHandler.audioPlayer.loopMode.name == "one"
-                      ? AppIcons.repeatOne
-                      : AppIcons.repeat,
-                  color: audioServiceHandler.audioPlayer.loopMode.name == "off"
-                      ? Colors.white.withAlpha(150)
-                      : Colors.white,
-                  size: 17,
-                ),
-              );
-            }),
+                  },
+                  child: Icon(
+                    audioServiceHandler.audioPlayer.loopMode.name == "one"
+                        ? AppIcons.repeatOne
+                        : AppIcons.repeat,
+                    color:
+                        audioServiceHandler.audioPlayer.loopMode.name == "off"
+                            ? Colors.white.withAlpha(150)
+                            : Colors.white,
+                    size: 17,
+                  ),
+                );
+              }),
+        ),
         iconButtonForward(
           CupertinoIcons.backward_fill,
           () async {

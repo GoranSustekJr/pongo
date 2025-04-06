@@ -143,13 +143,13 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                                       ),
                                     },
                                     decoration: BoxDecoration(
-                                      color: const MacosColor.fromRGBO(
-                                          40, 40, 40, 1),
+                                      color: Col.transp,
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     thumbDecoration: BoxDecoration(
                                       color: const MacosColor.fromRGBO(
-                                          30, 30, 30, 1),
+                                              30, 30, 30, 1)
+                                          .withAlpha(100),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     duration: const Duration(milliseconds: 300),
@@ -182,14 +182,7 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                                     width: 125,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(60),
-                                      color: kIsDesktop &&
-                                              !widget.fullscreenPlaying
-                                          ? const MacosColor.fromRGBO(40, 40,
-                                              40, 0.8) // Add transparency here
-                                          : useBlur.value
-                                              ? Col.transp
-                                              : Col.realBackground.withAlpha(
-                                                  AppConstants().noBlur),
+                                      color: Col.transp,
                                     ),
                                     child: Row(
                                       children: [
@@ -224,18 +217,22 @@ class _LyricsDesktopState extends State<LyricsDesktop> {
                                                 CupertinoIcons.time,
                                               );
                                             },
-                                            child: CupertinoButton(
-                                              padding: EdgeInsets.zero,
-                                              onPressed:
-                                                  widget.resetSyncTimeDelay,
-                                              child: Text(
-                                                "${widget.syncTimeDelay / 1000} s",
-                                                style: const TextStyle(
-                                                  fontSize: 13,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w600,
+                                            child: Tooltip(
+                                              message:
+                                                  "Hold to save the offset",
+                                              child: CupertinoButton(
+                                                padding: EdgeInsets.zero,
+                                                onPressed:
+                                                    widget.resetSyncTimeDelay,
+                                                child: Text(
+                                                  "${widget.syncTimeDelay / 1000} s",
+                                                  style: const TextStyle(
+                                                    fontSize: 13,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                  overflow: TextOverflow.fade,
                                                 ),
-                                                overflow: TextOverflow.fade,
                                               ),
                                             ),
                                           ),

@@ -59,8 +59,8 @@ class _TrackSyncLyricsDesktopState extends State<TrackSyncLyricsDesktop> {
         setState(() {
           _currentPosition = position;
         });
-        if (WidgetsBinding.instance.lifecycleState ==
-            AppLifecycleState.resumed) {
+        if (WidgetsBinding.instance.lifecycleState !=
+            AppLifecycleState.hidden) {
           findCurrentLyricIndex(_currentPosition);
         }
       });
@@ -76,7 +76,7 @@ class _TrackSyncLyricsDesktopState extends State<TrackSyncLyricsDesktop> {
       setState(() {
         _currentPosition = position + widget.syncTimeDelay.milliseconds;
       });
-      if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+      if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.hidden) {
         findCurrentLyricIndex(_currentPosition, first: true);
       }
     });
@@ -278,7 +278,7 @@ class _TrackSyncLyricsDesktopState extends State<TrackSyncLyricsDesktop> {
                               duration: const Duration(milliseconds: 350),
                               curve: Curves.fastEaseInToSlowEaseOut,
                               child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 250),
+                                duration: const Duration(milliseconds: 150),
                                 switchInCurve: Curves.fastOutSlowIn,
                                 child: Padding(
                                   key: ValueKey(currentLyricIndex - index),
@@ -312,9 +312,9 @@ class _TrackSyncLyricsDesktopState extends State<TrackSyncLyricsDesktop> {
                                       ? 0
                                       : (currentLyricIndex - index) == -1
                                           ? 2.25
-                                          : (currentLyricIndex - index) == 1
-                                              ? 2.75
-                                              : 3.5,
+                                          : (currentLyricIndex - index) == -2
+                                              ? 3.75
+                                              : 4.5,
                                   duration: const Duration(milliseconds: 350),
                                 ),
                           ),

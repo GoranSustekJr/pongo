@@ -115,6 +115,12 @@ abstract class AppLocalizations {
   /// **'Cancel'**
   String get cancel;
 
+  /// Repeat
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat'**
+  String get repeat;
+
   /// Sleep
   ///
   /// In en, this message translates to:
@@ -180,6 +186,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you sure?'**
   String get areyousure;
+
+  /// fullscreen
+  ///
+  /// In en, this message translates to:
+  /// **'Fullscreen'**
+  String get fullscreen;
+
+  /// exitfullscreen
+  ///
+  /// In en, this message translates to:
+  /// **'Exit fullscreen'**
+  String get exitfullscreen;
 
   /// Clear Queue?
   ///
@@ -1002,6 +1020,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shuffle mode is on!'**
   String get shufflemodeison;
+
+  /// shuffle
+  ///
+  /// In en, this message translates to:
+  /// **'Shuffle'**
+  String get shuffle;
 
   /// leftalignment
   ///

@@ -18,6 +18,9 @@ class AppLocalizationsHr extends AppLocalizations {
   String get cancel => 'Odustani';
 
   @override
+  String get repeat => 'Ponavljanje';
+
+  @override
   String get sleep => 'San alarm';
 
   @override
@@ -49,6 +52,12 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get areyousure => 'Jeste li sigurni?';
+
+  @override
+  String get fullscreen => 'Puni zaslon';
+
+  @override
+  String get exitfullscreen => 'Izađi iz punog zaslona';
 
   @override
   String get clearqueue => 'Isprazni red čekanja?';
@@ -460,6 +469,9 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get shufflemodeison => 'Načini nasumične reprodukcije je uključen!';
+
+  @override
+  String get shuffle => 'Nasumična reprodukcija';
 
   @override
   String get leftalignment => 'Lijevo poravnanje';

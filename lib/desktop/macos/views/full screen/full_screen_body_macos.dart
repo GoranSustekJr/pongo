@@ -134,74 +134,84 @@ class FullScreenBodyMacos extends StatelessWidget {
             Row(
               children: [
                 razw(20),
-                SizedBox(
-                  width: 40,
-                  child: CupertinoButton(
-                    onPressed: changeShowLyrics,
-                    child: ValueListenableBuilder(
-                        valueListenable: currentStid,
-                        builder: (context, _, __) {
-                          return ValueListenableBuilder(
-                              valueListenable: navigationBarIndex,
-                              builder: (context, _, __) {
-                                return Icon(
-                                  showLyrics
-                                      ? AppIcons.lyricsFill
-                                      : AppIcons.lyrics,
-                                  size: 20,
-                                  color: mediaItem.id.split('.')[2] ==
-                                          currentStid.value
-                                      ? Colors.white
-                                      : Colors.white.withAlpha(150),
-                                );
-                              });
-                        }),
+                Tooltip(
+                  message: AppLocalizations.of(context).lyrics,
+                  child: SizedBox(
+                    width: 40,
+                    child: CupertinoButton(
+                      onPressed: changeShowLyrics,
+                      padding: EdgeInsets.zero,
+                      child: ValueListenableBuilder(
+                          valueListenable: currentStid,
+                          builder: (context, _, __) {
+                            return ValueListenableBuilder(
+                                valueListenable: navigationBarIndex,
+                                builder: (context, _, __) {
+                                  return Icon(
+                                    showLyrics
+                                        ? AppIcons.lyricsFill
+                                        : AppIcons.lyrics,
+                                    size: 20,
+                                    color: mediaItem.id.split('.')[2] ==
+                                            currentStid.value
+                                        ? Colors.white
+                                        : Colors.white.withAlpha(150),
+                                  );
+                                });
+                          }),
+                    ),
                   ),
                 ),
                 razw(150),
                 Expanded(
                   child: Container(),
                 ),
-                StreamBuilder(
-                    stream: audioServiceHandler.loopModeStream,
-                    builder: (context, loopMode) {
-                      return CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          if (audioServiceHandler.activeSleepAlarm == -1) {
-                            if (audioServiceHandler.audioPlayer.loopMode.name ==
-                                "all") {
-                              audioServiceHandler
-                                  .setRepeatMode(AudioServiceRepeatMode.none);
-                            } else if (audioServiceHandler
-                                    .audioPlayer.loopMode.name ==
-                                "off") {
-                              audioServiceHandler
-                                  .setRepeatMode(AudioServiceRepeatMode.one);
+                Tooltip(
+                  message: AppLocalizations.of(context).repeat,
+                  child: StreamBuilder(
+                      stream: audioServiceHandler.loopModeStream,
+                      builder: (context, loopMode) {
+                        return CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            if (audioServiceHandler.activeSleepAlarm == -1) {
+                              if (audioServiceHandler
+                                      .audioPlayer.loopMode.name ==
+                                  "all") {
+                                audioServiceHandler
+                                    .setRepeatMode(AudioServiceRepeatMode.none);
+                              } else if (audioServiceHandler
+                                      .audioPlayer.loopMode.name ==
+                                  "off") {
+                                audioServiceHandler
+                                    .setRepeatMode(AudioServiceRepeatMode.one);
+                              } else {
+                                audioServiceHandler
+                                    .setRepeatMode(AudioServiceRepeatMode.all);
+                              }
                             } else {
-                              audioServiceHandler
-                                  .setRepeatMode(AudioServiceRepeatMode.all);
+                              Notifications().showWarningNotification(
+                                  notificationsContext.value!,
+                                  AppLocalizations.of(
+                                          notificationsContext.value!)
+                                      .sleepalarmisenabled);
                             }
-                          } else {
-                            Notifications().showWarningNotification(
-                                notificationsContext.value!,
-                                AppLocalizations.of(notificationsContext.value!)
-                                    .sleepalarmisenabled);
-                          }
-                        },
-                        child: Icon(
-                          audioServiceHandler.audioPlayer.loopMode.name == "one"
-                              ? AppIcons.repeatOne
-                              : AppIcons.repeat,
-                          color:
-                              audioServiceHandler.audioPlayer.loopMode.name ==
-                                      "off"
-                                  ? Colors.white.withAlpha(150)
-                                  : Colors.white,
-                          size: 20,
-                        ),
-                      );
-                    }),
+                          },
+                          child: Icon(
+                            audioServiceHandler.audioPlayer.loopMode.name ==
+                                    "one"
+                                ? AppIcons.repeatOne
+                                : AppIcons.repeat,
+                            color:
+                                audioServiceHandler.audioPlayer.loopMode.name ==
+                                        "off"
+                                    ? Colors.white.withAlpha(150)
+                                    : Colors.white,
+                            size: 20,
+                          ),
+                        );
+                      }),
+                ),
                 razw(10),
                 StreamBuilder(
                     stream: audioServiceHandler.playbackState,
@@ -215,8 +225,8 @@ class FullScreenBodyMacos extends StatelessWidget {
                       );
                     }),
                 razw(10),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(60),
+                Tooltip(
+                  message: AppLocalizations.of(context).shuffle,
                   child: Container(
                     width: 40,
                     height: 40,
@@ -331,13 +341,16 @@ class FullScreenBodyMacos extends StatelessWidget {
                       );
                     }),
                 razw(10),
-                SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: iconButton(
-                      CupertinoIcons.fullscreen_exit, Colors.white, () {
-                    fullscreenPlaying.value = false;
-                  }, edgeInsets: EdgeInsets.zero),
+                Tooltip(
+                  message: AppLocalizations.of(context).exitfullscreen,
+                  child: SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: iconButton(
+                        CupertinoIcons.fullscreen_exit, Colors.white, () {
+                      fullscreenPlaying.value = false;
+                    }, edgeInsets: EdgeInsets.zero),
+                  ),
                 ),
                 razw(20),
               ],

@@ -18,6 +18,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cancel => 'Abbrechen';
 
   @override
+  String get repeat => 'Wiederholung';
+
+  @override
   String get sleep => 'Schlafen Wecker';
 
   @override
@@ -49,6 +52,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get areyousure => 'Sind Sie sicher?';
+
+  @override
+  String get fullscreen => 'Vollbild';
+
+  @override
+  String get exitfullscreen => 'Vollbild beenden';
 
   @override
   String get clearqueue => 'Die Warteschlange leeren?';
@@ -460,6 +469,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get shufflemodeison => 'Der Zufallsmodus ist aktiviert!';
+
+  @override
+  String get shuffle => 'Zufallsmodus';
 
   @override
   String get leftalignment => 'Linksbündig ausrichtung';

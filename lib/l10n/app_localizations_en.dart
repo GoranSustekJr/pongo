@@ -18,6 +18,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
+  String get repeat => 'Repeat';
+
+  @override
   String get sleep => 'Sleep alarm';
 
   @override
@@ -49,6 +52,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get areyousure => 'Are you sure?';
+
+  @override
+  String get fullscreen => 'Fullscreen';
+
+  @override
+  String get exitfullscreen => 'Exit fullscreen';
 
   @override
   String get clearqueue => 'Clear queue?';
@@ -460,6 +469,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shufflemodeison => 'Shuffle mode is on!';
+
+  @override
+  String get shuffle => 'Shuffle';
 
   @override
   String get leftalignment => 'Left alignment';

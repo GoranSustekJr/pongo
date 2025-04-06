@@ -17,35 +17,38 @@ class TitleBarMacos extends StatelessWidget {
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return Row(
       children: [
-        SizedBox(
-          width: 40,
-          child: CupertinoButton(
-            child: ValueListenableBuilder(
-                valueListenable: currentStid,
-                builder: (context, _, __) {
-                  return ValueListenableBuilder(
-                      valueListenable: navigationBarIndex,
-                      builder: (context, _, __) {
-                        return Icon(
-                          navigationBarIndex.value == 6
-                              ? AppIcons.lyricsFill
-                              : AppIcons.lyrics,
-                          size: 20,
-                          color: currentMediaItem.id.split('.')[2] ==
-                                  currentStid.value
-                              ? Colors.white
-                              : Colors.white.withAlpha(150),
-                        );
-                      });
-                }),
-            onPressed: () {
-              if (navigationBarIndex.value != 2) {
-                navigationBarIndex.value = 6;
-              }
-              if (currentMediaItem.id.split('.')[2] != currentStid.value) {
-                currentStid.value = currentMediaItem.id.split('.')[2];
-              }
-            },
+        Tooltip(
+          message: AppLocalizations.of(context).lyrics,
+          child: SizedBox(
+            width: 40,
+            child: CupertinoButton(
+              child: ValueListenableBuilder(
+                  valueListenable: currentStid,
+                  builder: (context, _, __) {
+                    return ValueListenableBuilder(
+                        valueListenable: navigationBarIndex,
+                        builder: (context, _, __) {
+                          return Icon(
+                            navigationBarIndex.value == 6
+                                ? AppIcons.lyricsFill
+                                : AppIcons.lyrics,
+                            size: 20,
+                            color: currentMediaItem.id.split('.')[2] ==
+                                    currentStid.value
+                                ? Colors.white
+                                : Colors.white.withAlpha(150),
+                          );
+                        });
+                  }),
+              onPressed: () {
+                if (navigationBarIndex.value != 2) {
+                  navigationBarIndex.value = 6;
+                }
+                if (currentMediaItem.id.split('.')[2] != currentStid.value) {
+                  currentStid.value = currentMediaItem.id.split('.')[2];
+                }
+              },
+            ),
           ),
         ),
         razw(12),
@@ -115,15 +118,18 @@ class TitleBarMacos extends StatelessWidget {
               );
             }),
         razw(8),
-        SizedBox(
-          width: 30,
-          child: CupertinoButton(
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            onPressed: showQueue,
-            child: Icon(
-              queue ? AppIcons.musicQueueFill : AppIcons.musicQueue,
-              size: 20,
-              color: Colors.white,
+        Tooltip(
+          message: AppLocalizations.of(context).queue,
+          child: SizedBox(
+            width: 30,
+            child: CupertinoButton(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              onPressed: showQueue,
+              child: Icon(
+                queue ? AppIcons.musicQueueFill : AppIcons.musicQueue,
+                size: 20,
+                color: Colors.white,
+              ),
             ),
           ),
         ),

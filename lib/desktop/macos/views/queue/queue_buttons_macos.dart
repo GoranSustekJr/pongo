@@ -25,8 +25,8 @@ class QueueButtonsMacos extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(60),
+          Tooltip(
+            message: AppLocalizations.of(context).shuffle,
             child: Container(
               width: 40,
               height: 40,
@@ -71,58 +71,63 @@ class QueueButtonsMacos extends StatelessWidget {
             ),
           ),
           dividerVertical(30, 1, 7.5),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(60),
+          Tooltip(
+            message: edit
+                ? AppLocalizations.of(context).cancel
+                : AppLocalizations.of(context).edit,
             child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(60),
-                  color: kIsDesktop && !kIsMacOS
-                      ? const MacosColor.fromRGBO(
-                          40, 40, 40, 0.8) // Add transparency here
-                      : Col.transp,
-                ),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 400),
-                  child: edit
-                      ? iconButton(AppIcons.x, Colors.white, () {
-                          changeEditQueue(false);
-                          clearSelectedQueueIndexes();
-                        }, edgeInsets: EdgeInsets.zero)
-                      : iconButton(AppIcons.edit, Colors.white, () {
-                          changeEditQueue(true);
-                        }, edgeInsets: EdgeInsets.zero),
-                )),
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(60),
+                color: kIsDesktop && !kIsMacOS
+                    ? const MacosColor.fromRGBO(
+                        40, 40, 40, 0.8) // Add transparency here
+                    : Col.transp,
+              ),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                child: edit
+                    ? iconButton(AppIcons.x, Colors.white, () {
+                        changeEditQueue(false);
+                        clearSelectedQueueIndexes();
+                      }, edgeInsets: EdgeInsets.zero)
+                    : iconButton(AppIcons.edit, Colors.white, () {
+                        changeEditQueue(true);
+                      }, edgeInsets: EdgeInsets.zero),
+              ),
+            ),
           ),
           dividerVertical(30, 1, 7.5),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(60),
+          Tooltip(
+            message: edit
+                ? AppLocalizations.of(context).delete
+                : AppLocalizations.of(context).addtrackstoyoutplaylist,
             child: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(60),
-                  color: kIsDesktop && !kIsMacOS
-                      ? const MacosColor.fromRGBO(
-                          40, 40, 40, 0.8) // Add transparency here
-                      : Col.transp,
-                ),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 400),
-                  child: edit
-                      ? iconButton(AppIcons.trash, Colors.white, () {
-                          removeItemsFromQueue();
-                        }, edgeInsets: EdgeInsets.zero)
-                      : iconButton(AppIcons.musicAlbums, Colors.white,
-                          () async {
-                          // TODO: Add to playlist
-                        }, edgeInsets: EdgeInsets.zero),
-                )),
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(60),
+                color: kIsDesktop && !kIsMacOS
+                    ? const MacosColor.fromRGBO(
+                        40, 40, 40, 0.8) // Add transparency here
+                    : Col.transp,
+              ),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                child: edit
+                    ? iconButton(AppIcons.trash, Colors.white, () {
+                        removeItemsFromQueue();
+                      }, edgeInsets: EdgeInsets.zero)
+                    : iconButton(AppIcons.musicAlbums, Colors.white, () async {
+                        // TODO: Add to playlist
+                      }, edgeInsets: EdgeInsets.zero),
+              ),
+            ),
           ),
           dividerVertical(30, 1, 7.5),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(60),
+          Tooltip(
+            message: AppLocalizations.of(context).download,
             child: Container(
               width: 40,
               height: 40,
@@ -139,8 +144,8 @@ class QueueButtonsMacos extends StatelessWidget {
             ),
           ),
           dividerVertical(30, 1, 7.5),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(60),
+          Tooltip(
+            message: AppLocalizations.of(context).halt,
             child: Container(
               width: 40,
               height: 40,

@@ -176,31 +176,30 @@ class LyricsBodyMacos extends StatelessWidget {
                               ],
                             ),
                             Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(60),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color:
-                                                    Colors.black.withAlpha(200),
-                                                spreadRadius: 3,
-                                                blurRadius: 10),
-                                          ]),
-                                      child: iconButton(
-                                          CupertinoIcons.fullscreen,
-                                          Colors.white, () {
-                                        fullscreenPlaying.value = true;
-                                      }, edgeInsets: EdgeInsets.zero),
-                                    ),
-                                  ],
-                                ))
+                              left: 0,
+                              top: 0,
+                              child: Tooltip(
+                                message:
+                                    AppLocalizations.of(context).fullscreen,
+                                child: Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(60),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black.withAlpha(200),
+                                            spreadRadius: 3,
+                                            blurRadius: 10),
+                                      ]),
+                                  child: iconButton(
+                                      CupertinoIcons.fullscreen, Colors.white,
+                                      () {
+                                    fullscreenPlaying.value = true;
+                                  }, edgeInsets: EdgeInsets.zero),
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       );

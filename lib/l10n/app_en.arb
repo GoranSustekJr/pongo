@@ -15,6 +15,11 @@
         "description": "Cancel"
     },
 
+    "repeat": "Repeat",
+    "@repeat": {
+        "description": "Repeat"
+    },
+
     "sleep": "Sleep alarm",
     "@sleep": {
         "description": "Sleep"
@@ -68,6 +73,16 @@
     "areyousure": "Are you sure?",
     "@areyousure": {
         "description": "Are You Sure?"
+    },
+
+    "fullscreen": "Fullscreen",
+    "@fullscreen": {
+        "description": "fullscreen"
+    },
+
+    "exitfullscreen": "Exit fullscreen",
+    "@exitfullscreen": {
+        "description": "exitfullscreen"
     },
 
     "clearqueue": "Clear queue?",
@@ -767,6 +782,11 @@
     "shufflemodeison": "Shuffle mode is on!",
     "@shufflemodeison": {
         "description": "shufflemodeison"
+    },
+
+    "shuffle": "Shuffle",
+    "@shuffle": {
+        "description": "shuffle"
     },
 
     "leftalignment": "Left alignment",
