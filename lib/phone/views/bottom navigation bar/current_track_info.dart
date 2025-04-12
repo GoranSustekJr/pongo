@@ -196,7 +196,7 @@ class _TrackInfoState extends State<TrackInfo> {
                                                             width: 50,
                                                             height: 50,
                                                             decoration:
-                                                                const BoxDecoration(
+                                                                BoxDecoration(
                                                                     boxShadow: [
                                                                   BoxShadow(
                                                                       color: Col
@@ -206,7 +206,7 @@ class _TrackInfoState extends State<TrackInfo> {
                                                                       spreadRadius:
                                                                           0,
                                                                       offset:
-                                                                          Offset(
+                                                                          const Offset(
                                                                               0,
                                                                               0)),
                                                                 ]),

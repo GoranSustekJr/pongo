@@ -92,7 +92,7 @@ class RecommendedTile extends StatelessWidget {
                 BorderRadius.circular(type == TileType.artist ? 360 : 7.5),
             child: imageUrl == ""
                 ? Center(
-                    child: Icon(noImage, color: Colors.white),
+                    child: Icon(noImage, color: Col.icon),
                   )
                 : SizedBox(
                     child: ImageCompatible(image: imageUrl),
@@ -117,7 +117,7 @@ class RecommendedTile extends StatelessWidget {
                           fontSize: kIsApple ? 14 : 15,
                           fontWeight:
                               kIsApple ? FontWeight.w500 : FontWeight.w600,
-                          color: Colors.white,
+                          color: Col.text,
                         ),
                         textAlign: TextAlign.left,
                       ),
@@ -132,7 +132,7 @@ class RecommendedTile extends StatelessWidget {
                           fontSize: kIsApple ? 12 : 13,
                           fontWeight:
                               kIsApple ? FontWeight.w400 : FontWeight.w500,
-                          color: Colors.white.withAlpha(175),
+                          color: Col.text.withAlpha(175),
                         ),
                         textAlign: TextAlign.left,
                       ),

@@ -4,8 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
 class SleepAlarmAddPhone extends StatefulWidget {
+  final SleepAlarm? sleepAlarm;
   final Function(SleepAlarm) insertSleepAlarm;
-  const SleepAlarmAddPhone({super.key, required this.insertSleepAlarm});
+
+  const SleepAlarmAddPhone(
+      {super.key, required this.sleepAlarm, required this.insertSleepAlarm});
 
   @override
   State<SleepAlarmAddPhone> createState() => _SleepAlarmAddPhoneState();
@@ -23,6 +26,33 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
   int wakeTimeMin = 30;
   int beforeEndTimeMin = 30;
   bool alarmClockLinear = true;
+
+  // Update
+  bool update = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initUpdate();
+  }
+
+  void initUpdate() {
+    if (widget.sleepAlarm != null) {
+      setState(() {
+        update = true;
+        // Set current choice
+        sleep = widget.sleepAlarm!.sleep;
+        sleepDuration = widget.sleepAlarm!.sleepDuration;
+        sleepLinear = widget.sleepAlarm!.sleepLinear;
+
+        alarmClock = widget.sleepAlarm!.alarmClock;
+        wakeTimeHour = (widget.sleepAlarm!.wakeTime / 60).floor();
+        wakeTimeMin = widget.sleepAlarm!.wakeTime - wakeTimeHour * 60;
+        beforeEndTimeMin = widget.sleepAlarm!.beforeEndTimeMin;
+        alarmClockLinear = widget.sleepAlarm!.alarmClockLinear;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +82,13 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                       child: textButton(AppLocalizations.of(context).sleep,
                           () {}, const TextStyle(color: Colors.white),
                           edgeInsets: EdgeInsets.zero)),
-                  textButton(AppLocalizations.of(context).create, () async {
-                    if (sleep || alarmClock) {
+                  textButton(
+                      update
+                          ? AppLocalizations.of(context).change
+                          : AppLocalizations.of(context).create, () async {
+                    if (update) {
                       SleepAlarm sleepAlarm = SleepAlarm(
-                        id: -1,
+                        id: widget.sleepAlarm!.id,
                         sleep: sleep,
                         sleepDuration: sleepDuration,
                         sleepLinear: sleepLinear,
@@ -64,24 +97,40 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                         beforeEndTimeMin: beforeEndTimeMin,
                         alarmClockLinear: alarmClockLinear,
                       );
-                      int id =
-                          await DatabaseHelper().insertSleepAlarm(sleepAlarm);
-                      widget.insertSleepAlarm(SleepAlarm(
-                        id: id,
-                        sleep: sleep,
-                        sleepDuration: sleepDuration,
-                        sleepLinear: sleepLinear,
-                        alarmClock: alarmClock,
-                        wakeTime: wakeTimeHour * 60 + wakeTimeMin,
-                        beforeEndTimeMin: beforeEndTimeMin,
-                        alarmClockLinear: alarmClockLinear,
-                      ));
+                      await DatabaseHelper().updateSleepAlarm(sleepAlarm);
+                      widget.insertSleepAlarm(sleepAlarm);
                       Navigator.of(context).pop();
                     } else {
-                      Notifications().showWarningNotification(
-                          context,
-                          AppLocalizations.of(context)
-                              .cannotcreateasleepalarmwithoutthe);
+                      if (sleep || alarmClock) {
+                        SleepAlarm sleepAlarm = SleepAlarm(
+                          id: -1,
+                          sleep: sleep,
+                          sleepDuration: sleepDuration,
+                          sleepLinear: sleepLinear,
+                          alarmClock: alarmClock,
+                          wakeTime: wakeTimeHour * 60 + wakeTimeMin,
+                          beforeEndTimeMin: beforeEndTimeMin,
+                          alarmClockLinear: alarmClockLinear,
+                        );
+                        int id =
+                            await DatabaseHelper().insertSleepAlarm(sleepAlarm);
+                        widget.insertSleepAlarm(SleepAlarm(
+                          id: id,
+                          sleep: sleep,
+                          sleepDuration: sleepDuration,
+                          sleepLinear: sleepLinear,
+                          alarmClock: alarmClock,
+                          wakeTime: wakeTimeHour * 60 + wakeTimeMin,
+                          beforeEndTimeMin: beforeEndTimeMin,
+                          alarmClockLinear: alarmClockLinear,
+                        ));
+                        Navigator.of(context).pop();
+                      } else {
+                        Notifications().showWarningNotification(
+                            context,
+                            AppLocalizations.of(context)
+                                .cannotcreateasleepalarmwithoutthe);
+                      }
                     }
                   },
                       const TextStyle(

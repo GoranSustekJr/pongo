@@ -395,6 +395,10 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                             AppLocalizations.of(context)
                                 .playlistnamealreadyexists);
                       }
+                    } else {
+                      setState(() {
+                        working = false;
+                      });
                     }
                   }
                 },

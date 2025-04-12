@@ -56,8 +56,10 @@ class RecommendationsBodyPhone extends StatelessWidget {
                 padding: const EdgeInsets.all(15),
                 child: Text(
                   AppLocalizations.of(context).recommendationsdisabled,
-                  style: const TextStyle(
-                      fontSize: 17.5, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      fontSize: 17.5,
+                      fontWeight: FontWeight.w600,
+                      color: Col.text),
                   textAlign: TextAlign.center,
                 ),
               ),

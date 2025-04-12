@@ -124,6 +124,8 @@ void main() async {
   useMix.value = enableUseMix;
   double sleepAlarmDevicVolume = await Storage().getSleepAlarmDeviceVolume();
   sleepAlarmDevVolume = sleepAlarmDevicVolume;
+  bool drkMode = await Storage().getDarkMode();
+  darkMode.value = drkMode;
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();
@@ -155,8 +157,9 @@ void main() async {
           if (kIsMobile) Provider<VolumeManager>.value(value: volumeManager),
           Provider<AccessToken>.value(value: accessTokenJWT),
         ],
-        child: Builder(
-          builder: (context) {
+        child: ValueListenableBuilder(
+          valueListenable: darkMode,
+          builder: (context, _, __) {
             return kIsMobile ? const MyAppPhone() : const MyAppDesktop();
           },
         ),

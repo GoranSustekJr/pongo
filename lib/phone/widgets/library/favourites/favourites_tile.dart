@@ -6,6 +6,7 @@ class FavouritesTile extends StatelessWidget {
   final bool first;
   final bool last;
   final bool exists;
+  final bool forceWhite;
   final Function() function;
   final Widget? trailing;
   const FavouritesTile({
@@ -16,6 +17,7 @@ class FavouritesTile extends StatelessWidget {
     required this.function,
     this.trailing,
     required this.exists,
+    required this.forceWhite,
   });
 
   @override
@@ -58,7 +60,7 @@ class FavouritesTile extends StatelessWidget {
                   child: track.album ==
                           null //!track["track"].keys.contains("album")
                       ? Center(
-                          child: Icon(AppIcons.blankTrack, color: Colors.white),
+                          child: Icon(AppIcons.blankTrack, color: Col.icon),
                         )
                       : ImageCompatible(
                           image: calculateWantedResolutionForTrack(
@@ -81,10 +83,10 @@ class FavouritesTile extends StatelessWidget {
                     track.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16.5,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: forceWhite ? Colors.white : Col.text,
                     ),
                   ),
                   razh(2.5),
@@ -95,7 +97,9 @@ class FavouritesTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w400,
-                      color: Colors.white.withAlpha(200),
+                      color: forceWhite
+                          ? Colors.white.withAlpha(200)
+                          : Col.text.withAlpha(200),
                     ),
                   ),
                 ],

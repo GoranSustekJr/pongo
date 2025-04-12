@@ -37,15 +37,15 @@ appleLocalePopup(String locale, Function(String) function) {
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          const Icon(
+          Icon(
             AppIcons.world,
-            color: Colors.white,
+            color: Col.icon,
           ),
           Text(
             locale,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 10,
-              color: Colors.white,
+              color: Col.text,
             ),
           )
         ],

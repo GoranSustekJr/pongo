@@ -33,9 +33,9 @@ settingsTileInt(context, bool first, bool last, IconData icon, int trailingNum,
               Text(
                 title,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: Colors.white,
+                  color: Col.text,
                 ),
               ),
               if (subtitle != null)
@@ -44,7 +44,7 @@ settingsTileInt(context, bool first, bool last, IconData icon, int trailingNum,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 9,
-                    color: Colors.white.withAlpha(150),
+                    color: Col.text.withAlpha(150),
                   ),
                 ),
             ],
@@ -63,7 +63,7 @@ settingsTileInt(context, bool first, bool last, IconData icon, int trailingNum,
               child: Center(
                 child: Text(
                   trailingNum.toString(),
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: Col.text),
                 ),
               )),
           const SizedBox(

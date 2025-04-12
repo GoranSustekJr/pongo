@@ -60,6 +60,9 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   // Use mix
   bool useMx = false;
 
+  // Dark mode
+  bool drkMode = true;
+
   @override
   void initState() {
     super.initState();
@@ -94,6 +97,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final usBlur = await Storage().getUseBlur();
     final usDetailedBlurhash = await Storage().getUseDetailedBlurhash();
     final usMix = await Storage().getUseMix();
+    final darkMod = await Storage().getDarkMode();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -112,7 +116,15 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       useBlr = usBlur;
       useDetailedBlurhsh = usDetailedBlurhash;
       useMx = usMix;
+      drkMode = darkMod;
     });
+  }
+
+  void notifyChange() {
+    Notifications().showWarningNotification(
+        context,
+        AppLocalizations.of(context)
+            .appmayneedtoberestartedinorderforchangestotakefullaffect);
   }
 
   @override
@@ -161,11 +173,11 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                             title: Text(
                               AppLocalizations.of(context).preferences,
                               style: TextStyle(
-                                fontSize: kIsApple ? 25 : 30,
-                                fontWeight: kIsApple
-                                    ? FontWeight.w700
-                                    : FontWeight.w800,
-                              ),
+                                  fontSize: kIsApple ? 25 : 30,
+                                  fontWeight: kIsApple
+                                      ? FontWeight.w700
+                                      : FontWeight.w800,
+                                  color: Col.text),
                             ),
                             stretchModes: const [
                               StretchMode.zoomBackground,
@@ -204,6 +216,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                             setState(() {
                                               market = mark;
                                             });
+                                            notifyChange();
                                           },
                                         )
                                       : appleMarketPopup(
@@ -215,6 +228,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                             setState(() {
                                               market = mark;
                                             });
+                                            notifyChange();
                                           },
                                         );
                                 },
@@ -236,6 +250,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                     numOfSearchArtists = number;
                                     numberOfSearchArtists.value = number;
                                   });
+                                  notifyChange();
                                 });
                               }),
                               settingsTileInt(
@@ -255,6 +270,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                     numOfSearchAlbums = number;
                                     numberOfSearchAlbums.value = number;
                                   });
+                                  notifyChange();
                                 });
                               }),
                               settingsTileInt(
@@ -275,6 +291,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                     numOfSearchTracks = number;
                                     numberOfSearchTracks.value = number;
                                   });
+                                  notifyChange();
                                 });
                               }),
                               settingsTileInt(
@@ -295,6 +312,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                     numOfSearchPlaylists = number;
                                     numberOfSearchPlaylists.value = number;
                                   });
+                                  notifyChange();
                                 });
                               }),
                               razh(20),
@@ -314,6 +332,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                     showHistory = use;
                                   });
                                   Storage().writeEnableHistory(use);
+                                  notifyChange();
                                 },
                               ),
                               settingsTileSwitcher(
@@ -330,6 +349,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                     showExplore = use;
                                   });
                                   Storage().writeEnableCategories(use);
+                                  notifyChange();
                                 },
                               ),
                               razh(20),
@@ -349,6 +369,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   });
                                   await Storage().writeEnableLyrics(enable);
                                   enableLyrics.value = enable;
+                                  notifyChange();
                                 },
                               ),
                               settingsTileSwitcher(
@@ -365,6 +386,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   });
                                   Storage().writeSyncDelay(use);
                                   useSyncTimeDelay.value = use;
+                                  notifyChange();
                                 },
                               ),
                               settingsTileSwitcher(
@@ -384,6 +406,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   });
                                   Storage().writeUseSyncedLyrics(use);
                                   useSyncedLyrics.value = use;
+                                  notifyChange();
                                 },
                               ),
                               settingsTile(
@@ -456,6 +479,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                       currentLyricsTextAlignment.value =
                                           TextAlign.justify;
                                     }
+                                    notifyChange();
                                   });
                                 },
                               ),
@@ -468,14 +492,16 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 false,
                                 CupertinoIcons.music_albums_fill,
                                 useMx,
-                                "Mix",
-                                "Use mix feature when playing searched music",
+                                AppLocalizations.of(context).mix,
+                                AppLocalizations.of(context)
+                                    .usemixfeaturewhenplayingsearchedmusic,
                                 (use) async {
                                   setState(() {
                                     useMx = use;
                                   });
                                   useMix.value = use;
                                   await Storage().writeUseMix(use);
+                                  notifyChange();
                                 },
                               ),
                               settingsTileSwitcher(
@@ -493,6 +519,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   });
                                   useCacheAudioSource.value = use;
                                   await Storage().writeUseCacheAudioSource(use);
+                                  notifyChange();
                                 },
                               ),
                               settingsTile(
@@ -526,6 +553,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   });
                                   cacheImages.value = use;
                                   await Storage().writeCacheImages(use);
+                                  notifyChange();
                                 },
                               ),
                               settingsTile(
@@ -549,6 +577,32 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 context,
                                 true,
                                 false,
+                                drkMode
+                                    ? CupertinoIcons.moon
+                                    : CupertinoIcons.sun_max,
+                                drkMode, // AppIcons.edit,
+                                drkMode
+                                    ? AppLocalizations.of(context).darkmode
+                                    : AppLocalizations.of(context).lightmode,
+                                drkMode
+                                    ? AppLocalizations.of(context)
+                                        .currentlyusingdarkmode
+                                    : AppLocalizations.of(context)
+                                        .currentlyusinglightmode,
+                                (use) async {
+                                  setState(() {
+                                    drkMode = use;
+                                  });
+
+                                  darkMode.value = use;
+                                  await Storage().writeDarkMode(use);
+                                  notifyChange();
+                                },
+                              ),
+                              settingsTileSwitcher(
+                                context,
+                                false,
+                                false,
                                 CupertinoIcons.arrow_down_doc_fill,
                                 useBlr, // AppIcons.edit,
                                 AppLocalizations.of(context).useblur,
@@ -561,6 +615,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
 
                                   useBlur.value = use;
                                   await Storage().writeUseBlur(use);
+                                  notifyChange();
                                 },
                               ),
                               settingsTileSwitcher(
@@ -569,8 +624,9 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 true,
                                 CupertinoIcons.photo_on_rectangle,
                                 useDetailedBlurhsh, // AppIcons.edit,
-                                "Detailed blurahash",
-                                "Use detailed blurahash",
+                                AppLocalizations.of(context).detailedblurhash,
+                                AppLocalizations.of(context)
+                                    .usedetailedblurhash,
                                 (use) async {
                                   setState(() {
                                     useDetailedBlurhsh = use;
@@ -578,6 +634,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
 
                                   detailedBlurhash.value = use;
                                   await Storage().writeUseDetailedBlurhash(use);
+                                  notifyChange();
                                 },
                               ),
                               razh(50),

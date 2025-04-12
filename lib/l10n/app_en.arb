@@ -120,8 +120,50 @@
         "description": "or"
     },
 
-    
+    "appmayneedtoberestartedinorderforchangestotakefullaffect": "App may need to be restarted in order for changes to take full affect",
+    "@appmayneedtoberestartedinorderforchangestotakefullaffect": {
+        "description": "appmayneedtoberestartedinorderforchangestotakefullaffect"
+    },
 
+    "mix": "Mix",
+    "@mix": {
+        "description": "mix"
+    },
+
+    "usemixfeaturewhenplayingsearchedmusic": "Use mix feature when playing searched music",
+    "@usemixfeaturewhenplayingsearchedmusic": {
+        "description": "usemixfeaturewhenplayingsearchedmusic"
+    },
+
+    "darkmode": "Dark mode",
+    "@darkmode": {
+        "description": "darkmode"
+    },
+
+    "lightmode": "Light mode",
+    "@lightmode": {
+        "description": "lightmode"
+    },
+
+    "currentlyusingdarkmode": "Currently using dark mode",
+    "@currentlyusingdarkmode": {
+        "description": "currentlyusingdarkmode"
+    },
+
+    "currentlyusinglightmode": "Currently using light mode",
+    "@currentlyusinglightmode": {
+        "description": "currentlyusinglightmode"
+    },
+
+    "detailedblurhash": "Detailed blurahash",
+    "@detailedblurhash": {
+        "description": "detailedblurhash"
+    },
+
+    "usedetailedblurhash": "Use detailed blurahash",
+    "@usedetailedblurhash": {
+        "description": "usedetailedblurhash"
+    },
 
     "sleepalarmisenabled": "Sleep alarm is enabled",
     "@sleepalarmisenabled": {

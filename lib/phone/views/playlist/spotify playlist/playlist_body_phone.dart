@@ -99,7 +99,6 @@ class PlaylistBodyPhone extends StatelessWidget {
                     ),
                   ),
                 );
-                const SizedBox();
               },
             ),
             razh(15),

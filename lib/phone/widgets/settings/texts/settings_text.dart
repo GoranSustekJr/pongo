@@ -7,7 +7,7 @@ settingsText(String text) {
         padding: const EdgeInsets.only(left: 20, bottom: 5),
         child: Text(
           text,
-          style: TextStyle(color: Colors.white.withAlpha(150)),
+          style: TextStyle(color: Col.text.withAlpha(150)),
         ),
       ),
     ],

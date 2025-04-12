@@ -58,10 +58,10 @@ class SleepAlarmPhone extends StatelessWidget {
                         title: Text(
                           AppLocalizations.of(context).sleep,
                           style: TextStyle(
-                            fontSize: kIsApple ? 25 : 30,
-                            fontWeight:
-                                kIsApple ? FontWeight.w700 : FontWeight.w800,
-                          ),
+                              fontSize: kIsApple ? 25 : 30,
+                              fontWeight:
+                                  kIsApple ? FontWeight.w700 : FontWeight.w800,
+                              color: Col.text),
                           textAlign: TextAlign.center,
                           maxLines: 1,
                         ),
@@ -104,6 +104,9 @@ class SleepAlarmPhone extends StatelessWidget {
                                       padding: const EdgeInsets.only(
                                           top: 20, left: 10, right: 10),
                                       initialProgress: volume,
+                                      iconColor: Col.icon,
+                                      foregroundColor: Col.icon,
+                                      backgroundColor: Col.icon.withAlpha(30),
                                       focusedHeight: 10,
                                       startIcon: const Icon(
                                           CupertinoIcons.speaker_1_fill),
@@ -119,8 +122,7 @@ class SleepAlarmPhone extends StatelessWidget {
                               Text(
                                 AppLocalizations.of(context)
                                     .maximumvolumeofthealarm,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 10),
+                                style: TextStyle(color: Col.text, fontSize: 10),
                               )
                             ],
                           ),
@@ -150,7 +152,11 @@ class SleepAlarmPhone extends StatelessWidget {
                                       sleepAlarmDataManager.sleepAlarms.length -
                                           1,
                                   sleepAlarmDataManager.sleepAlarms[index],
-                                  () {},
+                                  () {
+                                    sleepAlarmDataManager.updateSleepAlarm(
+                                        sleepAlarmDataManager
+                                            .sleepAlarms[index]);
+                                  },
                                   sleepAlarmDataManager.activeAlarm ==
                                       sleepAlarmDataManager
                                           .sleepAlarms[index].id,

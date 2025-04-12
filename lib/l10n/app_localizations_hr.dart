@@ -81,6 +81,33 @@ class AppLocalizationsHr extends AppLocalizations {
   String get or => 'ili';
 
   @override
+  String get appmayneedtoberestartedinorderforchangestotakefullaffect => 'Aplikacija će možda trebati biti ponovno pokrenuta kako bi promjene potpuno stupile na snagu.';
+
+  @override
+  String get mix => 'Mix';
+
+  @override
+  String get usemixfeaturewhenplayingsearchedmusic => 'Koristite značajku mix kada reproducirate pretraženu glazbu.';
+
+  @override
+  String get darkmode => 'Tamni način';
+
+  @override
+  String get lightmode => 'Svjetli način';
+
+  @override
+  String get currentlyusingdarkmode => 'Trenutno koristite tamni način.';
+
+  @override
+  String get currentlyusinglightmode => 'Trenutno koristite svjetli način.';
+
+  @override
+  String get detailedblurhash => 'Detaljan BlurHash';
+
+  @override
+  String get usedetailedblurhash => 'Koristite detaljan BlurHash';
+
+  @override
   String get sleepalarmisenabled => 'San alarm je uključen';
 
   @override

@@ -59,13 +59,13 @@ class _PlayShuffleHaltLocalsState extends State<PlayShuffleHaltLocals> {
                         widget.allSelected
                             ? AppIcons.checkmark
                             : AppIcons.uncheckmark,
-                        Colors.white,
+                        Col.icon,
                         widget.selectAll,
                         edgeInsets: EdgeInsets.zero,
                       ),
                       iconButton(
                         AppIcons.musicAlbums,
-                        Colors.white,
+                        Col.icon,
                         () {
                           widget.addToPlaylist();
                         },
@@ -73,7 +73,7 @@ class _PlayShuffleHaltLocalsState extends State<PlayShuffleHaltLocals> {
                       ),
                       iconButton(
                         AppIcons.trash,
-                        Colors.white,
+                        Col.icon,
                         () {
                           widget.remove();
                         },
@@ -81,7 +81,7 @@ class _PlayShuffleHaltLocalsState extends State<PlayShuffleHaltLocals> {
                       ),
                       iconButton(
                         AppIcons.cancel,
-                        Colors.white,
+                        Col.icon,
                         widget.stopEdit,
                         edgeInsets: EdgeInsets.zero,
                       ),
@@ -106,13 +106,13 @@ class _PlayShuffleHaltLocalsState extends State<PlayShuffleHaltLocals> {
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
                                   color: !showPlay || widget.loadingShuffle
-                                      ? Colors.white.withAlpha(125)
-                                      : Colors.white,
+                                      ? Col.icon.withAlpha(125)
+                                      : Col.icon,
                                 ),
                                 widget.play,
                                 !showPlay || widget.loadingShuffle
-                                    ? Colors.white.withAlpha(125)
-                                    : Colors.white,
+                                    ? Col.icon.withAlpha(125)
+                                    : Col.icon,
                                 padding: EdgeInsets.zero,
                               ),
                               iconTextButton(
@@ -122,17 +122,17 @@ class _PlayShuffleHaltLocalsState extends State<PlayShuffleHaltLocals> {
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
                                   color: widget.missingTracks.isNotEmpty
-                                      ? Colors.white.withAlpha(125)
+                                      ? Col.icon.withAlpha(125)
                                       : widget.loadingShuffle
-                                          ? Colors.white.withAlpha(125)
-                                          : Colors.white,
+                                          ? Col.icon.withAlpha(125)
+                                          : Col.icon,
                                 ),
                                 widget.shuffle,
                                 widget.missingTracks.isNotEmpty
-                                    ? Colors.white.withAlpha(125)
+                                    ? Col.icon.withAlpha(125)
                                     : widget.loadingShuffle
-                                        ? Colors.white.withAlpha(125)
-                                        : Colors.white,
+                                        ? Col.icon.withAlpha(125)
+                                        : Col.icon,
                                 padding: EdgeInsets.zero,
                               ),
                               widget.endWidget
@@ -147,15 +147,15 @@ class _PlayShuffleHaltLocalsState extends State<PlayShuffleHaltLocals> {
                               iconTextButton(
                                 AppIcons.halt,
                                 " Halt",
-                                const TextStyle(
+                                TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.white,
+                                  color: Col.icon,
                                 ),
                                 () async {
                                   await audioServiceHandler.halt();
                                 },
-                                Colors.white,
+                                Col.icon,
                                 padding: EdgeInsets.zero,
                               ),
                               widget.endWidget,

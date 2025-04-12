@@ -14,6 +14,7 @@ settingsTileSwitcher(
   String? subtitle,
   Function(bool) function,
 ) {
+  bool dark = darkMode.value;
   double radius = 15;
   BorderRadius borderRadius = BorderRadius.only(
     topLeft: first ? Radius.circular(radius) : Radius.zero,
@@ -44,9 +45,9 @@ settingsTileSwitcher(
               Text(
                 title,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: Colors.white,
+                  color: Col.text,
                 ),
               ),
               if (subtitle != null)
@@ -55,7 +56,7 @@ settingsTileSwitcher(
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 9,
-                    color: Colors.white.withAlpha(150),
+                    color: Col.text.withAlpha(150),
                   ),
                 ),
             ],
@@ -67,7 +68,6 @@ settingsTileSwitcher(
                   ? CupertinoSwitch(
                       value: boolean,
                       activeColor: Col.onIcon,
-                      trackColor: Col.realBackground,
                       onChanged: (value) {
                         function(value);
                       })
@@ -76,7 +76,7 @@ settingsTileSwitcher(
                       activeColor: Col.onIcon,
                       inactiveTrackColor: Col.realBackground,
                       thumbColor: MaterialStateProperty.resolveWith<Color?>(
-                          (states) => Colors.white),
+                          (states) => dark ? Colors.white : Colors.blueGrey),
                       trackOutlineColor:
                           MaterialStateProperty.resolveWith<Color?>(
                               (states) => Col.realBackground),

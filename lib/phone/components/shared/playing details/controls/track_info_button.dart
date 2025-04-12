@@ -132,7 +132,7 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
             onPressed: () {
               PopupMenu(
                 context: context,
-                config: const MenuConfig(
+                config: MenuConfig(
                   itemWidth: 150,
                   backgroundColor: Col.primaryCard,
                   lineColor: Colors.greenAccent,

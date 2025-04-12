@@ -69,9 +69,9 @@ class _AboutPhoneState extends State<AboutPhone> with WidgetsBindingObserver {
                     title: Text(
                       "Pongo",
                       style: TextStyle(
-                        fontSize: kIsApple ? 25 : 30,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          fontSize: kIsApple ? 25 : 30,
+                          fontWeight: FontWeight.bold,
+                          color: Col.text),
                     ),
                     stretchModes: const [
                       StretchMode.zoomBackground,

@@ -59,7 +59,7 @@ class PlaylistTile extends StatelessWidget {
               Container(
                 height: 1,
                 width: MediaQuery.of(context).size.width,
-                color: Colors.white.withAlpha(50),
+                color: Col.icon.withAlpha(50),
               ),
             Expanded(child: Container()),
             SizedBox(
@@ -115,7 +115,7 @@ class PlaylistTile extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: kIsApple ? 16 : 18,
-                                  color: Colors.white,
+                                  color: Col.text,
                                 )),
                             if (subtitle != null)
                               Text(
@@ -123,7 +123,7 @@ class PlaylistTile extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: kIsApple ? 10 : 12.5,
-                                  color: Colors.white,
+                                  color: Col.text,
                                 ),
                               ),
                           ],
@@ -139,7 +139,7 @@ class PlaylistTile extends StatelessWidget {
                         SizedBox(
                             width: 28,
                             height: kIsApple ? 49 : 58,
-                            child: const Icon(
+                            child: Icon(
                               CupertinoIcons.chevron_right,
                               color: Col.onIcon,
                             )),

@@ -13,8 +13,13 @@ class RecommendationsHistory extends StatelessWidget {
     return Column(
       children: [
         if (dataManager.history.isNotEmpty)
-          searchResultText(AppLocalizations.of(context).lastlistenedto,
-              dataManager.suggestionHeader),
+          searchResultText(
+              AppLocalizations.of(context).lastlistenedto,
+              TextStyle(
+                fontSize: kIsApple ? 24 : 25,
+                fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w700,
+                color: Col.text,
+              )),
         if (dataManager.history.isNotEmpty) razh(10),
         if (dataManager.history.isNotEmpty)
           SizedBox(

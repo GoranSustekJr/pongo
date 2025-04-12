@@ -17,8 +17,8 @@ Widget searchHistoryTile(
                   Expanded(
                     child: Text(
                       txt,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: Col.text,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                       ),
@@ -33,7 +33,7 @@ Widget searchHistoryTile(
                     },
                     child: Icon(
                       AppIcons.cancel,
-                      color: Colors.white,
+                      color: Col.icon,
                     ),
                   ),
                 ],
@@ -50,8 +50,8 @@ Widget searchHistoryTile(
               Expanded(
                 child: Text(
                   txt,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: Col.text,
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),
@@ -65,7 +65,7 @@ Widget searchHistoryTile(
                 },
                 icon: Icon(
                   AppIcons.cancel,
-                  color: Colors.white,
+                  color: Col.icon,
                 ),
               ),
             ],

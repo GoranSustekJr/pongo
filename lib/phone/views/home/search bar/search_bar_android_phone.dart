@@ -77,7 +77,7 @@ class _SearchBarAndroidPhoneState extends State<SearchBarAndroidPhone> {
                   enabledBorder: border,
                   border: border,
                   hintText: AppLocalizations.of(context).search,
-                  hintStyle: const TextStyle(
+                  hintStyle: TextStyle(
                     color: Col.onIcon, // Hint text color
                   ),
                   filled: true,

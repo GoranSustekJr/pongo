@@ -80,11 +80,11 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                   title: Text(
                                     AppLocalizations.of(context).favouritesongs,
                                     style: TextStyle(
-                                      fontSize: kIsApple ? 25 : 30,
-                                      fontWeight: kIsApple
-                                          ? FontWeight.w700
-                                          : FontWeight.w800,
-                                    ),
+                                        fontSize: kIsApple ? 25 : 30,
+                                        fontWeight: kIsApple
+                                            ? FontWeight.w700
+                                            : FontWeight.w800,
+                                        color: Col.text),
                                     textAlign: TextAlign.center,
                                     maxLines: 1,
                                   ),
@@ -126,7 +126,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                         edit: favouritesItemManager.edit,
                                         frontWidget: iconButton(
                                           AppIcons.heart,
-                                          Colors.white,
+                                          Col.icon,
                                           () {
                                             navigationBarIndex.value = 0;
                                             searchFocusNode.value
@@ -136,7 +136,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                         ),
                                         endWidget: iconButton(
                                           AppIcons.edit,
-                                          Colors.white,
+                                          Col.icon,
                                           () async {
                                             final audioServiceHandler =
                                                 Provider.of<AudioHandler>(
@@ -291,7 +291,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                                 children: [
                                                   razh(150),
                                                   iconButton(AppIcons.heartFill,
-                                                      Colors.white, () {
+                                                      Col.icon, () {
                                                     navigationBarIndex.value =
                                                         0;
                                                     searchFocusNode.value
@@ -306,9 +306,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                                         0;
                                                     searchFocusNode.value
                                                         .requestFocus();
-                                                  },
-                                                      const TextStyle(
-                                                          color: Colors.white),
+                                                  }, TextStyle(color: Col.text),
                                                       edgeInsets:
                                                           EdgeInsets.zero)
                                                 ],

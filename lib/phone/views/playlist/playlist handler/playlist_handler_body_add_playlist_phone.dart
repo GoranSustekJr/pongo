@@ -61,7 +61,7 @@ class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
                         color: Col.primaryCard.withAlpha(200)),
                     child: iconButton(
                       Icons.camera_alt_rounded,
-                      Colors.white,
+                      Col.icon,
                       size: 30,
                       pickImage,
                     ),

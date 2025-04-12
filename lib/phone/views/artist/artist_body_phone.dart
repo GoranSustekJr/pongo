@@ -69,6 +69,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                 itemBuilder: (context, index) {
                   return SearchResultTile(
                     key: ValueKey("album.${widget.albums[index].id}"),
+                    pushWhite: true,
                     data: widget.albums[index],
                     type: TileType.album,
                     onTap: () {
@@ -117,6 +118,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                 itemBuilder: (context, index) {
                   return SearchResultTile(
                     key: ValueKey("album.${widget.otherAlbums[index].id}"),
+                    pushWhite: true,
                     data: widget.otherAlbums[index],
                     type: TileType.album,
                     onTap: () {
@@ -158,6 +160,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                 itemBuilder: (context, index) {
                   return SearchResultTile(
                     key: ValueKey("album.${widget.tracks[index].id}"),
+                    pushWhite: true,
                     data: widget.tracks[index],
                     type: TileType.track,
                     trailing: SizedBox(
@@ -228,6 +231,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                 itemBuilder: (context, index) {
                   return SearchResultTile(
                     key: ValueKey("album.${widget.artists[index].id}"),
+                    pushWhite: true,
                     data: widget.artists[index],
                     type: TileType.artist,
                     onTap: () {

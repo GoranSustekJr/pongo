@@ -29,77 +29,81 @@ class BottomNavBar extends StatelessWidget {
                 color: Col.realBackground.withAlpha(useBlur.value ? 150 : 250),
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: ValueListenableBuilder<int>(
-                valueListenable: navigationBarIndex,
-                builder: (context, value, child) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            CupertinoButton(
-                                child: Icon(AppIcons.search,
-                                    color: navigationBarIndex.value == 0
-                                        ? Colors.white
-                                        : Colors.white.withAlpha(150)),
-                                onPressed: () {
-                                  navigationBarIndex.value = 0;
-                                }),
-                            CupertinoButton(
-                                child: Icon(AppIcons.library,
-                                    color: navigationBarIndex.value == 1
-                                        ? Colors.white
-                                        : Colors.white.withAlpha(150)),
-                                onPressed: () {
-                                  navigationBarIndex.value = 1;
-                                }),
-                            CupertinoButton(
-                                child: Icon(AppIcons.settings,
-                                    color: navigationBarIndex.value == 2
-                                        ? Colors.white
-                                        : Colors.white.withAlpha(150)),
-                                onPressed: () {
-                                  navigationBarIndex.value = 2;
-                                }),
-                          ],
+              child: Container(
+                color: darkMode.value ? Col.transp : Colors.black.withAlpha(45),
+                child: ValueListenableBuilder<int>(
+                  valueListenable: navigationBarIndex,
+                  builder: (context, value, child) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              CupertinoButton(
+                                  child: Icon(AppIcons.search,
+                                      color: navigationBarIndex.value == 0
+                                          ? Colors.white
+                                          : Colors.white.withAlpha(150)),
+                                  onPressed: () {
+                                    navigationBarIndex.value = 0;
+                                  }),
+                              CupertinoButton(
+                                  child: Icon(AppIcons.library,
+                                      color: navigationBarIndex.value == 1
+                                          ? Colors.white
+                                          : Colors.white.withAlpha(150)),
+                                  onPressed: () {
+                                    navigationBarIndex.value = 1;
+                                  }),
+                              CupertinoButton(
+                                  child: Icon(AppIcons.settings,
+                                      color: navigationBarIndex.value == 2
+                                          ? Colors.white
+                                          : Colors.white.withAlpha(150)),
+                                  onPressed: () {
+                                    navigationBarIndex.value = 2;
+                                  }),
+                            ],
+                          ),
                         ),
-                      ),
-                      StreamBuilder(
-                        stream: internetConnectivityHandler.connectivityStream,
-                        builder: (context, snapshot) {
-                          return AnimatedContainer(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.easeInOutCirc,
-                            width: !internetConnectivityHandler.isConnected
-                                ? 65
-                                : 0,
-                            height: 50,
-                            child: Center(
-                              child: Icon(
-                                internetConnectivityHandler.isConnected
-                                    ? CupertinoIcons.wifi
-                                    : CupertinoIcons.wifi_slash,
-                                color: internetConnectivityHandler.isConnected
-                                    ? Colors.blue
-                                    : Colors.red,
-                              ), /* PulsatingIcon(
-                                icon: internetConnectivityHandler.isConnected
-                                    ? CupertinoIcons.wifi
-                                    : CupertinoIcons.wifi_slash,
-                                color: internetConnectivityHandler.isConnected
-                                    ? Colors.blue
-                                    : Colors.red,
-                              ), */
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  );
-                },
+                        StreamBuilder(
+                          stream:
+                              internetConnectivityHandler.connectivityStream,
+                          builder: (context, snapshot) {
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.easeInOutCirc,
+                              width: !internetConnectivityHandler.isConnected
+                                  ? 65
+                                  : 0,
+                              height: 50,
+                              child: Center(
+                                child: Icon(
+                                  internetConnectivityHandler.isConnected
+                                      ? CupertinoIcons.wifi
+                                      : CupertinoIcons.wifi_slash,
+                                  color: internetConnectivityHandler.isConnected
+                                      ? Colors.blue
+                                      : Colors.red,
+                                ), /* PulsatingIcon(
+                                  icon: internetConnectivityHandler.isConnected
+                                      ? CupertinoIcons.wifi
+                                      : CupertinoIcons.wifi_slash,
+                                  color: internetConnectivityHandler.isConnected
+                                      ? Colors.blue
+                                      : Colors.red,
+                                ), */
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ),

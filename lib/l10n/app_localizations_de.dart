@@ -81,6 +81,33 @@ class AppLocalizationsDe extends AppLocalizations {
   String get or => 'oder';
 
   @override
+  String get appmayneedtoberestartedinorderforchangestotakefullaffect => 'Die App muss möglicherweise neu gestartet werden, damit die Änderungen vollständig wirksam werden.';
+
+  @override
+  String get mix => 'Mix';
+
+  @override
+  String get usemixfeaturewhenplayingsearchedmusic => 'Verwenden Sie die Mix-Funktion, wenn Sie gesuchte Musik abspielen.';
+
+  @override
+  String get darkmode => 'Dunkelmodus';
+
+  @override
+  String get lightmode => 'Hellen Modus';
+
+  @override
+  String get currentlyusingdarkmode => 'Derzeit wird der Dunkelmodus verwendet.';
+
+  @override
+  String get currentlyusinglightmode => 'Derzeit wird der Hellen Modus verwendet.';
+
+  @override
+  String get detailedblurhash => 'Detaillierter BlurHash';
+
+  @override
+  String get usedetailedblurhash => 'Verwenden Sie detaillierten BlurHash';
+
+  @override
   String get sleepalarmisenabled => 'Schlafalarm ist eingeschaltet';
 
   @override
@@ -594,7 +621,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get pongowillgraduallyincreasethevolume => 'Pongo wird die Lautstärke allmählich erhöhen';
 
   @override
-  String get beforeyouneedtowakeupat => 'bevor Sie um aufwachen müssen';
+  String get beforeyouneedtowakeupat => 'bevor Sie aufwachen müssen um';
 
   @override
   String get about => 'Über';

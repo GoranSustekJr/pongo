@@ -82,7 +82,7 @@ class _LocalsBodyPhoneState extends State<LocalsBodyPhone> {
                                             .localsDataManager.tracks[index].id)
                                     ? AppIcons.checkmark
                                     : AppIcons.uncheckmark,
-                                Colors.white,
+                                Col.icon,
                                 () {
                                   widget.localsDataManager.select(widget
                                       .localsDataManager.tracks[index].id);

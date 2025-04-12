@@ -132,7 +132,12 @@ class _IntroductionPhoneState extends State<IntroductionPhone> {
     return Container(
       height: size.height,
       width: size.width,
-      decoration: AppConstants().backgroundBoxDecoration,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/pongo_background_10k.png'),
+          fit: BoxFit.fill,
+        ),
+      ),
       child: IntroSlider(
         key: UniqueKey(),
         listContentConfig: [

@@ -22,11 +22,13 @@ class Background extends StatelessWidget {
           children: <Widget>[
             /* 
             const BlurHashWidget(
-              hash: r'L03[fE,t|H$Q712s2swd{}{}OD{}',
+              hash: r'L03[fE,t|H$Q712s2swd{}{}OD{}',  cyan - UAQwR.X8$$10OYAD}r}rR+5mJ8=wxu9^S21I
               imageFit: BoxFit.cover,
             ), */
             Image.asset(
-              'assets/images/pongo_background_10k.png',
+              darkMode.value
+                  ? 'assets/images/pongo_background_10k.png'
+                  : 'assets/images/pongo_white_cyan_background_10k.png',
               fit: BoxFit.fill,
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,

@@ -81,6 +81,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get or => 'or';
 
   @override
+  String get appmayneedtoberestartedinorderforchangestotakefullaffect => 'App may need to be restarted in order for changes to take full affect';
+
+  @override
+  String get mix => 'Mix';
+
+  @override
+  String get usemixfeaturewhenplayingsearchedmusic => 'Use mix feature when playing searched music';
+
+  @override
+  String get darkmode => 'Dark mode';
+
+  @override
+  String get lightmode => 'Light mode';
+
+  @override
+  String get currentlyusingdarkmode => 'Currently using dark mode';
+
+  @override
+  String get currentlyusinglightmode => 'Currently using light mode';
+
+  @override
+  String get detailedblurhash => 'Detailed blurahash';
+
+  @override
+  String get usedetailedblurhash => 'Use detailed blurahash';
+
+  @override
   String get sleepalarmisenabled => 'Sleep alarm is enabled';
 
   @override

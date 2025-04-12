@@ -42,6 +42,7 @@ class Storage {
   static String useMixKey = "USEMIXKEY";
   static String useDetailedBlurhashKey = " USEDETAILEDBLURHASHKEY";
   static String sleepAlarmDeviceVolumeKey = "SLEEPALARMDEVICEVOLUMEKEY";
+  static String darkModeKey = "DARKMODEKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -595,6 +596,20 @@ class Storage {
       //----------------------------------------------------------------
     } else {
       return double.parse(key);
+    }
+  }
+
+  // Dark mode on
+  Future<void> writeDarkMode(bool darkMode) async {
+    await storage.write(key: darkModeKey, value: darkMode.toString());
+  }
+
+  Future<bool> getDarkMode() async {
+    String? key = await storage.read(key: darkModeKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
     }
   }
 

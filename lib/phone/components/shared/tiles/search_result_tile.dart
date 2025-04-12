@@ -5,6 +5,7 @@ enum TileType { playlist, artist, album, track }
 
 class SearchResultTile extends StatelessWidget {
   final dynamic data;
+  final bool pushWhite;
   final TileType type;
   final Function() onTap;
   final Widget? trailing;
@@ -14,6 +15,7 @@ class SearchResultTile extends StatelessWidget {
     required this.type,
     required this.onTap,
     this.trailing,
+    required this.pushWhite,
   });
 
   @override
@@ -72,7 +74,8 @@ class SearchResultTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(7.5),
             child: imageUrl == ""
                 ? Center(
-                    child: Icon(noImage, color: Colors.white),
+                    child: Icon(noImage,
+                        color: pushWhite ? Colors.white : Col.icon),
                   )
                 : ImageCompatible(
                     image: imageUrl,
@@ -90,10 +93,10 @@ class SearchResultTile extends StatelessWidget {
                 title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18.5,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: pushWhite ? Colors.white : Col.text,
                 ),
               ),
               razh(2),
@@ -104,7 +107,7 @@ class SearchResultTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Colors.white.withAlpha(200),
+                  color: pushWhite ? Colors.white : Col.text.withAlpha(200),
                 ),
               ),
             ],

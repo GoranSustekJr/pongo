@@ -206,7 +206,9 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        theme: AppTheme().dark,
+        theme: AppTheme().dark.copyWith(brightness: Brightness.light),
+        darkTheme: AppTheme().dark,
+        themeMode: darkMode.value ? ThemeMode.dark : ThemeMode.light,
         showSemanticsDebugger: false,
         home: const SafeArea(
           bottom: false,

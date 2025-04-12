@@ -52,10 +52,26 @@ class SleepAlarmDataManager with ChangeNotifier {
     showCupertinoModalPopup(
       context: context,
       builder: (context) => SleepAlarmAddPhone(
-        insertSleepAlarm: (
-          sleepAlarm,
-        ) {
+        sleepAlarm: null,
+        insertSleepAlarm: (sleepAlarm) {
           sleepAlarms.insert(0, sleepAlarm);
+          notifyListeners();
+        },
+      ),
+    );
+  }
+
+  void updateSleepAlarm(SleepAlarm sleepAlarm) async {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) => SleepAlarmAddPhone(
+        sleepAlarm: sleepAlarm,
+        insertSleepAlarm: (sleepAlarm) {
+          final index =
+              sleepAlarms.indexWhere((alarm) => alarm.id == sleepAlarm.id);
+          if (index != -1) {
+            sleepAlarms[index] = sleepAlarm;
+          }
           notifyListeners();
         },
       ),

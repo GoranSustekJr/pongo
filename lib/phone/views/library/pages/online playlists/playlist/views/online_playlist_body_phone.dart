@@ -75,6 +75,7 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
                 key: ValueKey(index),
                 track: shownTracks[index],
                 first: index == 0,
+                forceWhite: true,
                 last: shownTracks.length - 1 == index,
                 exists: !missingTracks.contains(shownTracks[index].id),
                 trailing: Padding(

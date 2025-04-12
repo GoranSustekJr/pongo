@@ -27,6 +27,7 @@ class LocalsPhone extends StatelessWidget {
                     height: size.height,
                     decoration: AppConstants().backgroundBoxDecoration,
                     child: Scaffold(
+                      resizeToAvoidBottomInset: false,
                       extendBodyBehindAppBar: true,
                       extendBody: true,
                       body: Scrollbar(
@@ -91,11 +92,11 @@ class LocalsPhone extends StatelessWidget {
                                         AppLocalizations.of(context)
                                             .offlinesongs,
                                         style: TextStyle(
-                                          fontSize: kIsApple ? 25 : 30,
-                                          fontWeight: kIsApple
-                                              ? FontWeight.w700
-                                              : FontWeight.w800,
-                                        ),
+                                            fontSize: kIsApple ? 25 : 30,
+                                            fontWeight: kIsApple
+                                                ? FontWeight.w700
+                                                : FontWeight.w800,
+                                            color: Col.text),
                                         textAlign: TextAlign.center,
                                         maxLines: 1,
                                       ),
@@ -139,13 +140,13 @@ class LocalsPhone extends StatelessWidget {
                                                 localsDataManager.tracks.length,
                                             frontWidget: iconButton(
                                               AppIcons.blankTrack,
-                                              Colors.white,
+                                              Col.icon,
                                               localsDataManager.newTracks,
                                               edgeInsets: EdgeInsets.zero,
                                             ),
                                             endWidget: iconButton(
                                               AppIcons.edit,
-                                              Colors.white,
+                                              Col.icon,
                                               localsDataManager.startEdit,
                                               edgeInsets: EdgeInsets.zero,
                                             ),
@@ -179,7 +180,8 @@ class LocalsPhone extends StatelessWidget {
                                         AppLocalizations.of(context).search,
                                     backgroundColor:
                                         Col.primaryCard.withAlpha(150),
-                                    style: const TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Col.text),
+                                    itemColor: Col.icon,
                                   ),
                                 ),
                               ),
@@ -198,7 +200,7 @@ class LocalsPhone extends StatelessWidget {
                                                     razh(100),
                                                     iconButton(
                                                         AppIcons.musicAlbums,
-                                                        Colors.white,
+                                                        Col.icon,
                                                         localsDataManager
                                                             .newTracks,
                                                         size: 60),
@@ -208,9 +210,8 @@ class LocalsPhone extends StatelessWidget {
                                                             .downloadtracksnow,
                                                         localsDataManager
                                                             .newTracks,
-                                                        const TextStyle(
-                                                            color:
-                                                                Colors.white))
+                                                        TextStyle(
+                                                            color: Col.text))
                                                   ],
                                                 )
                                               : LocalsBodyPhone(

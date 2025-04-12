@@ -56,7 +56,7 @@ class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
                     children: [
                       iconButton(
                         AppIcons.download,
-                        Colors.white,
+                        Col.icon,
                         () {
                           widget.download();
                         },
@@ -64,7 +64,7 @@ class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
                       ),
                       iconButton(
                         AppIcons.musicAlbums,
-                        Colors.white,
+                        Col.icon,
                         () {
                           widget.addToPlaylist();
                         },
@@ -72,7 +72,7 @@ class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
                       ),
                       iconButton(
                         AppIcons.heartSlash,
-                        Colors.white,
+                        Col.icon,
                         () {
                           widget.unfavourite();
                         },
@@ -80,7 +80,7 @@ class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
                       ),
                       iconButton(
                         AppIcons.cancel,
-                        Colors.white,
+                        Col.icon,
                         widget.stopEdit,
                         edgeInsets: EdgeInsets.zero,
                       ),
@@ -105,13 +105,13 @@ class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
                                   color: !showPlay || widget.loadingShuffle
-                                      ? Colors.white.withAlpha(125)
-                                      : Colors.white,
+                                      ? Col.icon.withAlpha(125)
+                                      : Col.icon,
                                 ),
                                 widget.play,
                                 !showPlay || widget.loadingShuffle
-                                    ? Colors.white.withAlpha(125)
-                                    : Colors.white,
+                                    ? Col.icon.withAlpha(125)
+                                    : Col.icon,
                                 padding: EdgeInsets.zero,
                               ),
                               iconTextButton(
@@ -121,17 +121,17 @@ class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
                                   color: widget.missingTracks.isNotEmpty
-                                      ? Colors.white.withAlpha(125)
+                                      ? Col.icon.withAlpha(125)
                                       : widget.loadingShuffle
-                                          ? Colors.white.withAlpha(125)
-                                          : Colors.white,
+                                          ? Col.icon.withAlpha(125)
+                                          : Col.icon,
                                 ),
                                 widget.shuffle,
                                 widget.missingTracks.isNotEmpty
-                                    ? Colors.white.withAlpha(125)
+                                    ? Col.icon.withAlpha(125)
                                     : widget.loadingShuffle
-                                        ? Colors.white.withAlpha(125)
-                                        : Colors.white,
+                                        ? Col.icon.withAlpha(125)
+                                        : Col.icon,
                                 padding: EdgeInsets.zero,
                               ),
                               widget.endWidget
@@ -146,15 +146,15 @@ class _PlayShuffleHaltFavouritesState extends State<PlayShuffleHaltFavourites> {
                               iconTextButton(
                                 AppIcons.halt,
                                 " Halt",
-                                const TextStyle(
+                                TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.white,
+                                  color: Col.icon,
                                 ),
                                 () async {
                                   await audioServiceHandler.halt();
                                 },
-                                Colors.white,
+                                Col.icon,
                                 padding: EdgeInsets.zero,
                               ),
                               widget.endWidget,

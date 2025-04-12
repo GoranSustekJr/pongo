@@ -25,21 +25,6 @@ class SearchDataManager with ChangeNotifier {
   // Scroll controller
   final ScrollController scrollController = ScrollController();
 
-  // Search result header text style
-  final TextStyle suggestionHeader = TextStyle(
-    fontSize: kIsDesktop
-        ? 24
-        : kIsApple
-            ? 17
-            : 19,
-    fontWeight: kIsDesktop
-        ? FontWeight.w800
-        : kIsApple
-            ? FontWeight.w600
-            : FontWeight.w700,
-    color: Colors.white,
-  );
-
   SearchDataManager(this.context);
 
   // Search Spotify Tracks

@@ -56,7 +56,7 @@ class LocalsTile extends StatelessWidget {
                   child: track.image ==
                           null //!track["track"].keys.contains("album")
                       ? Center(
-                          child: Icon(AppIcons.blankTrack, color: Colors.white),
+                          child: Icon(AppIcons.blankTrack, color: Col.icon),
                         )
                       : FadeInImage(
                           width: 250,
@@ -84,10 +84,10 @@ class LocalsTile extends StatelessWidget {
                     track.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16.5,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: Col.text,
                     ),
                   ),
                   razh(2.5),
@@ -98,7 +98,7 @@ class LocalsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w400,
-                      color: Colors.white.withAlpha(200),
+                      color: Col.text.withAlpha(200),
                     ),
                   ),
                 ],

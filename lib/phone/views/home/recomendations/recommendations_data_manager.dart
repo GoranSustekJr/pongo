@@ -31,13 +31,6 @@ class RecommendationsDataManager with ChangeNotifier {
   // New releases
   List<Album> newReleases = [];
 
-  // Suggestion header
-  final TextStyle suggestionHeader = TextStyle(
-    fontSize: kIsApple ? 24 : 25,
-    fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w700,
-    color: Colors.white,
-  );
-
   // Init the manager
   Future<void> init() async {
     failed = false;

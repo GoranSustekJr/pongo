@@ -31,6 +31,6 @@ class AppTheme {
     ),
     splashColor: Col.fadeIcon.withAlpha(0),
     highlightColor: Col.fadeIcon.withAlpha(0),
-    textSelectionTheme: const TextSelectionThemeData(cursorColor: Col.onIcon),
+    textSelectionTheme: TextSelectionThemeData(cursorColor: Col.onIcon),
   );
 }

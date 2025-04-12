@@ -58,7 +58,19 @@ class _SearchingMacosState extends State<SearchingMacos> {
                       playlists: searchDataManager.playlists,
                       loading: searchDataManager.loading,
                       scrollController: searchDataManager.scrollController,
-                      suggestionHeader: searchDataManager.suggestionHeader,
+                      suggestionHeader: TextStyle(
+                        fontSize: kIsDesktop
+                            ? 24
+                            : kIsApple
+                                ? 17
+                                : 19,
+                        fontWeight: kIsDesktop
+                            ? FontWeight.w800
+                            : kIsApple
+                                ? FontWeight.w600
+                                : FontWeight.w700,
+                        color: Col.text,
+                      ),
                       loadingAdd: (stid) {
                         setState(() {
                           if (!searchDataManager.loading.contains(stid)) {

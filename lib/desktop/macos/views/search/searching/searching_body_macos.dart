@@ -63,6 +63,7 @@ class SearchingBodyMacos extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return SearchResultTile(
                       key: ValueKey("artist.${artists[index].id}"),
+                      pushWhite: false,
                       data: artists[index],
                       type: TileType.artist,
                       onTap: () {
@@ -105,6 +106,7 @@ class SearchingBodyMacos extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return SearchResultTile(
                       key: ValueKey("album.${albums[index].id}"),
+                      pushWhite: false,
                       data: albums[index],
                       type: TileType.album,
                       onTap: () {
@@ -158,6 +160,7 @@ class SearchingBodyMacos extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 return SearchResultTile(
                                   key: ValueKey("track.${tracks[index].id}"),
+                                  pushWhite: false,
                                   data: tracks[index],
                                   type: TileType.track,
                                   trailing: Row(
@@ -300,6 +303,7 @@ class SearchingBodyMacos extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return SearchResultTile(
                       key: ValueKey("playlist.${playlists[index].id}"),
+                      pushWhite: false,
                       data: playlists[index],
                       type: TileType.playlist,
                       onTap: () {

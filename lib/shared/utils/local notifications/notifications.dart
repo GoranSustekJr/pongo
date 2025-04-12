@@ -32,38 +32,41 @@ class Notifications {
                     color: backgroundColor.withAlpha(100),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Icon(
-                          icon,
-                          size: 25,
-                          color: iconColor,
-                        ),
-                        razw(10),
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title,
-                                style: TextStyle(
-                                  color: Colors.white.withAlpha(150),
-                                  fontSize: 12,
-                                ),
-                                textAlign: TextAlign.left,
-                              ),
-                              Text(
-                                message,
-                                style: const TextStyle(),
-                                textAlign: TextAlign.left,
-                                maxLines: maxLines,
-                              ),
-                            ],
+                  child: Container(
+                    color: darkMode.value ? null : Colors.black.withAlpha(25),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            icon,
+                            size: 25,
+                            color: iconColor,
                           ),
-                        ),
-                      ],
+                          razw(10),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  title,
+                                  style: TextStyle(
+                                    color: Colors.white.withAlpha(150),
+                                    fontSize: 12,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Text(
+                                  message,
+                                  style: const TextStyle(),
+                                  textAlign: TextAlign.left,
+                                  maxLines: maxLines,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -159,52 +162,55 @@ class Notifications {
                     color: Col.primaryCard.withAlpha(100),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          height: 55,
-                          width: 55,
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: ImageCompatible(
-                                image: image,
-                                width: 55,
-                                height: 55,
-                              )),
-                        ),
-                        razw(10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 17.5,
-                                ),
-                                textAlign: TextAlign.left,
-                              ),
-                              Text(
-                                subtitle,
-                                style: TextStyle(
-                                    color: Colors.white.withAlpha(175),
-                                    fontSize: 15),
-                                textAlign: TextAlign.left,
-                                maxLines: 2,
-                              ),
-                            ],
+                  child: Container(
+                    color: darkMode.value ? null : Colors.black.withAlpha(25),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: 55,
+                            width: 55,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5),
+                                child: ImageCompatible(
+                                  image: image,
+                                  width: 55,
+                                  height: 55,
+                                )),
                           ),
-                        ),
-                        Image.asset(
-                          'assets/icons/shazam.png',
-                          width: 30,
-                          height: 30,
-                          color: Colors.white,
-                        ),
-                      ],
+                          razw(10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  title,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 17.5,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                                Text(
+                                  subtitle,
+                                  style: TextStyle(
+                                      color: Colors.white.withAlpha(175),
+                                      fontSize: 15),
+                                  textAlign: TextAlign.left,
+                                  maxLines: 2,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Image.asset(
+                            'assets/icons/shazam.png',
+                            width: 30,
+                            height: 30,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

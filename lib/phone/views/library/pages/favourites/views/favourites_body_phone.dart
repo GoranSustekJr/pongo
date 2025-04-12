@@ -65,6 +65,7 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
                 return FavouritesTile(
                   track: widget.favourites[index],
                   first: index == 0,
+                  forceWhite: false,
                   last: widget.favourites.length - 1 == index,
                   exists: !widget.missingTracks
                       .contains(widget.favourites[index].id),
@@ -107,7 +108,7 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
                                         .contains(widget.favourites[index].id)
                                     ? AppIcons.checkmark
                                     : AppIcons.uncheckmark,
-                                Colors.white,
+                                Col.icon,
                                 () {
                                   widget.select(widget.favourites[index].id);
                                 },

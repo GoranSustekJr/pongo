@@ -70,8 +70,8 @@ sleepAlarmTile(
                                           : AppLocalizations.of(context).off,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Col.text, fontSize: 20),
                                     ),
                                   ),
                                 ),
@@ -87,9 +87,9 @@ sleepAlarmTile(
                                 Text(
                                   AppLocalizations.of(context).sleepin,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 13,
-                                    color: Colors.white,
+                                    color: Col.text,
                                   ),
                                 ),
                               ],
@@ -107,8 +107,8 @@ sleepAlarmTile(
                                           : AppLocalizations.of(context).off,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 20),
+                                      style: TextStyle(
+                                          color: Col.text, fontSize: 20),
                                     ),
                                   ),
                                 ),
@@ -123,9 +123,9 @@ sleepAlarmTile(
                                 ),
                                 Text(AppLocalizations.of(context).alarm,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 13,
-                                      color: Colors.white,
+                                      color: Col.text,
                                     )),
                               ],
                             ),

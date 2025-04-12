@@ -20,8 +20,13 @@ class RecommendationsCategories extends StatelessWidget {
       children: [
         if (dataManager.categories.isNotEmpty ||
             dataManager.newReleases.isNotEmpty)
-          searchResultText(AppLocalizations.of(context).explore,
-              dataManager.suggestionHeader),
+          searchResultText(
+              AppLocalizations.of(context).explore,
+              TextStyle(
+                fontSize: kIsApple ? 24 : 25,
+                fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w700,
+                color: Col.text,
+              )),
         if (dataManager.categories.isNotEmpty ||
             dataManager.newReleases.isNotEmpty)
           razh(10),

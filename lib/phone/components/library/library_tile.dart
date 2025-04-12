@@ -48,7 +48,7 @@ libraryTile(
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: kIsApple ? 13 : 15,
-                  color: Colors.white,
+                  color: Col.text,
                 ),
               ),
               if (subtitle != null)
@@ -57,7 +57,7 @@ libraryTile(
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: kIsApple ? 9 : 11,
-                    color: Colors.white.withAlpha(150),
+                    color: Col.text.withAlpha(150),
                   ),
                 ),
             ],

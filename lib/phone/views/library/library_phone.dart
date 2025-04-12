@@ -18,6 +18,7 @@ class _LibraryPhoneState extends State<LibraryPhone> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -36,6 +37,7 @@ class _LibraryPhoneState extends State<LibraryPhone> {
                 style: TextStyle(
                   fontSize: kIsApple ? 30 : 40,
                   fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w800,
+                  color: Col.text,
                 ),
               ),
               stretchModes: const [

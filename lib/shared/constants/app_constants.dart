@@ -10,15 +10,24 @@ class AppConstants {
 
   static const String LYRICS_URL = "https://lrclib.net/api/get?";
 
-  String BLURHASH =
-      r'L03[fE,t|H$Q712s2swd{}{}OD{}'; //r'L03[fE,t|H$Q712s2swd{}{}OD{}';
+  String BLURHASH = darkMode.value
+      ? r'L03[fE,t|H$Q712s2swd{}{}OD{}'
+      : r'KAQwR.X8$$OYAD}rR+5mJ8'; //r'UAQwR.X8$$10OYAD}r}rR+5mJ8=wxu9^S21I'
+  //r'L03[fE,t|H$Q712s2swd{}{}OD{}';
 
-  BoxDecoration backgroundBoxDecoration = const BoxDecoration(
+  BoxDecoration backgroundBoxDecoration = BoxDecoration(
     // color: Colors.black,
     image: DecorationImage(
-      image: AssetImage(
-        'assets/images/pongo_background_10k.png',
-      ),
+      image: AssetImage(darkMode.value
+              ? 'assets/images/pongo_background_10k.png'
+              : 'assets/images/pongo_white_cyan_background_10k.png'
+          /*  mainContext.value != null
+            ? MediaQuery.of(mainContext.value!).platformBrightness ==
+                    Brightness.dark
+                ? 'assets/images/pongo_background_10k.png'
+                : 'assets/images/pongo_white_cyan_background_10k.png'
+            : 'assets/images/pongo_background_10k.png', */
+          ),
       fit: BoxFit.fill,
     ),
   );

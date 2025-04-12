@@ -13,20 +13,21 @@ class _SettingsMainPhoneState extends State<SettingsMainPhone> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: Stack(
-        children: [
-          Navigator(
-            key: widget.settingsHomeNavigatorKey,
-            onGenerateRoute: (routeSettings) {
-              return MaterialPageRoute(
-                  builder: (context) => const SettingsPhone());
-            },
-          )
-        ],
-      ),
-    ));
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              Navigator(
+                key: widget.settingsHomeNavigatorKey,
+                onGenerateRoute: (routeSettings) {
+                  return MaterialPageRoute(
+                      builder: (context) => const SettingsPhone());
+                },
+              )
+            ],
+          ),
+        ));
   }
 }

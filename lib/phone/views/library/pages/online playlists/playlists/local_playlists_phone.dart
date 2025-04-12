@@ -123,11 +123,11 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                             title: Text(
                               AppLocalizations.of(context).offlineplaylists,
                               style: TextStyle(
-                                fontSize: kIsApple ? 25 : 30,
-                                fontWeight: kIsApple
-                                    ? FontWeight.w700
-                                    : FontWeight.w800,
-                              ),
+                                  fontSize: kIsApple ? 25 : 30,
+                                  fontWeight: kIsApple
+                                      ? FontWeight.w700
+                                      : FontWeight.w800,
+                                  color: Col.text),
                               textAlign: TextAlign.center,
                               maxLines: 1,
                             ),

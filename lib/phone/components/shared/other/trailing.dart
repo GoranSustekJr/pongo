@@ -17,13 +17,13 @@ class Trailing extends StatelessWidget {
         ? AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
             child: showThis
-                ? const SizedBox(
+                ? SizedBox(
                     width: 20,
                     height: 40,
                     child: Center(
                       child: Icon(
                         CupertinoIcons.circle_filled,
-                        color: Colors.white,
+                        color: Col.icon,
                       ),
                     ))
                 : const SizedBox(),

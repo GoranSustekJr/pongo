@@ -21,9 +21,10 @@ class _SettingsPhoneState extends State<SettingsPhone> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SizedBox(
+      body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
+        decoration: AppConstants().backgroundBoxDecoration,
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -42,6 +43,7 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                   style: TextStyle(
                     fontSize: kIsApple ? 30 : 40,
                     fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w800,
+                    color: Col.text,
                   ),
                 ),
                 stretchModes: const [

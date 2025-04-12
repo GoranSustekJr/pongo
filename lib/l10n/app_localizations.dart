@@ -241,6 +241,60 @@ abstract class AppLocalizations {
   /// **'or'**
   String get or;
 
+  /// appmayneedtoberestartedinorderforchangestotakefullaffect
+  ///
+  /// In en, this message translates to:
+  /// **'App may need to be restarted in order for changes to take full affect'**
+  String get appmayneedtoberestartedinorderforchangestotakefullaffect;
+
+  /// mix
+  ///
+  /// In en, this message translates to:
+  /// **'Mix'**
+  String get mix;
+
+  /// usemixfeaturewhenplayingsearchedmusic
+  ///
+  /// In en, this message translates to:
+  /// **'Use mix feature when playing searched music'**
+  String get usemixfeaturewhenplayingsearchedmusic;
+
+  /// darkmode
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get darkmode;
+
+  /// lightmode
+  ///
+  /// In en, this message translates to:
+  /// **'Light mode'**
+  String get lightmode;
+
+  /// currentlyusingdarkmode
+  ///
+  /// In en, this message translates to:
+  /// **'Currently using dark mode'**
+  String get currentlyusingdarkmode;
+
+  /// currentlyusinglightmode
+  ///
+  /// In en, this message translates to:
+  /// **'Currently using light mode'**
+  String get currentlyusinglightmode;
+
+  /// detailedblurhash
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed blurahash'**
+  String get detailedblurhash;
+
+  /// usedetailedblurhash
+  ///
+  /// In en, this message translates to:
+  /// **'Use detailed blurahash'**
+  String get usedetailedblurhash;
+
   /// sleepalarmisenabled
   ///
   /// In en, this message translates to:

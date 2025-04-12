@@ -119,10 +119,10 @@ class _ProfilePhoneState extends State<ProfilePhone>
                             razh(AppBar().preferredSize.height / 2),
                             Text(
                               AppLocalizations.of(context).profile,
-                              style: const TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w500,
+                                  color: Col.text),
                             ),
                             razh(AppBar().preferredSize.height / 2),
                             CircleAvatar(
@@ -137,10 +137,10 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                         height: 160,
                                       ),
                                     )
-                                  : const Center(
+                                  : Center(
                                       child: Icon(
                                         AppIcons.profile,
-                                        color: Colors.white,
+                                        color: Col.icon,
                                         size: 60,
                                       ),
                                     ),
@@ -212,9 +212,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                 () {
                               SignInHandler().signOut(context);
                               Navigator.of(context).pop();
-                            },
-                                const TextStyle(
-                                    color: Colors.white, fontSize: 18)),
+                            }, TextStyle(color: Col.text, fontSize: 18)),
                           ],
                         ),
                       ),
