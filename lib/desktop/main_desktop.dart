@@ -2,6 +2,7 @@ import 'package:pongo/desktop/macos/views/auth/sign_in_macos.dart';
 import 'package:pongo/desktop/macos/views/full%20screen/full_screen_macos.dart';
 import 'package:pongo/desktop/macos/views/main/home_macos.dart';
 import 'package:pongo/exports.dart';
+import 'package:in_app_notification_desktop/in_app_notification.dart' as iand;
 
 class MyAppDesktop extends StatefulWidget {
   const MyAppDesktop({super.key});
@@ -112,45 +113,47 @@ class _MyAppDesktopState extends State<MyAppDesktop>
 
   @override
   Widget build(BuildContext context) {
-    return kIsMacOS
-        ? MacosApp(
-            themeMode: ThemeMode.dark,
-            color: Col.transp,
-            darkTheme: MacosThemeData.dark(accentColor: AccentColor.graphite),
-            debugShowCheckedModeBanner: false,
-            supportedLocales: L10n.all,
-            locale: locale,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            showSemanticsDebugger: false,
-            scrollBehavior: CustomScrollBehaviour(),
-            home: ValueListenableBuilder(
-                valueListenable: isUserSignedIn,
-                builder: (context, signedIn, child) {
-                  return AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 500),
-                    switchInCurve: Curves.easeInOut,
-                    child: signedIn
-                        ? ValueListenableBuilder(
-                            key: const ValueKey(false),
-                            valueListenable: fullscreenPlaying,
-                            builder: (context, _, __) {
-                              return fullscreenPlaying.value
-                                  ? const FullScreenMacos()
-                                  : const MainMacos(
-                                      key: ValueKey(false),
-                                    );
-                            })
-                        : const SignInMacos(
-                            key: ValueKey(true),
-                          ),
-                  );
-                }),
-          )
-        : const Placeholder();
+    return iand.InAppNotification(
+      child: kIsMacOS
+          ? MacosApp(
+              themeMode: ThemeMode.dark,
+              color: Col.transp,
+              darkTheme: MacosThemeData.dark(accentColor: AccentColor.graphite),
+              debugShowCheckedModeBanner: false,
+              supportedLocales: L10n.all,
+              locale: locale,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              showSemanticsDebugger: false,
+              scrollBehavior: CustomScrollBehaviour(),
+              home: ValueListenableBuilder(
+                  valueListenable: isUserSignedIn,
+                  builder: (context, signedIn, child) {
+                    return AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 500),
+                      switchInCurve: Curves.easeInOut,
+                      child: signedIn
+                          ? ValueListenableBuilder(
+                              key: const ValueKey(false),
+                              valueListenable: fullscreenPlaying,
+                              builder: (context, _, __) {
+                                return fullscreenPlaying.value
+                                    ? const FullScreenMacos()
+                                    : const MainMacos(
+                                        key: ValueKey(false),
+                                      );
+                              })
+                          : const SignInMacos(
+                              key: ValueKey(true),
+                            ),
+                    );
+                  }),
+            )
+          : const Placeholder(),
+    );
   }
 }

@@ -15,6 +15,8 @@ class Col {
       ? const Color.fromARGB(255, 28, 39, 85)
       : const Color.fromARGB(255, 255, 255, 255);
 
+  static const prim = Color.fromARGB(255, 28, 39, 85);
+
   static final searchBarBackground =
       CupertinoColors.tertiarySystemFill.darkColor; // Search bar background
   static const searchBarPlaceholder =

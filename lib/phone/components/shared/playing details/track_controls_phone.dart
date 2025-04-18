@@ -107,7 +107,7 @@ class TrackControlsPhone extends StatelessWidget {
                               playbackState: playbackState,
                               mix: currentMediaItem.extras!["mix"] ??
                                   false ||
-                                      RegExp(r'Mix #\d')
+                                      RegExp(r'Mix #\d{1,2}')
                                           .hasMatch(currentMediaItem.title),
                               showArtist: showArtist,
                             ),

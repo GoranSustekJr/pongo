@@ -432,7 +432,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
   }
 
   void moveTrack(oldIndex, newIndex) async {
-    if (oldIndex == newIndex || !edit) return;
+    if (oldIndex == newIndex) return;
     setState(() {
       final item = tracks.removeAt(oldIndex);
       tracks.insert(

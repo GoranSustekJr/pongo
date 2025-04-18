@@ -88,8 +88,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final numSearchAlbums = await Storage().getNumOfSearchAlbums();
     final numSearchTracks = await Storage().getNumOfSearchTracks();
     final numSearchPlaylists = await Storage().getNumOfSearchPlaylists();
-    final shwHistory = await Storage().getRecommendedForYou();
-    final shwExplore = await Storage().getRecommendedPongo();
+    final shwHistory = await Storage().getEnableHistory();
+    final shwExplore = await Storage().getEnableCategories();
     final lyricsTxtAlign = await Storage().getLyricsTextAlign();
     final useCacheAudioSource = await Storage().getUseCachingAudioSource();
     final enblLyrics = await Storage().getEnableLyrics();
@@ -331,7 +331,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   setState(() {
                                     showHistory = use;
                                   });
-                                  Storage().writeEnableHistory(use);
+                                  await Storage().writeEnableHistory(use);
                                   notifyChange();
                                 },
                               ),
@@ -348,7 +348,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   setState(() {
                                     showExplore = use;
                                   });
-                                  Storage().writeEnableCategories(use);
+                                  await Storage().writeEnableCategories(use);
                                   notifyChange();
                                 },
                               ),

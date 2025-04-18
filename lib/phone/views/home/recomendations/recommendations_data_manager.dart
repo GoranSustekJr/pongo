@@ -46,16 +46,18 @@ class RecommendationsDataManager with ChangeNotifier {
       final data = await Recommendations().get(context);
 
       if (data.isNotEmpty) {
-        // Set the categories
-        categories =
-            SpCategory.fromMapList(data["categories"]["categories"]["items"]);
-
         // Set the history
-        if (data["history"] != null) {
+        if (data["history"] != null && historyEnabled) {
           history = Track.fromMapList(data["history"]["tracks"]);
         }
 
-        if (data["new_releases"] != null) {
+        if (data["categories"] != null && categoriesEnabled) {
+          // Set the categories
+          categories =
+              SpCategory.fromMapList(data["categories"]["categories"]["items"]);
+        }
+
+        if (data["new_releases"] != null && categoriesEnabled) {
           newReleases =
               (data["new_releases"]["albums"]["items"] as List<dynamic>)
                   .map((album) {

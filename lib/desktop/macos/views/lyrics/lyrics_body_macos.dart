@@ -3,6 +3,7 @@ import 'package:pongo/desktop/macos/views/lyrics/lyrics_desktop.dart';
 import 'package:pongo/desktop/macos/views/lyrics/play_control_desktop.dart';
 import 'package:pongo/desktop/macos/views/lyrics/track_progress_desktop.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/shared/utils/API%20requests/shazam.dart' show Shazam;
 import 'package:pongo/shared/widgets/ui/image/image_desktop.dart';
 
 class LyricsBodyMacos extends StatelessWidget {
@@ -10,6 +11,7 @@ class LyricsBodyMacos extends StatelessWidget {
   final MediaItem mediaItem;
   final AudioServiceHandler audioServiceHandler;
   final String artistJson;
+  final bool mix;
   final Size size;
   const LyricsBodyMacos({
     super.key,
@@ -18,6 +20,7 @@ class LyricsBodyMacos extends StatelessWidget {
     required this.artistJson,
     required this.mediaItemManager,
     required this.size,
+    required this.mix,
   });
 
   @override
@@ -176,28 +179,63 @@ class LyricsBodyMacos extends StatelessWidget {
                               ],
                             ),
                             Positioned(
-                              left: 0,
+                              right: 0,
                               top: 0,
-                              child: Tooltip(
-                                message:
-                                    AppLocalizations.of(context).fullscreen,
-                                child: Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(60),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black.withAlpha(200),
-                                            spreadRadius: 3,
-                                            blurRadius: 10),
-                                      ]),
-                                  child: iconButton(
-                                      CupertinoIcons.fullscreen, Colors.white,
-                                      () {
-                                    fullscreenPlaying.value = true;
-                                  }, edgeInsets: EdgeInsets.zero),
-                                ),
+                              child: Row(
+                                children: [
+                                  Tooltip(
+                                      message: "Shazam",
+                                      child: Container(
+                                          width: mix ? 25 : 0,
+                                          height: mix ? 25 : 0,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(60),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.black
+                                                        .withAlpha(200),
+                                                    spreadRadius: 3,
+                                                    blurRadius: 10),
+                                              ]),
+                                          child: CupertinoButton(
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () async {
+                                              if (!shazaming) {
+                                                await Shazam().shazamIt(context,
+                                                    mediaItem.id.split('.')[2]);
+                                              }
+                                            },
+                                            child: Image.asset(
+                                              'assets/icons/shazam.png',
+                                              color: Colors.white,
+                                            ),
+                                          ))),
+                                  razw(10),
+                                  Tooltip(
+                                    message:
+                                        AppLocalizations.of(context).fullscreen,
+                                    child: Container(
+                                      width: 30,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(60),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color:
+                                                    Colors.black.withAlpha(200),
+                                                spreadRadius: 3,
+                                                blurRadius: 10),
+                                          ]),
+                                      child: iconButton(
+                                          CupertinoIcons.fullscreen,
+                                          Colors.white, () {
+                                        fullscreenPlaying.value = true;
+                                      }, edgeInsets: EdgeInsets.zero),
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                           ],

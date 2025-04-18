@@ -28,7 +28,7 @@ class Background extends StatelessWidget {
             Image.asset(
               darkMode.value
                   ? 'assets/images/pongo_background_10k.png'
-                  : 'assets/images/pongo_white_cyan_background_10k.png',
+                  : 'assets/images/pongo_white_red_background_10k.png',
               fit: BoxFit.fill,
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,

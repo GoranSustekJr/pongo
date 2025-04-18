@@ -21,7 +21,7 @@ appleMarketPopup(context, String market, Function(String) function) {
             child: Text(
               "${markets[index]} - ${marketsCountryNames[markets[index]]}",
               style: TextStyle(
-                  color: market == markets[index] ? Colors.blue : Colors.white,
+                  color: market == markets[index] ? Colors.blue : Col.text,
                   fontWeight: FontWeight.w400),
             ),
           ),

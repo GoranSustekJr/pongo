@@ -21,7 +21,7 @@ appleNumberPicker(context, int number, Function(int) function) {
             child: Text(
               index.toString(),
               style: TextStyle(
-                  color: number == index ? Colors.blue : Colors.white,
+                  color: number == index ? Colors.blue : Col.text,
                   fontWeight: FontWeight.w400),
             ),
           ),

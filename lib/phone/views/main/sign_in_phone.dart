@@ -11,10 +11,10 @@ class _SignInPhoneState extends State<SignInPhone> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
+      body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        // decoration: Constants().backgroundBoxDecoration,
+        decoration: AppConstants().backgroundBoxDecoration,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
@@ -25,9 +25,9 @@ class _SignInPhoneState extends State<SignInPhone> {
                 Text(
                   AppLocalizations.of(context).signin,
                   style: TextStyle(
-                    fontSize: kIsApple ? 30 : 40,
-                    fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w800,
-                  ),
+                      fontSize: kIsApple ? 30 : 40,
+                      fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w800,
+                      color: Col.text),
                 )
               ],
             ),
@@ -37,9 +37,9 @@ class _SignInPhoneState extends State<SignInPhone> {
                 Text(
                   AppLocalizations.of(context).klemen,
                   style: TextStyle(
-                    fontSize: kIsApple ? 17 : 18,
-                    fontWeight: kIsApple ? FontWeight.w400 : FontWeight.w500,
-                  ),
+                      fontSize: kIsApple ? 17 : 18,
+                      fontWeight: kIsApple ? FontWeight.w400 : FontWeight.w500,
+                      color: Col.text),
                 ),
               ],
             ),
@@ -50,21 +50,21 @@ class _SignInPhoneState extends State<SignInPhone> {
                 "${AppLocalizations.of(context).signinwith} Google", "Google"),
             Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Divider(
                     indent: 10,
                     endIndent: 5,
                     thickness: 1.5,
-                    //  color: Col.fadeIcon,
+                    color: Col.text,
                   ),
                 ),
                 Text(
                   AppLocalizations.of(context).or,
-                  //      style: TextStyle(color: Col.fadeIcon),
+                  style: TextStyle(color: Col.text),
                 ),
-                const Expanded(
+                Expanded(
                   child: Divider(
-                    // color: Col.fadeIcon,
+                    color: Col.text,
                     indent: 5,
                     endIndent: 10,
                     thickness: 1.5,
@@ -85,6 +85,7 @@ class _SignInPhoneState extends State<SignInPhone> {
               child: Text(
                 AppLocalizations.of(context).bysigninginyou,
                 textAlign: TextAlign.left,
+                style: TextStyle(color: Col.text),
               ),
             ),
           ],

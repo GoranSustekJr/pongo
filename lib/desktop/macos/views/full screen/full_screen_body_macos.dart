@@ -3,6 +3,7 @@ import 'package:pongo/desktop/macos/views/lyrics/lyrics_desktop.dart';
 import 'package:pongo/desktop/macos/views/lyrics/play_control_desktop.dart';
 import 'package:pongo/desktop/macos/views/lyrics/track_progress_desktop.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/shared/utils/API%20requests/shazam.dart';
 import 'package:pongo/shared/widgets/ui/image/image_desktop.dart';
 
 class FullScreenBodyMacos extends StatelessWidget {
@@ -10,6 +11,7 @@ class FullScreenBodyMacos extends StatelessWidget {
   final MediaItemManager mediaItemManager;
   final MediaItem mediaItem;
   final AudioServiceHandler audioServiceHandler;
+  final bool mix;
   final String artistJson;
   final Size size;
   final Function() changeShowLyrics;
@@ -22,6 +24,7 @@ class FullScreenBodyMacos extends StatelessWidget {
     required this.size,
     required this.changeShowLyrics,
     required this.showLyrics,
+    required this.mix,
   });
 
   @override
@@ -31,7 +34,7 @@ class FullScreenBodyMacos extends StatelessWidget {
       children: [
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 400),
-          child: showLyrics
+          child: showLyrics && mediaItemManager.syncedLyrics != ""
               ? LyricsDesktop(
                   plainLyrics: mediaItemManager.plainLyrics.split('\n'),
                   syncedLyrics: [
@@ -58,7 +61,7 @@ class FullScreenBodyMacos extends StatelessWidget {
               children: [
                 razw(20),
                 TrackImageDesktop(
-                    lyricsOn: showLyrics,
+                    lyricsOn: showLyrics && mediaItemManager.syncedLyrics != "",
                     image: mediaItem.artUri.toString(),
                     stid: currentStid.value,
                     fullscreenPlay: true,
@@ -66,7 +69,7 @@ class FullScreenBodyMacos extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: SizedBox(
-                    width: showLyrics
+                    width: showLyrics && mediaItemManager.syncedLyrics != ""
                         ? size.width * 1 / 4 - 20 - 150
                         : size.height * 0.8 > 685
                             ? size.width - ((size.height * 0.8 - 60) - 190) - 40
@@ -86,9 +89,14 @@ class FullScreenBodyMacos extends StatelessWidget {
                           duration: const Duration(milliseconds: 400),
                           curve: Curves.fastEaseInToSlowEaseOut,
                           style: TextStyle(
-                            fontSize: showLyrics ? 20 : 40,
-                            fontWeight:
-                                showLyrics ? FontWeight.w600 : FontWeight.w900,
+                            fontSize: showLyrics &&
+                                    mediaItemManager.syncedLyrics != ""
+                                ? 20
+                                : 40,
+                            fontWeight: showLyrics &&
+                                    mediaItemManager.syncedLyrics != ""
+                                ? FontWeight.w600
+                                : FontWeight.w900,
                             color: Colors.white.withAlpha(220),
                           ),
                           child: Text(
@@ -101,9 +109,14 @@ class FullScreenBodyMacos extends StatelessWidget {
                           duration: const Duration(milliseconds: 400),
                           curve: Curves.fastEaseInToSlowEaseOut,
                           style: TextStyle(
-                            fontSize: showLyrics ? 12.5 : 20,
-                            fontWeight:
-                                showLyrics ? FontWeight.w400 : FontWeight.w500,
+                            fontSize: showLyrics &&
+                                    mediaItemManager.syncedLyrics != ""
+                                ? 12.5
+                                : 20,
+                            fontWeight: showLyrics &&
+                                    mediaItemManager.syncedLyrics != ""
+                                ? FontWeight.w400
+                                : FontWeight.w500,
                             color: Colors.white.withAlpha(150),
                           ),
                           child: Text(
@@ -153,7 +166,8 @@ class FullScreenBodyMacos extends StatelessWidget {
                                         : AppIcons.lyrics,
                                     size: 20,
                                     color: mediaItem.id.split('.')[2] ==
-                                            currentStid.value
+                                                currentStid.value &&
+                                            mediaItemManager.syncedLyrics != ""
                                         ? Colors.white
                                         : Colors.white.withAlpha(150),
                                   );
@@ -162,7 +176,33 @@ class FullScreenBodyMacos extends StatelessWidget {
                     ),
                   ),
                 ),
-                razw(150),
+                Tooltip(
+                    message: "Shazam",
+                    child: Container(
+                        width: mix ? 27.5 : 0,
+                        height: mix ? 22.5 : 0,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(60),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withAlpha(200),
+                                  spreadRadius: 3,
+                                  blurRadius: 10),
+                            ]),
+                        child: CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () async {
+                            if (!shazaming) {
+                              await Shazam().shazamIt(
+                                  context, mediaItem.id.split('.')[2]);
+                            }
+                          },
+                          child: Image.asset(
+                            'assets/icons/shazam.png',
+                            color: Colors.white,
+                          ),
+                        ))),
+                razw(127.5),
                 Expanded(
                   child: Container(),
                 ),

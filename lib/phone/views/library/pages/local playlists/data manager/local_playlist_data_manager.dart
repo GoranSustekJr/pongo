@@ -350,7 +350,7 @@ class LocalPlaylistDataManager with ChangeNotifier {
 
   // Reorder tracks
   void moveTrack(oldIndex, newIndex) {
-    if (oldIndex == newIndex || !edit) return;
+    if (oldIndex == newIndex) return;
     final item = tracks.removeAt(oldIndex);
     tracks.insert(
       oldIndex < newIndex ? newIndex - 1 : newIndex,

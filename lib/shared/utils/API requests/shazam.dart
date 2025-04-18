@@ -51,7 +51,7 @@ class Shazam {
         }
       }
     } catch (e) {
-      //print(e);
+      print(e);
       Notifications().showErrorNotification(
           notificationsContext.value!,
           AppLocalizations.of(notificationsContext.value!).error,

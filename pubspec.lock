@@ -837,6 +837,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
+  in_app_notification_desktop:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: "78d22990878241a790a105f1f1d4f65e773f3f91"
+      url: "https://github.com/GoranSustekJr/flutter_in_app_notification.git"
+    source: git
+    version: "1.1.2"
   in_app_purchase:
     dependency: "direct main"
     description:

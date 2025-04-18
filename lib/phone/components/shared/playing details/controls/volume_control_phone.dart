@@ -31,9 +31,9 @@ class VolumeControlPhone extends StatelessWidget {
           return InteractiveSlider(
             initialProgress: volume,
             focusedHeight: 15,
-            iconColor: Col.icon,
-            foregroundColor: Col.icon,
-            backgroundColor: Col.icon.withAlpha(30),
+            iconColor: Colors.white,
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.white.withAlpha(30),
             startIcon: AnimatedSwitcher(
               duration: const Duration(milliseconds: 150),
               transitionBuilder: (Widget child, Animation<double> animation) {

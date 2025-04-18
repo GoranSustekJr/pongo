@@ -27,7 +27,7 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'pongify.db');
     return await openDatabase(
       path,
-      version: 37,
+      version: 39,
       onCreate: onCreate,
       onUpgrade: onUpgrade,
     );
@@ -135,6 +135,11 @@ class DatabaseHelper {
   }
 
   Future<void> onUpgrade(Database db, int oldVersion, int newVersion) async {
+    await db.execute("""
+  DELETE FROM lfh_tracks
+WHERE LENGTH(stid) < 21;
+
+""");
     //print("JEEEEEEEE; $oldVersion");
     /*   await db.execute('''
       ALTER TABLE opid_track_id ADD COLUMN hidden BOOLEAN DEFAULT FALSE;

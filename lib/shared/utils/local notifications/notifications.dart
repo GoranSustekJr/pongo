@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:pongo/exports.dart';
+import 'package:in_app_notification_desktop/in_app_notification.dart' as iand;
 
 class Notifications {
   // Common method for showing a notification
@@ -32,41 +33,38 @@ class Notifications {
                     color: backgroundColor.withAlpha(100),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
-                  child: Container(
-                    color: darkMode.value ? null : Colors.black.withAlpha(25),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          Icon(
-                            icon,
-                            size: 25,
-                            color: iconColor,
-                          ),
-                          razw(10),
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  title,
-                                  style: TextStyle(
-                                    color: Colors.white.withAlpha(150),
-                                    fontSize: 12,
-                                  ),
-                                  textAlign: TextAlign.left,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Icon(
+                          icon,
+                          size: 25,
+                          color: iconColor,
+                        ),
+                        razw(10),
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                title,
+                                style: TextStyle(
+                                  color: Colors.white.withAlpha(150),
+                                  fontSize: 12,
                                 ),
-                                Text(
-                                  message,
-                                  style: const TextStyle(),
-                                  textAlign: TextAlign.left,
-                                  maxLines: maxLines,
-                                ),
-                              ],
-                            ),
+                                textAlign: TextAlign.left,
+                              ),
+                              Text(
+                                message,
+                                style: const TextStyle(),
+                                textAlign: TextAlign.left,
+                                maxLines: maxLines,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -85,7 +83,7 @@ class Notifications {
       title: AppLocalizations.of(context).warning,
       message: message,
       icon: AppIcons.warning,
-      backgroundColor: Col.primaryCard,
+      backgroundColor: Col.prim,
       durationInSeconds: 10,
     );
   }
@@ -99,7 +97,7 @@ class Notifications {
       title: title,
       message: message,
       icon: icon,
-      backgroundColor: Col.primaryCard,
+      backgroundColor: Col.prim,
       durationInSeconds: 10,
       iconColor: iconColor,
       onTap: onTap,
@@ -159,36 +157,123 @@ class Notifications {
                 filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Col.primaryCard.withAlpha(100),
+                    color: Col.prim.withAlpha(100),
                     borderRadius: BorderRadius.circular(16.0),
                   ),
-                  child: Container(
-                    color: darkMode.value ? null : Colors.black.withAlpha(25),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: 55,
+                          width: 55,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: ImageCompatible(
+                                image: image,
+                                width: 55,
+                                height: 55,
+                              )),
+                        ),
+                        razw(10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                title,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17.5,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              Text(
+                                subtitle,
+                                style: TextStyle(
+                                    color: Colors.white.withAlpha(175),
+                                    fontSize: 15),
+                                textAlign: TextAlign.left,
+                                maxLines: 2,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Image.asset(
+                          'assets/icons/shazam.png',
+                          width: 30,
+                          height: 30,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      iand.InAppNotification.show(
+        context: context,
+        duration: const Duration(seconds: 10),
+        onTap: () {
+          if (!fullscreenPlaying.value) {
+            if (searchDataManagr.value != null) {
+              currentTrackHeight.value = 0; // Close the details screen if up
+              navigationBarIndex.value = 0; // Send to search screen
+              // Search the name and song
+              searchDataManagr.value!.search(
+                "$title - $subtitle",
+              );
+              searchBarIsSearching.value = true; // Focus
+            }
+          }
+        },
+        width: 500,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 4, 10, 0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Col.prim.withAlpha(100),
+                    borderRadius: BorderRadius.circular(32.0),
+                  ),
+                  child: SizedBox(
+                    width: 500,
+                    height: 150,
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(32.0),
                       child: Row(
                         children: [
                           SizedBox(
-                            height: 55,
-                            width: 55,
+                            height: 95,
+                            width: 95,
                             child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
+                                borderRadius: BorderRadius.circular(12),
                                 child: ImageCompatible(
                                   image: image,
-                                  width: 55,
-                                  height: 55,
+                                  width: 95,
+                                  height: 95,
                                 )),
                           ),
                           razw(10),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   title,
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 17.5,
+                                    fontSize: 19.5,
                                   ),
                                   textAlign: TextAlign.left,
                                 ),
@@ -196,7 +281,7 @@ class Notifications {
                                   subtitle,
                                   style: TextStyle(
                                       color: Colors.white.withAlpha(175),
-                                      fontSize: 15),
+                                      fontSize: 17),
                                   textAlign: TextAlign.left,
                                   maxLines: 2,
                                 ),

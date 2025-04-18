@@ -83,9 +83,9 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                   initialProgress: progressNotifier.value,
                   controller: progressController,
                   focusedHeight: 11.5,
-                  iconColor: Col.icon,
-                  foregroundColor: Col.icon,
-                  backgroundColor: Col.icon.withAlpha(30),
+                  iconColor: Colors.white,
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.white.withAlpha(30),
                   enabled: premium.value,
                   onProgressUpdated: (position) async {
                     updateProgress(position);

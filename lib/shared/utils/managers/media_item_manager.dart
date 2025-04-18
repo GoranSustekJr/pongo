@@ -56,7 +56,8 @@ class MediaItemManager with ChangeNotifier {
       // print(e);
     }
     // Add to track history
-    if (mediaItem.id.split(".")[1] != "mix") {
+    if (mediaItem.id.split(".")[1] != "mix" &&
+        mediaItem.id.split(".")[2].length > 21) {
       await DatabaseHelper().insertLFHTracks(mediaItem.id.split(".")[2]);
     }
 

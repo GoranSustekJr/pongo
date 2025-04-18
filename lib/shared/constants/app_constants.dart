@@ -12,7 +12,7 @@ class AppConstants {
 
   String BLURHASH = darkMode.value
       ? r'L03[fE,t|H$Q712s2swd{}{}OD{}'
-      : r'KAQwR.X8$$OYAD}rR+5mJ8'; //r'UAQwR.X8$$10OYAD}r}rR+5mJ8=wxu9^S21I'
+      : r'K8S$M-%~MJrr*J*JR5MJHr'; //r'UAQwR.X8$$10OYAD}r}rR+5mJ8=wxu9^S21I'
   //r'L03[fE,t|H$Q712s2swd{}{}OD{}';
 
   BoxDecoration backgroundBoxDecoration = BoxDecoration(
@@ -20,7 +20,7 @@ class AppConstants {
     image: DecorationImage(
       image: AssetImage(darkMode.value
               ? 'assets/images/pongo_background_10k.png'
-              : 'assets/images/pongo_white_cyan_background_10k.png'
+              : 'assets/images/pongo_white_red_background_10k.png'
           /*  mainContext.value != null
             ? MediaQuery.of(mainContext.value!).platformBrightness ==
                     Brightness.dark

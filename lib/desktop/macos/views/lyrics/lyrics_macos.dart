@@ -55,6 +55,19 @@ class _LyricsMacosState extends State<LyricsMacos> {
                                                 ? LyricsBodyMacos(
                                                     key: const ValueKey(true),
                                                     size: size,
+                                                    mix: mediaItemManager
+                                                                .currentMediaItem !=
+                                                            null
+                                                        ? mediaItemManager
+                                                                    .currentMediaItem!
+                                                                    .extras![
+                                                                "mix"] ??
+                                                            false ||
+                                                                RegExp(r'Mix #\d{1,2}').hasMatch(
+                                                                    mediaItemManager
+                                                                        .currentMediaItem!
+                                                                        .title)
+                                                        : false,
                                                     mediaItem: mediaItemManager
                                                         .currentMediaItem!,
                                                     audioServiceHandler:
