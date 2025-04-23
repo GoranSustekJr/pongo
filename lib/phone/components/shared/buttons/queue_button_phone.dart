@@ -84,33 +84,67 @@ class QueueButtonPhone extends StatelessWidget {
                     child: ValueListenableBuilder(
                         valueListenable: queueAllowShuffle,
                         builder: (context, _, __) {
-                          return CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () async {
-                              if (queueAllowShuffle.value) {
-                                if (audioServiceHandler
-                                    .audioPlayer.shuffleModeEnabled) {
-                                  await audioServiceHandler.setShuffleMode(
-                                      AudioServiceShuffleMode.none);
-                                } else {
-                                  await audioServiceHandler.setShuffleMode(
-                                      AudioServiceShuffleMode.all);
-                                }
-                              }
-                            },
-                            child: StreamBuilder(
-                                stream: audioServiceHandler
-                                    .audioPlayer.shuffleModeEnabledStream,
-                                builder: (context, snapshot) {
-                                  bool enabled = snapshot.data ?? false;
-                                  return Icon(
-                                    AppIcons.shuffle,
-                                    color: enabled
-                                        ? Colors.white
-                                        : Colors.white.withAlpha(150),
-                                  );
-                                }),
-                          );
+                          return kIsApple
+                              ? CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () async {
+                                    if (queueAllowShuffle.value) {
+                                      if (audioServiceHandler
+                                          .audioPlayer.shuffleModeEnabled) {
+                                        await audioServiceHandler
+                                            .setShuffleMode(
+                                                AudioServiceShuffleMode.none);
+                                      } else {
+                                        await audioServiceHandler
+                                            .setShuffleMode(
+                                                AudioServiceShuffleMode.all);
+                                      }
+                                    }
+                                  },
+                                  child: StreamBuilder(
+                                      stream: audioServiceHandler
+                                          .audioPlayer.shuffleModeEnabledStream,
+                                      builder: (context, snapshot) {
+                                        bool enabled = snapshot.data ?? false;
+                                        return Icon(
+                                          AppIcons.shuffle,
+                                          color: enabled
+                                              ? Colors.white
+                                              : Colors.white.withAlpha(150),
+                                        );
+                                      }),
+                                )
+                              : IconButton(
+                                  style: IconButton.styleFrom(
+                                      splashFactory: InkRipple.splashFactory,
+                                      overlayColor: Col.text.withAlpha(50)),
+                                  onPressed: () async {
+                                    if (queueAllowShuffle.value) {
+                                      if (audioServiceHandler
+                                          .audioPlayer.shuffleModeEnabled) {
+                                        await audioServiceHandler
+                                            .setShuffleMode(
+                                                AudioServiceShuffleMode.none);
+                                      } else {
+                                        await audioServiceHandler
+                                            .setShuffleMode(
+                                                AudioServiceShuffleMode.all);
+                                      }
+                                    }
+                                  },
+                                  icon: StreamBuilder(
+                                      stream: audioServiceHandler
+                                          .audioPlayer.shuffleModeEnabledStream,
+                                      builder: (context, snapshot) {
+                                        bool enabled = snapshot.data ?? false;
+                                        return Icon(
+                                          AppIcons.shuffle,
+                                          color: enabled
+                                              ? Colors.white
+                                              : Colors.white.withAlpha(150),
+                                        );
+                                      }),
+                                );
                         }),
                   ),
                 ),
@@ -126,15 +160,11 @@ class QueueButtonPhone extends StatelessWidget {
                               40, 40, 40, 0.8) // Add transparency here
                           : Col.transp,
                     ),
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: changeShowQueue,
-                      child: Icon(
-                        showQueue
-                            ? AppIcons.musicQueueFill
-                            : AppIcons.musicQueue,
-                        color: Colors.white,
-                      ),
+                    child: iconButton(
+                      showQueue ? AppIcons.musicQueueFill : AppIcons.musicQueue,
+                      Colors.white,
+                      changeShowQueue,
+                      edgeInsets: EdgeInsets.zero,
                     ),
                   ),
                 ),
@@ -191,13 +221,11 @@ class QueueButtonPhone extends StatelessWidget {
                               saveAsPlaylist,
                               download,
                             ),
-                      buttonBuilder: (context, showMenu) => CupertinoButton(
-                        onPressed: showMenu,
-                        padding: EdgeInsets.zero,
-                        child: const Icon(
-                          CupertinoIcons.ellipsis,
-                          color: Colors.white,
-                        ),
+                      buttonBuilder: (context, showMenu) => iconButton(
+                        CupertinoIcons.ellipsis,
+                        Colors.white,
+                        showMenu,
+                        edgeInsets: EdgeInsets.zero,
                       ),
                     ),
                   ),

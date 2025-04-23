@@ -80,6 +80,7 @@ class RecommendationsForYouPhone extends StatelessWidget {
                                           .audioPlayer.playingStream,
                                       builder: (context, playingStream) {
                                         return Trailing(
+                                          forceWhite: false,
                                           show: !pTrackLoading
                                               .contains(euTracks[index].id),
                                           showThis: id == euTracks[index].id,
@@ -145,6 +146,7 @@ class RecommendationsForYouPhone extends StatelessWidget {
                                           .audioPlayer.playingStream,
                                       builder: (context, playingStream) {
                                         return Trailing(
+                                          forceWhite: false,
                                           show: !pTrackLoading.contains(
                                               euTracks[25 + index].id),
                                           showThis:

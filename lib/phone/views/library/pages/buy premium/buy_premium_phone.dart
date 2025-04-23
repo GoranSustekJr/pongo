@@ -61,7 +61,7 @@ class _BuyPremiumPhoneState extends State<BuyPremiumPhone>
                   () {
                 Notifications()
                     .showDisabledNotification(notificationsContext.value!);
-              }, const TextStyle(color: Colors.white)),
+              }, TextStyle(color: Col.text)),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -69,12 +69,17 @@ class _BuyPremiumPhoneState extends State<BuyPremiumPhone>
                 AppLocalizations.of(context)
                     .pleaseleavethepageafterasuccessfullpurchase,
                 textAlign: TextAlign.center,
+                style: TextStyle(color: Col.text),
               ),
             ),
             Expanded(child: Container()),
-            textButton(AppLocalizations.of(context).cancel, () {
-              Navigator.of(context).pop();
-            }, const TextStyle(color: Colors.white)),
+            textButton(
+              AppLocalizations.of(context).cancel,
+              () {
+                Navigator.of(context).pop();
+              },
+              TextStyle(color: Col.text),
+            ),
             razh(kBottomNavigationBarHeight)
           ],
         ),

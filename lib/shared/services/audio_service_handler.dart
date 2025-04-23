@@ -156,7 +156,7 @@ class AudioServiceHandler extends BaseAudioHandler
             // Keep a reference to the ad so you can show it later.
             interstitialAd = ad;
 
-            if (interstitialAd != null) {
+            if (interstitialAd != null && !premium.value) {
               await interstitialAd!.show();
             }
           },
@@ -230,7 +230,7 @@ class AudioServiceHandler extends BaseAudioHandler
             }
           } else {
             // Adjust the volume depending on the settings
-            if (sleepAlarm.sleepLinear) {
+            if (linearSleepin) {
               currentVolume =
                   (currentVolume - 0.01).clamp(0.0, 1.0); // Linear decrease
             } else {
@@ -301,7 +301,7 @@ class AudioServiceHandler extends BaseAudioHandler
                     mutePlay = false;
                   }
 
-                  if (sleepAlarm.alarmClockLinear) {
+                  if (linearWakeup) {
                     currentVolume = (currentVolume + 0.01).clamp(0.0, 1.0);
                   } else {
                     if (currentVolume > 0.67) {
@@ -372,7 +372,7 @@ class AudioServiceHandler extends BaseAudioHandler
                   // Keep a reference to the ad so you can show it later.
                   interstitialAd = ad;
 
-                  if (interstitialAd != null) {
+                  if (interstitialAd != null && !premium.value) {
                     await interstitialAd!.show();
                   }
                 },
@@ -511,9 +511,7 @@ class AudioServiceHandler extends BaseAudioHandler
       playlist.sequence.clear();
       playlist.shuffleIndices.clear();
       queue.value.clear();
-      if (audioPlayer.sequence != null) {
-        audioPlayer.sequence!.clear();
-      }
+      audioPlayer.sequence!.clear();
 
       volumeTimer.cancel();
 

@@ -180,7 +180,8 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                           children: List.generate(60, (index) {
                             return Center(
                                 child: Text('${index + 1}',
-                                    style: const TextStyle(fontSize: 20)));
+                                    style: const TextStyle(
+                                        fontSize: 20, color: Colors.white)));
                           }),
                         ),
                       ),
@@ -250,8 +251,9 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                                 children: List.generate(24, (index) {
                                   return Center(
                                       child: Text('$index h',
-                                          style:
-                                              const TextStyle(fontSize: 20)));
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.white)));
                                 }),
                               ),
                             ),
@@ -270,8 +272,9 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                                 children: List.generate(60, (index) {
                                   return Center(
                                       child: Text('$index min',
-                                          style:
-                                              const TextStyle(fontSize: 20)));
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.white)));
                                 }),
                               ),
                             ),
@@ -297,7 +300,8 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                           children: List.generate(60, (index) {
                             return Center(
                                 child: Text('${index + 1}',
-                                    style: const TextStyle(fontSize: 20)));
+                                    style: const TextStyle(
+                                        fontSize: 20, color: Colors.white)));
                           }),
                         ),
                       ),

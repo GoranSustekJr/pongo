@@ -63,6 +63,10 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   // Dark mode
   bool drkMode = true;
 
+  // Sleep alarm
+  bool linearSleepIn = true;
+  bool linearWakeUp = true;
+
   @override
   void initState() {
     super.initState();
@@ -98,6 +102,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final usDetailedBlurhash = await Storage().getUseDetailedBlurhash();
     final usMix = await Storage().getUseMix();
     final darkMod = await Storage().getDarkMode();
+    final linearSlpin = await Storage().getLinearSleepin();
+    final linearWkup = await Storage().getLinearWakeup();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -117,6 +123,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       useDetailedBlurhsh = usDetailedBlurhash;
       useMx = usMix;
       drkMode = darkMod;
+      linearSleepIn = linearSlpin;
+      linearWakeUp = linearWkup;
     });
   }
 
@@ -369,7 +377,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   });
                                   await Storage().writeEnableLyrics(enable);
                                   enableLyrics.value = enable;
-                                  notifyChange();
+                                  //notifyChange();
                                 },
                               ),
                               settingsTileSwitcher(
@@ -386,7 +394,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   });
                                   Storage().writeSyncDelay(use);
                                   useSyncTimeDelay.value = use;
-                                  notifyChange();
+                                  //notifyChange();
                                 },
                               ),
                               settingsTileSwitcher(
@@ -479,7 +487,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                       currentLyricsTextAlignment.value =
                                           TextAlign.justify;
                                     }
-                                    notifyChange();
+                                    //notifyChange();
                                   });
                                 },
                               ),
@@ -524,7 +532,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                               ),
                               settingsTile(
                                 context,
-                                true,
+                                false,
                                 true,
                                 AppIcons.audioPlayer,
                                 AppIcons.trash,
@@ -635,6 +643,45 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                   detailedBlurhash.value = use;
                                   await Storage().writeUseDetailedBlurhash(use);
                                   notifyChange();
+                                },
+                              ),
+                              razh(20),
+                              settingsText(AppLocalizations.of(context).sleep),
+                              settingsTileSwitcher(
+                                context,
+                                true,
+                                false,
+                                AppIcons.sleep,
+                                linearSleepIn, // AppIcons.edit,
+                                AppLocalizations.of(context).linearsleepin,
+                                AppLocalizations.of(context)
+                                    .linearlydecreasevolumewhenusingsleepin,
+                                (use) async {
+                                  setState(() {
+                                    linearSleepIn = use;
+                                  });
+
+                                  linearSleepin = use;
+                                  await Storage().writeLinearSleepin(use);
+                                  // notifyChange();
+                                },
+                              ),
+                              settingsTileSwitcher(
+                                context,
+                                false,
+                                true, Icons.alarm,
+                                linearWakeUp, // AppIcons.edit,
+                                AppLocalizations.of(context).linearalarm,
+                                AppLocalizations.of(context)
+                                    .linearlyincreasevolumewhenusingalarm,
+                                (use) async {
+                                  setState(() {
+                                    linearWakeUp = use;
+                                  });
+
+                                  linearWakeup = use;
+                                  await Storage().writeLinearWakeup(use);
+                                  // notifyChange();
                                 },
                               ),
                               razh(50),

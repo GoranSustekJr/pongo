@@ -81,6 +81,7 @@ class RecommendedPongoPhone extends StatelessWidget {
                                           .audioPlayer.playingStream,
                                       builder: (context, playingStream) {
                                         return Trailing(
+                                          forceWhite: false,
                                           show: !pTrackLoading
                                               .contains(pTracks[index].id),
                                           showThis: id == pTracks[index].id,
@@ -146,6 +147,7 @@ class RecommendedPongoPhone extends StatelessWidget {
                                           .audioPlayer.playingStream,
                                       builder: (context, playingStream) {
                                         return Trailing(
+                                          forceWhite: false,
                                           show: !pTrackLoading
                                               .contains(pTracks[25 + index].id),
                                           showThis:

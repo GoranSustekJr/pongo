@@ -156,6 +156,7 @@ class SearchBodyPhone extends StatelessWidget {
                                                 builder:
                                                     (context, playingStream) {
                                                   return Trailing(
+                                                    forceWhite: false,
                                                     show: !loading.contains(
                                                         tracks[index].id),
                                                     showThis:
@@ -198,7 +199,8 @@ class SearchBodyPhone extends StatelessWidget {
                                     offset: const Offset(30, 30),
                                     position: PullDownMenuPosition.automatic,
                                     itemBuilder: (context) =>
-                                        searchTrackPulldownMenuItems(
+                                        searchTrackPulldownMenuItemsApple(
+                                      //TODO: Android
                                       context,
                                       tracks[index],
                                       "search.single.",

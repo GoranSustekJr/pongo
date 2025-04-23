@@ -81,6 +81,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get or => 'oder';
 
   @override
+  String get linearsleepin => 'Lineares Einschlafen';
+
+  @override
+  String get linearlydecreasevolumewhenusingsleepin => 'Lautstärke beim Einschlafen linear verringern';
+
+  @override
+  String get linearalarm => 'Linearer Wecker';
+
+  @override
+  String get linearlyincreasevolumewhenusingalarm => 'Lautstärke beim Wecker linear erhöhen';
+
+  @override
   String get appmayneedtoberestartedinorderforchangestotakefullaffect => 'Die App muss möglicherweise neu gestartet werden, damit die Änderungen vollständig wirksam werden.';
 
   @override

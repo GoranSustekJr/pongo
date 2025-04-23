@@ -4,12 +4,15 @@ import 'package:flutter/cupertino.dart';
 class Trailing extends StatelessWidget {
   final bool show;
   final bool showThis;
+  final bool forceWhite;
   final Widget trailing;
+
   const Trailing(
       {super.key,
       required this.show,
       required this.showThis,
-      required this.trailing});
+      required this.trailing,
+      required this.forceWhite});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,7 @@ class Trailing extends StatelessWidget {
                     child: Center(
                       child: Icon(
                         CupertinoIcons.circle_filled,
-                        color: Col.icon,
+                        color: forceWhite ? Colors.white : Col.icon,
                       ),
                     ))
                 : const SizedBox(),

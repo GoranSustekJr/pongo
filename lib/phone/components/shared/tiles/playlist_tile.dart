@@ -45,7 +45,7 @@ class PlaylistTile extends StatelessWidget {
         ),
       ],
       child: Container(
-        height: kIsApple ? 65 : 80,
+        height: 65,
         width: MediaQuery.of(context).size.width - 20,
         decoration: BoxDecoration(
           borderRadius: borderRadius,
@@ -74,8 +74,8 @@ class PlaylistTile extends StatelessWidget {
                           padding: const EdgeInsets.only(
                               left: 10, top: 2, bottom: 2),
                           child: Container(
-                            width: kIsApple ? 45 : 55,
-                            height: kIsApple ? 45 : 55,
+                            width: 45,
+                            height: 45,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 color: Col.realBackground),
@@ -84,7 +84,7 @@ class PlaylistTile extends StatelessWidget {
                                     child: Icon(
                                       Icons.queue_music_rounded,
                                       color: Col.onIcon,
-                                      size: kIsApple ? 25 : 30,
+                                      size: 25,
                                     ),
                                   )
                                 : ClipRRect(
@@ -114,7 +114,7 @@ class PlaylistTile extends StatelessWidget {
                             Text(title,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  fontSize: kIsApple ? 16 : 18,
+                                  fontSize: 16,
                                   color: Col.text,
                                 )),
                             if (subtitle != null)
@@ -122,7 +122,7 @@ class PlaylistTile extends StatelessWidget {
                                 subtitle!,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  fontSize: kIsApple ? 10 : 12.5,
+                                  fontSize: 10.5,
                                   color: Col.text,
                                 ),
                               ),
@@ -131,14 +131,14 @@ class PlaylistTile extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Container(
-                            height: kIsApple ? 30 : 40,
+                            height: 30,
                             width: 1,
                             color: Col.onIcon,
                           ),
                         ),
                         SizedBox(
                             width: 28,
-                            height: kIsApple ? 49 : 58,
+                            height: 49,
                             child: Icon(
                               CupertinoIcons.chevron_right,
                               color: Col.onIcon,
@@ -168,13 +168,14 @@ class PlaylistTile extends StatelessWidget {
                 onPressed: () {
                   function();
                 })
-            : InkWell(
-                onTap: () {
-                  function();
-                },
-                splashColor: Colors.white.withAlpha(100),
-                borderRadius: borderRadius,
-                child: child,
+            : ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: inkWell(
+                  child,
+                  () {
+                    function();
+                  },
+                ),
               ),
       ),
     );

@@ -7,7 +7,7 @@ class SliverAppBarPhone extends StatelessWidget {
   final List<Track> tracks;
   final String image;
   final double scrollControllerOffset;
-  const SliverAppBarPhone({
+  SliverAppBarPhone({
     super.key,
     required this.name,
     required this.tracks,
@@ -15,8 +15,80 @@ class SliverAppBarPhone extends StatelessWidget {
     required this.image,
   });
 
+  final GlobalKey globalKey = GlobalKey();
+
+  final TextStyle textStyle = TextStyle(
+      overflow: TextOverflow.ellipsis,
+      color: Col.text,
+      fontSize: 18,
+      fontWeight: FontWeight.w400);
+
   @override
   Widget build(BuildContext context) {
+    void download() async {
+      // Get the tracks that need to be downloaded
+      List<String> toDownload = await DatabaseHelper()
+          .queryMissingStids(tracks.map((track) => track.id).toList());
+
+      OpenPlaylist().show(
+        context,
+        PlaylistHandler(
+          type: PlaylistHandlerType.offline,
+          toDownload: toDownload,
+          function: PlaylistHandlerFunction.createPlaylist,
+          track: tracks
+              .map((track) => PlaylistHandlerOnlineTrack(
+                    id: track.id,
+                    name: track.name,
+                    artist: track.artists
+                        .map((artist) => {"id": artist.id, "name": artist.name})
+                        .toList(),
+                    cover: calculateBestImageForTrack(
+                      track.album != null
+                          ? track.album!.images
+                          : track.album!.images,
+                    ),
+                    albumTrack: track.album,
+                    playlistHandlerCoverType: PlaylistHandlerCoverType.url,
+                  ))
+              .toList(),
+        ),
+      );
+      if (!kIsApple) {
+        StarMenuOverlay.dispose();
+      }
+    }
+
+    void addToPlaylist() {
+      OpenPlaylist().show(
+        context,
+        PlaylistHandler(
+          type: PlaylistHandlerType.online,
+          function: PlaylistHandlerFunction.createPlaylist,
+          track: tracks
+              .map((track) => PlaylistHandlerOnlineTrack(
+                    id: track.id,
+                    name: track.name,
+                    artist: track.artists
+                        .map((artist) => {"id": artist.id, "name": artist.name})
+                        .toList(),
+                    cover: calculateWantedResolutionForTrack(
+                        track.album != null
+                            ? track.album!.images
+                            : track.album!.images,
+                        150,
+                        150),
+                    albumTrack: track.album,
+                    playlistHandlerCoverType: PlaylistHandlerCoverType.url,
+                  ))
+              .toList(),
+        ),
+      );
+      if (!kIsApple) {
+        StarMenuOverlay.dispose();
+      }
+    }
+
     return SliverAppBar(
       snap: false,
       collapsedHeight: kToolbarHeight,
@@ -44,87 +116,24 @@ class SliverAppBarPhone extends StatelessWidget {
               ),
             ),
           ),
-          backLikeButton(
-            context,
-            AppIcons.playlist,
-            () {
-              if (kIsIOS) {
+          Container(
+            key: globalKey,
+            child: backLikeButton(
+              context,
+              AppIcons.playlist,
+              () {
+                // IOS
+                // if (kIsIOS) {
                 showPullDownMenu(
                     context: context,
                     items: [
                       PullDownMenuItem(
                           icon: AppIcons.addToQueue,
-                          onTap: () {
-                            OpenPlaylist().show(
-                              context,
-                              PlaylistHandler(
-                                type: PlaylistHandlerType.online,
-                                function:
-                                    PlaylistHandlerFunction.createPlaylist,
-                                track: tracks
-                                    .map((track) => PlaylistHandlerOnlineTrack(
-                                          id: track.id,
-                                          name: track.name,
-                                          artist: track.artists
-                                              .map((artist) => {
-                                                    "id": artist.id,
-                                                    "name": artist.name
-                                                  })
-                                              .toList(),
-                                          cover:
-                                              calculateWantedResolutionForTrack(
-                                                  track.album != null
-                                                      ? track.album!.images
-                                                      : track.album!.images,
-                                                  150,
-                                                  150),
-                                          albumTrack: track.album,
-                                          playlistHandlerCoverType:
-                                              PlaylistHandlerCoverType.url,
-                                        ))
-                                    .toList(),
-                              ),
-                            );
-                          },
+                          onTap: addToPlaylist,
                           title: AppLocalizations.of(context).addtoplaylist),
                       PullDownMenuItem(
                           icon: AppIcons.download,
-                          onTap: () async {
-                            // Get the tracks that need to be downloaded
-                            List<String> toDownload = await DatabaseHelper()
-                                .queryMissingStids(
-                                    tracks.map((track) => track.id).toList());
-
-                            OpenPlaylist().show(
-                              context,
-                              PlaylistHandler(
-                                type: PlaylistHandlerType.offline,
-                                toDownload: toDownload,
-                                function:
-                                    PlaylistHandlerFunction.createPlaylist,
-                                track: tracks
-                                    .map((track) => PlaylistHandlerOnlineTrack(
-                                          id: track.id,
-                                          name: track.name,
-                                          artist: track.artists
-                                              .map((artist) => {
-                                                    "id": artist.id,
-                                                    "name": artist.name
-                                                  })
-                                              .toList(),
-                                          cover: calculateBestImageForTrack(
-                                            track.album != null
-                                                ? track.album!.images
-                                                : track.album!.images,
-                                          ),
-                                          albumTrack: track.album,
-                                          playlistHandlerCoverType:
-                                              PlaylistHandlerCoverType.url,
-                                        ))
-                                    .toList(),
-                              ),
-                            );
-                          },
+                          onTap: download,
                           title: AppLocalizations.of(context).download),
                     ],
                     position: RelativeRect.fromLTRB(
@@ -136,8 +145,94 @@ class SliverAppBarPhone extends StatelessWidget {
                         20,
                         0),
                     topWidget: const SizedBox());
-              }
-            },
+                /* } else {
+                  // Android
+                  StarMenuOverlay.displayStarMenu(
+                    globalKey.currentContext!,
+                    StarMenu(
+                      params: StarMenuParameters(
+                          shape: MenuShape.linear,
+                          useTouchAsCenter: true,
+                          boundaryBackground: BoundaryBackground(
+                            blurSigmaX: 5,
+                            blurSigmaY: 5,
+                            padding: EdgeInsets.zero,
+                            color: Col.realBackground.withAlpha(200),
+                          ),
+                          linearShapeParams: const LinearShapeParams(
+                              alignment: LinearAlignment.center)),
+                      onItemTapped: (index, controller) {
+                        controller.closeMenu;
+                      },
+                      items: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              bottom: Radius.circular(7.5)),
+                          child: inkWell(
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 7.5),
+                              height: 40,
+                              width: 200,
+                              decoration: const BoxDecoration(),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(context).download,
+                                      style: textStyle,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                  Icon(
+                                    AppIcons.download,
+                                    color: Col.text,
+                                    size: 18,
+                                  )
+                                ],
+                              ),
+                            ),
+                            download,
+                          ),
+                        ),
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              bottom: Radius.circular(7.5)),
+                          child: inkWell(
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 7.5),
+                              height: 40,
+                              width: 200,
+                              decoration: const BoxDecoration(),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      AppLocalizations.of(context)
+                                          .addtoplaylist,
+                                      style: textStyle,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                  Icon(
+                                    AppIcons.addToQueue,
+                                    color: Col.text,
+                                    size: 18,
+                                  )
+                                ],
+                              ),
+                            ),
+                            addToPlaylist,
+                          ),
+                        ),
+                      ],
+                      parentContext: globalKey.currentContext,
+                    ),
+                  );
+                } */
+              },
+            ),
           ),
         ],
       ),

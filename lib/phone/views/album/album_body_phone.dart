@@ -96,6 +96,7 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
                                       : "";
 
                                   return Trailing(
+                                    forceWhite: true,
                                     show: !widget.loading
                                         .contains(widget.tracks[index].id),
                                     showThis: id ==

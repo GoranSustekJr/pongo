@@ -23,6 +23,26 @@ class _PlayControlPhoneState extends State<PlayControlPhone> {
     if (widget.playbackState.data != null) {
       playing = widget.playbackState.data!.playing;
     }
+
+    Widget child = AnimatedSwitcher(
+      duration: const Duration(milliseconds: 150),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: animation,
+            child: child,
+          ),
+        );
+      },
+      child: Icon(
+        (playing) ? CupertinoIcons.pause_fill : CupertinoIcons.play_fill,
+        key: ValueKey<bool>(playing),
+        size: 55,
+        color: Colors.white,
+      ),
+    );
+
     return SizedBox(
       height: 55,
       child: Row(
@@ -38,35 +58,15 @@ class _PlayControlPhoneState extends State<PlayControlPhone> {
           SizedBox(
             height: 60,
             child: CupertinoButton(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              onPressed: () async {
-                if (playing) {
-                  audioServiceHandler.pause();
-                } else {
-                  audioServiceHandler.play();
-                }
-              },
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 150),
-                transitionBuilder: (Widget child, Animation<double> animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: ScaleTransition(
-                      scale: animation,
-                      child: child,
-                    ),
-                  );
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                onPressed: () async {
+                  if (playing) {
+                    audioServiceHandler.pause();
+                  } else {
+                    audioServiceHandler.play();
+                  }
                 },
-                child: Icon(
-                  (playing)
-                      ? CupertinoIcons.pause_fill
-                      : CupertinoIcons.play_fill,
-                  key: ValueKey<bool>(playing),
-                  size: 55,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+                child: child),
           ),
           iconButtonForward(
             CupertinoIcons.forward_fill,

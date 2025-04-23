@@ -7,8 +7,12 @@ Widget inkWell(
   return Material(
     color: Col.transp,
     child: InkWell(
-      highlightColor: Colors.white.withAlpha(50),
-      splashColor: Colors.white.withAlpha(75),
+      highlightColor: darkMode.value
+          ? Colors.white.withAlpha(50)
+          : Colors.black.withAlpha(25),
+      splashColor: darkMode.value
+          ? Colors.white.withAlpha(75)
+          : Colors.black.withAlpha(50),
       onTap: function,
       child: child,
     ),

@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.2.1'  // <-- Update AGP here
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -6,7 +16,6 @@ allprojects {
             // [required] background_fetch
             url "${project(':background_fetch').projectDir}/libs"
         }
-
     }
 }
 

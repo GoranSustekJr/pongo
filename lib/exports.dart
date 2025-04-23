@@ -46,6 +46,7 @@ export 'package:pongo/phone/components/search/Pull%20down%20menu%20items/search_
 export 'package:pongo/shared/widgets/ui/image/image_compatible.dart';
 export 'package:pongo/phone/views/home/recomendations/recommendations_phone.dart';
 export 'package:pongo/shared/models/favourite.dart';
+export 'package:star_menu/star_menu.dart';
 export 'package:pongo/desktop/macos/views/library/favourites/favourites_macos.dart';
 export 'package:pongo/desktop/macos/views/library/locals/locals_macos.dart';
 export 'package:pongo/desktop/macos/views/library/offline%20playlists/offline_playlists_macos.dart';

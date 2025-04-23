@@ -37,7 +37,7 @@ class FavouritesTile extends StatelessWidget {
         if (!first)
           Container(
             height: 1,
-            width: MediaQuery.of(context).size.width - 75,
+            width: MediaQuery.of(context).size.width,
             color: Col.onIcon.withAlpha(50),
           ),
         Expanded(
@@ -47,7 +47,7 @@ class FavouritesTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 0),
+              padding: const EdgeInsets.only(top: 0, left: 15),
               child: Container(
                 width: 50,
                 height: 50,
@@ -125,7 +125,7 @@ class FavouritesTile extends StatelessWidget {
           child: kIsApple
               ? Container(
                   height: 65,
-                  width: MediaQuery.of(context).size.width - 20,
+                  width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     borderRadius: borderRadius,
                     color: Col.transp,
@@ -138,21 +138,20 @@ class FavouritesTile extends StatelessWidget {
                     child: child,
                   ),
                 )
-              : InkWell(
-                  onTap: () {
-                    function();
-                  },
-                  splashColor: Colors.white.withAlpha(100),
+              : ClipRRect(
                   borderRadius: borderRadius,
-                  child: Container(
-                    height: 60,
-                    width: MediaQuery.of(context).size.width - 20,
-                    decoration: BoxDecoration(
-                      borderRadius: borderRadius,
-                      color: Col.primaryCard.withAlpha(200),
-                    ),
-                    child: child,
-                  ),
+                  child: inkWell(
+                      Container(
+                        height: 65,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: borderRadius,
+                          color: Col.transp,
+                        ),
+                        child: child,
+                      ), () {
+                    function();
+                  }),
                 ),
         ),
       ),

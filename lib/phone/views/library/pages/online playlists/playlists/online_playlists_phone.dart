@@ -222,14 +222,13 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
                           : Column(
                               children: [
                                 razh(100),
-                                iconButton(
-                                    AppIcons.add, Colors.white, newPlaylist,
+                                iconButton(AppIcons.add, Col.icon, newPlaylist,
                                     size: 60),
                                 textButton(
                                     AppLocalizations.of(context)
                                         .createnewplaylistnow,
                                     newPlaylist,
-                                    const TextStyle(color: Colors.white),
+                                    TextStyle(color: Col.text),
                                     edgeInsets: EdgeInsets.zero)
                               ],
                             ),

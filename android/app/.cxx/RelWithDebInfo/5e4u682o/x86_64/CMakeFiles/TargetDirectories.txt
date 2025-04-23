@@ -1,0 +1,2 @@
+/Users/goransustek/Documents/goransha/projects/pongo/android/app/.cxx/RelWithDebInfo/5e4u682o/x86_64/CMakeFiles/edit_cache.dir
+/Users/goransustek/Documents/goransha/projects/pongo/android/app/.cxx/RelWithDebInfo/5e4u682o/x86_64/CMakeFiles/rebuild_cache.dir

@@ -113,7 +113,9 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
                           widget.showCreatePlaylist
                               ? AppIcons.x
                               : AppIcons.addToQueue,
-                          Colors.white,
+                          widget.onlyCreatePlaylist
+                              ? Colors.transparent
+                              : Colors.white,
                           widget.changeCreatePlaylist,
                           edgeInsets: EdgeInsets.zero,
                         ),
@@ -134,7 +136,7 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
                             playlistHandler.value = null;
                           }
                         },
-                        const TextStyle(color: Colors.white),
+                        const TextStyle(color: Colors.white, fontSize: 20),
                         edgeInsets: EdgeInsets.zero,
                       ),
                       Padding(

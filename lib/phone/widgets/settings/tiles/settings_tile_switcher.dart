@@ -14,7 +14,6 @@ settingsTileSwitcher(
   String? subtitle,
   Function(bool) function,
 ) {
-  bool dark = darkMode.value;
   double radius = 15;
   BorderRadius borderRadius = BorderRadius.only(
     topLeft: first ? Radius.circular(radius) : Radius.zero,
@@ -74,9 +73,9 @@ settingsTileSwitcher(
                   : Switch(
                       value: boolean,
                       activeColor: Col.onIcon,
-                      inactiveTrackColor: Col.realBackground,
+                      inactiveTrackColor: Col.icon.withAlpha(75),
                       thumbColor: MaterialStateProperty.resolveWith<Color?>(
-                          (states) => dark ? Colors.white : Colors.blueGrey),
+                          (states) => Colors.white),
                       trackOutlineColor:
                           MaterialStateProperty.resolveWith<Color?>(
                               (states) => Col.realBackground),

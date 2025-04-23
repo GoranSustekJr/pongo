@@ -5,6 +5,7 @@ class LocalsTile extends StatelessWidget {
   final Track track;
   final bool first;
   final bool last;
+  final bool forceWhite;
   final Function() function;
   final Widget? trailing;
   const LocalsTile({
@@ -14,6 +15,7 @@ class LocalsTile extends StatelessWidget {
     required this.last,
     required this.function,
     this.trailing,
+    required this.forceWhite,
   });
 
   @override
@@ -43,7 +45,7 @@ class LocalsTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 0),
+              padding: const EdgeInsets.only(top: 0, left: 15),
               child: Container(
                 width: 50,
                 height: 50,
@@ -87,7 +89,7 @@ class LocalsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.5,
                       fontWeight: FontWeight.w600,
-                      color: Col.text,
+                      color: forceWhite ? Colors.white : Col.text,
                     ),
                   ),
                   razh(2.5),
@@ -98,7 +100,8 @@ class LocalsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w400,
-                      color: Col.text.withAlpha(200),
+                      color:
+                          forceWhite ? Colors.white : Col.text.withAlpha(200),
                     ),
                   ),
                 ],
@@ -137,20 +140,21 @@ class LocalsTile extends StatelessWidget {
                     child: child,
                   ),
                 )
-              : InkWell(
-                  onTap: () {
-                    function();
-                  },
-                  splashColor: Colors.white.withAlpha(100),
+              : ClipRRect(
                   borderRadius: borderRadius,
-                  child: Container(
-                    height: 60,
-                    width: MediaQuery.of(context).size.width - 20,
-                    decoration: BoxDecoration(
-                      borderRadius: borderRadius,
-                      color: Col.primaryCard.withAlpha(200),
+                  child: inkWell(
+                    Container(
+                      height: 60,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        borderRadius: borderRadius,
+                        color: Col.transp,
+                      ),
+                      child: child,
                     ),
-                    child: child,
+                    () {
+                      function();
+                    },
                   ),
                 ),
         ),

@@ -133,7 +133,8 @@ class SearchResultTile extends StatelessWidget {
           : Material(
               color: Col.transp,
               child: InkWell(
-                splashColor: Colors.white.withAlpha(50),
+                splashColor: Col.text.withAlpha(50),
+                highlightColor: Col.text.withAlpha(25),
                 onTap: onTap,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15, right: 5),

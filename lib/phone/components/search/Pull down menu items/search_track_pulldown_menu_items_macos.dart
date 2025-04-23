@@ -15,7 +15,7 @@ List<MacosPulldownMenuEntry> searchTrackPulldownMenuItemsMacos(
           height: 70,
           child: Row(
             children: [
-              Icon(AppIcons.download, color: Colors.white),
+              const Icon(AppIcons.download, color: Colors.white),
               razw(10),
               Expanded(
                 child: Text(

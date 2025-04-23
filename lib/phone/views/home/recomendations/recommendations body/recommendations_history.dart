@@ -74,6 +74,7 @@ class RecommendationsHistory extends StatelessWidget {
                                           .audioPlayer.playingStream,
                                       builder: (context, playingStream) {
                                         return Trailing(
+                                          forceWhite: false,
                                           show: !dataManager.loading.contains(
                                               dataManager.history[index].id),
                                           showThis: id ==
@@ -149,6 +150,7 @@ class RecommendationsHistory extends StatelessWidget {
                                           .audioPlayer.playingStream,
                                       builder: (context, playingStream) {
                                         return Trailing(
+                                          forceWhite: false,
                                           show: !dataManager.loading.contains(
                                               dataManager
                                                   .history[25 + index].id),

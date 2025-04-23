@@ -43,6 +43,8 @@ class Storage {
   static String useDetailedBlurhashKey = " USEDETAILEDBLURHASHKEY";
   static String sleepAlarmDeviceVolumeKey = "SLEEPALARMDEVICEVOLUMEKEY";
   static String darkModeKey = "DARKMODEKEY";
+  static String linearSleepinKey = "LINEARSLEEPINKEY";
+  static String linearWakeupKey = "LINEARWAKEUPKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -606,6 +608,34 @@ class Storage {
 
   Future<bool> getDarkMode() async {
     String? key = await storage.read(key: darkModeKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Linear sleep-in on
+  Future<void> writeLinearSleepin(bool linearSleepin) async {
+    await storage.write(key: linearSleepinKey, value: linearSleepin.toString());
+  }
+
+  Future<bool> getLinearSleepin() async {
+    String? key = await storage.read(key: linearSleepinKey);
+    if (key == null) {
+      return true;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Linear wake-up
+  Future<void> writeLinearWakeup(bool linearWakeup) async {
+    await storage.write(key: linearWakeupKey, value: linearWakeup.toString());
+  }
+
+  Future<bool> getLinearWakeup() async {
+    String? key = await storage.read(key: linearWakeupKey);
     if (key == null) {
       return true;
     } else {

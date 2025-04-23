@@ -81,6 +81,18 @@ class AppLocalizationsHr extends AppLocalizations {
   String get or => 'ili';
 
   @override
+  String get linearsleepin => 'Linearno uspavljivanje';
+
+  @override
+  String get linearlydecreasevolumewhenusingsleepin => 'Postupno smanji glasnoću prilikom uspavljivanja';
+
+  @override
+  String get linearalarm => 'Linearni alarm';
+
+  @override
+  String get linearlyincreasevolumewhenusingalarm => 'Postupno povećaj glasnoću prilikom alarma';
+
+  @override
   String get appmayneedtoberestartedinorderforchangestotakefullaffect => 'Aplikacija će možda trebati biti ponovno pokrenuta kako bi promjene potpuno stupile na snagu.';
 
   @override

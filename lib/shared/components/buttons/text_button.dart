@@ -43,6 +43,9 @@ textButtonNoPadding(String txt, Function() function, TextStyle style) {
         )
       : TextButton(
           onPressed: function,
+          style: TextButton.styleFrom(
+              splashFactory: InkRipple.splashFactory,
+              overlayColor: Col.text.withAlpha(50)),
           child: Text(
             txt,
             style: style,

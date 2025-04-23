@@ -81,6 +81,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get or => 'or';
 
   @override
+  String get linearsleepin => 'Linear sleepin';
+
+  @override
+  String get linearlydecreasevolumewhenusingsleepin => 'Linearly decrease volume when using sleepin';
+
+  @override
+  String get linearalarm => 'Linear alarm';
+
+  @override
+  String get linearlyincreasevolumewhenusingalarm => 'Linearly increase volume when using alarm';
+
+  @override
   String get appmayneedtoberestartedinorderforchangestotakefullaffect => 'App may need to be restarted in order for changes to take full affect';
 
   @override

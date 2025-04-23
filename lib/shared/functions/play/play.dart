@@ -179,6 +179,7 @@ class PlayMultiple {
               tracks[i].album != null ? tracks[i].album!.releaseDate : "",
         },
       );
+
       mediaItems.add(mediaItem);
     }
 

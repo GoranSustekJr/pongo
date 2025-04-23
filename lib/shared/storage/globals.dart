@@ -124,5 +124,8 @@ ValueNotifier<bool> fullscreenPlaying = ValueNotifier(false);
 // Dark mode
 ValueNotifier<bool> darkMode = ValueNotifier(true);
 
-// Macos
-ValueNotifier<Map?> desktopNotification = ValueNotifier(null);
+// linear sleep-in
+bool linearSleepin = true;
+
+// linear wake-up
+bool linearWakeup = true;

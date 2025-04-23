@@ -73,12 +73,13 @@ class _SearchBarAndroidPhoneState extends State<SearchBarAndroidPhone> {
                   widget.onFieldSubmitted(qry); // Callback
                   widget.focusNode.unfocus();
                 },
+                style: TextStyle(color: Col.text),
                 decoration: InputDecoration(
                   enabledBorder: border,
                   border: border,
                   hintText: AppLocalizations.of(context).search,
                   hintStyle: TextStyle(
-                    color: Col.onIcon, // Hint text color
+                    color: Col.text, // Hint text color
                   ),
                   filled: true,
                   fillColor: Col.primaryCard.withAlpha(150),
@@ -115,9 +116,10 @@ class _SearchBarAndroidPhoneState extends State<SearchBarAndroidPhone> {
                             padding: const EdgeInsets.only(right: 15),
                             child: Text(
                               AppLocalizations.of(context).cancel,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
+                                color: Col.text.withAlpha(200),
                               ),
                             ),
                           ),

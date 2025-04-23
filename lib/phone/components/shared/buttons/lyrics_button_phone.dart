@@ -58,13 +58,11 @@ class LyricsButtonPhone extends StatelessWidget {
                             : Col.realBackground
                                 .withAlpha(AppConstants().noBlur),
                   ),
-                  child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: changeLyricsOn,
-                    child: Icon(
-                      lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
-                      color: Colors.white,
-                    ),
+                  child: iconButton(
+                    lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
+                    Colors.white,
+                    changeLyricsOn,
+                    edgeInsets: EdgeInsets.zero,
                   ),
                 ),
               ),
@@ -185,15 +183,13 @@ class LyricsButtonPhone extends StatelessWidget {
                             : Col.realBackground
                                 .withAlpha(AppConstants().noBlur),
                   ),
-                  child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: changeUseSynced,
-                    child: Icon(
-                      useSynced
-                          ? CupertinoIcons.hourglass_tophalf_fill
-                          : CupertinoIcons.hourglass_bottomhalf_fill,
-                      color: Colors.white,
-                    ),
+                  child: iconButton(
+                    useSynced
+                        ? CupertinoIcons.hourglass_tophalf_fill
+                        : CupertinoIcons.hourglass_bottomhalf_fill,
+                    Colors.white,
+                    changeUseSynced,
+                    edgeInsets: EdgeInsets.zero,
                   ),
                 ),
               ),

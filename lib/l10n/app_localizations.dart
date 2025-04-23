@@ -241,6 +241,30 @@ abstract class AppLocalizations {
   /// **'or'**
   String get or;
 
+  /// linearsleepin
+  ///
+  /// In en, this message translates to:
+  /// **'Linear sleepin'**
+  String get linearsleepin;
+
+  /// linearlydecreasevolumewhenusingsleepin
+  ///
+  /// In en, this message translates to:
+  /// **'Linearly decrease volume when using sleepin'**
+  String get linearlydecreasevolumewhenusingsleepin;
+
+  /// linearalarm
+  ///
+  /// In en, this message translates to:
+  /// **'Linear alarm'**
+  String get linearalarm;
+
+  /// linearlyincreasevolumewhenusingalarm
+  ///
+  /// In en, this message translates to:
+  /// **'Linearly increase volume when using alarm'**
+  String get linearlyincreasevolumewhenusingalarm;
+
   /// appmayneedtoberestartedinorderforchangestotakefullaffect
   ///
   /// In en, this message translates to:

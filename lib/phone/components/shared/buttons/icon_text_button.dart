@@ -23,18 +23,23 @@ iconTextButton(IconData icon, String text, TextStyle style, Function() function,
           ),
         )
       : IconButton(
-          icon: Row(
-            children: [
-              Icon(
-                icon,
-                color: color,
-                size: 27.5,
-              ),
-              Text(
-                text,
-                style: style,
-              )
-            ],
+          style: IconButton.styleFrom(
+              splashFactory: InkRipple.splashFactory,
+              overlayColor: Col.text.withAlpha(50)),
+          icon: Center(
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  color: color,
+                  size: 27.5,
+                ),
+                Text(
+                  text,
+                  style: style,
+                )
+              ],
+            ),
           ),
           onPressed: function,
         );

@@ -22,19 +22,16 @@ class AppIcons {
 
   static const libraryFill = CupertinoIcons.music_albums_fill;
 
-  static final musicQueue =
-      kIsApple ? CupertinoIcons.collections : Icons.queue_music_rounded;
+  static const musicQueue = CupertinoIcons.collections;
 
-  static final musicQueueFill =
-      kIsApple ? CupertinoIcons.collections_solid : Icons.queue_music_rounded;
+  static const musicQueueFill = CupertinoIcons.collections_solid;
 
   static const info = CupertinoIcons.info_circle;
   static const addToQueue = CupertinoIcons.plus_square_on_square;
 
   static const warning = CupertinoIcons.exclamationmark_triangle;
 
-  static final download =
-      kIsApple ? CupertinoIcons.cloud_download : Icons.cloud_download_rounded;
+  static const download = CupertinoIcons.cloud_download;
 
   static const musicAlbums = CupertinoIcons.music_albums;
 

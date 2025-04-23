@@ -16,6 +16,11 @@ Widget iconButton(IconData icon, Color color, Function() function,
     return SizedBox(
         width: 50,
         height: 50,
-        child: IconButton(onPressed: function, icon: Icon(icon, color: color)));
+        child: IconButton(
+            style: IconButton.styleFrom(
+                splashFactory: InkRipple.splashFactory,
+                overlayColor: Col.text.withAlpha(50)),
+            onPressed: function,
+            icon: Icon(icon, color: color)));
   }
 }

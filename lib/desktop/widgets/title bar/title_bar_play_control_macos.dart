@@ -86,7 +86,7 @@ class TitleBarPlayControlMacos extends StatelessWidget {
                 height: 70,
                 child: Row(
                   children: [
-                    MacosIcon(
+                    const MacosIcon(
                       AppIcons.download,
                       color: Colors.white,
                     ),

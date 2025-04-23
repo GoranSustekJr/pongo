@@ -74,6 +74,12 @@ class RecommendedTile extends StatelessWidget {
         break;
     }
 
+    // Start menu --> android popup
+    StarMenuController starMenuController = StarMenuController();
+
+    // Star menu global key
+    GlobalKey globalKey = GlobalKey();
+
     Widget child = Column(
       crossAxisAlignment: type == TileType.artist
           ? CrossAxisAlignment.center
@@ -150,34 +156,34 @@ class RecommendedTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7.5),
       child: SizedBox(
+        key: globalKey,
         height: kIsDesktop ? 200 : 160,
         width: kIsDesktop ? 160 : 120,
         child: GestureDetector(
-            onSecondaryTap: () async {
-              if (kIsDesktop) {
-                if (type == TileType.track) {
-                  /*   bool favourite = await DatabaseHelper()
-                          .favouriteTrackAlreadyExists(data.id); */
-                  popUpContextMenu(
-                    recommendedTrackPulldownMenuItemsDesktop(
-                        context,
-                        data,
-                        "recommended.single",
-                        false, //favourite,
-                        doesNotExist!,
-                        doesNowExist!),
-                  );
-                }
+          onSecondaryTap: () async {
+            if (kIsDesktop) {
+              if (type == TileType.track) {
+                popUpContextMenu(
+                  recommendedTrackPulldownMenuItemsDesktop(
+                      context,
+                      data,
+                      "recommended.single",
+                      false, //favourite,
+                      doesNotExist!,
+                      doesNowExist!),
+                );
               }
-            },
-            onLongPressStart: (LongPressStartDetails details) async {
-              if (kIsMobile) {
-                bool isFavourite =
-                    await DatabaseHelper().favouriteTrackAlreadyExists(data.id);
-                if (type == TileType.track) {
+            }
+          },
+          onLongPressStart: (LongPressStartDetails details) async {
+            if (kIsMobile) {
+              bool isFavourite =
+                  await DatabaseHelper().favouriteTrackAlreadyExists(data.id);
+              if (type == TileType.track) {
+                if (true) {
                   showPullDownMenu(
                     context: context,
-                    items: searchTrackPulldownMenuItems(
+                    items: searchTrackPulldownMenuItemsApple(
                       context,
                       data,
                       "recommended.single.",
@@ -199,14 +205,45 @@ class RecommendedTile extends StatelessWidget {
                     ),
                     topWidget: const SizedBox(),
                   );
-                }
+                } /* else {
+                  StarMenuOverlay.displayStarMenu(
+                    globalKey.currentContext!,
+                    StarMenu(
+                      params: StarMenuParameters(
+                          shape: MenuShape.linear,
+                          useTouchAsCenter: true,
+                          boundaryBackground: BoundaryBackground(
+                            blurSigmaX: 5,
+                            blurSigmaY: 5,
+                            padding: EdgeInsets.zero,
+                            color: Col.realBackground.withAlpha(200),
+                          ),
+                          linearShapeParams: const LinearShapeParams(
+                              alignment: LinearAlignment.center)),
+                      onItemTapped: (index, controller) {
+                        controller.closeMenu;
+                      },
+                      items: searchTrackPulldownMenuItemsAndroid(
+                        context,
+                        data,
+                        "recommended.single.",
+                        isFavourite,
+                        doesNotExist!,
+                        doesNowExist!,
+                      ),
+                      parentContext: globalKey.currentContext,
+                    ),
+                  );
+                } */
               }
-            },
-            child: CupertinoButton(
-              padding: EdgeInsets.zero,
-              onPressed: onTap,
-              child: child,
-            )),
+            }
+          },
+          child: CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: onTap,
+            child: child,
+          ),
+        ),
       ),
     );
   }

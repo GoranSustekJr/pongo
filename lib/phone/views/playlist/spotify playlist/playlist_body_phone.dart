@@ -83,6 +83,7 @@ class PlaylistBodyPhone extends StatelessWidget {
                                 color: Colors.white,
                               )
                             : Trailing(
+                                forceWhite: true,
                                 show: !loading.contains(tracks[index].id),
                                 showThis: id ==
                                         "online.playlist:${playlist.id}.${tracks[index].id}" &&

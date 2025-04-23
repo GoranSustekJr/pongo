@@ -120,6 +120,26 @@
         "description": "or"
     },
 
+    "linearsleepin": "Linear sleepin",
+    "@linearsleepin": {
+        "description": "linearsleepin"
+    },
+
+    "linearlydecreasevolumewhenusingsleepin": "Linearly decrease volume when using sleepin",
+    "@linearlydecreasevolumewhenusingsleepin": {
+        "description": "linearlydecreasevolumewhenusingsleepin"
+    },
+
+    "linearalarm": "Linear alarm",
+    "@linearalarm": {
+        "description": "linearalarm"
+    },
+
+    "linearlyincreasevolumewhenusingalarm": "Linearly increase volume when using alarm",
+    "@linearlyincreasevolumewhenusingalarm": {
+        "description": "linearlyincreasevolumewhenusingalarm"
+    },
+
     "appmayneedtoberestartedinorderforchangestotakefullaffect": "App may need to be restarted in order for changes to take full affect",
     "@appmayneedtoberestartedinorderforchangestotakefullaffect": {
         "description": "appmayneedtoberestartedinorderforchangestotakefullaffect"

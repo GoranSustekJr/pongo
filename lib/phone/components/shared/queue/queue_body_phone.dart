@@ -106,6 +106,7 @@ class QueueBodyPhone extends StatelessWidget {
                                               width: 20,
                                               child: Trailing(
                                                   show: true,
+                                                  forceWhite: true,
                                                   showThis: id ==
                                                           queue![ind].id &&
                                                       audioServiceHandler

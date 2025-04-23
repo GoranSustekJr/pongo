@@ -182,7 +182,7 @@ class SleepAlarmPhone extends StatelessWidget {
                                 children: [
                                   iconButton(
                                     AppIcons.add,
-                                    Colors.white,
+                                    Col.icon,
                                     sleepAlarmDataManager.createNewSleepAlarm,
                                     size: 50,
                                   ),
@@ -190,6 +190,7 @@ class SleepAlarmPhone extends StatelessWidget {
                                     AppLocalizations.of(context)
                                         .createnewsleepalarm,
                                     textAlign: TextAlign.center,
+                                    style: TextStyle(color: Col.text),
                                   ),
                                 ],
                               ),

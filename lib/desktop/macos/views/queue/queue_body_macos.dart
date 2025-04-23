@@ -97,6 +97,7 @@ class QueueBodyMacos extends StatelessWidget {
                                                 width: 20,
                                                 child: Trailing(
                                                     show: true,
+                                                    forceWhite: false,
                                                     showThis: id ==
                                                             queue![ind].id &&
                                                         audioServiceHandler

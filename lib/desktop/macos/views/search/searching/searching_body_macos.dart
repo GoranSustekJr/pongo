@@ -181,6 +181,7 @@ class SearchingBodyMacos extends StatelessWidget {
                                                   ? Trailing(
                                                       show: !loading.contains(
                                                           tracks[index].id),
+                                                      forceWhite: false,
                                                       showThis: id ==
                                                           tracks[index].id,
                                                       trailing: const Padding(
@@ -225,7 +226,8 @@ class SearchingBodyMacos extends StatelessWidget {
                                                           PullDownMenuPosition
                                                               .automatic,
                                                       itemBuilder: (context) =>
-                                                          searchTrackPulldownMenuItems(
+                                                          searchTrackPulldownMenuItemsApple(
+                                                        //TODO: Android
                                                         context,
                                                         tracks[index],
                                                         "search.single.",

@@ -214,7 +214,7 @@ class _HomeStateMacos extends State<MainMacos> {
                             ),
                             SidebarItem(
                               // View: Offline songs
-                              leading: Icon(
+                              leading: const Icon(
                                 AppIcons.download,
                                 color: Colors.white,
                                 size: 15,

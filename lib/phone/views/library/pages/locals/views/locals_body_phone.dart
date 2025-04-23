@@ -31,7 +31,7 @@ class _LocalsBodyPhoneState extends State<LocalsBodyPhone> {
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
 
     return Padding(
-      padding: const EdgeInsets.only(left: 15),
+      padding: const EdgeInsets.only(),
       child: StreamBuilder(
           key: const ValueKey(false),
           stream: audioServiceHandler.mediaItem.stream,
@@ -46,28 +46,33 @@ class _LocalsBodyPhoneState extends State<LocalsBodyPhone> {
                 return LocalsTile(
                   track: widget.localsDataManager.tracks[index],
                   first: index == 0,
+                  forceWhite: false,
                   last: widget.localsDataManager.tracks.length - 1 == index,
                   trailing: Padding(
-                    padding: const EdgeInsets.only(right: 15),
+                    padding: EdgeInsets.only(right: kIsApple ? 0 : 5),
                     child: SizedBox(
                       child: Row(
                         children: [
                           SizedBox(
                               height: 40,
-                              width: 20,
-                              child: Trailing(
-                                show: id ==
-                                        "library.locals.${widget.localsDataManager.tracks[index].id}" &&
-                                    audioServiceHandler
-                                            .audioPlayer.currentIndex ==
-                                        index,
-                                showThis: id ==
-                                        "library.locals.${widget.localsDataManager.tracks[index].id}" &&
-                                    audioServiceHandler
-                                            .audioPlayer.currentIndex ==
-                                        index,
-                                trailing: const SizedBox(
-                                  key: ValueKey(true),
+                              width: 25,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: Trailing(
+                                  forceWhite: false,
+                                  show: id ==
+                                          "library.locals.${widget.localsDataManager.tracks[index].id}" &&
+                                      audioServiceHandler
+                                              .audioPlayer.currentIndex ==
+                                          index,
+                                  showThis: id ==
+                                          "library.locals.${widget.localsDataManager.tracks[index].id}" &&
+                                      audioServiceHandler
+                                              .audioPlayer.currentIndex ==
+                                          index,
+                                  trailing: const SizedBox(
+                                    key: ValueKey(true),
+                                  ),
                                 ),
                               )),
                           AnimatedContainer(
@@ -75,7 +80,7 @@ class _LocalsBodyPhoneState extends State<LocalsBodyPhone> {
                             width: widget.localsDataManager.edit ? 40 : 0,
                             height: 40,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 15),
+                              padding: const EdgeInsets.only(),
                               child: iconButton(
                                 widget.localsDataManager.selectedTracks
                                         .contains(widget

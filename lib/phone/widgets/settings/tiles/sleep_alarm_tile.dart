@@ -20,6 +20,101 @@ sleepAlarmTile(
     bottomRight: last ? Radius.circular(radius) : Radius.zero,
   );
 
+  Widget child = Row(
+    children: [
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (!first)
+              Container(
+                height: 1,
+                width: MediaQuery.of(context).size.width - 70,
+                color: Col.onIcon.withAlpha(50),
+              ),
+            Row(
+              children: [
+                razw(10),
+                SizedBox(
+                  width: 70,
+                  height: 49,
+                  child: Center(
+                    child: Text(
+                      sleepAlarm.sleep
+                          ? "${sleepAlarm.sleepDuration} min"
+                          : AppLocalizations.of(context).off,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Col.text, fontSize: 20),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Container(
+                    height: 25,
+                    width: 1,
+                    color: Col.onIcon.withAlpha(200),
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context).sleepin,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Col.text,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                razw(10),
+                SizedBox(
+                  width: 70,
+                  height: 49,
+                  child: Center(
+                    child: Text(
+                      sleepAlarm.alarmClock
+                          ? "${(sleepAlarm.wakeTime / 60).floor().toString()}:${(sleepAlarm.wakeTime % 60).toString().padLeft(2, '0')}"
+                          : AppLocalizations.of(context).off,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Col.text, fontSize: 20),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Container(
+                    height: 25,
+                    width: 1,
+                    color: Col.onIcon.withAlpha(200),
+                  ),
+                ),
+                Text(AppLocalizations.of(context).alarm,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Col.text,
+                    )),
+              ],
+            ),
+            const SizedBox(
+              width: 15,
+            )
+          ],
+        ),
+      ),
+      SizedBox(
+        width: 28,
+        height: 48,
+        child: CupertinoSwitch(value: active, onChanged: changeActive),
+      ),
+      razw(25),
+    ],
+  );
+
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 10),
     child: SwipeActionCell(
@@ -34,195 +129,22 @@ sleepAlarmTile(
         ),
       ],
       child: ClipRRect(
-        child: kIsApple
-            ? Container(
-                height: 100,
-                width: MediaQuery.of(context).size.width - 20,
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius,
-                  color: Col.primaryCard.withAlpha(150),
-                ),
-                child: CupertinoButton(
+        child: Container(
+          height: 100,
+          width: MediaQuery.of(context).size.width - 20,
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            color: Col.primaryCard.withAlpha(150),
+          ),
+          child: kIsApple
+              ? CupertinoButton(
                   padding: EdgeInsets.zero,
                   onPressed: function,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            if (!first)
-                              Container(
-                                height: 1,
-                                width: MediaQuery.of(context).size.width - 70,
-                                color: Col.onIcon.withAlpha(50),
-                              ),
-                            Row(
-                              children: [
-                                razw(10),
-                                SizedBox(
-                                  width: 70,
-                                  height: 49,
-                                  child: Center(
-                                    child: Text(
-                                      sleepAlarm.sleep
-                                          ? "${sleepAlarm.sleepDuration} min"
-                                          : AppLocalizations.of(context).off,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Col.text, fontSize: 20),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  child: Container(
-                                    height: 25,
-                                    width: 1,
-                                    color: Col.onIcon.withAlpha(200),
-                                  ),
-                                ),
-                                Text(
-                                  AppLocalizations.of(context).sleepin,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Col.text,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                razw(10),
-                                SizedBox(
-                                  width: 70,
-                                  height: 49,
-                                  child: Center(
-                                    child: Text(
-                                      sleepAlarm.alarmClock
-                                          ? "${(sleepAlarm.wakeTime / 60).floor().toString()}:${(sleepAlarm.wakeTime % 60).toString().padLeft(2, '0')}"
-                                          : AppLocalizations.of(context).off,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          color: Col.text, fontSize: 20),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15),
-                                  child: Container(
-                                    height: 25,
-                                    width: 1,
-                                    color: Col.onIcon.withAlpha(200),
-                                  ),
-                                ),
-                                Text(AppLocalizations.of(context).alarm,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: Col.text,
-                                    )),
-                              ],
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        width: 28,
-                        height: 48,
-                        child: CupertinoSwitch(
-                            value: active, onChanged: changeActive),
-                      ),
-                      razw(25),
-                    ],
-                  ),
-                ),
-              )
-            : InkWell(
-                onTap: () {
-                  function();
-                },
-                splashColor: Colors.white.withAlpha(100),
-                borderRadius: borderRadius,
-                child: Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width - 20,
-                  decoration: BoxDecoration(
-                    borderRadius: borderRadius,
-                    color: Col.primaryCard.withAlpha(200),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      if (!first)
-                        Container(
-                          height: 1,
-                          width: MediaQuery.of(context).size.width - 70,
-                          color: Col.onIcon.withAlpha(50),
-                        ),
-                      Row(
-                        children: [
-                          const SizedBox(
-                            width: 50,
-                            height: 49,
-                            /* child: special
-                                  ? Image.asset(
-                                      'assets/images/pongo_logo_tranparent.png')
-                                  : Icon(icon, color: Col.onIcon, size: 27.5) */
-                          ),
-                          Expanded(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "title",
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 17,
-                                ),
-                              ),
-                              Text(
-                                "subtitle",
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 12.5,
-                                  color: Colors.white.withAlpha(150),
-                                ),
-                              ),
-                            ],
-                          )),
-                          // if (trailingIcon != null)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: Container(
-                              height: 25,
-                              width: 1,
-                              color: Col.onIcon.withAlpha(200),
-                            ),
-                          ),
-                          /* if (trailingIcon != null)
-                            SizedBox(
-                                width: 28,
-                                height: 49,
-                                child: Icon(trailingIcon,
-                                    color: Col.onIcon.withAlpha(200), size: 20)), */
-                          const SizedBox(
-                            width: 15,
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+                  child: child,
+                )
+              : ClipRRect(
+                  borderRadius: borderRadius, child: inkWell(child, function)),
+        ),
       ),
     ),
   );

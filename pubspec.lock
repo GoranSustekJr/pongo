@@ -641,10 +641,10 @@ packages:
     dependency: "direct main"
     description:
       name: google_mobile_ads
-      sha256: "0d4a3744b5e8ed1b8be6a1b452d309f811688855a497c6113fc4400f922db603"
+      sha256: a4f59019f2c32769fb6c60ed8aa321e9c21a36297e2c4f23452b3e779a3e7a26
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.1"
+    version: "6.0.0"
   google_sign_in:
     dependency: "direct main"
     description:
@@ -963,18 +963,18 @@ packages:
     dependency: transitive
     description:
       name: just_audio_platform_interface
-      sha256: "271b93b484c6f494ecd72a107fffbdb26b425f170c665b9777a0a24a726f2f24"
+      sha256: "4cd94536af0219fa306205a58e78d67e02b0555283c1c094ee41e402a14a5c4a"
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.0"
+    version: "4.5.0"
   just_audio_web:
     dependency: transitive
     description:
       name: just_audio_web
-      sha256: "58915be64509a7683c44bf11cd1a23c15a48de104927bee116e3c63c8eeea0d4"
+      sha256: "8c7e779892e180cbc9ffb5a3c52f6e90e1cbbf4a63694cc450972a7edbd2bb6d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.14"
+    version: "0.4.15"
   kr_pull_down_button:
     dependency: "direct main"
     description:
@@ -1477,6 +1477,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.1"
+  star_menu:
+    dependency: "direct main"
+    description:
+      name: star_menu
+      sha256: f29c7d255677c49ec2412ec2d17220d967f54b72b9e6afc5688fe122ea4d1d78
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.1"
   sticky_az_list:
     dependency: "direct main"
     description:
@@ -1713,10 +1721,10 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_android
-      sha256: e09150b28a07933839adef0e4a088bb43e8c8d9e6b93025b01882d4067a58ab0
+      sha256: "34ee3954f28ab3c8b5f96608d75125736643b3c239c969cd50d9476d5f90559a"
       url: "https://pub.dev"
     source: hosted
-    version: "4.3.4"
+    version: "4.3.5"
   webview_flutter_platform_interface:
     dependency: transitive
     description:

@@ -37,11 +37,11 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     // Init the subscription
-    inAppPurchaseInstance = inAppPurchase;
-    final Stream<List<PurchaseDetails>> purchaseUpdated =
-        inAppPurchase.purchaseStream;
+    //inAppPurchaseInstance = inAppPurchase;
+    //final Stream<List<PurchaseDetails>> purchaseUpdated =
+    //  inAppPurchase.purchaseStream;
 
-    subscription = purchaseUpdated.listen((purchaseDetails) {
+    /* subscription = purchaseUpdated.listen((purchaseDetails) {
       setState(() {
         purchases.addAll(purchaseDetails);
         listenPurchaseUpdated(purchaseDetails);
@@ -50,7 +50,7 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
       subscription.cancel();
     }, onError: (error) {
       subscription.cancel();
-    });
+    }); */
 
     // Init functions
     initialize();
@@ -130,9 +130,20 @@ class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
   void checkIfPremium() async {
     // Premium
     Map response = await Premium().isPremium(context);
-    premium.value = response["premium"];
-    await Storage().writeSubscription(response["premium"]);
-    await Storage().writeSubscriptionEnd(response["expires"]);
+
+    if (response["error"] == null) {
+      if (response["expires"] != null) {
+        await Storage().writeSubscriptionEnd(response["expires"]);
+      }
+      premium.value = response["premium"];
+    } else {
+      bool subscription = await Storage().getSubscription();
+      DateTime expiresIn = await Storage().getSubscriptionEnd();
+
+      if (DateTime.now().isBefore(expiresIn)) {
+        premium.value = subscription;
+      }
+    }
   }
 
   // Set locale

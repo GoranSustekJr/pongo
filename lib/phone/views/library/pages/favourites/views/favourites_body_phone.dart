@@ -45,7 +45,7 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return Padding(
-      padding: const EdgeInsets.only(left: 15),
+      padding: const EdgeInsets.only(left: 0),
       child: StreamBuilder(
           key: const ValueKey(false),
           stream: audioServiceHandler.mediaItem.stream,
@@ -70,24 +70,28 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
                   exists: !widget.missingTracks
                       .contains(widget.favourites[index].id),
                   trailing: Padding(
-                    padding: const EdgeInsets.only(right: 15),
+                    padding: const EdgeInsets.only(right: 0),
                     child: SizedBox(
                       child: Row(
                         children: [
                           SizedBox(
                               height: 40,
-                              width: 20,
-                              child: Trailing(
-                                show: !widget.loading
-                                    .contains(widget.favourites[index].id),
-                                showThis: id ==
-                                        "library.favourites.${widget.favourites[index].id}" &&
-                                    audioServiceHandler
-                                            .audioPlayer.currentIndex ==
-                                        index,
-                                trailing:
-                                    const CircularProgressIndicator.adaptive(
-                                  key: ValueKey(true),
+                              width: 25,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: Trailing(
+                                  forceWhite: false,
+                                  show: !widget.loading
+                                      .contains(widget.favourites[index].id),
+                                  showThis: id ==
+                                          "library.favourites.${widget.favourites[index].id}" &&
+                                      audioServiceHandler
+                                              .audioPlayer.currentIndex ==
+                                          index,
+                                  trailing:
+                                      const CircularProgressIndicator.adaptive(
+                                    key: ValueKey(true),
+                                  ),
                                 ),
                               ) /* AnimatedSwitcher(
                               duration: const Duration(milliseconds: 200),
@@ -102,7 +106,7 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
                             width: widget.edit ? 40 : 0,
                             height: 40,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 15),
+                              padding: const EdgeInsets.only(left: 0),
                               child: iconButton(
                                 widget.selectedTracks
                                         .contains(widget.favourites[index].id)

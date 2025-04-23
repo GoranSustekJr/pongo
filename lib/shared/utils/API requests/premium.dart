@@ -37,14 +37,17 @@ class Premium {
             }
           }
         } else {
-          return {"premium": false}; // Handle other status codes as needed
+          return {
+            "premium": false,
+            "error": true
+          }; // Handle other status codes as needed
         }
       }
     } catch (e) {
       // print(e);
-      return {"premium": false};
+      return {"premium": false, "error": true};
     }
-    return {"premium": false};
+    return {"premium": false, "error": true};
   }
 
   // Buy premium

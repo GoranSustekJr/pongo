@@ -38,7 +38,7 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
 
     return Padding(
-      padding: const EdgeInsets.only(left: 15),
+      padding: const EdgeInsets.only(),
       child: StreamBuilder(
         key: const ValueKey(false),
         stream: audioServiceHandler.mediaItem.stream,
@@ -79,25 +79,29 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
                 last: shownTracks.length - 1 == index,
                 exists: !missingTracks.contains(shownTracks[index].id),
                 trailing: Padding(
-                  padding: const EdgeInsets.only(right: 15),
+                  padding: EdgeInsets.only(right: kIsApple ? 0 : 5),
                   child: SizedBox(
                     child: Row(
                       children: [
                         SizedBox(
                           height: 40,
-                          width: 20,
-                          child: Trailing(
-                              show: !loading.contains(shownTracks[index].id),
-                              showThis: id ==
-                                      "online.playlist:$opid.${shownTracks[index].id}" &&
-                                  audioServiceHandler
-                                          .audioPlayer.currentIndex ==
-                                      index,
-                              trailing: const Icon(
-                                key: ValueKey(true),
-                                AppIcons.loading,
-                                color: Colors.white,
-                              )),
+                          width: 25,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Trailing(
+                                forceWhite: true,
+                                show: !loading.contains(shownTracks[index].id),
+                                showThis: id ==
+                                        "online.playlist:$opid.${shownTracks[index].id}" &&
+                                    audioServiceHandler
+                                            .audioPlayer.currentIndex ==
+                                        index,
+                                trailing: const Icon(
+                                  key: ValueKey(true),
+                                  AppIcons.loading,
+                                  color: Colors.white,
+                                )),
+                          ),
                         ),
                         if (edit && hidden[shownTracks[index].id] == true)
                           const SizedBox(
@@ -113,7 +117,7 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
                           width: edit ? 40 : 0,
                           height: 40,
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 15),
+                            padding: const EdgeInsets.only(),
                             child: iconButton(
                               selectedTracks.contains(shownTracks[index].id)
                                   ? AppIcons.checkmark
