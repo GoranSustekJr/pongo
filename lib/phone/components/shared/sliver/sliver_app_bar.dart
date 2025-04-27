@@ -131,6 +131,7 @@ class SliverAppBarPhone extends StatelessWidget {
                           icon: AppIcons.addToQueue,
                           onTap: addToPlaylist,
                           title: AppLocalizations.of(context).addtoplaylist),
+                      const PullDownMenuDivider(),
                       PullDownMenuItem(
                           icon: AppIcons.download,
                           onTap: download,

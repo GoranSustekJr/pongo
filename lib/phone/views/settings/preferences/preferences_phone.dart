@@ -67,6 +67,9 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   bool linearSleepIn = true;
   bool linearWakeUp = true;
 
+  // dynamic blurhash
+  bool usDynamicBlurhash = false;
+
   @override
   void initState() {
     super.initState();
@@ -104,6 +107,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final darkMod = await Storage().getDarkMode();
     final linearSlpin = await Storage().getLinearSleepin();
     final linearWkup = await Storage().getLinearWakeup();
+    final usDynmicBlurhash = await Storage().getUseDynamicBlurhash();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -125,6 +129,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       drkMode = darkMod;
       linearSleepIn = linearSlpin;
       linearWakeUp = linearWkup;
+      usDynamicBlurhash = usDynmicBlurhash;
     });
   }
 
@@ -582,8 +587,32 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                               settingsText(
                                   AppLocalizations.of(context).userinterface),
                               settingsTileSwitcher(
+                                  context,
+                                  true,
+                                  false,
+                                  AppIcons.image,
+                                  usDynamicBlurhash,
+                                  AppLocalizations.of(context).dynamicblurhash,
+                                  AppLocalizations.of(context)
+                                      .playingdetailsbackgroundwilldynamicallychange,
+                                  (use) async {
+                                setState(() {
+                                  usDynamicBlurhash = use;
+                                });
+
+                                useDynamicBlurhash = use;
+                                await Storage().writeUseDynamicBlurhash(use);
+
+                                if (use == true) {
+                                  Notifications().showWarningNotification(
+                                      context,
+                                      AppLocalizations.of(context)
+                                          .dynamicblurhashwarning);
+                                }
+                              }),
+                              settingsTileSwitcher(
                                 context,
-                                true,
+                                false,
                                 false,
                                 drkMode
                                     ? CupertinoIcons.moon

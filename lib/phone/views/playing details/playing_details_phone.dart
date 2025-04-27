@@ -32,13 +32,15 @@ class PlayingDetailsPhone extends StatelessWidget {
                                   color: Colors.black,
                                 ),
                                 AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 500),
+                                  duration: Duration(
+                                      milliseconds: useDynamicBlurhash
+                                          ? 5000
+                                          : 500), // 5000 for dynamic blurhash
                                   switchInCurve: Curves.fastOutSlowIn,
                                   switchOutCurve:
                                       Curves.fastEaseInToSlowEaseOut,
                                   child: BlurHashh(
-                                    key: ValueKey(
-                                        "${mediaItemManager.blurhash}${mediaItemManager.currentMediaItemId}"),
+                                    key: ValueKey(mediaItemManager.blurhash),
                                     hash: mediaItemManager.blurhash,
                                   ),
                                 ),

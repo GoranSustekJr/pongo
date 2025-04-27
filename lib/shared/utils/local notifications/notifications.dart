@@ -11,7 +11,7 @@ class Notifications {
     required IconData icon,
     Color backgroundColor = Colors.black54, // Default background color
     int durationInSeconds = 5, // Default duration
-    int maxLines = 3, // Max lines for text
+    int maxLines = 5, // Max lines for text
     Color iconColor = Colors.white, // Default
     void Function()? onTap,
   }) {
@@ -85,6 +85,7 @@ class Notifications {
       icon: AppIcons.warning,
       backgroundColor: Col.prim,
       durationInSeconds: 10,
+      maxLines: 10,
     );
   }
 

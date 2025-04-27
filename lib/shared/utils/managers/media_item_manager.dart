@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:pongo/exports.dart';
 
 class MediaItemManager with ChangeNotifier {
@@ -19,8 +21,32 @@ class MediaItemManager with ChangeNotifier {
     _init();
   }
 
+  void startChangingBlurhash() {
+    // Define the list of possible characters
+    const allCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,?*";
+
+    // Create a random number generator
+    Random random = Random();
+
+    // Create a Timer that runs every second to modify the string
+    Timer.periodic(const Duration(milliseconds: 5000), (timer) {
+      // Replace first, middle, and last characters with random ones
+      if (blurhash.isNotEmpty && useDynamicBlurhash) {
+        // Calculate the middle index
+        int thirdIndex = (blurhash.length / 5).round();
+
+        blurhash = blurhash.substring(0, thirdIndex) +
+            allCharacters[random.nextInt(allCharacters.length)] +
+            blurhash.substring(thirdIndex + 1);
+        notifyListeners();
+      }
+    });
+  }
+
   void _init() {
     useSyncedLyric = useSyncedLyrics.value;
+    startChangingBlurhash();
     audioServiceHandler.mediaItem.listen((mediaItem) {
       _onMediaItemChanged(mediaItem);
     });

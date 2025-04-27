@@ -120,6 +120,21 @@
         "description": "or"
     },
 
+    "dynamicblurhash": "Dynamic blurhash",
+    "@dynamicblurhash": {
+        "description": "dynamicblurhash"
+    },
+
+    "playingdetailsbackgroundwilldynamicallychange": "Playing details background will dynamically change",
+    "@playingdetailsbackgroundwilldynamicallychange": {
+        "description": "playingdetailsbackgroundwilldynamicallychange"
+    },
+
+    "dynamicblurhashwarning": "Dynamic blurhash is VERY HARD ON YOUR DEVICE. It is EXPERIMENTAL, will DRAIN THE BATTERY QUICKLY and make the device HOT",
+    "@dynamicblurhashwarning": {
+        "description": "dynamicblurhashwarning"
+    },
+
     "linearsleepin": "Linear sleepin",
     "@linearsleepin": {
         "description": "linearsleepin"

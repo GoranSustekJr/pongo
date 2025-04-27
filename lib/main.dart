@@ -126,6 +126,8 @@ void main() async {
   sleepAlarmDevVolume = sleepAlarmDevicVolume;
   bool drkMode = await Storage().getDarkMode();
   darkMode.value = drkMode;
+  bool usDynamicBlurhash = await Storage().getUseDynamicBlurhash();
+  useDynamicBlurhash = usDynamicBlurhash;
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();

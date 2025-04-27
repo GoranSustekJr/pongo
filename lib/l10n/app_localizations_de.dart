@@ -81,6 +81,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get or => 'oder';
 
   @override
+  String get dynamicblurhash => 'Dynamischer Blurhash';
+
+  @override
+  String get playingdetailsbackgroundwilldynamicallychange => 'Der Hintergrund der Wiedergabedetails wird sich dynamisch ändern';
+
+  @override
+  String get dynamicblurhashwarning => 'Dynamischer Blurhash ist SEHR ANSPRUCHSVOLL FÜR DEIN GERÄT. Es ist EXPERIMENTELL, wird DEN AKKU SCHNELL LEEREN und das Gerät ERHITZEN';
+
+  @override
   String get linearsleepin => 'Lineares Einschlafen';
 
   @override

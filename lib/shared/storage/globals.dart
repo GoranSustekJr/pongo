@@ -129,3 +129,6 @@ bool linearSleepin = true;
 
 // linear wake-up
 bool linearWakeup = true;
+
+// Use dynamic blurhash
+bool useDynamicBlurhash = false;

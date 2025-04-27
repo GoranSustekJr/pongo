@@ -45,6 +45,7 @@ class Storage {
   static String darkModeKey = "DARKMODEKEY";
   static String linearSleepinKey = "LINEARSLEEPINKEY";
   static String linearWakeupKey = "LINEARWAKEUPKEY";
+  static String dynamicBlurhashKey = "DYNAMICBLURHASH";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -638,6 +639,21 @@ class Storage {
     String? key = await storage.read(key: linearWakeupKey);
     if (key == null) {
       return true;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // dynamic blurhash
+  Future<void> writeUseDynamicBlurhash(bool dynamicBlurhash) async {
+    await storage.write(
+        key: dynamicBlurhashKey, value: dynamicBlurhash.toString());
+  }
+
+  Future<bool> getUseDynamicBlurhash() async {
+    String? key = await storage.read(key: dynamicBlurhashKey);
+    if (key == null) {
+      return false;
     } else {
       return key == "true";
     }

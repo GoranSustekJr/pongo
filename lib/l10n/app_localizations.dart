@@ -241,6 +241,24 @@ abstract class AppLocalizations {
   /// **'or'**
   String get or;
 
+  /// dynamicblurhash
+  ///
+  /// In en, this message translates to:
+  /// **'Dynamic blurhash'**
+  String get dynamicblurhash;
+
+  /// playingdetailsbackgroundwilldynamicallychange
+  ///
+  /// In en, this message translates to:
+  /// **'Playing details background will dynamically change'**
+  String get playingdetailsbackgroundwilldynamicallychange;
+
+  /// dynamicblurhashwarning
+  ///
+  /// In en, this message translates to:
+  /// **'Dynamic blurhash is VERY HARD ON YOUR DEVICE. It is EXPERIMENTAL, will DRAIN THE BATTERY QUICKLY and make the device HOT'**
+  String get dynamicblurhashwarning;
+
   /// linearsleepin
   ///
   /// In en, this message translates to:

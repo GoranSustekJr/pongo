@@ -81,6 +81,15 @@ class AppLocalizationsHr extends AppLocalizations {
   String get or => 'ili';
 
   @override
+  String get dynamicblurhash => 'Dinamički blurhash';
+
+  @override
+  String get playingdetailsbackgroundwilldynamicallychange => 'Pozadina detalja reprodukcije će se dinamički mijenjati';
+
+  @override
+  String get dynamicblurhashwarning => 'Dinamički blurhash JE VRLO ZAHTJEVAN ZA TVOJ UREĐAJ. Eksperimentalan je, BRZO ĆE ISPUSTATI BATERIJU i zagrijati uređaj';
+
+  @override
   String get linearsleepin => 'Linearno uspavljivanje';
 
   @override
