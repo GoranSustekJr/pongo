@@ -8,9 +8,11 @@ class QueueBodyPhone extends StatelessWidget {
   final bool editQueue;
   final bool showQueue;
   final bool lyricsOn;
+  final bool lyricsExist;
   final List<MediaItem>? queue;
   final List<int> shuffleIndices;
   final List<int> selectedQueueIndexes;
+  final ScrollController scrollController;
   final Function(int) selectQueueIndex;
   final Function() changeShowQueue;
   final Function() changeEditQueue;
@@ -32,6 +34,8 @@ class QueueBodyPhone extends StatelessWidget {
     required this.removeItemsFromQueue,
     required this.changeLyricsOn,
     required this.saveAsPlaylist,
+    required this.lyricsExist,
+    required this.scrollController,
   });
 
   @override
@@ -42,10 +46,8 @@ class QueueBodyPhone extends StatelessWidget {
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
     return SizedBox(
-      height: size.height,
-      width: size.width - 20,
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
+        height: size.height,
+        width: size.width - 20,
         child: queue != null
             ? ConstrainedBox(
                 key: const ValueKey(true),
@@ -59,7 +61,8 @@ class QueueBodyPhone extends StatelessWidget {
                         final String id =
                             snapshot.data != null ? snapshot.data!.id : "";
                         return ReorderableListView.builder(
-                          key: ValueKey("$shuffleModeEnabled"),
+                          //key: ValueKey("$shuffleModeEnabled"),
+                          scrollController: scrollController,
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).padding.top + 55,
                               bottom: 300),
@@ -178,6 +181,7 @@ class QueueBodyPhone extends StatelessWidget {
                       showQueue: showQueue,
                       lyricsOn: lyricsOn,
                       editQueue: editQueue,
+                      lyricsExist: lyricsExist,
                       changeShowQueue: changeShowQueue,
                       changeEditQueue: changeEditQueue,
                       removeItemsFromQueue: removeItemsFromQueue,
@@ -260,10 +264,6 @@ class QueueBodyPhone extends StatelessWidget {
                   ],
                 ),
               )
-            : const SizedBox(
-                key: ValueKey(false),
-              ),
-      ),
-    );
+            : const SizedBox());
   }
 }

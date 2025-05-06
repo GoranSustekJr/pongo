@@ -104,6 +104,7 @@
     "plain": "Plain",
     "sync": "Sync",
     "nosynclyrics": "Keine synchronisierten Texte",
+    "nolyricsavailable": "Keine Texte sind verfügbar",
     "noplainlyrics": "Keine einfachen Texte",
     "wanttohelpoutlyrics": "Helfen Sie mit? Fügen Sie Texte auf lrclib.net hinzu!",
     "artist": "Künstler",

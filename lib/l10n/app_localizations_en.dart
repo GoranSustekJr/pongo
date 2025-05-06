@@ -276,6 +276,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nosynclyrics => 'No synced lyrics';
 
   @override
+  String get nolyricsavailable => 'No lyrics are available';
+
+  @override
   String get noplainlyrics => 'No plain lyrics';
 
   @override

@@ -3,6 +3,7 @@ import 'package:pongo/exports.dart';
 class QueuePhone extends StatefulWidget {
   final bool showQueue;
   final bool lyricsOn;
+  final bool lyricsExist;
   final Function() changeShowQueue;
   final Function() changeLyricsOn;
 
@@ -12,6 +13,7 @@ class QueuePhone extends StatefulWidget {
     required this.lyricsOn,
     required this.changeShowQueue,
     required this.changeLyricsOn,
+    required this.lyricsExist,
   });
 
   @override
@@ -21,6 +23,9 @@ class QueuePhone extends StatefulWidget {
 class _QueuePhoneState extends State<QueuePhone> {
   // Edit queue state
   bool editQueue = false;
+
+  // Queue controller
+  ScrollController scrollController = ScrollController();
 
   // Selected queue indexes state
   final List<int> selectedQueueIndexes = [];
@@ -37,6 +42,26 @@ class _QueuePhoneState extends State<QueuePhone> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 10), () {
+      scrollController.jumpTo(queueScrollOffset);
+      scrollController.addListener(offsetListener);
+    });
+  }
+
+  void offsetListener() {
+    queueScrollOffset = scrollController.offset;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.removeListener(offsetListener);
+    scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
@@ -46,13 +71,19 @@ class _QueuePhoneState extends State<QueuePhone> {
 
     return AnimatedPositioned(
       duration: Duration(
-        milliseconds: widget.showQueue && !widget.lyricsOn ? 0 : 750,
+        milliseconds:
+            widget.showQueue && !(widget.lyricsOn && widget.lyricsExist)
+                ? 0
+                : 750,
       ),
-      top: widget.showQueue && !widget.lyricsOn ? 0 : size.height,
+      top: widget.showQueue && !(widget.lyricsOn && widget.lyricsExist)
+          ? 0
+          : size.height,
       child: AnimatedOpacity(
-        opacity: widget.showQueue && !widget.lyricsOn ? 1 : 0,
-        duration: Duration(
-            milliseconds: widget.lyricsOn || !widget.showQueue ? 150 : 400),
+        opacity: widget.showQueue && !(widget.lyricsOn && widget.lyricsExist)
+            ? 1
+            : 0,
+        duration: const Duration(milliseconds: 150),
         child: StreamBuilder(
           stream: audioServiceHandler.queue.stream,
           builder: (context, snapshot) {
@@ -78,6 +109,8 @@ class _QueuePhoneState extends State<QueuePhone> {
                           editQueue: editQueue,
                           showQueue: widget.showQueue,
                           lyricsOn: widget.lyricsOn,
+                          lyricsExist: widget.lyricsExist,
+                          scrollController: scrollController,
                           queue: queue ?? [],
                           shuffleIndices: shuffleIndices ?? [],
                           selectedQueueIndexes: selectedQueueIndexes,

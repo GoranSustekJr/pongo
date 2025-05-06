@@ -107,6 +107,7 @@
     "plain": "Plain",
     "sync": "Sync",
     "nosynclyrics": "Nema sinkroniziranih stihova",
+    "nolyricsavailable": "Stihovi nisu dostupni",    
     "noplainlyrics": "Nema običnih stihova",
     "wanttohelpoutlyrics": "Želite pomoći? Dodajte stihove na lrclib.net!",
     "artist": "Umijetnik",

@@ -6,6 +6,7 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
   final String name;
   final String stid;
   final String artistJson;
+  final bool smallImage;
   final AsyncSnapshot<PlaybackState> playbackState;
   final bool mix;
   final Function(String) showArtist;
@@ -17,6 +18,7 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
     required this.mix,
     required this.stid,
     required this.showArtist,
+    required this.smallImage,
   });
 
   @override
@@ -28,16 +30,17 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
         children: [
           Row(
             children: [
-              /* Container(
-                width: mix ? 30 : 0,
-              ), */
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 350),
+                width: smallImage ? 60 : 0,
+              ),
               Expanded(
                 child: Column(
                   children: [
                     SizedBox(
                       width: size.width - 30,
                       child: AnimatedAlign(
-                        alignment: playbackState.data != null
+                        alignment: playbackState.data != null && !smallImage
                             ? playbackState.data!.playing
                                 ? Alignment.center
                                 : Alignment.centerLeft
@@ -65,7 +68,7 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
                       width: size.width - 30,
                       height: 22,
                       child: AnimatedAlign(
-                        alignment: playbackState.data != null
+                        alignment: playbackState.data != null && !smallImage
                             ? playbackState.data!.playing
                                 ? Alignment.center
                                 : Alignment.centerLeft

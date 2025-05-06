@@ -451,6 +451,11 @@
         "description": "nosynclyrics"
     },
 
+    "nolyricsavailable": "No lyrics are available",
+    "@nolyricsavailable": {
+        "description": "nolyricsavailable"
+    },
+
     "noplainlyrics": "No plain lyrics",
     "@noplainlyrics": {
         "description": "noplainlyrics"

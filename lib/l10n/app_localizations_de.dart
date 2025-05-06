@@ -276,6 +276,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get nosynclyrics => 'Keine synchronisierten Texte';
 
   @override
+  String get nolyricsavailable => 'Keine Texte sind verfügbar';
+
+  @override
   String get noplainlyrics => 'Keine einfachen Texte';
 
   @override

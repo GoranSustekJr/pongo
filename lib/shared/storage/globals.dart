@@ -132,3 +132,6 @@ bool linearWakeup = true;
 
 // Use dynamic blurhash
 bool useDynamicBlurhash = false;
+
+// Queue offset
+double queueScrollOffset = 0;

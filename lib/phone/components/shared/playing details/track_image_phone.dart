@@ -3,6 +3,7 @@ import 'package:pongo/exports.dart';
 class TrackImagePhone extends StatelessWidget {
   final bool lyricsOn;
   final bool showQueue;
+
   final AudioServiceHandler audioServiceHandler;
   final String image;
   const TrackImagePhone({
@@ -16,23 +17,27 @@ class TrackImagePhone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    int dur = 250;
     return AnimatedPositioned(
-      duration: Duration(milliseconds: lyricsOn || showQueue ? 200 : 600),
+      duration: Duration(milliseconds: lyricsOn || showQueue ? 200 : 300),
       bottom: lyricsOn || showQueue
-          ? size.height
+          ? MediaQuery.of(context).viewPadding.bottom + 190
           : size.height -
               (MediaQuery.of(context).padding.top + 30 + size.width - 60),
+      left: lyricsOn || showQueue ? -5 : null,
       curve: Curves.decelerate,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              width: size.width - 40,
+            AnimatedContainer(
+              duration: Duration(milliseconds: dur),
+              width: lyricsOn || showQueue ? 50 : size.width - 40,
               child: Center(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius:
+                      BorderRadius.circular(lyricsOn || showQueue ? 5 : 15),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 500),
                     switchInCurve: Curves.fastOutSlowIn,
@@ -58,7 +63,8 @@ class TrackImagePhone extends StatelessWidget {
                                   duration: const Duration(milliseconds: 500),
                                   curve: Curves.fastEaseInToSlowEaseOut,
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
+                                    borderRadius: BorderRadius.circular(
+                                        lyricsOn || showQueue ? 5 : 15),
                                     child: ColorFiltered(
                                       colorFilter: ColorFilter.mode(
                                         audioServiceHandler.audioPlayer.playing
@@ -67,37 +73,57 @@ class TrackImagePhone extends StatelessWidget {
                                         BlendMode.srcOver,
                                       ),
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
-                                        child: AnimatedOpacity(
+                                        borderRadius: BorderRadius.circular(
+                                            lyricsOn || showQueue ? 5 : 15),
+                                        child: /* AnimatedOpacity(
                                           opacity:
                                               lyricsOn || showQueue ? 0 : 1,
                                           duration: const Duration(
                                               milliseconds: 1000),
-                                          child: image != "" && image != "null"
-                                              ? SizedBox(
-                                                  height: size.width - 40,
-                                                  width: size.width - 40,
-                                                  child: ImageCompatible(
-                                                    image: image,
-                                                  ),
-                                                )
-                                              : Container(
-                                                  height: size.width - 40,
-                                                  width: size.width - 40,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
-                                                      color: Col.primaryCard
-                                                          .withAlpha(150)),
-                                                  child: Center(
-                                                    child: Icon(
-                                                      AppIcons.blankTrack,
-                                                      size: 50,
+                                          child: */
+                                            image != "" && image != "null"
+                                                ? AnimatedContainer(
+                                                    duration: Duration(
+                                                        milliseconds: dur),
+                                                    curve: Curves.linear,
+                                                    height:
+                                                        lyricsOn || showQueue
+                                                            ? 50
+                                                            : size.width - 40,
+                                                    width: lyricsOn || showQueue
+                                                        ? 50
+                                                        : size.width - 40,
+                                                    child: ImageCompatible(
+                                                      image: image,
+                                                    ),
+                                                  )
+                                                : AnimatedContainer(
+                                                    duration: Duration(
+                                                        milliseconds: dur),
+                                                    height:
+                                                        lyricsOn || showQueue
+                                                            ? 40
+                                                            : size.width - 40,
+                                                    width: lyricsOn || showQueue
+                                                        ? 40
+                                                        : size.width - 40,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                lyricsOn ||
+                                                                        showQueue
+                                                                    ? 5
+                                                                    : 15),
+                                                        color: Col.primaryCard
+                                                            .withAlpha(150)),
+                                                    child: Center(
+                                                      child: Icon(
+                                                        AppIcons.blankTrack,
+                                                        size: 50,
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                        ),
+                                        //  ),
                                       ),
                                     ),
                                   ),

@@ -7,6 +7,7 @@ import 'track_info_button.dart';
 class OtherControlsPhone extends StatefulWidget {
   final bool lyricsOn;
   final bool showQueue;
+  final bool lyricsExist;
   final Track track;
   final Function() downloadTrack;
   final Function() changeLyricsOn;
@@ -20,6 +21,7 @@ class OtherControlsPhone extends StatefulWidget {
     required this.changeLyricsOn,
     required this.showQueue,
     required this.changeShowQueue,
+    required this.lyricsExist,
   });
 
   @override
@@ -52,13 +54,15 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
       builder: (context, loopMode) {
         return AnimatedOpacity(
           duration: const Duration(milliseconds: 450),
-          opacity: widget.lyricsOn || widget.showQueue ? 0 : 1,
+          opacity: (widget.lyricsOn && widget.lyricsExist) || widget.showQueue
+              ? 0
+              : 1,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               iconButton(
                 widget.lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
-                Colors.white,
+                Colors.white.withAlpha(widget.lyricsExist ? 255 : 150),
                 widget.changeLyricsOn,
               ),
               iconButton(

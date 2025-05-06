@@ -7,6 +7,7 @@ class TrackControlsPhone extends StatelessWidget {
   final bool lyricsOn;
   final bool showQueue;
   final bool syncLyrics;
+  final bool lyricsExist;
   final Function() changeLyricsOn;
   final Function() changeShowQueue;
   final Function(String) showAlbum;
@@ -21,6 +22,7 @@ class TrackControlsPhone extends StatelessWidget {
     required this.showAlbum,
     required this.showArtist,
     required this.syncLyrics,
+    required this.lyricsExist,
   });
 
   @override
@@ -31,9 +33,9 @@ class TrackControlsPhone extends StatelessWidget {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context) as AudioServiceHandler;
     return AnimatedPositioned(
-      duration: const Duration(milliseconds: 750),
+      duration: const Duration(milliseconds: 600),
       curve: Curves.decelerate,
-      bottom: lyricsOn || showQueue
+      bottom: (lyricsOn && lyricsExist) || showQueue
           ? -50 - 50 - 30 - 50 + MediaQuery.of(context).viewPadding.bottom + 30
           : (size.height -
                       (size.width - 60) -
@@ -52,7 +54,8 @@ class TrackControlsPhone extends StatelessWidget {
           width: size.width,
           height: 400,
           decoration: BoxDecoration(
-            gradient: (lyricsOn && syncLyrics) || (showQueue && !useBlur.value)
+            gradient: ((lyricsOn && lyricsExist) && syncLyrics) ||
+                    (showQueue && !useBlur.value)
                 ? LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
@@ -80,8 +83,14 @@ class TrackControlsPhone extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: BackdropFilter(
               filter: ImageFilter.blur(
-                  sigmaX: (lyricsOn && syncLyrics) || !useBlur.value ? 0.1 : x,
-                  sigmaY: (lyricsOn && syncLyrics) || !useBlur.value ? 0.1 : x),
+                  sigmaX: ((lyricsOn && lyricsExist) && syncLyrics) ||
+                          !useBlur.value
+                      ? 0.1
+                      : x,
+                  sigmaY: ((lyricsOn && lyricsExist) && syncLyrics) ||
+                          !useBlur.value
+                      ? 0.1
+                      : x),
               blendMode: BlendMode.src,
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -105,6 +114,8 @@ class TrackControlsPhone extends StatelessWidget {
                               stid: currentMediaItem.id.split('.')[2],
                               artistJson: currentMediaItem.extras!["artists"],
                               playbackState: playbackState,
+                              smallImage:
+                                  (lyricsOn && lyricsExist) || showQueue,
                               mix: currentMediaItem.extras!["mix"] ??
                                   false ||
                                       RegExp(r'Mix #\d{1,2}')
@@ -123,6 +134,7 @@ class TrackControlsPhone extends StatelessWidget {
                             const VolumeControlPhone(),
                             OtherControlsPhone(
                               lyricsOn: lyricsOn,
+                              lyricsExist: lyricsExist,
                               showQueue: showQueue,
                               track: Track(
                                 id: currentMediaItem.id,

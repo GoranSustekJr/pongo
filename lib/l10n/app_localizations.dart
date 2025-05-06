@@ -631,6 +631,12 @@ abstract class AppLocalizations {
   /// **'No synced lyrics'**
   String get nosynclyrics;
 
+  /// nolyricsavailable
+  ///
+  /// In en, this message translates to:
+  /// **'No lyrics are available'**
+  String get nolyricsavailable;
+
   /// noplainlyrics
   ///
   /// In en, this message translates to:

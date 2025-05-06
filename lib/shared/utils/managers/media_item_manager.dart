@@ -16,6 +16,7 @@ class MediaItemManager with ChangeNotifier {
   bool showQueue = false;
   int syncTimeDelay = 0;
   String currentArtUri = "";
+  bool lyricsExist = true;
 
   MediaItemManager(this.audioServiceHandler, this.context) {
     _init();
@@ -24,21 +25,34 @@ class MediaItemManager with ChangeNotifier {
   void startChangingBlurhash() {
     // Define the list of possible characters
     const allCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,?*";
+        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#%*+,-.:;=?@[]^_{|}~";
 
     // Create a random number generator
     Random random = Random();
 
     // Create a Timer that runs every second to modify the string
     Timer.periodic(const Duration(milliseconds: 5000), (timer) {
-      // Replace first, middle, and last characters with random ones
       if (blurhash.isNotEmpty && useDynamicBlurhash) {
-        // Calculate the middle index
-        int thirdIndex = (blurhash.length / 5).round();
+        List<String> chars = blurhash.split('');
 
-        blurhash = blurhash.substring(0, thirdIndex) +
-            allCharacters[random.nextInt(allCharacters.length)] +
-            blurhash.substring(thirdIndex + 1);
+        // Replace at index 2
+        if (blurhash.length > 2) {
+          chars[2] = allCharacters[random.nextInt(allCharacters.length)];
+        }
+
+        // Replace at index 4
+        if (blurhash.length > 4) {
+          chars[4] = allCharacters[random.nextInt(allCharacters.length)];
+        }
+
+        // Replace at index 15
+        if (blurhash.length > 15) {
+          chars[15] = allCharacters[random.nextInt(allCharacters.length)];
+        }
+
+        // Join the list back into a string
+        blurhash = chars.join();
+
         notifyListeners();
       }
     });
@@ -110,9 +124,11 @@ class MediaItemManager with ChangeNotifier {
 
         plainLyrics = lyrics["plainLyrics"] ?? "";
         syncedLyrics = lyrics["syncedLyrics"] ?? "";
+        lyricsExist = plainLyrics != "" && syncedLyrics != "";
       } else {
         plainLyrics = "";
         syncedLyrics = "";
+        lyricsExist = false;
       }
     } catch (e) {
       plainLyrics = "";
@@ -125,6 +141,14 @@ class MediaItemManager with ChangeNotifier {
 
   toggleLyricsOn() {
     lyricsOn = !lyricsOn;
+
+    if (!lyricsExist) {
+      Notifications().showNotification(
+          context: context,
+          title: AppLocalizations.of(context).nolyricsavailable,
+          message: AppLocalizations.of(context).wanttohelpoutlyrics,
+          icon: AppIcons.lyrics);
+    }
     notifyListeners();
   }
 

@@ -32,10 +32,9 @@ class PlayingDetailsPhone extends StatelessWidget {
                                   color: Colors.black,
                                 ),
                                 AnimatedSwitcher(
-                                  duration: Duration(
-                                      milliseconds: useDynamicBlurhash
-                                          ? 5000
-                                          : 500), // 5000 for dynamic blurhash
+                                  duration: const Duration(
+                                      milliseconds:
+                                          500), // 5000 for dynamic blurhash
                                   switchInCurve: Curves.fastOutSlowIn,
                                   switchOutCurve:
                                       Curves.fastEaseInToSlowEaseOut,
@@ -54,7 +53,8 @@ class PlayingDetailsPhone extends StatelessWidget {
                                     ...mediaItemManager.syncedLyrics
                                         .split('\n'),
                                   ],
-                                  lyricsOn: mediaItemManager.lyricsOn,
+                                  lyricsOn: mediaItemManager.lyricsOn &&
+                                      mediaItemManager.lyricsExist,
                                   useSyncedLyrics:
                                       mediaItemManager.useSyncedLyric,
                                   syncTimeDelay: mediaItemManager.syncTimeDelay,
@@ -69,6 +69,7 @@ class PlayingDetailsPhone extends StatelessWidget {
                                   //  key: queueKey,
                                   showQueue: mediaItemManager.showQueue,
                                   lyricsOn: mediaItemManager.lyricsOn,
+                                  lyricsExist: mediaItemManager.lyricsExist,
                                   changeShowQueue:
                                       mediaItemManager.toggleShowQueue,
                                   changeLyricsOn:
@@ -78,7 +79,8 @@ class PlayingDetailsPhone extends StatelessWidget {
                                   stid: mediaItemManager.currentMediaItem!.id
                                       .split('.')[2],
                                   syncTimeDelay: mediaItemManager.syncTimeDelay,
-                                  lyricsOn: mediaItemManager.lyricsOn,
+                                  lyricsOn: mediaItemManager.lyricsOn &&
+                                      mediaItemManager.lyricsExist,
                                   useSynced: mediaItemManager.useSyncedLyric,
                                   changeLyricsOn:
                                       mediaItemManager.toggleLyricsOn,
@@ -92,6 +94,7 @@ class PlayingDetailsPhone extends StatelessWidget {
                                 TrackControlsPhone(
                                   currentMediaItem:
                                       mediaItemManager.currentMediaItem!,
+                                  lyricsExist: mediaItemManager.lyricsExist,
                                   lyricsOn: mediaItemManager.lyricsOn,
                                   showQueue: mediaItemManager.showQueue,
                                   syncLyrics: mediaItemManager.useSyncedLyric,
@@ -103,7 +106,8 @@ class PlayingDetailsPhone extends StatelessWidget {
                                   showArtist: showArtist,
                                 ),
                                 TrackImagePhone(
-                                  lyricsOn: mediaItemManager.lyricsOn,
+                                  lyricsOn: mediaItemManager.lyricsOn &&
+                                      mediaItemManager.lyricsExist,
                                   showQueue: mediaItemManager.showQueue,
                                   audioServiceHandler:
                                       mediaItemManager.audioServiceHandler,

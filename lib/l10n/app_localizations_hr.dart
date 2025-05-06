@@ -276,6 +276,9 @@ class AppLocalizationsHr extends AppLocalizations {
   String get nosynclyrics => 'Nema sinkroniziranih stihova';
 
   @override
+  String get nolyricsavailable => 'Stihovi nisu dostupni';
+
+  @override
   String get noplainlyrics => 'Nema običnih stihova';
 
   @override

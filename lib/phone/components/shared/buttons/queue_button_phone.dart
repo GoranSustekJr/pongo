@@ -8,6 +8,7 @@ class QueueButtonPhone extends StatelessWidget {
   final bool showQueue;
   final bool lyricsOn;
   final bool editQueue;
+  final bool lyricsExist;
   final Function() changeShowQueue;
   final Function() changeEditQueue;
   final Function() removeItemsFromQueue;
@@ -25,6 +26,7 @@ class QueueButtonPhone extends StatelessWidget {
     required this.changeLyricsOn,
     required this.saveAsPlaylist,
     required this.download,
+    required this.lyricsExist,
   });
 
   @override
@@ -64,7 +66,7 @@ class QueueButtonPhone extends StatelessWidget {
                     ),
                     child: iconButton(
                         lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
-                        Colors.white,
+                        Colors.white.withAlpha(lyricsExist ? 255 : 175),
                         changeLyricsOn,
                         edgeInsets: EdgeInsets.zero),
                   ),
