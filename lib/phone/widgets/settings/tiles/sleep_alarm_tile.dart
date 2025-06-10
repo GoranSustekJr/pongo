@@ -26,7 +26,7 @@ sleepAlarmTile(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            if (!first)
+            if (!first && !kIsApple)
               Container(
                 height: 1,
                 width: MediaQuery.of(context).size.width - 70,
@@ -137,10 +137,15 @@ sleepAlarmTile(
             color: Col.primaryCard.withAlpha(150),
           ),
           child: kIsApple
-              ? CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: function,
-                  child: child,
+              ? LiquidGlass(
+                  blur: AppConstants().liquidGlassBlur,
+                  borderRadius: borderRadius,
+                  tint: Col.text,
+                  child: CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: function,
+                    child: child,
+                  ),
                 )
               : ClipRRect(
                   borderRadius: borderRadius, child: inkWell(child, function)),

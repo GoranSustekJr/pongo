@@ -17,6 +17,12 @@ class SleepAlarmDataManager with ChangeNotifier {
   // Show body
   bool showBody = false;
 
+  // Scroll controller
+  late ScrollController scrollController;
+
+  // Offset
+  double scrollControllerOffset = 0;
+
   // Device volume
   final StreamController<double> volumeController =
       StreamController<double>.broadcast();
@@ -27,6 +33,9 @@ class SleepAlarmDataManager with ChangeNotifier {
   }
 
   void init() async {
+    scrollController = ScrollController();
+    scrollController.addListener(scrollControllerListener);
+
     // Get the prefered device volume
     double devVolume = await Storage().getSleepAlarmDeviceVolume();
     volumeController.add(devVolume);
@@ -45,6 +54,15 @@ class SleepAlarmDataManager with ChangeNotifier {
             as AudioServiceHandler;
     activeAlarm = audioServiceHandler.activeSleepAlarm;
 
+    notifyListeners();
+  }
+
+  scrollControllerListener() {
+    if (scrollController.offset < 0) {
+      scrollControllerOffset = 0;
+    } else {
+      scrollControllerOffset = scrollController.offset;
+    }
     notifyListeners();
   }
 

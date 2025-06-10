@@ -99,9 +99,7 @@ class PlayMultiple {
           id: "$baseId.${track.id}",
           title: track.name,
           artist: track.artists.map((artist) => artist.name).join(', '),
-          album: track.album != null
-              ? "${track.album!.id}..Ææ..${track.album!.name}"
-              : "..Ææ..",
+          album: track.album?.name, //TODO: Remove
           duration: Duration(
               milliseconds: (existingTracks[track.id]! * 1000).toInt()),
           artUri: track.album != null
@@ -115,6 +113,9 @@ class PlayMultiple {
             ),
             "online": online,
             "released": track.album?.releaseDate ?? "",
+            "album": track.album != null
+                ? "${track.album!.id}..Ææ..${track.album!.name}"
+                : "..Ææ..",
           },
         );
       }).toList();
@@ -162,9 +163,7 @@ class PlayMultiple {
         id: "$baseId.${tracks[i].id}",
         title: tracks[i].name,
         artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-        album: tracks[i].album != null
-            ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
-            : "..Ææ..",
+        album: tracks[i].album?.name, //TODO: Remove
         duration: Duration(milliseconds: (durations[tracks[i].id]!)),
         artUri:
             tracks[i].image != null ? Uri.file(tracks[i].image!.path) : null,
@@ -177,6 +176,9 @@ class PlayMultiple {
           "downloaded": "true",
           "released":
               tracks[i].album != null ? tracks[i].album!.releaseDate : "",
+          "album": tracks[i].album != null
+              ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+              : "..Ææ..",
         },
       );
 

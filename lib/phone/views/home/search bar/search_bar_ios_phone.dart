@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 
 class SearchBarIOSPhone extends StatefulWidget {
   final Function(String) onFieldSubmitted;
@@ -52,7 +53,7 @@ class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
           children: [
             Flexible(
               child: AnimatedPadding(
-                duration: const Duration(milliseconds: 100),
+                duration: Duration(milliseconds: animations ? 100 : 0),
                 padding:
                     EdgeInsets.only(right: searchBarIsSearching.value ? 15 : 0),
                 child: Focus(
@@ -121,7 +122,7 @@ class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
               ),
           ],
         ),
-        flexibleSpace: appBarBlur(),
+        flexibleSpace: kIsApple ? liquidGlassBackground() : appBarBlur(),
       ),
     );
   }

@@ -7,7 +7,7 @@ backLikeButton(context, IconData icon, Function() function) {
     width: 50,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(60),
-      color: Colors.black.withAlpha(100),
+      color: kIsApple ? null : Colors.black.withAlpha(100),
     ),
     child: Stack(
       children: [
@@ -22,10 +22,15 @@ backLikeButton(context, IconData icon, Function() function) {
     ),
   );
   return kIsApple
-      ? CupertinoButton(
-          onPressed: function,
-          padding: EdgeInsets.zero,
-          child: child,
+      ? LiquidGlass(
+          blur: AppConstants().liquidGlassBlur,
+          borderRadius: BorderRadius.circular(360),
+          tint: Col.text,
+          child: CupertinoButton(
+            onPressed: function,
+            padding: EdgeInsets.zero,
+            child: child,
+          ),
         )
       : ClipRRect(
           borderRadius: BorderRadius.circular(360),

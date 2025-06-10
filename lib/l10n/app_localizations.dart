@@ -625,6 +625,18 @@ abstract class AppLocalizations {
   /// **'sync'**
   String get sync;
 
+  /// useanimations
+  ///
+  /// In en, this message translates to:
+  /// **'Use animations'**
+  String get useanimations;
+
+  /// turnoffifanimationsaretoohardonthedevice
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off if animations are too hard on the device'**
+  String get turnoffifanimationsaretoohardonthedevice;
+
   /// nosynclyrics
   ///
   /// In en, this message translates to:
@@ -1366,7 +1378,7 @@ abstract class AppLocalizations {
   /// pongowillgraduallyincreasethevolume
   ///
   /// In en, this message translates to:
-  /// **'Pongo will gradually increase the valume'**
+  /// **'Pongo will gradually increase the volume'**
   String get pongowillgraduallyincreasethevolume;
 
   /// beforeyouneedtowakeupat
@@ -1474,7 +1486,7 @@ abstract class AppLocalizations {
   /// repeatthissong
   ///
   /// In en, this message translates to:
-  /// **'Repet one song'**
+  /// **'Repeat one song'**
   String get repeatthissong;
 
   /// repeatthequeue

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 
 class OnlinePlaylistAppBarPhone extends StatelessWidget {
   final String title;
@@ -84,11 +85,13 @@ class OnlinePlaylistAppBarPhone extends StatelessWidget {
                     ? 1
                     : scrollControllerOffset /
                         (MediaQuery.of(context).size.height / 2),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                  sigmaX: useBlur.value ? 10 : 0,
-                  sigmaY: useBlur.value ? 10 : 0),
-              child: Container(),
+            child: liquidGlassBackground(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                    sigmaX: useBlur.value && !kIsApple ? 10 : 0,
+                    sigmaY: useBlur.value && !kIsApple ? 10 : 0),
+                child: Container(),
+              ),
             ),
           ),
         ),

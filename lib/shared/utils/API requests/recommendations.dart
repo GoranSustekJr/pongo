@@ -2,8 +2,6 @@ import 'package:pongo/exports.dart';
 import 'package:http/http.dart' as http;
 
 class Recommendations {
-  // REMOVED     REMOVED
-
   Future<Map> get(context) async {
     int tries = 0;
 

@@ -446,6 +446,16 @@
         "description": "sync"
     },
 
+    "useanimations": "Use animations",
+    "@useanimations": {
+        "description": "useanimations"
+    },
+
+    "turnoffifanimationsaretoohardonthedevice": "Turn off if animations are too hard on the device",
+    "@turnoffifanimationsaretoohardonthedevice": {
+        "description": "turnoffifanimationsaretoohardonthedevice"
+    },
+
     "nosynclyrics": "No synced lyrics",
     "@nosynclyrics": {
         "description": "nosynclyrics"
@@ -1066,7 +1076,7 @@
         "description": "pongowillgraduallylowerthevolumefor"
     },
 
-    "pongowillgraduallyincreasethevolume": "Pongo will gradually increase the valume",
+    "pongowillgraduallyincreasethevolume": "Pongo will gradually increase the volume",
     "@pongowillgraduallyincreasethevolume": {
         "description": "pongowillgraduallyincreasethevolume"
     },
@@ -1156,7 +1166,7 @@
         "description": "repeatoff"
     },
 
-    "repeatthissong": "Repet one song",
+    "repeatthissong": "Repeat one song",
     "@repeatthissong": {
         "description": "repeatthissong"
     },

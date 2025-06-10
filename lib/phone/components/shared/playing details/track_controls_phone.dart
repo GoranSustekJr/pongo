@@ -79,105 +79,132 @@ class TrackControlsPhone extends StatelessWidget {
                   )
                 : null,
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(
-                  sigmaX: ((lyricsOn && lyricsExist) && syncLyrics) ||
-                          !useBlur.value
-                      ? 0.1
-                      : x,
-                  sigmaY: ((lyricsOn && lyricsExist) && syncLyrics) ||
-                          !useBlur.value
-                      ? 0.1
-                      : x),
-              blendMode: BlendMode.src,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 15,
-                  right: 15,
-                  top: 10,
-                ),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 500),
-                  switchInCurve: Curves.fastOutSlowIn,
-                  switchOutCurve: Curves.fastEaseInToSlowEaseOut,
-                  child: StreamBuilder(
-                      key: ValueKey(currentMediaItem.id),
-                      stream: audioServiceHandler.playbackState,
-                      builder: (context, playbackState) {
-                        return Column(
-                          children: [
-                            // razh(50),
-                            TitleArtistVisualizerPhone(
-                              name: currentMediaItem.title,
-                              stid: currentMediaItem.id.split('.')[2],
-                              artistJson: currentMediaItem.extras!["artists"],
-                              playbackState: playbackState,
-                              smallImage:
-                                  (lyricsOn && lyricsExist) || showQueue,
-                              mix: currentMediaItem.extras!["mix"] ??
-                                  false ||
-                                      RegExp(r'Mix #\d{1,2}')
-                                          .hasMatch(currentMediaItem.title),
-                              showArtist: showArtist,
-                            ),
-                            TrackProgressPhone(
-                              album: currentMediaItem.album!,
-                              duration: currentMediaItem.duration,
-                              showAlbum: showAlbum,
-                            ),
-                            PlayControlPhone(
-                              mediaItem: currentMediaItem,
-                              playbackState: playbackState,
-                            ),
-                            const VolumeControlPhone(),
-                            OtherControlsPhone(
-                              lyricsOn: lyricsOn,
-                              lyricsExist: lyricsExist,
-                              showQueue: showQueue,
-                              track: Track(
-                                id: currentMediaItem.id,
-                                name: currentMediaItem.title,
-                                artists: (jsonDecode(
-                                            currentMediaItem.extras!["artists"])
-                                        as List)
-                                    .map((artistMap) => ArtistTrack.fromMap(
-                                        artistMap as Map<String, dynamic>))
-                                    .toList(),
-                                album: currentMediaItem.album != null
-                                    ? AlbumTrack(
-                                        id: currentMediaItem.album!
-                                            .split('..Ææ..')[0],
-                                        name: currentMediaItem.album!
-                                            .split('..Ææ..')[1],
-                                        releaseDate: currentMediaItem
-                                            .extras!["released"],
-                                        images: currentMediaItem.artUri != null
-                                            ? [
-                                                AlbumImagesTrack(
-                                                    url: currentMediaItem
-                                                        .artUri!
-                                                        .toString(),
-                                                    height: null,
-                                                    width: null)
-                                              ]
-                                            : [],
-                                      )
-                                    : null,
-                              ),
-                              downloadTrack: () async {
-                                await Download().single(currentMediaItem);
-                              },
-                              changeLyricsOn: changeLyricsOn,
-                              changeShowQueue: changeShowQueue,
-                            ),
-                          ],
-                        );
-                      }),
+          child: Stack(
+            children: [
+              AnimatedOpacity(
+                duration: const Duration(milliseconds: 250),
+                opacity: showQueue ? 1 : 0,
+                child: LiquidGlass(
+                    blur: kIsApple ? AppConstants().liquidGlassBlur : 0,
+                    opacity: kIsApple ? 0.2 : 0,
+                    tint: kIsApple
+                        ? ((lyricsOn && lyricsExist) && syncLyrics)
+                            ? Col.transp
+                            : Colors.white
+                        : Col.transp,
+                    borderRadius: kIsApple
+                        ? const BorderRadius.all(Radius.circular(28))
+                        : BorderRadius.zero,
+                    child: Container()),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                      sigmaX: kIsApple
+                          ? 0
+                          : ((lyricsOn && lyricsExist) && syncLyrics) ||
+                                  !useBlur.value
+                              ? 0.1
+                              : x,
+                      sigmaY: kIsApple
+                          ? 0
+                          : ((lyricsOn && lyricsExist) && syncLyrics) ||
+                                  !useBlur.value
+                              ? 0.1
+                              : x),
+                  //blendMode: BlendMode.src,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 15,
+                      right: 15,
+                      top: 10,
+                    ),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 500),
+                      switchInCurve: Curves.fastOutSlowIn,
+                      switchOutCurve: Curves.fastEaseInToSlowEaseOut,
+                      child: StreamBuilder(
+                          key: ValueKey(currentMediaItem.id),
+                          stream: audioServiceHandler.playbackState,
+                          builder: (context, playbackState) {
+                            return Column(
+                              children: [
+                                // razh(50),
+                                TitleArtistVisualizerPhone(
+                                  name: currentMediaItem.title,
+                                  stid: currentMediaItem.id.split('.')[2],
+                                  artistJson:
+                                      currentMediaItem.extras!["artists"],
+                                  playbackState: playbackState,
+                                  smallImage:
+                                      (lyricsOn && lyricsExist) || showQueue,
+                                  mix: currentMediaItem.extras!["mix"] ??
+                                      false ||
+                                          RegExp(r'Mix #\d{1,2}')
+                                              .hasMatch(currentMediaItem.title),
+                                  showArtist: showArtist,
+                                ),
+                                TrackProgressPhone(
+                                  album: currentMediaItem.album!,
+                                  albumId: currentMediaItem.extras!["album"]
+                                      .split("..Ææ..")[0],
+                                  duration: currentMediaItem.duration,
+                                  showAlbum: showAlbum,
+                                ),
+                                PlayControlPhone(
+                                  mediaItem: currentMediaItem,
+                                  playbackState: playbackState,
+                                ),
+                                const VolumeControlPhone(),
+                                OtherControlsPhone(
+                                  lyricsOn: lyricsOn,
+                                  lyricsExist: lyricsExist,
+                                  showQueue: showQueue,
+                                  track: Track(
+                                    id: currentMediaItem.id,
+                                    name: currentMediaItem.title,
+                                    artists: (jsonDecode(currentMediaItem
+                                            .extras!["artists"]) as List)
+                                        .map((artistMap) => ArtistTrack.fromMap(
+                                            artistMap as Map<String, dynamic>))
+                                        .toList(),
+                                    album: currentMediaItem.album != null
+                                        ? AlbumTrack(
+                                            id: currentMediaItem.album!,
+                                            name: currentMediaItem
+                                                .extras!["album"]
+                                                .split('..Ææ..')[1],
+                                            releaseDate: currentMediaItem
+                                                .extras!["released"],
+                                            images: currentMediaItem.artUri !=
+                                                    null
+                                                ? [
+                                                    AlbumImagesTrack(
+                                                        url: currentMediaItem
+                                                            .artUri!
+                                                            .toString(),
+                                                        height: null,
+                                                        width: null)
+                                                  ]
+                                                : [],
+                                          )
+                                        : null,
+                                  ),
+                                  downloadTrack: () async {
+                                    await Download().single(currentMediaItem);
+                                  },
+                                  changeLyricsOn: changeLyricsOn,
+                                  changeShowQueue: changeShowQueue,
+                                ),
+                              ],
+                            );
+                          }),
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
           /*   ],
           ), */

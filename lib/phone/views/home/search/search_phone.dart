@@ -36,7 +36,7 @@ class _SearchPhoneState extends State<SearchPhone> {
       child:
           Consumer<SearchDataManager>(builder: (context, dataManager, child) {
         return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 250),
+          duration: Duration(milliseconds: animations ? 250 : 0),
           child: searchDataManager.tracks.isEmpty
               ? SizedBox(
                   width: MediaQuery.of(context).size.width,

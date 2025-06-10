@@ -4,9 +4,9 @@ import 'dart:ui';
 import 'package:pongo/exports.dart';
 
 class AppConstants {
-  static const String SERVER_URL = "https://gogodom.ddns.net:48129/";
+  static final String SERVER_URL = dotenv.get('SERVER_URL');
 
-  static const String SERVER_URL_WSS = "REMOVED";
+  static final String SERVER_URL_WSS = dotenv.get('SERVER_URL_WSS');
 
   static const String LYRICS_URL = "https://lrclib.net/api/get?";
 
@@ -14,6 +14,8 @@ class AppConstants {
       ? r'L03[fE,t|H$Q712s2swd{}{}OD{}'
       : r'K8S$M-%~MJrr*J*JR5MJHr'; //r'UAQwR.X8$$10OYAD}r}rR+5mJ8=wxu9^S21I'
   //r'L03[fE,t|H$Q712s2swd{}{}OD{}';
+
+  double liquidGlassBlur = 15;
 
   BoxDecoration backgroundBoxDecoration = BoxDecoration(
     // color: Colors.black,

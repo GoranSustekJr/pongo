@@ -10,7 +10,7 @@ class AuthRedirectPhone extends StatelessWidget {
         valueListenable: isUserSignedIn,
         builder: (context, signedIn, child) {
           return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
+            duration: Duration(milliseconds: animations ? 500 : 0),
             switchInCurve: Curves.easeInOut,
             child: signedIn
                 ? const BottomNavigationScreenPhone(

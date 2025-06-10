@@ -2,8 +2,6 @@ import 'package:pongo/exports.dart';
 import 'package:http/http.dart' as http;
 
 class DeleteAccount {
-  // REMOVED     REMOVED
-
   // Initialize the API
 
   Future delete(context) async {

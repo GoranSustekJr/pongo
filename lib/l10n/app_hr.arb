@@ -106,6 +106,8 @@
     "playlistalreadycontainsthistrack": "Playlista već sadrži ovu pjesmu",
     "plain": "Plain",
     "sync": "Sync",
+    "useanimations": "Koristi animacije",
+    "turnoffifanimationsaretoohardonthedevice": "Isključi ako animacije previše opterećuju uređaj",
     "nosynclyrics": "Nema sinkroniziranih stihova",
     "nolyricsavailable": "Stihovi nisu dostupni",    
     "noplainlyrics": "Nema običnih stihova",

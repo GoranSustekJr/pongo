@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/components/shared/sliver/sliver_app_bar.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 
 class PlaylistPhone extends StatefulWidget {
   final BuildContext context;
@@ -260,18 +261,26 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(60),
-                                          child: BackdropFilter(
-                                            filter: ImageFilter.blur(
-                                                sigmaX: useBlur.value ? 10 : 0,
-                                                sigmaY: useBlur.value ? 10 : 0),
-                                            child: PlayShuffleHaltPlaylist(
-                                              playlist: widget.playlist,
-                                              missingTracks: missingTracks,
-                                              loadingShuffle: loadingShuffle,
-                                              play: () {
-                                                play(index: 0);
-                                              },
-                                              shuffle: playShuffle,
+                                          child: liquidGlassBackground(
+                                            child: BackdropFilter(
+                                              filter: ImageFilter.blur(
+                                                  sigmaX:
+                                                      useBlur.value && !kIsApple
+                                                          ? 10
+                                                          : 0,
+                                                  sigmaY:
+                                                      useBlur.value && !kIsApple
+                                                          ? 10
+                                                          : 0),
+                                              child: PlayShuffleHaltPlaylist(
+                                                playlist: widget.playlist,
+                                                missingTracks: missingTracks,
+                                                loadingShuffle: loadingShuffle,
+                                                play: () {
+                                                  play(index: 0);
+                                                },
+                                                shuffle: playShuffle,
+                                              ),
                                             ),
                                           ),
                                         ),

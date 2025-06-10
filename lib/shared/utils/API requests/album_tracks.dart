@@ -2,8 +2,6 @@ import 'package:pongo/exports.dart';
 import 'package:http/http.dart' as http;
 
 class AlbumSpotify {
-  // REMOVED     REMOVED
-
   // Initialize the API
 
   Future<Map> getData(context, String salid) async {

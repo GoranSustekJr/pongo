@@ -7,9 +7,7 @@ class MediaItemObject {
       id: id,
       title: name,
       artist: track.artists.map((artist) => artist.name).join(', '),
-      album: track.album != null
-          ? "${track.album!.id}..Ææ..${track.album!.name}"
-          : "..Ææ..",
+      album: track.album?.name, //TODO: Remove
       duration: duration,
       artUri: track.album != null
           ? Uri.parse(calculateBestImageForTrack(track.album!.images))
@@ -21,6 +19,9 @@ class MediaItemObject {
         "released": track.album != null ? track.album!.releaseDate : "",
         "online": online,
         "mix": mix,
+        "album": track.album != null
+            ? "${track.album!.id}..Ææ..${track.album!.name}"
+            : "..Ææ..",
       },
     );
   }

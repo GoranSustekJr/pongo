@@ -90,8 +90,8 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                 body: CustomScrollView(
                   slivers: [
                     SliverAppBar(
-                      snap: true,
-                      floating: true,
+                      //snap: true,
+                      //floating: true,
                       pinned: true,
                       stretch: true,
                       backgroundColor: useBlur.value

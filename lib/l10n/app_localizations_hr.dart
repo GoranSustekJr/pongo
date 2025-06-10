@@ -273,6 +273,12 @@ class AppLocalizationsHr extends AppLocalizations {
   String get sync => 'Sync';
 
   @override
+  String get useanimations => 'Koristi animacije';
+
+  @override
+  String get turnoffifanimationsaretoohardonthedevice => 'Isključi ako animacije previše opterećuju uređaj';
+
+  @override
   String get nosynclyrics => 'Nema sinkroniziranih stihova';
 
   @override

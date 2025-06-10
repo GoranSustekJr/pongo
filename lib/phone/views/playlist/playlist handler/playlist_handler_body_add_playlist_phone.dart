@@ -1,4 +1,5 @@
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 
 class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
   final dynamic cover;
@@ -25,48 +26,50 @@ class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
         Column(
           children: [
             razh(kToolbarHeight + 30),
-            Container(
-              width: 250,
-              height: 250,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Col.primaryCard.withAlpha(200),
-              ),
-              child: Stack(
-                children: [
-                  if (cover != null)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: FadeInImage(
-                        width: 250,
-                        fit: BoxFit.cover,
-                        height: 250,
-                        placeholder:
-                            const AssetImage('assets/images/placeholder.png'),
-                        fadeInDuration: const Duration(milliseconds: 200),
-                        fadeOutDuration: const Duration(milliseconds: 200),
-                        image: cover.runtimeType == String
-                            ? !cover.toString().contains('file:///')
-                                ? NetworkImage(cover!)
-                                : FileImage(
-                                    File.fromUri(Uri.parse(cover!)),
-                                  )
-                            : FileImage((cover as File)),
+            liquidGlassBackground(
+              child: Container(
+                width: 250,
+                height: 250,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: kIsApple ? Col.transp : Col.primaryCard.withAlpha(200),
+                ),
+                child: Stack(
+                  children: [
+                    if (cover != null)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: FadeInImage(
+                          width: 250,
+                          fit: BoxFit.cover,
+                          height: 250,
+                          placeholder:
+                              const AssetImage('assets/images/placeholder.png'),
+                          fadeInDuration: const Duration(milliseconds: 200),
+                          fadeOutDuration: const Duration(milliseconds: 200),
+                          image: cover.runtimeType == String
+                              ? !cover.toString().contains('file:///')
+                                  ? NetworkImage(cover!)
+                                  : FileImage(
+                                      File.fromUri(Uri.parse(cover!)),
+                                    )
+                              : FileImage((cover as File)),
+                        ),
                       ),
-                    ),
-                  Center(
-                      child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(360),
-                        color: Col.primaryCard.withAlpha(200)),
-                    child: iconButton(
-                      Icons.camera_alt_rounded,
-                      Col.icon,
-                      size: 30,
-                      pickImage,
-                    ),
-                  )),
-                ],
+                    Center(
+                        child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(360),
+                          color: Col.primaryCard.withAlpha(200)),
+                      child: iconButton(
+                        Icons.camera_alt_rounded,
+                        Col.icon,
+                        size: 30,
+                        pickImage,
+                      ),
+                    )),
+                  ],
+                ),
               ),
             ),
             razh(25),

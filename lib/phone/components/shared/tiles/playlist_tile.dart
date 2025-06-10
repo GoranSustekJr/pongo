@@ -55,7 +55,7 @@ class PlaylistTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            if (!first)
+            if (!first && !kIsApple)
               Container(
                 height: 1,
                 width: MediaQuery.of(context).size.width,
@@ -162,12 +162,17 @@ class PlaylistTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: ClipRRect(
         child: kIsApple
-            ? CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: child,
-                onPressed: () {
-                  function();
-                })
+            ? LiquidGlass(
+                blur: AppConstants().liquidGlassBlur,
+                borderRadius: borderRadius,
+                tint: Col.text,
+                child: CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    child: child,
+                    onPressed: () {
+                      function();
+                    }),
+              )
             : ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: inkWell(

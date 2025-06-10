@@ -26,15 +26,16 @@ class AddToQueue {
             id: "$id${track.id}",
             title: track.name,
             artist: track.artists.map((artist) => artist.name).join(', '),
-            album: track.album != null
-                ? "${track.album!.id}..Ææ..${track.album!.name}"
-                : "..Ææ..",
+            album: track.album?.name, //TODO: Remove
             duration: Duration(milliseconds: (duration * 1000).toInt()),
             artUri: track.album != null
                 ? Uri.parse(calculateBestImageForTrack(track.album!.images))
                 : null,
             extras: {
               "released": track.album != null ? track.album!.releaseDate : "",
+              "album": track.album != null
+                  ? "${track.album!.id}..Ææ..${track.album!.name}"
+                  : "..Ææ..",
             },
           );
           changeTrackOnTap.value = false;
@@ -48,15 +49,16 @@ class AddToQueue {
         id: "$id${track.id}",
         title: track.name,
         artist: track.artists.map((artist) => artist.name).join(', '),
-        album: track.album != null
-            ? "${track.album!.id}..Ææ..${track.album!.name}"
-            : "..Ææ..",
+        album: track.album?.name, //TODO: Remove
         duration: Duration(milliseconds: (duration["duration"] * 1000).toInt()),
         artUri: track.album != null
             ? Uri.parse(calculateBestImageForTrack(track.album!.images))
             : null,
         extras: {
           "released": track.album != null ? track.album!.releaseDate : "",
+          "album": track.album != null
+              ? "${track.album!.id}..Ææ..${track.album!.name}"
+              : "..Ææ..",
         },
       );
       changeTrackOnTap.value = false;
@@ -91,9 +93,7 @@ class AddToQueue {
             id: "$id${track.id}",
             title: track.name,
             artist: track.artists.map((artist) => artist.name).join(', '),
-            album: track.album != null
-                ? "${track.album!.id}..Ææ..${track.album!.name}"
-                : "..Ææ..",
+            album: track.album?.name, //TODO: Remove
             duration: Duration(milliseconds: (duration * 1000).toInt()),
             artUri: track.album != null
                 ? Uri.parse(calculateBestImageForTrack(track.album!.images))
@@ -103,6 +103,9 @@ class AddToQueue {
                   .map((artist) => {"id": artist.id, "name": artist.name})
                   .toList()),
               "released": track.album != null ? track.album!.releaseDate : "",
+              "album": track.album != null
+                  ? "${track.album!.id}..Ææ..${track.album!.name}"
+                  : "..Ææ..",
             },
           );
           changeTrackOnTap.value = false;
@@ -116,9 +119,7 @@ class AddToQueue {
         id: "$id${track.id}",
         title: track.name,
         artist: track.artists.map((artist) => artist.name).join(', '),
-        album: track.album != null
-            ? "${track.album!.id}..Ææ..${track.album!.name}"
-            : "..Ææ..",
+        album: track.album?.name, //TODO: Remove
         duration: Duration(milliseconds: (duration["duration"] * 1000).toInt()),
         artUri: track.album != null
             ? Uri.parse(calculateBestImageForTrack(track.album!.images))
@@ -128,6 +129,9 @@ class AddToQueue {
               .map((artist) => {"id": artist.id, "name": artist.name})
               .toList()),
           "released": track.album != null ? track.album!.releaseDate : "",
+          "album": track.album != null
+              ? "${track.album!.id}..Ææ..${track.album!.name}"
+              : "..Ææ..",
         },
       );
       changeTrackOnTap.value = false;
@@ -161,9 +165,7 @@ class AddToQueue {
             id: "$id${track.id}",
             title: track.name,
             artist: track.artists.map((artist) => artist.name).join(', '),
-            album: track.album != null
-                ? "${track.album!.id}..Ææ..${track.album!.name}"
-                : "..Ææ..",
+            album: track.album?.name, //TODO: Remove
             duration: Duration(milliseconds: (duration * 1000).toInt()),
             artUri: track.album != null
                 ? Uri.parse(calculateBestImageForTrack(track.album!.images))
@@ -173,6 +175,9 @@ class AddToQueue {
                   .map((artist) => {"id": artist.id, "name": artist.name})
                   .toList()),
               "released": track.album != null ? track.album!.releaseDate : "",
+              "album": track.album != null
+                  ? "${track.album!.id}..Ææ..${track.album!.name}"
+                  : "..Ææ..",
             },
           );
           changeTrackOnTap.value = false;
@@ -193,9 +198,7 @@ class AddToQueue {
         id: "$id${track.id}",
         title: track.name,
         artist: track.artists.map((artist) => artist.name).join(', '),
-        album: track.album != null
-            ? "${track.album!.id}..Ææ..${track.album!.name}"
-            : "..Ææ..",
+        album: track.album?.name, //TODO: Remove
         duration: Duration(milliseconds: (duration["duration"] * 1000).toInt()),
         artUri: track.album != null
             ? Uri.parse(calculateBestImageForTrack(track.album!.images))
@@ -205,6 +208,9 @@ class AddToQueue {
               .map((artist) => {"id": artist.id, "name": artist.name})
               .toList()),
           "released": track.album != null ? track.album!.releaseDate : "",
+          "album": track.album != null
+              ? "${track.album!.id}..Ææ..${track.album!.name}"
+              : "..Ææ..",
         },
       );
       changeTrackOnTap.value = false;
@@ -246,9 +252,7 @@ class AddToQueue {
             id: "$id${track.id}",
             title: track.name,
             artist: track.artists.map((artist) => artist.name).join(', '),
-            album: track.album != null
-                ? "${track.album!.id}..Ææ..${track.album!.name}"
-                : "..Ææ..",
+            album: track.album?.name, //TODO: Remove
             duration: Duration(milliseconds: (duration * 1000).toInt()),
             artUri: track.album != null
                 ? Uri.parse(calculateBestImageForTrack(track.album!.images))
@@ -258,6 +262,9 @@ class AddToQueue {
                   .map((artist) => {"id": artist.id, "name": artist.name})
                   .toList()),
               "released": track.album != null ? track.album!.releaseDate : "",
+              "album": track.album != null
+                  ? "${track.album!.id}..Ææ..${track.album!.name}"
+                  : "..Ææ..",
             },
           );
           changeTrackOnTap.value = false;
@@ -278,9 +285,7 @@ class AddToQueue {
         id: "$id${track.id}",
         title: track.name,
         artist: track.artists.map((artist) => artist.name).join(', '),
-        album: track.album != null
-            ? "${track.album!.id}..Ææ..${track.album!.name}"
-            : "..Ææ..",
+        album: track.album?.name, //TODO: Remove
         duration: Duration(milliseconds: (duration["duration"] * 1000).toInt()),
         artUri: track.album != null
             ? Uri.parse(calculateBestImageForTrack(track.album!.images))
@@ -290,6 +295,9 @@ class AddToQueue {
               .map((artist) => {"id": artist.id, "name": artist.name})
               .toList()),
           "released": track.album != null ? track.album!.releaseDate : "",
+          "album": track.album != null
+              ? "${track.album!.id}..Ææ..${track.album!.name}"
+              : "..Ææ..",
         },
       );
       changeTrackOnTap.value = false;

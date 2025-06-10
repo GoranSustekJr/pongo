@@ -122,6 +122,9 @@ dependencies:
   flutter_desktop_context_menu: ^0.2.0
   star_menu: ^4.0.1
   flutter_cube: ^0.1.1
+  flutter_dotenv: ^5.2.1
+  figma_spring_curve: ^1.0.0+1
+  liquid_glass: ^0.0.2
 #  ffmpeg_kit_flutter: ^6.0.3
 
   
@@ -178,6 +181,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - .env
     - assets/images/placeholder.png
     - assets/images/pongo_background_10k.png
     - assets/images/pongo.png

@@ -70,6 +70,9 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   // dynamic blurhash
   bool usDynamicBlurhash = false;
 
+  // Use animations
+  bool useAnimations = true;
+
   @override
   void initState() {
     super.initState();
@@ -108,6 +111,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final linearSlpin = await Storage().getLinearSleepin();
     final linearWkup = await Storage().getLinearWakeup();
     final usDynmicBlurhash = await Storage().getUseDynamicBlurhash();
+    final usAnimations = await Storage().getUseAnimations();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -130,6 +134,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       linearSleepIn = linearSlpin;
       linearWakeUp = linearWkup;
       usDynamicBlurhash = usDynmicBlurhash;
+      useAnimations = usAnimations;
     });
   }
 
@@ -157,8 +162,8 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                 body: CustomScrollView(
                   slivers: [
                     SliverAppBar(
-                      snap: true,
-                      floating: true,
+                      //snap: true,
+                      //floating: true,
                       pinned: true,
                       stretch: true,
                       backgroundColor: useBlur.value
@@ -589,6 +594,22 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                               settingsTileSwitcher(
                                   context,
                                   true,
+                                  false,
+                                  Icons.animation_rounded,
+                                  useAnimations,
+                                  AppLocalizations.of(context).useanimations,
+                                  AppLocalizations.of(context)
+                                      .turnoffifanimationsaretoohardonthedevice,
+                                  (use) async {
+                                setState(() {
+                                  useAnimations = use;
+                                });
+                                animations = use;
+                                await Storage().writeUseAnimations(use);
+                              }),
+                              settingsTileSwitcher(
+                                  context,
+                                  false,
                                   false,
                                   AppIcons.image,
                                   usDynamicBlurhash,

@@ -39,6 +39,7 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: size.width - 30,
+                      height: 26,
                       child: AnimatedAlign(
                         alignment: playbackState.data != null && !smallImage
                             ? playbackState.data!.playing

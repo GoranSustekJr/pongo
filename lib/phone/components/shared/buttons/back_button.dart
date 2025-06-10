@@ -7,7 +7,7 @@ backButton(context) {
     width: 50,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(60),
-      color: Colors.black.withAlpha(100),
+      color: kIsApple ? null : Colors.black.withAlpha(100),
     ),
     child: const Stack(
       children: [
@@ -24,14 +24,19 @@ backButton(context) {
     ),
   );
   return kIsApple
-      ? CupertinoButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            showBottomNavBar.value = true;
-            showSearchBar.value = true;
-          },
-          padding: EdgeInsets.zero,
-          child: child,
+      ? LiquidGlass(
+          blur: AppConstants().liquidGlassBlur,
+          borderRadius: BorderRadius.circular(360),
+          tint: Col.text,
+          child: CupertinoButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              showBottomNavBar.value = true;
+              showSearchBar.value = true;
+            },
+            padding: EdgeInsets.zero,
+            child: child,
+          ),
         )
       : ClipRRect(
           borderRadius: BorderRadius.circular(360),

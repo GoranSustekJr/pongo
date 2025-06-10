@@ -273,6 +273,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sync => 'Sync';
 
   @override
+  String get useanimations => 'Animationen verwenden';
+
+  @override
+  String get turnoffifanimationsaretoohardonthedevice => 'Deaktiviere, wenn Animationen das Gerät zu stark belasten';
+
+  @override
   String get nosynclyrics => 'Keine synchronisierten Texte';
 
   @override

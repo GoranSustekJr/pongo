@@ -35,9 +35,7 @@ class QueueAddMultiple {
             id: "$baseId.${tracks[i].id}",
             title: tracks[i].name,
             artist: tracks[i].artists.map((artist) => artist.name).join(', '),
-            album: tracks[i].album != null
-                ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
-                : "..Ææ..",
+            album: tracks[i].album?.name, //TODO: Remove
             duration: Duration(
                 milliseconds: (existingTracks[tracks[i].id]! * 1000).toInt()),
             artUri: tracks[i].album != null
@@ -51,6 +49,9 @@ class QueueAddMultiple {
               "online": online,
               "released":
                   tracks[i].album != null ? tracks[i].album!.releaseDate : "",
+              "album": tracks[i].album != null
+                  ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+                  : "..Ææ..",
             },
           );
 
@@ -96,9 +97,7 @@ class QueueAddMultiple {
                 title: tracks[i].name,
                 artist:
                     tracks[i].artists.map((artist) => artist.name).join(', '),
-                album: tracks[i].album != null
-                    ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
-                    : "..Ææ..",
+                album: tracks[i].album?.name, //TODO: Remove
                 duration: Duration(milliseconds: (duration * 1000).toInt()),
                 artUri: tracks[i].album != null
                     ? Uri.parse(
@@ -113,6 +112,9 @@ class QueueAddMultiple {
                   "released": tracks[i].album != null
                       ? tracks[i].album!.releaseDate
                       : "",
+                  "album": tracks[i].album != null
+                      ? "${tracks[i].album!.id}..Ææ..${tracks[i].album!.name}"
+                      : "..Ææ..",
                 },
               );
 

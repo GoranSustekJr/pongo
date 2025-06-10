@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 
 class SliverAppBarPhone extends StatelessWidget {
   final String name;
@@ -265,12 +266,14 @@ class SliverAppBarPhone extends StatelessWidget {
               child: ClipRRect(
                 borderRadius:
                     kIsDesktop ? BorderRadius.circular(15) : BorderRadius.zero,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: useBlur.value ? 10 : 0,
-                    sigmaY: useBlur.value ? 10 : 0,
+                child: liquidGlassBackground(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: useBlur.value && !kIsApple ? 10 : 0,
+                      sigmaY: useBlur.value && !kIsApple ? 10 : 0,
+                    ),
+                    child: Container(),
                   ),
-                  child: Container(),
                 ),
               ),
             ),

@@ -8,9 +8,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class OAuth2 {
   final String oauth2APIClientID = kIsApple || kIsMacOS
-      ? "REMOVED"
-      : "REMOVED";
-  //final String oauth2APISecret = "REMOVED";
+      ? dotenv.get('iosClientID')
+      : dotenv.get('androidClientID');
 
   mobileSignInGoogle(context) async {
     // Create mobile sign in session
@@ -135,18 +134,17 @@ class OAuth2 {
   }
 
   computerSignInGoogle(context) async {
-    var clientId =
-        'REMOVED';
-    var clientSecret = 'REMOVED';
+    var clientId = dotenv.get('desktopClientID');
+    var clientSecret = dotenv.get('desktopClientSecred');
     var scopes = ['email', 'profile'];
 
     var client = await clientViaUserConsent(
       auth.ClientId(clientId, clientSecret),
       scopes,
       (url) async {
-        if (await canLaunch(url)) {
+        try {
           await launch(url);
-        } else {
+        } catch (e) {
           //print('Could not launch $url');
         }
       },

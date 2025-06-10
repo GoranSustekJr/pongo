@@ -4,6 +4,7 @@ import '../../../../../exports.dart';
 
 class TrackProgressPhone extends StatefulWidget {
   final String album;
+  final String albumId;
   final Duration? duration;
   final Function(String) showAlbum;
 
@@ -12,6 +13,7 @@ class TrackProgressPhone extends StatefulWidget {
     required this.album,
     required this.duration,
     required this.showAlbum,
+    required this.albumId,
   });
 
   @override
@@ -121,11 +123,10 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                         child: CupertinoButton(
                           padding: EdgeInsets.zero,
                           onPressed: () async {
-                            await widget
-                                .showAlbum(widget.album.split("..Ææ..")[0]);
+                            await widget.showAlbum(widget.albumId);
                           },
                           child: marquee(
-                            widget.album.split("..Ææ..")[1],
+                            widget.album,
                             TextStyle(
                                 color: Colors.white.withAlpha(200),
                                 fontSize: 12),

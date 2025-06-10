@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 
 class OnlinePlaylistPhone extends StatefulWidget {
   final int opid;
@@ -577,39 +578,46 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                 child: Padding(
                                   padding: const EdgeInsets.only(
                                       left: 15, right: 15, top: 5),
-                                  child: Container(
-                                    decoration: BoxDecoration(
+                                  child: liquidGlassBackground(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(60),
+                                          color: useBlur.value
+                                              ? Col.transp
+                                              : Col.realBackground.withAlpha(
+                                                  AppConstants().noBlur)),
+                                      child: ClipRRect(
                                         borderRadius: BorderRadius.circular(60),
-                                        color: useBlur.value
-                                            ? Col.transp
-                                            : Col.realBackground.withAlpha(
-                                                AppConstants().noBlur)),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(60),
-                                      child: BackdropFilter(
-                                        filter: ImageFilter.blur(
-                                            sigmaX: useBlur.value ? 10 : 0,
-                                            sigmaY: useBlur.value ? 10 : 0),
-                                        child: PlayShuffleHaltOnlinePlaylist(
-                                          opid: widget.opid,
-                                          missingTracks: missingTracks,
-                                          loadingShuffle: loadingShuffle,
-                                          edit: edit,
-                                          allSelected: selectedStids.length ==
-                                              tracks.length,
-                                          frontWidget: const SizedBox(),
-                                          endWidget: const SizedBox(),
-                                          play: () {
-                                            play(index: 0);
-                                          },
-                                          shuffle: playShuffle,
-                                          stopEdit: stopEdit,
-                                          remove: remove,
-                                          addToPlaylist: addToPlaylist,
-                                          show: showSelected,
-                                          hide: hideSelected,
-                                          selectAll: selectAll,
-                                          download: download,
+                                        child: BackdropFilter(
+                                          filter: ImageFilter.blur(
+                                              sigmaX: useBlur.value && !kIsApple
+                                                  ? 10
+                                                  : 0,
+                                              sigmaY: useBlur.value && !kIsApple
+                                                  ? 10
+                                                  : 0),
+                                          child: PlayShuffleHaltOnlinePlaylist(
+                                            opid: widget.opid,
+                                            missingTracks: missingTracks,
+                                            loadingShuffle: loadingShuffle,
+                                            edit: edit,
+                                            allSelected: selectedStids.length ==
+                                                tracks.length,
+                                            frontWidget: const SizedBox(),
+                                            endWidget: const SizedBox(),
+                                            play: () {
+                                              play(index: 0);
+                                            },
+                                            shuffle: playShuffle,
+                                            stopEdit: stopEdit,
+                                            remove: remove,
+                                            addToPlaylist: addToPlaylist,
+                                            show: showSelected,
+                                            hide: hideSelected,
+                                            selectAll: selectAll,
+                                            download: download,
+                                          ),
                                         ),
                                       ),
                                     ),

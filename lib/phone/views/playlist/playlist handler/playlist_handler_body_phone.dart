@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/views/playlist/playlist%20handler/playlist_handler_body_add_playlist_phone.dart';
 import 'package:pongo/phone/views/playlist/playlist%20handler/selected_tracks_phone.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 
 import 'playlist_handler_body_add_tracks_phone.dart';
 
@@ -92,74 +93,76 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
             alignment: Alignment.bottomCenter,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(60),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(
-                    sigmaX: useBlur.value ? 5 : 0,
-                    sigmaY: useBlur.value ? 5 : 0),
-                child: Container(
-                  color: Colors.black.withAlpha(useBlur.value ? 50 : 200),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 350),
-                        transform: !widget.onlyCreatePlaylist
-                            ? Matrix4.translationValues(0, 0, 0)
-                            : Matrix4.translationValues(-20, 0, 0),
-                        curve: Curves.fastEaseInToSlowEaseOut,
-                        width: widget.onlyCreatePlaylist ? 0 : 65,
-                        child: iconButton(
-                          widget.showCreatePlaylist
-                              ? AppIcons.x
-                              : AppIcons.addToQueue,
-                          widget.onlyCreatePlaylist
-                              ? Colors.transparent
-                              : Colors.white,
-                          widget.changeCreatePlaylist,
+              child: liquidGlassBackground(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                      sigmaX: useBlur.value && !kIsApple ? 5 : 0,
+                      sigmaY: useBlur.value && !kIsApple ? 5 : 0),
+                  child: Container(
+                    color: Colors.black.withAlpha(useBlur.value ? 50 : 200),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 350),
+                          transform: !widget.onlyCreatePlaylist
+                              ? Matrix4.translationValues(0, 0, 0)
+                              : Matrix4.translationValues(-20, 0, 0),
+                          curve: Curves.fastEaseInToSlowEaseOut,
+                          width: widget.onlyCreatePlaylist ? 0 : 65,
+                          child: iconButton(
+                            widget.showCreatePlaylist
+                                ? AppIcons.x
+                                : AppIcons.addToQueue,
+                            widget.onlyCreatePlaylist
+                                ? Colors.transparent
+                                : Colors.white,
+                            widget.changeCreatePlaylist,
+                            edgeInsets: EdgeInsets.zero,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 25),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 350),
+                            width: widget.onlyCreatePlaylist ? 0 : 1,
+                            height: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                        textButton(
+                          AppLocalizations.of(context).cancel,
+                          () {
+                            if (!widget.working) {
+                              playlistHandler.value = null;
+                            }
+                          },
+                          const TextStyle(color: Colors.white, fontSize: 20),
                           edgeInsets: EdgeInsets.zero,
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 25),
-                        child: AnimatedContainer(
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 350),
+                            width: widget.showCreatePlaylist ? 0 : 1,
+                            height: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                        AnimatedContainer(
                           duration: const Duration(milliseconds: 350),
-                          width: widget.onlyCreatePlaylist ? 0 : 1,
-                          height: 20,
-                          color: Colors.white,
+                          curve: Curves.fastEaseInToSlowEaseOut,
+                          width: widget.showCreatePlaylist ? 0 : 65,
+                          child: iconButton(
+                            CupertinoIcons.plus,
+                            Colors.white,
+                            widget.addTracksToPlalists,
+                            edgeInsets: EdgeInsets.zero,
+                          ),
                         ),
-                      ),
-                      textButton(
-                        AppLocalizations.of(context).cancel,
-                        () {
-                          if (!widget.working) {
-                            playlistHandler.value = null;
-                          }
-                        },
-                        const TextStyle(color: Colors.white, fontSize: 20),
-                        edgeInsets: EdgeInsets.zero,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 350),
-                          width: widget.showCreatePlaylist ? 0 : 1,
-                          height: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 350),
-                        curve: Curves.fastEaseInToSlowEaseOut,
-                        width: widget.showCreatePlaylist ? 0 : 65,
-                        child: iconButton(
-                          CupertinoIcons.plus,
-                          Colors.white,
-                          widget.addTracksToPlalists,
-                          edgeInsets: EdgeInsets.zero,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

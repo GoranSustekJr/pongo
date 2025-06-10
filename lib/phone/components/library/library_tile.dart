@@ -24,7 +24,7 @@ libraryTile(
     crossAxisAlignment: CrossAxisAlignment.end,
     mainAxisAlignment: MainAxisAlignment.start,
     children: [
-      if (!first)
+      if (!first && !kIsApple)
         Container(
           height: 1,
           width: MediaQuery.of(context).size.width - 70,
@@ -93,23 +93,36 @@ libraryTile(
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 10),
     child: ClipRRect(
-        child: Container(
-      height: 50,
-      width: MediaQuery.of(context).size.width - 20,
-      decoration: BoxDecoration(
-        borderRadius: borderRadius,
-        color: Col.primaryCard.withAlpha(150),
-      ),
-      child: kIsApple
-          ? CupertinoButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                function();
-              },
-              child: child,
-            )
-          : ClipRRect(
-              borderRadius: borderRadius, child: inkWell(child, function)),
-    )),
+        child: kIsApple
+            ? LiquidGlass(
+                blur: AppConstants().liquidGlassBlur,
+                borderRadius: borderRadius,
+                tint: Col.text,
+                child: Container(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width - 20,
+                    decoration: BoxDecoration(
+                      borderRadius: borderRadius,
+                      color: Col.primaryCard.withAlpha(150),
+                    ),
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        function();
+                      },
+                      child: child,
+                    )),
+              )
+            : Container(
+                height: 50,
+                width: MediaQuery.of(context).size.width - 20,
+                decoration: BoxDecoration(
+                  borderRadius: borderRadius,
+                  color: Col.primaryCard.withAlpha(150),
+                ),
+                child: ClipRRect(
+                    borderRadius: borderRadius,
+                    child: inkWell(child, function)),
+              )),
   );
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 
 class SearchBarAndroidPhone extends StatefulWidget
@@ -29,6 +30,9 @@ class _SearchBarAndroidPhoneState extends State<SearchBarAndroidPhone> {
 
   // Query / Inserted Text
   String? query;
+
+  // Show x
+  bool showX = false;
 
   // Constant Text Form Field Border
   OutlineInputBorder border = OutlineInputBorder(
@@ -85,47 +89,60 @@ class _SearchBarAndroidPhoneState extends State<SearchBarAndroidPhone> {
                   fillColor: Col.primaryCard.withAlpha(150),
                   contentPadding: const EdgeInsets.all(10),
                   focusedBorder: border,
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      if (searchBarIsSearching.value) {
-                        setState(() {
-                          searching = false;
-                          searchBarIsSearching.value = false;
-                        });
-                        widget.focusNode.unfocus();
-                        searchController.clear();
-                        widget.setShowSearchHistory(false);
-                        widget.onFieldSubmitted("");
-                      } else {
-                        setState(() {
-                          searching = true;
-                          searchBarIsSearching.value = true;
-                        });
-                        widget.setShowSearchHistory(true);
-                        widget.focusNode.requestFocus();
-                      }
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AnimatedOpacity(
-                          duration: const Duration(milliseconds: 250),
-                          opacity: searchBarIsSearching.value ? 1 : 0,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 15),
-                            child: Text(
-                              AppLocalizations.of(context).cancel,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Col.text.withAlpha(200),
+                  suffixIcon: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.searchController.text.isNotEmpty)
+                        iconButton(AppIcons.x, Col.icon, () {
+                          setState(() {
+                            widget.searchController.clear();
+                          });
+                        }, edgeInsets: EdgeInsets.zero),
+                      CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          if (searchBarIsSearching.value) {
+                            setState(() {
+                              searching = false;
+                              searchBarIsSearching.value = false;
+                            });
+                            widget.focusNode.unfocus();
+                            searchController.clear();
+                            widget.setShowSearchHistory(false);
+                            widget.onFieldSubmitted("");
+                          } else {
+                            setState(() {
+                              searching = true;
+                              searchBarIsSearching.value = true;
+                            });
+                            widget.setShowSearchHistory(true);
+                            widget.focusNode.requestFocus();
+                          }
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AnimatedOpacity(
+                              duration:
+                                  Duration(milliseconds: animations ? 250 : 0),
+                              opacity: searchBarIsSearching.value ? 1 : 0,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 15),
+                                child: Text(
+                                  AppLocalizations.of(context).cancel,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Col.text.withAlpha(200),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

@@ -1,3 +1,5 @@
+import 'package:pongo/phone/widgets/settings/profile/profile_image.dart';
+
 import '../../../../exports.dart';
 
 class ProfilePhone extends StatefulWidget {
@@ -83,6 +85,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                     height: MediaQuery.of(context).size.height,
                     decoration: AppConstants().backgroundBoxDecoration,
                     child: Scaffold(
+                      backgroundColor: Col.transp,
                       appBar: AppBar(
                         automaticallyImplyLeading: false,
                         title: Row(
@@ -125,26 +128,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                   color: Col.text),
                             ),
                             razh(AppBar().preferredSize.height / 2),
-                            CircleAvatar(
-                              radius: 80,
-                              backgroundColor: Col.primaryCard.withAlpha(150),
-                              child: image != ""
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(360),
-                                      child: ImageCompatible(
-                                        image: image,
-                                        width: 160,
-                                        height: 160,
-                                      ),
-                                    )
-                                  : Center(
-                                      child: Icon(
-                                        AppIcons.profile,
-                                        color: Col.icon,
-                                        size: 60,
-                                      ),
-                                    ),
-                            ),
+                            profileImage(image),
                             razh(AppBar().preferredSize.height),
                             if (!hidden && name != "")
                               settingsTile(

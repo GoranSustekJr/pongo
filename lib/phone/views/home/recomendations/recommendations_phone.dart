@@ -16,7 +16,7 @@ class _RecommendationsPhoneState extends State<RecommendationsPhone> {
       child: Consumer<RecommendationsDataManager>(
           builder: (context, dataManager, child) {
         return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 250),
+          duration: Duration(milliseconds: animations ? 250 : 0),
           child: dataManager.failed
               ? SizedBox(
                   width: MediaQuery.of(context).size.width,

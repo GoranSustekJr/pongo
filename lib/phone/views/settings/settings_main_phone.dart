@@ -12,22 +12,33 @@ class SettingsMainPhone extends StatefulWidget {
 class _SettingsMainPhoneState extends State<SettingsMainPhone> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            children: [
-              Navigator(
-                key: widget.settingsHomeNavigatorKey,
-                onGenerateRoute: (routeSettings) {
-                  return MaterialPageRoute(
-                      builder: (context) => const SettingsPhone());
-                },
-              )
-            ],
-          ),
-        ));
+    return WillPopScope(
+      onWillPop: () async {
+        final canPop =
+            widget.settingsHomeNavigatorKey.currentState?.canPop() ?? false;
+        if (canPop) {
+          widget.settingsHomeNavigatorKey.currentState?.pop();
+          return false; // Prevent root navigator from popping (i.e. don't close the app)
+        }
+        return true; // Nothing to pop, let the app close
+      },
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Stack(
+              children: [
+                Navigator(
+                  key: widget.settingsHomeNavigatorKey,
+                  onGenerateRoute: (routeSettings) {
+                    return MaterialPageRoute(
+                        builder: (context) => const SettingsPhone());
+                  },
+                )
+              ],
+            ),
+          )),
+    );
   }
 }

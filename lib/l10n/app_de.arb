@@ -103,6 +103,8 @@
     "unlike": "Gefällt mir nicht",
     "plain": "Plain",
     "sync": "Sync",
+    "useanimations": "Animationen verwenden",
+    "turnoffifanimationsaretoohardonthedevice": "Deaktiviere, wenn Animationen das Gerät zu stark belasten",
     "nosynclyrics": "Keine synchronisierten Texte",
     "nolyricsavailable": "Keine Texte sind verfügbar",
     "noplainlyrics": "Keine einfachen Texte",

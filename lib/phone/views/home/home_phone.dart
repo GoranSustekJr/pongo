@@ -75,7 +75,7 @@ class _HomePhoneState extends State<HomePhone> {
                       ? 1
                       : 0,
                   duration: Duration(
-                      milliseconds: kIsAndroid
+                      milliseconds: !animations
                           ? 0
                           : searchBarIsSearching.value || focusNode.hasFocus
                               ? 350
@@ -87,7 +87,7 @@ class _HomePhoneState extends State<HomePhone> {
                 // 2. - search screen
                 AnimatedPositioned(
                   duration: Duration(
-                      milliseconds: kIsAndroid
+                      milliseconds: !animations
                           ? 0
                           : searchBarIsSearching.value || focusNode.hasFocus
                               ? 400
@@ -143,7 +143,7 @@ class _HomePhoneState extends State<HomePhone> {
                 AnimatedPositioned(
                   top: showSearchBar.value ? 0 : -100,
                   width: MediaQuery.of(context).size.width,
-                  duration: const Duration(milliseconds: 500),
+                  duration: Duration(milliseconds: animations ? 500 : 0),
                   curve: Curves.easeInOut,
                   child: kIsIOS
                       ? SearchBarIOSPhone(

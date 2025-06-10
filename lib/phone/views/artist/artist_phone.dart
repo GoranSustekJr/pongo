@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
+
 import '../../../exports.dart';
 import 'artist_body_phone.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
@@ -200,12 +202,20 @@ class _ArtistPhoneState extends State<ArtistPhone> {
                                             borderRadius: kIsDesktop
                                                 ? BorderRadius.circular(15)
                                                 : BorderRadius.zero,
-                                            child: BackdropFilter(
-                                              filter: ImageFilter.blur(
-                                                sigmaX: useBlur.value ? 10 : 0,
-                                                sigmaY: useBlur.value ? 10 : 0,
+                                            child: liquidGlassBackground(
+                                              child: BackdropFilter(
+                                                filter: ImageFilter.blur(
+                                                  sigmaX:
+                                                      useBlur.value && !kIsApple
+                                                          ? 10
+                                                          : 0,
+                                                  sigmaY:
+                                                      useBlur.value && !kIsApple
+                                                          ? 10
+                                                          : 0,
+                                                ),
+                                                child: Container(),
                                               ),
-                                              child: Container(),
                                             ),
                                           ),
                                         ),

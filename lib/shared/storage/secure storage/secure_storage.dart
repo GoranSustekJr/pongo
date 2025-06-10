@@ -46,6 +46,7 @@ class Storage {
   static String linearSleepinKey = "LINEARSLEEPINKEY";
   static String linearWakeupKey = "LINEARWAKEUPKEY";
   static String dynamicBlurhashKey = "DYNAMICBLURHASH";
+  static String useAnimationsKey = "USEANIMATIONSKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -654,6 +655,20 @@ class Storage {
     String? key = await storage.read(key: dynamicBlurhashKey);
     if (key == null) {
       return false;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Use animations
+  Future<void> writeUseAnimations(bool useAnimations) async {
+    await storage.write(key: useAnimationsKey, value: useAnimations.toString());
+  }
+
+  Future<bool> getUseAnimations() async {
+    String? key = await storage.read(key: useAnimationsKey);
+    if (key == null) {
+      return true;
     } else {
       return key == "true";
     }

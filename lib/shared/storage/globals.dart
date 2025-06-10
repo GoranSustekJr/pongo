@@ -135,3 +135,6 @@ bool useDynamicBlurhash = false;
 
 // Queue offset
 double queueScrollOffset = 0;
+
+// Use animations
+bool animations = true;

@@ -167,17 +167,24 @@ class _BottomNavigationScreenPhoneState
                 builder: (context, value, child) {
                   return AnimatedPositioned(
                     duration: Duration(
-                        milliseconds: playlistHandler.value != null ? 0 : 300),
+                        milliseconds: animations
+                            ? playlistHandler.value != null
+                                ? 0
+                                : 300
+                            : 0),
                     top: playlistHandler.value != null ? 0 : size.height,
                     curve: Curves.easeIn,
                     child: AnimatedOpacity(
                       duration: Duration(
-                          milliseconds:
-                              playlistHandler.value != null ? 500 : 300),
+                          milliseconds: animations
+                              ? playlistHandler.value != null
+                                  ? 500
+                                  : 300
+                              : 0),
                       curve: Curves.fastEaseInToSlowEaseOut,
                       opacity: playlistHandler.value != null ? 1 : 0,
                       child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 350),
+                        duration: Duration(milliseconds: animations ? 350 : 0),
                         child: playlistHandler.value != null
                             ? PlaylistHandlerPhone(
                                 key: const ValueKey(true),

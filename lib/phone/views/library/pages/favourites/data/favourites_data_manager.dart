@@ -48,7 +48,17 @@ class FavouritesDataManager with ChangeNotifier {
 
   void init() async {
     scrollController = ScrollController();
+    scrollController.addListener(scrollControllerListener);
     initFavourites();
+  }
+
+  scrollControllerListener() {
+    if (scrollController.offset < 0) {
+      scrollControllerOffset = 0;
+    } else {
+      scrollControllerOffset = scrollController.offset;
+    }
+    notifyListeners();
   }
 
   // Initialize the favourites data
@@ -209,9 +219,7 @@ class FavouritesDataManager with ChangeNotifier {
               title: favourites[i].name,
               artist:
                   favourites[i].artists.map((artist) => artist.name).join(', '),
-              album: favourites[i].album != null
-                  ? "${favourites[i].album!.id}..Ææ..${favourites[i].album!.name}"
-                  : "..Ææ..",
+              album: favourites[i].album?.name, //TODO: Remove
               duration: Duration(
                   milliseconds:
                       (existingTracks[favourites[i].id]! * 1000).toInt()),
@@ -228,6 +236,9 @@ class FavouritesDataManager with ChangeNotifier {
                 "released": favourites[i].album != null
                     ? favourites[i].album!.releaseDate
                     : "",
+                "album": favourites[i].album != null
+                    ? "${favourites[i].album!.id}..Ææ..${favourites[i].album!.name}"
+                    : "..Ææ..",
               },
             );
             mediaItems.add(mediaItem);
@@ -271,9 +282,7 @@ class FavouritesDataManager with ChangeNotifier {
           id: "library.favourites.${favourites[i].id}",
           title: favourites[i].name,
           artist: favourites[i].artists.map((artist) => artist.name).join(', '),
-          album: favourites[i].album != null
-              ? "${favourites[i].album!.id}..Ææ..${favourites[i].album!.name}"
-              : "..Ææ..",
+          album: favourites[i].album?.name, //TODO: Remove
           duration: Duration(
               milliseconds: (existingTracks[favourites[i].id]! * 1000).toInt()),
           artUri: favourites[i].album != null
@@ -288,6 +297,9 @@ class FavouritesDataManager with ChangeNotifier {
             "released": favourites[i].album != null
                 ? favourites[i].album!.releaseDate
                 : "",
+            "album": favourites[i].album != null
+                ? "${favourites[i].album!.id}..Ææ..${favourites[i].album!.name}"
+                : "..Ææ..",
           },
         );
         mediaItems.add(mediaItem);

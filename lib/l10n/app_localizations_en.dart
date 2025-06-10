@@ -273,6 +273,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sync => 'sync';
 
   @override
+  String get useanimations => 'Use animations';
+
+  @override
+  String get turnoffifanimationsaretoohardonthedevice => 'Turn off if animations are too hard on the device';
+
+  @override
   String get nosynclyrics => 'No synced lyrics';
 
   @override
@@ -642,7 +648,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pongowillgraduallylowerthevolumefor => 'Pongo will gradually lower the volume for';
 
   @override
-  String get pongowillgraduallyincreasethevolume => 'Pongo will gradually increase the valume';
+  String get pongowillgraduallyincreasethevolume => 'Pongo will gradually increase the volume';
 
   @override
   String get beforeyouneedtowakeupat => 'before you need to wake up at';
@@ -696,7 +702,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get repeatoff => 'Repeat is off';
 
   @override
-  String get repeatthissong => 'Repet one song';
+  String get repeatthissong => 'Repeat one song';
 
   @override
   String get repeatthequeue => 'Repeat the queue';

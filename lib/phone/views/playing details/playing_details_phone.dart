@@ -23,7 +23,7 @@ class PlayingDetailsPhone extends StatelessWidget {
                   builder: (context, index, child) {
                     return AnimatedSwitcher(
                       key: ValueKey(currentTrackHeight),
-                      duration: const Duration(milliseconds: 250),
+                      duration: Duration(milliseconds: animations ? 250 : 0),
                       child: currentTrackHeight.value != 0
                           ? Stack(
                               key: const ValueKey(true),

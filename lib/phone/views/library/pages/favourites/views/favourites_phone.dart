@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 
 import '../data/favourites_data_manager.dart';
 
@@ -37,8 +38,8 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                         controller: favouritesItemManager.scrollController,
                         slivers: [
                           SliverAppBar(
-                            snap: true,
-                            floating: true,
+                            // snap: true,
+                            //floating: true,
                             pinned: true,
                             stretch: true,
                             backgroundColor: useBlur.value
@@ -71,29 +72,54 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                               ],
                             ),
                             flexibleSpace: ClipRRect(
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                    sigmaX: useBlur.value ? 10 : 0,
-                                    sigmaY: useBlur.value ? 10 : 0),
-                                child: FlexibleSpaceBar(
-                                  centerTitle: true,
-                                  title: Text(
-                                    AppLocalizations.of(context).favouritesongs,
-                                    style: TextStyle(
-                                        fontSize: kIsApple ? 25 : 30,
-                                        fontWeight: kIsApple
-                                            ? FontWeight.w700
-                                            : FontWeight.w800,
-                                        color: Col.text),
-                                    textAlign: TextAlign.center,
-                                    maxLines: 1,
+                              child: Stack(
+                                children: [
+                                  Opacity(
+                                    opacity:
+                                        MediaQuery.of(context).size.height /
+                                                    3 <=
+                                                favouritesItemManager
+                                                    .scrollControllerOffset
+                                            ? 1
+                                            : favouritesItemManager
+                                                    .scrollControllerOffset /
+                                                (MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    3),
+                                    child: liquidGlassBackground(
+                                      child: BackdropFilter(
+                                          filter: ImageFilter.blur(
+                                              sigmaX: useBlur.value && !kIsApple
+                                                  ? 10
+                                                  : 0,
+                                              sigmaY: useBlur.value && !kIsApple
+                                                  ? 10
+                                                  : 0),
+                                          child: Container()),
+                                    ),
                                   ),
-                                  stretchModes: const [
-                                    StretchMode.zoomBackground,
-                                    StretchMode.blurBackground,
-                                    StretchMode.fadeTitle,
-                                  ],
-                                ),
+                                  FlexibleSpaceBar(
+                                    centerTitle: true,
+                                    title: Text(
+                                      AppLocalizations.of(context)
+                                          .favouritesongs,
+                                      style: TextStyle(
+                                          fontSize: kIsApple ? 25 : 30,
+                                          fontWeight: kIsApple
+                                              ? FontWeight.w700
+                                              : FontWeight.w800,
+                                          color: Col.text),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                    ),
+                                    stretchModes: const [
+                                      StretchMode.zoomBackground,
+                                      StretchMode.blurBackground,
+                                      StretchMode.fadeTitle,
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -105,63 +131,69 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                               child: Padding(
                                 padding: const EdgeInsets.only(
                                     left: 15, right: 15, top: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
+                                child: liquidGlassBackground(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(60),
+                                        color: useBlur.value
+                                            ? Col.transp
+                                            : Col.realBackground.withAlpha(
+                                                AppConstants().noBlur)),
+                                    child: ClipRRect(
                                       borderRadius: BorderRadius.circular(60),
-                                      color: useBlur.value
-                                          ? Col.transp
-                                          : Col.realBackground.withAlpha(
-                                              AppConstants().noBlur)),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(60),
-                                    child: BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                          sigmaX: useBlur.value ? 10 : 0,
-                                          sigmaY: useBlur.value ? 10 : 0),
-                                      child: PlayShuffleHaltFavourites(
-                                        missingTracks:
-                                            favouritesItemManager.missingTracks,
-                                        loadingShuffle: favouritesItemManager
-                                            .loadingShuffle,
-                                        edit: favouritesItemManager.edit,
-                                        frontWidget: iconButton(
-                                          AppIcons.heart,
-                                          Col.icon,
-                                          () {
-                                            navigationBarIndex.value = 0;
-                                            searchFocusNode.value
-                                                .requestFocus();
-                                          },
-                                          edgeInsets: EdgeInsets.zero,
-                                        ),
-                                        endWidget: iconButton(
-                                          AppIcons.edit,
-                                          Col.icon,
-                                          () async {
-                                            final audioServiceHandler =
-                                                Provider.of<AudioHandler>(
-                                                        context,
-                                                        listen: false)
-                                                    as AudioServiceHandler;
-                                            if (audioServiceHandler
-                                                    .mediaItem.value !=
-                                                null) {
-                                              if ("library.favourites" ==
-                                                  '${audioServiceHandler.mediaItem.value!.id.split('.')[0]}.${audioServiceHandler.mediaItem.value!.id.split('.')[1]}') {
-                                                CustomButton ok =
-                                                    await haltAlert(context);
-                                                if (ok ==
-                                                    CustomButton
-                                                        .positiveButton) {
-                                                  currentTrackHeight.value = 0;
-                                                  final audioServiceHandler =
-                                                      Provider.of<AudioHandler>(
-                                                              context,
-                                                              listen: false)
-                                                          as AudioServiceHandler;
+                                      child: BackdropFilter(
+                                        filter: ImageFilter.blur(
+                                            sigmaX: useBlur.value ? 10 : 0,
+                                            sigmaY: useBlur.value ? 10 : 0),
+                                        child: PlayShuffleHaltFavourites(
+                                          missingTracks: favouritesItemManager
+                                              .missingTracks,
+                                          loadingShuffle: favouritesItemManager
+                                              .loadingShuffle,
+                                          edit: favouritesItemManager.edit,
+                                          frontWidget: iconButton(
+                                            AppIcons.heart,
+                                            Col.icon,
+                                            () {
+                                              navigationBarIndex.value = 0;
+                                              searchFocusNode.value
+                                                  .requestFocus();
+                                            },
+                                            edgeInsets: EdgeInsets.zero,
+                                          ),
+                                          endWidget: iconButton(
+                                            AppIcons.edit,
+                                            Col.icon,
+                                            () async {
+                                              final audioServiceHandler =
+                                                  Provider.of<AudioHandler>(
+                                                          context,
+                                                          listen: false)
+                                                      as AudioServiceHandler;
+                                              if (audioServiceHandler
+                                                      .mediaItem.value !=
+                                                  null) {
+                                                if ("library.favourites" ==
+                                                    '${audioServiceHandler.mediaItem.value!.id.split('.')[0]}.${audioServiceHandler.mediaItem.value!.id.split('.')[1]}') {
+                                                  CustomButton ok =
+                                                      await haltAlert(context);
+                                                  if (ok ==
+                                                      CustomButton
+                                                          .positiveButton) {
+                                                    currentTrackHeight.value =
+                                                        0;
+                                                    final audioServiceHandler =
+                                                        Provider.of<AudioHandler>(
+                                                                context,
+                                                                listen: false)
+                                                            as AudioServiceHandler;
 
-                                                  await audioServiceHandler
-                                                      .halt();
+                                                    await audioServiceHandler
+                                                        .halt();
+                                                    favouritesItemManager
+                                                        .changeEdit(true);
+                                                  }
+                                                } else {
                                                   favouritesItemManager
                                                       .changeEdit(true);
                                                 }
@@ -169,105 +201,105 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                                 favouritesItemManager
                                                     .changeEdit(true);
                                               }
-                                            } else {
-                                              favouritesItemManager
-                                                  .changeEdit(true);
+                                            },
+                                            edgeInsets: EdgeInsets.zero,
+                                          ),
+                                          play: () {
+                                            favouritesItemManager.play(
+                                                index: 0);
+                                          },
+                                          shuffle:
+                                              favouritesItemManager.playShuffle,
+                                          stopEdit: () {
+                                            favouritesItemManager
+                                                .changeEdit(false);
+                                            favouritesItemManager
+                                                .clearSelectedTrack();
+                                          },
+                                          download:
+                                              favouritesItemManager.download,
+                                          unfavourite: () async {
+                                            if (favouritesItemManager
+                                                .selectedTracks.isNotEmpty) {
+                                              CustomButton ok =
+                                                  await removeFavouriteAlert(
+                                                      context);
+                                              if (ok ==
+                                                  CustomButton.positiveButton) {
+                                                await DatabaseHelper()
+                                                    .removeFavouriteTracks(
+                                                        favouritesItemManager
+                                                            .selectedTracks);
+
+                                                favouritesItemManager.favourites
+                                                    .clear();
+                                                favouritesItemManager
+                                                    .selectedTracks
+                                                    .clear();
+
+                                                favouritesItemManager
+                                                    .initFavourites();
+                                              }
                                             }
                                           },
-                                          edgeInsets: EdgeInsets.zero,
-                                        ),
-                                        play: () {
-                                          favouritesItemManager.play(index: 0);
-                                        },
-                                        shuffle:
-                                            favouritesItemManager.playShuffle,
-                                        stopEdit: () {
-                                          favouritesItemManager
-                                              .changeEdit(false);
-                                          favouritesItemManager
-                                              .clearSelectedTrack();
-                                        },
-                                        download:
-                                            favouritesItemManager.download,
-                                        unfavourite: () async {
-                                          if (favouritesItemManager
-                                              .selectedTracks.isNotEmpty) {
-                                            CustomButton ok =
-                                                await removeFavouriteAlert(
-                                                    context);
-                                            if (ok ==
-                                                CustomButton.positiveButton) {
-                                              await DatabaseHelper()
-                                                  .removeFavouriteTracks(
-                                                      favouritesItemManager
-                                                          .selectedTracks);
-
-                                              favouritesItemManager.favourites
-                                                  .clear();
-                                              favouritesItemManager
-                                                  .selectedTracks
-                                                  .clear();
-
-                                              favouritesItemManager
-                                                  .initFavourites();
+                                          addToPlaylist: () {
+                                            if (favouritesItemManager
+                                                .selectedTracks.isNotEmpty) {
+                                              OpenPlaylist().show(
+                                                context,
+                                                PlaylistHandler(
+                                                    type: PlaylistHandlerType
+                                                        .online,
+                                                    function:
+                                                        PlaylistHandlerFunction
+                                                            .addToPlaylist,
+                                                    track: favouritesItemManager
+                                                        .selectedTracks
+                                                        .map((stid) {
+                                                      final favourite =
+                                                          favouritesItemManager
+                                                              .favourites
+                                                              .where(
+                                                                  (favourite) =>
+                                                                      favourite
+                                                                          .id ==
+                                                                      stid)
+                                                              .toList()[0];
+                                                      return PlaylistHandlerOnlineTrack(
+                                                        id: favourite.id,
+                                                        name: favourite.name,
+                                                        artist: favourite
+                                                            .artists
+                                                            .map((artist) => {
+                                                                  "id":
+                                                                      artist.id,
+                                                                  "name": artist
+                                                                      .name
+                                                                })
+                                                            .toList(),
+                                                        cover:
+                                                            calculateWantedResolutionForTrack(
+                                                                favourite.album !=
+                                                                        null
+                                                                    ? favourite
+                                                                        .album!
+                                                                        .images
+                                                                    : favourite
+                                                                        .album!
+                                                                        .images,
+                                                                150,
+                                                                150),
+                                                        albumTrack:
+                                                            favourite.album,
+                                                        playlistHandlerCoverType:
+                                                            PlaylistHandlerCoverType
+                                                                .url,
+                                                      );
+                                                    }).toList()),
+                                              );
                                             }
-                                          }
-                                        },
-                                        addToPlaylist: () {
-                                          if (favouritesItemManager
-                                              .selectedTracks.isNotEmpty) {
-                                            OpenPlaylist().show(
-                                              context,
-                                              PlaylistHandler(
-                                                  type: PlaylistHandlerType
-                                                      .online,
-                                                  function:
-                                                      PlaylistHandlerFunction
-                                                          .addToPlaylist,
-                                                  track: favouritesItemManager
-                                                      .selectedTracks
-                                                      .map((stid) {
-                                                    final favourite =
-                                                        favouritesItemManager
-                                                            .favourites
-                                                            .where(
-                                                                (favourite) =>
-                                                                    favourite
-                                                                        .id ==
-                                                                    stid)
-                                                            .toList()[0];
-                                                    return PlaylistHandlerOnlineTrack(
-                                                      id: favourite.id,
-                                                      name: favourite.name,
-                                                      artist: favourite.artists
-                                                          .map((artist) => {
-                                                                "id": artist.id,
-                                                                "name":
-                                                                    artist.name
-                                                              })
-                                                          .toList(),
-                                                      cover:
-                                                          calculateWantedResolutionForTrack(
-                                                              favourite.album !=
-                                                                      null
-                                                                  ? favourite
-                                                                      .album!
-                                                                      .images
-                                                                  : favourite
-                                                                      .album!
-                                                                      .images,
-                                                              150,
-                                                              150),
-                                                      albumTrack:
-                                                          favourite.album,
-                                                      playlistHandlerCoverType:
-                                                          PlaylistHandlerCoverType
-                                                              .url,
-                                                    );
-                                                  }).toList()),
-                                            );
-                                          }
-                                        },
+                                          },
+                                        ),
                                       ),
                                     ),
                                   ),

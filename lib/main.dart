@@ -16,7 +16,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
 
-// Macos config
+  // Init .env file
+  await dotenv.load(fileName: '.env');
+
+  // Macos config
   if (kIsMacOS) {
     await configureMacosWindowUtils();
   }
