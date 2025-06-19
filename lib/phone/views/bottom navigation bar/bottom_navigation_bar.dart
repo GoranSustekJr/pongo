@@ -19,7 +19,7 @@ class Bottom extends StatelessWidget {
                   builder: (context, index, child) {
                     return SizedBox(
                       key: const ValueKey(true),
-                      height: kIsApple ? 155 : 170,
+                      height: kIsApple ? 165 : 180, // delta = 15
                       child: Stack(
                         children: [
                           AnimatedPositioned(
@@ -29,8 +29,9 @@ class Bottom extends StatelessWidget {
                                 ? -(size.height / 3)
                                 : showBottomNavBar.value
                                     ? -(currentTrackHeight.value /
-                                            size.height) *
-                                        (size.height / 3)
+                                                size.height) *
+                                            (size.height / 3) +
+                                        60
                                     : -(size.height / 3),
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width,

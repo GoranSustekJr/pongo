@@ -83,7 +83,7 @@ settingsTile(context, bool first, bool last, IconData icon,
     child: ClipRRect(
         child: kIsApple
             ? LiquidGlass(
-                blur: AppConstants().liquidGlassBlur,
+                blur: 0,
                 borderRadius: borderRadius,
                 tint: Col.text,
                 child: Container(

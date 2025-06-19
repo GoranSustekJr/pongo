@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_render.dart';
 
 backLikeButton(context, IconData icon, Function() function) {
   Widget child = Container(
@@ -22,14 +23,17 @@ backLikeButton(context, IconData icon, Function() function) {
     ),
   );
   return kIsApple
-      ? LiquidGlass(
-          blur: AppConstants().liquidGlassBlur,
-          borderRadius: BorderRadius.circular(360),
-          tint: Col.text,
-          child: CupertinoButton(
-            onPressed: function,
-            padding: EdgeInsets.zero,
-            child: child,
+      ? liquidGlassLayer(
+          child: liquidGlass(
+            radius: 360,
+            /* blur: AppConstants().liquidGlassBlur,
+            borderRadius: BorderRadius.circular(360),
+            tint: Col.text, */
+            child: CupertinoButton(
+              onPressed: function,
+              padding: EdgeInsets.zero,
+              child: child,
+            ),
           ),
         )
       : ClipRRect(

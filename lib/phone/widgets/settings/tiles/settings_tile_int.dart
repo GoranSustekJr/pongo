@@ -79,7 +79,7 @@ settingsTileInt(context, bool first, bool last, IconData icon, int trailingNum,
     child: ClipRRect(
         child: kIsApple
             ? LiquidGlass(
-                blur: AppConstants().liquidGlassBlur,
+                blur: 0,
                 borderRadius: borderRadius,
                 tint: Col.text,
                 child: Container(

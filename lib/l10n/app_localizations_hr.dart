@@ -30,10 +30,12 @@ class AppLocalizationsHr extends AppLocalizations {
   String get shazamfailed => 'Shazam nije uspio prepoznati pjesmu';
 
   @override
-  String get premiumisneededtodownloadatrack => 'Za preuzimanje pjesme potreban je premium';
+  String get premiumisneededtodownloadatrack =>
+      'Za preuzimanje pjesme potreban je premium';
 
   @override
-  String get premiumisneededtosavethequeue => 'Za spremanje reda čekanja potreban je premium';
+  String get premiumisneededtosavethequeue =>
+      'Za spremanje reda čekanja potreban je premium';
 
   @override
   String get okey => 'Uredu';
@@ -45,10 +47,12 @@ class AppLocalizationsHr extends AppLocalizations {
   String get useblur => 'Koristi zamućenje';
 
   @override
-  String get turnoffifyourdeviceisgettinghotorhaslag => 'Isključi ako se tvoj uređaj pregrijava ili ima zastajkivanja';
+  String get turnoffifyourdeviceisgettinghotorhaslag =>
+      'Isključi ako se tvoj uređaj pregrijava ili ima zastajkivanja';
 
   @override
-  String get pleaseleavethepageafterasuccessfullpurchase => 'Molimo napustite stranicu nakon uspješne kupnje';
+  String get pleaseleavethepageafterasuccessfullpurchase =>
+      'Molimo napustite stranicu nakon uspješne kupnje';
 
   @override
   String get areyousure => 'Jeste li sigurni?';
@@ -72,7 +76,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get signinwith => 'Prijavi se uz';
 
   @override
-  String get bysigninginyou => 'Prijavljivanjem prihvačate naše uvijete korištenja i politike privatnosti.';
+  String get bysigninginyou =>
+      'Prijavljivanjem prihvačate naše uvijete korištenja i politike privatnosti.';
 
   @override
   String get klemen => 'Uz Pongo život zvuči bolje';
@@ -84,31 +89,37 @@ class AppLocalizationsHr extends AppLocalizations {
   String get dynamicblurhash => 'Dinamički blurhash';
 
   @override
-  String get playingdetailsbackgroundwilldynamicallychange => 'Pozadina detalja reprodukcije će se dinamički mijenjati';
+  String get playingdetailsbackgroundwilldynamicallychange =>
+      'Pozadina detalja reprodukcije će se dinamički mijenjati';
 
   @override
-  String get dynamicblurhashwarning => 'Dinamički blurhash JE VRLO ZAHTJEVAN ZA TVOJ UREĐAJ. Eksperimentalan je, BRZO ĆE ISPUSTATI BATERIJU i zagrijati uređaj';
+  String get dynamicblurhashwarning =>
+      'Dinamički blurhash JE VRLO ZAHTJEVAN ZA TVOJ UREĐAJ. Eksperimentalan je, BRZO ĆE ISPUSTATI BATERIJU i zagrijati uređaj';
 
   @override
   String get linearsleepin => 'Linearno uspavljivanje';
 
   @override
-  String get linearlydecreasevolumewhenusingsleepin => 'Postupno smanji glasnoću prilikom uspavljivanja';
+  String get linearlydecreasevolumewhenusingsleepin =>
+      'Postupno smanji glasnoću prilikom uspavljivanja';
 
   @override
   String get linearalarm => 'Linearni alarm';
 
   @override
-  String get linearlyincreasevolumewhenusingalarm => 'Postupno povećaj glasnoću prilikom alarma';
+  String get linearlyincreasevolumewhenusingalarm =>
+      'Postupno povećaj glasnoću prilikom alarma';
 
   @override
-  String get appmayneedtoberestartedinorderforchangestotakefullaffect => 'Aplikacija će možda trebati biti ponovno pokrenuta kako bi promjene potpuno stupile na snagu.';
+  String get appmayneedtoberestartedinorderforchangestotakefullaffect =>
+      'Aplikacija će možda trebati biti ponovno pokrenuta kako bi promjene potpuno stupile na snagu.';
 
   @override
   String get mix => 'Mix';
 
   @override
-  String get usemixfeaturewhenplayingsearchedmusic => 'Koristite značajku mix kada reproducirate pretraženu glazbu.';
+  String get usemixfeaturewhenplayingsearchedmusic =>
+      'Koristite značajku mix kada reproducirate pretraženu glazbu.';
 
   @override
   String get darkmode => 'Tamni način';
@@ -135,7 +146,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get unabletohaltthemusicplayer => 'Ne može se zaustaviti music player';
 
   @override
-  String get unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon => 'Ne može se zaustaviti music player jer je alarm za spavanje trenutno uključen';
+  String get unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon =>
+      'Ne može se zaustaviti music player jer je alarm za spavanje trenutno uključen';
 
   @override
   String get profile => 'Profil';
@@ -144,7 +156,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get accountdisabled => 'Račun deaktiviran';
 
   @override
-  String get pleasecontactinordertoenableyouraccountandusetheapp => 'Molimo kontaktirajte pongo.group@gmail.com kako biste aktivirali svoj račun i koristili aplikaciju';
+  String get pleasecontactinordertoenableyouraccountandusetheapp =>
+      'Molimo kontaktirajte pongo.group@gmail.com kako biste aktivirali svoj račun i koristili aplikaciju';
 
   @override
   String get hidden => 'Sakriveno';
@@ -174,7 +187,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get showexplore => 'Prikaži istraživanje';
 
   @override
-  String get showexploreonstartpage => 'Prikaži istraživanje na početnoj stranici';
+  String get showexploreonstartpage =>
+      'Prikaži istraživanje na početnoj stranici';
 
   @override
   String get downloadtracksnow => 'Preuzmite pjesme sada!';
@@ -186,7 +200,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get createnewplaylistnow => 'Stvori novu playlistu sada!';
 
   @override
-  String get findyourfavouritesongsnow => 'Pronađite svoje omiljene pjesme sada!';
+  String get findyourfavouritesongsnow =>
+      'Pronađite svoje omiljene pjesme sada!';
 
   @override
   String get email => 'Email';
@@ -276,7 +291,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get useanimations => 'Koristi animacije';
 
   @override
-  String get turnoffifanimationsaretoohardonthedevice => 'Isključi ako animacije previše opterećuju uređaj';
+  String get turnoffifanimationsaretoohardonthedevice =>
+      'Isključi ako animacije previše opterećuju uređaj';
 
   @override
   String get nosynclyrics => 'Nema sinkroniziranih stihova';
@@ -288,7 +304,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get noplainlyrics => 'Nema običnih stihova';
 
   @override
-  String get wanttohelpoutlyrics => 'Želite pomoći? Dodajte stihove na lrclib.net!';
+  String get wanttohelpoutlyrics =>
+      'Želite pomoći? Dodajte stihove na lrclib.net!';
 
   @override
   String get album => 'Album';
@@ -300,10 +317,12 @@ class AppLocalizationsHr extends AppLocalizations {
   String get tracks => 'Pjesme';
 
   @override
-  String get removetrackfromplaylist => 'Jeste li sigurni da želite ukloniti ovu pjesmu s playliste?';
+  String get removetrackfromplaylist =>
+      'Jeste li sigurni da želite ukloniti ovu pjesmu s playliste?';
 
   @override
-  String get removeselectedfromplaylist => 'Jeste li sigurni da želite ukloniti odabrano iz popisa pjesama?';
+  String get removeselectedfromplaylist =>
+      'Jeste li sigurni da želite ukloniti odabrano iz popisa pjesama?';
 
   @override
   String get removefromplaylist => 'Ukloni s playliste';
@@ -312,13 +331,15 @@ class AppLocalizationsHr extends AppLocalizations {
   String get continuee => 'Nastavite';
 
   @override
-  String get removeplaylist => 'Jeste li sigurni da želite ukloniti ovaj Playlista?';
+  String get removeplaylist =>
+      'Jeste li sigurni da želite ukloniti ovaj Playlista?';
 
   @override
   String get haltmusicplayer => 'Zaustaviti glazbeni servis?';
 
   @override
-  String get haltmusicplayerbody => 'Jeste li sigurni da želite zaustaviti glazbeni servis?';
+  String get haltmusicplayerbody =>
+      'Jeste li sigurni da želite zaustaviti glazbeni servis?';
 
   @override
   String get halt => 'Zaustavi';
@@ -336,16 +357,19 @@ class AppLocalizationsHr extends AppLocalizations {
   String get changeplaylisttile => 'Promijeni naslov playliste';
 
   @override
-  String get changeplaylisttilebody => 'Jeste li sigurni da želite promijeniti naslov playliste?';
+  String get changeplaylisttilebody =>
+      'Jeste li sigurni da želite promijeniti naslov playliste?';
 
   @override
-  String get pleaseallowaccesstophotogalery => 'Molimo omogućite Pongu pristup fotografijama';
+  String get pleaseallowaccesstophotogalery =>
+      'Molimo omogućite Pongu pristup fotografijama';
 
   @override
   String get editplaylist => 'Uredi Playlista';
 
   @override
-  String get editplaylistbody => 'Playlista ne smije biti u reprodukciji dok ga uređujete. Da biste ga uredili, zaustavite Playlista';
+  String get editplaylistbody =>
+      'Playlista ne smije biti u reprodukciji dok ga uređujete. Da biste ga uredili, zaustavite Playlista';
 
   @override
   String get selectedtracks => 'Odabrane pjesme';
@@ -354,7 +378,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get delete => 'Izbriši';
 
   @override
-  String get removetracksfromplaylist => 'Jeste li sigurni da želite ukloniti ove pjesme s playliste?';
+  String get removetracksfromplaylist =>
+      'Jeste li sigurni da želite ukloniti ove pjesme s playliste?';
 
   @override
   String get preferences => 'Preference';
@@ -375,7 +400,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get selectmarket => 'Odaberite tržište';
 
   @override
-  String get selectmarketbody => 'Rezultati pretraživanja i prijedlozi ovise o odabranom tržištu';
+  String get selectmarketbody =>
+      'Rezultati pretraživanja i prijedlozi ovise o odabranom tržištu';
 
   @override
   String get foryou => 'Za tebe';
@@ -396,7 +422,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get noalbums => 'Nema albuma';
 
   @override
-  String get playlistalreadycontainsthistrack => 'Playlista već sadrži ovu pjesmu';
+  String get playlistalreadycontainsthistrack =>
+      'Playlista već sadrži ovu pjesmu';
 
   @override
   String get notracks => 'Nema pjesama';
@@ -405,7 +432,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get toptentracks => 'Top 10 pjesama';
 
   @override
-  String get doublecliktoadjustvolume => 'Dvaput kliknite za podešavanje glasnoće';
+  String get doublecliktoadjustvolume =>
+      'Dvaput kliknite za podešavanje glasnoće';
 
   @override
   String get newalbums => 'Novi albumi';
@@ -435,7 +463,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get clearallhistory => 'Izbriši cijelu povijest';
 
   @override
-  String get clearallhistorybody => 'Jeste li sigurni da želite izbrisati cijelu povijest pretraživanja?';
+  String get clearallhistorybody =>
+      'Jeste li sigurni da želite izbrisati cijelu povijest pretraživanja?';
 
   @override
   String get topten => 'Top 10';
@@ -456,7 +485,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get clearaudioplayercache => 'Obriši predmemoriju audio playera';
 
   @override
-  String get clearyouraudioplayercache => 'Obriši svoju predmemoriju audio playera';
+  String get clearyouraudioplayercache =>
+      'Obriši svoju predmemoriju audio playera';
 
   @override
   String get clearimagecache => 'Obriši predmemoriju slika';
@@ -474,16 +504,20 @@ class AppLocalizationsHr extends AppLocalizations {
   String get cache => 'Predmemorija';
 
   @override
-  String get howmanyartistsshownwhensearching => 'Koliko izvođača je prikazano prilikom pretraživanja';
+  String get howmanyartistsshownwhensearching =>
+      'Koliko izvođača je prikazano prilikom pretraživanja';
 
   @override
-  String get howmanyalbumsshownwhensearching => 'Koliko albuma je prikazano prilikom pretraživanja';
+  String get howmanyalbumsshownwhensearching =>
+      'Koliko albuma je prikazano prilikom pretraživanja';
 
   @override
-  String get howmanytracksshownwhensearching => 'Koliko pjesama je prikazano prilikom pretraživanja';
+  String get howmanytracksshownwhensearching =>
+      'Koliko pjesama je prikazano prilikom pretraživanja';
 
   @override
-  String get howmanyplaylistsshownwhensearching => 'Koliko popisa pjesama je prikazano prilikom pretraživanja';
+  String get howmanyplaylistsshownwhensearching =>
+      'Koliko popisa pjesama je prikazano prilikom pretraživanja';
 
   @override
   String get synctimedelay => 'Kašnjenje sinkronizacije';
@@ -495,7 +529,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get prefersyncedlyrics => 'Preferiraj sinkronizirane tekstove';
 
   @override
-  String get preferusageofsyncedlyrics => 'Preferiraj korištenje sinkroniziranih tekstova';
+  String get preferusageofsyncedlyrics =>
+      'Preferiraj korištenje sinkroniziranih tekstova';
 
   @override
   String get recommendations => 'Preporuke';
@@ -504,16 +539,19 @@ class AppLocalizationsHr extends AppLocalizations {
   String get showrecommendedforyou => 'Prikaži preporučeno za tebe';
 
   @override
-  String get showrecommendedforyoubody => 'Prikaži preporuke na temelju tvojih pet posljednjih pjesama';
+  String get showrecommendedforyoubody =>
+      'Prikaži preporuke na temelju tvojih pet posljednjih pjesama';
 
   @override
   String get showrecommendedbypongo => 'Prikaži preporuke od Ponga';
 
   @override
-  String get showrecommendedbypongobody => 'Prikaži slučajne preporuke od Ponga';
+  String get showrecommendedbypongobody =>
+      'Prikaži slučajne preporuke od Ponga';
 
   @override
-  String get recommendationsdisabled => 'Preporuke su onemogućene. Možete ih omogućiti u \'Postavke > Preferencije > Preporuke\'. Potom ponovno pokrenite aplikaciju.';
+  String get recommendationsdisabled =>
+      'Preporuke su onemogućene. Možete ih omogućiti u \'Postavke > Preferencije > Preporuke\'. Potom ponovno pokrenite aplikaciju.';
 
   @override
   String get firsttoqueue => 'Prvi u red čekanja';
@@ -573,7 +611,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get successful => 'Uspješno';
 
   @override
-  String get trackremovedfromfavourites => 'Pjesma uklonjena iz omiljenih pjesama';
+  String get trackremovedfromfavourites =>
+      'Pjesma uklonjena iz omiljenih pjesama';
 
   @override
   String get trackisnowafavourite => 'Pjesma je sada među omiljenim pjesmama';
@@ -582,7 +621,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get removefromfavourites => 'Ukloni pjesmu iz omiljenih pjesama';
 
   @override
-  String get removefromfavouritesbody => 'Želite li ukloniti odabrane pjesme iz omiljenih pjesama';
+  String get removefromfavouritesbody =>
+      'Želite li ukloniti odabrane pjesme iz omiljenih pjesama';
 
   @override
   String get lyricsdisabled => 'Stihovi onemogućeni';
@@ -600,19 +640,22 @@ class AppLocalizationsHr extends AppLocalizations {
   String get audioplayercaching => 'Audio player predmemorija';
 
   @override
-  String get letaudioplayercachethesongs => 'Dopusti da audio player predmemorira pjesme';
+  String get letaudioplayercachethesongs =>
+      'Dopusti da audio player predmemorira pjesme';
 
   @override
   String get playlistname => 'Ime playliste';
 
   @override
-  String get successfullysavedsynctimedelay => 'Sinkronizacija vremenskog kašnjenja za tekst ove pjesme uspješno spremljena';
+  String get successfullysavedsynctimedelay =>
+      'Sinkronizacija vremenskog kašnjenja za tekst ove pjesme uspješno spremljena';
 
   @override
   String get playlistnamealreadyexists => 'Istoimena playlista već postoji';
 
   @override
-  String get pleaseenablepongoaccesstophotos => 'Molimo omogućite Pongu pristup galeriji slika';
+  String get pleaseenablepongoaccesstophotos =>
+      'Molimo omogućite Pongu pristup galeriji slika';
 
   @override
   String get onlineplaylist => 'Online playlista';
@@ -624,7 +667,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get cannotstartalarm => 'Ne može se pokrenuti alarm';
 
   @override
-  String get thequeuemustnotbeemptyinordertostartthealarm => 'Redoslijed ne smije biti prazan kako bi se pokrenuo alarm';
+  String get thequeuemustnotbeemptyinordertostartthealarm =>
+      'Redoslijed ne smije biti prazan kako bi se pokrenuo alarm';
 
   @override
   String get maximumvolumeofthealarm => 'Maksimalna glasnoća alarma';
@@ -642,13 +686,16 @@ class AppLocalizationsHr extends AppLocalizations {
   String get alarm => 'Alarm';
 
   @override
-  String get cannotcreateasleepalarmwithoutthe => 'Ne možete stvoriti alarm za spavanje bez \'uspavljivanja\' ili \'alarma\'';
+  String get cannotcreateasleepalarmwithoutthe =>
+      'Ne možete stvoriti alarm za spavanje bez \'uspavljivanja\' ili \'alarma\'';
 
   @override
-  String get pongowillgraduallylowerthevolumefor => 'Pongo će postupno smanjivati glasnoću tijekom';
+  String get pongowillgraduallylowerthevolumefor =>
+      'Pongo će postupno smanjivati glasnoću tijekom';
 
   @override
-  String get pongowillgraduallyincreasethevolume => 'Pongo će postupno povećavati glasnoću';
+  String get pongowillgraduallyincreasethevolume =>
+      'Pongo će postupno povećavati glasnoću';
 
   @override
   String get beforeyouneedtowakeupat => 'prije nego što se morate probuditi u';
@@ -711,7 +758,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get removefromdownloaded => 'Ukloni sa preuzetih';
 
   @override
-  String get removefromdownloadedbody => 'Želite li ukloniti odabrane pjesme s preuzetih?';
+  String get removefromdownloadedbody =>
+      'Želite li ukloniti odabrane pjesme s preuzetih?';
 
   @override
   String get lastlistenedto => 'Zadnje poslušano';
@@ -726,19 +774,23 @@ class AppLocalizationsHr extends AppLocalizations {
   String get imagecaching => 'Predmemoriranje slika';
 
   @override
-  String get cacheimagestoreducenetworkactivity => 'Predmemorirajte slike kako biste smanjili mrežnu aktivnost';
+  String get cacheimagestoreducenetworkactivity =>
+      'Predmemorirajte slike kako biste smanjili mrežnu aktivnost';
 
   @override
   String get deleteyouraccount => 'Izbriši svoj račun';
 
   @override
-  String get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium => 'Brisanjem računa izgubit ćeš sve povlastice ako plaćaš premium';
+  String
+      get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium =>
+          'Brisanjem računa izgubit ćeš sve povlastice ako plaćaš premium';
 
   @override
   String get deleteaccount => 'Izbriši račun';
 
   @override
-  String get areyousurezouwanttodeleteyouraccount => 'Jesi li siguran da želiš izbrisati svoj račun?';
+  String get areyousurezouwanttodeleteyouraccount =>
+      'Jesi li siguran da želiš izbrisati svoj račun?';
 
   @override
   String get skip => 'Preskoči';
@@ -762,7 +814,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get downloading => 'Preuzimanje';
 
   @override
-  String get downloadhasstarted => 'Preuzimanje je započelo. NE ZATVARAJTE APLIKACIJU!';
+  String get downloadhasstarted =>
+      'Preuzimanje je započelo. NE ZATVARAJTE APLIKACIJU!';
 
   @override
   String get firstadded => 'Prvo dodano';

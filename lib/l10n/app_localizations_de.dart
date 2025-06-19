@@ -30,10 +30,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get shazamfailed => 'Shazam konnte das Lied nicht erkennen';
 
   @override
-  String get premiumisneededtodownloadatrack => 'Premium wird benötigt, um einen Titel herunterzuladen';
+  String get premiumisneededtodownloadatrack =>
+      'Premium wird benötigt, um einen Titel herunterzuladen';
 
   @override
-  String get premiumisneededtosavethequeue => 'Premium wird benötigt, um die Warteschalnge zu sichern';
+  String get premiumisneededtosavethequeue =>
+      'Premium wird benötigt, um die Warteschalnge zu sichern';
 
   @override
   String get okey => 'O.K.';
@@ -45,10 +47,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get useblur => 'Unschärfe verwenden';
 
   @override
-  String get turnoffifyourdeviceisgettinghotorhaslag => 'Deaktiviere es, wenn dein Gerät heiß wird oder Verzögerungen hat';
+  String get turnoffifyourdeviceisgettinghotorhaslag =>
+      'Deaktiviere es, wenn dein Gerät heiß wird oder Verzögerungen hat';
 
   @override
-  String get pleaseleavethepageafterasuccessfullpurchase => 'Bitte verlassen Sie die Seite nach einem erfolgreichen Kauf';
+  String get pleaseleavethepageafterasuccessfullpurchase =>
+      'Bitte verlassen Sie die Seite nach einem erfolgreichen Kauf';
 
   @override
   String get areyousure => 'Sind Sie sicher?';
@@ -63,7 +67,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get clearqueue => 'Die Warteschlange leeren?';
 
   @override
-  String get clearqueuebody => 'Um das Lied abzuspielen, muss die Warteschlange geleert werden.';
+  String get clearqueuebody =>
+      'Um das Lied abzuspielen, muss die Warteschlange geleert werden.';
 
   @override
   String get signin => 'Anmelden';
@@ -72,7 +77,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get signinwith => 'Anmelden mit';
 
   @override
-  String get bysigninginyou => 'Mit der Anmeldung akzeptieren Sie unsere Nutzungsbedingungen und Datenschztzrichtlinie.';
+  String get bysigninginyou =>
+      'Mit der Anmeldung akzeptieren Sie unsere Nutzungsbedingungen und Datenschztzrichtlinie.';
 
   @override
   String get klemen => 'Mit Pongo klingt das Leben besser';
@@ -84,31 +90,37 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dynamicblurhash => 'Dynamischer Blurhash';
 
   @override
-  String get playingdetailsbackgroundwilldynamicallychange => 'Der Hintergrund der Wiedergabedetails wird sich dynamisch ändern';
+  String get playingdetailsbackgroundwilldynamicallychange =>
+      'Der Hintergrund der Wiedergabedetails wird sich dynamisch ändern';
 
   @override
-  String get dynamicblurhashwarning => 'Dynamischer Blurhash ist SEHR ANSPRUCHSVOLL FÜR DEIN GERÄT. Es ist EXPERIMENTELL, wird DEN AKKU SCHNELL LEEREN und das Gerät ERHITZEN';
+  String get dynamicblurhashwarning =>
+      'Dynamischer Blurhash ist SEHR ANSPRUCHSVOLL FÜR DEIN GERÄT. Es ist EXPERIMENTELL, wird DEN AKKU SCHNELL LEEREN und das Gerät ERHITZEN';
 
   @override
   String get linearsleepin => 'Lineares Einschlafen';
 
   @override
-  String get linearlydecreasevolumewhenusingsleepin => 'Lautstärke beim Einschlafen linear verringern';
+  String get linearlydecreasevolumewhenusingsleepin =>
+      'Lautstärke beim Einschlafen linear verringern';
 
   @override
   String get linearalarm => 'Linearer Wecker';
 
   @override
-  String get linearlyincreasevolumewhenusingalarm => 'Lautstärke beim Wecker linear erhöhen';
+  String get linearlyincreasevolumewhenusingalarm =>
+      'Lautstärke beim Wecker linear erhöhen';
 
   @override
-  String get appmayneedtoberestartedinorderforchangestotakefullaffect => 'Die App muss möglicherweise neu gestartet werden, damit die Änderungen vollständig wirksam werden.';
+  String get appmayneedtoberestartedinorderforchangestotakefullaffect =>
+      'Die App muss möglicherweise neu gestartet werden, damit die Änderungen vollständig wirksam werden.';
 
   @override
   String get mix => 'Mix';
 
   @override
-  String get usemixfeaturewhenplayingsearchedmusic => 'Verwenden Sie die Mix-Funktion, wenn Sie gesuchte Musik abspielen.';
+  String get usemixfeaturewhenplayingsearchedmusic =>
+      'Verwenden Sie die Mix-Funktion, wenn Sie gesuchte Musik abspielen.';
 
   @override
   String get darkmode => 'Dunkelmodus';
@@ -117,10 +129,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get lightmode => 'Hellen Modus';
 
   @override
-  String get currentlyusingdarkmode => 'Derzeit wird der Dunkelmodus verwendet.';
+  String get currentlyusingdarkmode =>
+      'Derzeit wird der Dunkelmodus verwendet.';
 
   @override
-  String get currentlyusinglightmode => 'Derzeit wird der Hellen Modus verwendet.';
+  String get currentlyusinglightmode =>
+      'Derzeit wird der Hellen Modus verwendet.';
 
   @override
   String get detailedblurhash => 'Detaillierter BlurHash';
@@ -132,10 +146,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sleepalarmisenabled => 'Schlafalarm ist eingeschaltet';
 
   @override
-  String get unabletohaltthemusicplayer => 'Der Musikplayer kann nicht gestoppt werden';
+  String get unabletohaltthemusicplayer =>
+      'Der Musikplayer kann nicht gestoppt werden';
 
   @override
-  String get unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon => 'Der Musikplayer kann nicht gestoppt werden, da der Schlafalarm derzeit aktiviert ist';
+  String get unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon =>
+      'Der Musikplayer kann nicht gestoppt werden, da der Schlafalarm derzeit aktiviert ist';
 
   @override
   String get profile => 'Profil';
@@ -144,7 +160,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get accountdisabled => 'Konto deaktiviert';
 
   @override
-  String get pleasecontactinordertoenableyouraccountandusetheapp => 'Bitte kontaktieren Sie pongo.group@gmail.com, um Ihr Konto zu aktivieren und die App zu nutzen';
+  String get pleasecontactinordertoenableyouraccountandusetheapp =>
+      'Bitte kontaktieren Sie pongo.group@gmail.com, um Ihr Konto zu aktivieren und die App zu nutzen';
 
   @override
   String get hidden => 'Verborgen';
@@ -180,7 +197,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get downloadtracksnow => 'Laden Sie Titel jetzt herunter!';
 
   @override
-  String get addtrackstoyoutplaylist => 'Fügen Sie Titel zu Ihrer Playlist hinzu!';
+  String get addtrackstoyoutplaylist =>
+      'Fügen Sie Titel zu Ihrer Playlist hinzu!';
 
   @override
   String get createnewplaylistnow => 'Erstelle jetzt eine neue Playlist!';
@@ -276,7 +294,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get useanimations => 'Animationen verwenden';
 
   @override
-  String get turnoffifanimationsaretoohardonthedevice => 'Deaktiviere, wenn Animationen das Gerät zu stark belasten';
+  String get turnoffifanimationsaretoohardonthedevice =>
+      'Deaktiviere, wenn Animationen das Gerät zu stark belasten';
 
   @override
   String get nosynclyrics => 'Keine synchronisierten Texte';
@@ -288,7 +307,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noplainlyrics => 'Keine einfachen Texte';
 
   @override
-  String get wanttohelpoutlyrics => 'Helfen Sie mit? Fügen Sie Texte auf lrclib.net hinzu!';
+  String get wanttohelpoutlyrics =>
+      'Helfen Sie mit? Fügen Sie Texte auf lrclib.net hinzu!';
 
   @override
   String get album => 'Album';
@@ -300,10 +320,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tracks => 'Die Lieder';
 
   @override
-  String get removetrackfromplaylist => 'Sind Sie sicher, dass Sie diese Lied von der Playlist entfernen möchten?';
+  String get removetrackfromplaylist =>
+      'Sind Sie sicher, dass Sie diese Lied von der Playlist entfernen möchten?';
 
   @override
-  String get removeselectedfromplaylist => 'Sind Sie sicher, dass Sie das Ausgewählte aus der Playlist entfernen möchten?';
+  String get removeselectedfromplaylist =>
+      'Sind Sie sicher, dass Sie das Ausgewählte aus der Playlist entfernen möchten?';
 
   @override
   String get removefromplaylist => 'Aus der Playlist entfernen';
@@ -312,13 +334,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get continuee => 'Weiter';
 
   @override
-  String get removeplaylist => 'Sind Sie sicher, dass Sie diesen Playlist entfernen möchten?';
+  String get removeplaylist =>
+      'Sind Sie sicher, dass Sie diesen Playlist entfernen möchten?';
 
   @override
   String get haltmusicplayer => 'Musikdienst anhalten?';
 
   @override
-  String get haltmusicplayerbody => 'Sind Sie sicher, dass Sie den Musikdienst anhalten möchten?';
+  String get haltmusicplayerbody =>
+      'Sind Sie sicher, dass Sie den Musikdienst anhalten möchten?';
 
   @override
   String get halt => 'Anhalten';
@@ -336,16 +360,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get changeplaylisttile => 'Playlist-Titel ändern';
 
   @override
-  String get changeplaylisttilebody => 'Sind Sie sicher, dass Sie den Playlist-Titel ändern möchten?';
+  String get changeplaylisttilebody =>
+      'Sind Sie sicher, dass Sie den Playlist-Titel ändern möchten?';
 
   @override
-  String get pleaseallowaccesstophotogalery => 'Bitte gewähren Sie Pongo Zugriff auf Ihre Fotogalerie';
+  String get pleaseallowaccesstophotogalery =>
+      'Bitte gewähren Sie Pongo Zugriff auf Ihre Fotogalerie';
 
   @override
   String get editplaylist => 'Playlist bearbeiten';
 
   @override
-  String get editplaylistbody => 'Die Playlisten darf nicht abgespielt werden, während sie bearbeitet wird. Um sie zu bearbeiten, stoppen Sie die Playlist';
+  String get editplaylistbody =>
+      'Die Playlisten darf nicht abgespielt werden, während sie bearbeitet wird. Um sie zu bearbeiten, stoppen Sie die Playlist';
 
   @override
   String get selectedtracks => 'Ausgewählte Titel';
@@ -354,7 +381,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get delete => 'Löschen';
 
   @override
-  String get removetracksfromplaylist => 'Sind Sie sicher, dass Sie diese Titel aus der Playlist entfernen möchten?';
+  String get removetracksfromplaylist =>
+      'Sind Sie sicher, dass Sie diese Titel aus der Playlist entfernen möchten?';
 
   @override
   String get preferences => 'Voreinstellungen';
@@ -375,7 +403,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get selectmarket => 'Markt auswählen';
 
   @override
-  String get selectmarketbody => 'Suchergebnisse und Vorschläge hängen vom ausgewählten Markt ab';
+  String get selectmarketbody =>
+      'Suchergebnisse und Vorschläge hängen vom ausgewählten Markt ab';
 
   @override
   String get foryou => 'Für dich';
@@ -396,7 +425,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noalbums => 'Keine Alben';
 
   @override
-  String get playlistalreadycontainsthistrack => 'Die Playlist enthält diesen Titel bereits';
+  String get playlistalreadycontainsthistrack =>
+      'Die Playlist enthält diesen Titel bereits';
 
   @override
   String get notracks => 'Keine Titel';
@@ -405,7 +435,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get toptentracks => 'Top 10 Titel';
 
   @override
-  String get doublecliktoadjustvolume => 'Doppelklick, um die Lautstärke anzupassen';
+  String get doublecliktoadjustvolume =>
+      'Doppelklick, um die Lautstärke anzupassen';
 
   @override
   String get newalbums => 'Neue Alben';
@@ -435,7 +466,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get clearallhistory => 'Alle Verlauf löschen';
 
   @override
-  String get clearallhistorybody => 'Sind Sie sicher, dass Sie den gesamten Suchverlauf löschen möchten?';
+  String get clearallhistorybody =>
+      'Sind Sie sicher, dass Sie den gesamten Suchverlauf löschen möchten?';
 
   @override
   String get topten => 'Top 10';
@@ -474,28 +506,34 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cache => 'Cache';
 
   @override
-  String get howmanyartistsshownwhensearching => 'Wie viele Künstler werden bei der Suche angezeigt';
+  String get howmanyartistsshownwhensearching =>
+      'Wie viele Künstler werden bei der Suche angezeigt';
 
   @override
-  String get howmanyalbumsshownwhensearching => 'Wie viele Alben werden bei der Suche angezeigt';
+  String get howmanyalbumsshownwhensearching =>
+      'Wie viele Alben werden bei der Suche angezeigt';
 
   @override
-  String get howmanytracksshownwhensearching => 'Wie viele Titel werden bei der Suche angezeigt';
+  String get howmanytracksshownwhensearching =>
+      'Wie viele Titel werden bei der Suche angezeigt';
 
   @override
-  String get howmanyplaylistsshownwhensearching => 'Wie viele Playlists werden bei der Suche angezeigt';
+  String get howmanyplaylistsshownwhensearching =>
+      'Wie viele Playlists werden bei der Suche angezeigt';
 
   @override
   String get synctimedelay => 'Synchronisierungszeitverzögerung';
 
   @override
-  String get usesynctimedelay => 'Verwende die Synchronisierungszeitverzögerung';
+  String get usesynctimedelay =>
+      'Verwende die Synchronisierungszeitverzögerung';
 
   @override
   String get prefersyncedlyrics => 'Bevorzuge synchronisierte Liedtexte';
 
   @override
-  String get preferusageofsyncedlyrics => 'Bevorzuge die Verwendung synchronisierter Liedtexte';
+  String get preferusageofsyncedlyrics =>
+      'Bevorzuge die Verwendung synchronisierter Liedtexte';
 
   @override
   String get recommendations => 'Empfehlungen';
@@ -504,16 +542,19 @@ class AppLocalizationsDe extends AppLocalizations {
   String get showrecommendedforyou => 'Zeige Empfehlungen für dich';
 
   @override
-  String get showrecommendedforyoubody => 'Zeige Empfehlungen aus deinen fünf neuesten Titeln';
+  String get showrecommendedforyoubody =>
+      'Zeige Empfehlungen aus deinen fünf neuesten Titeln';
 
   @override
   String get showrecommendedbypongo => 'Zeige von Pongo empfohlene';
 
   @override
-  String get showrecommendedbypongobody => 'Zeige zufällige Empfehlungen von Pongo';
+  String get showrecommendedbypongobody =>
+      'Zeige zufällige Empfehlungen von Pongo';
 
   @override
-  String get recommendationsdisabled => 'Empfehlungen deaktiviert. Sie können in \'Einstellungen > Präferenzen > Empfehlungen\' aktiviert werden. Starten Sie dann die App neu.';
+  String get recommendationsdisabled =>
+      'Empfehlungen deaktiviert. Sie können in \'Einstellungen > Präferenzen > Empfehlungen\' aktiviert werden. Starten Sie dann die App neu.';
 
   @override
   String get firsttoqueue => 'Erste in der Warteschlange';
@@ -573,7 +614,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get successful => 'Erfolgreich';
 
   @override
-  String get trackremovedfromfavourites => 'Die Titel aus Lieblingslieder entfernt';
+  String get trackremovedfromfavourites =>
+      'Die Titel aus Lieblingslieder entfernt';
 
   @override
   String get trackisnowafavourite => 'Die Titel ist jetzt ein Lieblingslied';
@@ -582,7 +624,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get removefromfavourites => 'Aus Favoriten entfernen';
 
   @override
-  String get removefromfavouritesbody => 'Möchten Sie die ausgewählten Titel aus den Favoriten entfernen?';
+  String get removefromfavouritesbody =>
+      'Möchten Sie die ausgewählten Titel aus den Favoriten entfernen?';
 
   @override
   String get lyricsdisabled => 'Texte deaktiviert';
@@ -600,19 +643,23 @@ class AppLocalizationsDe extends AppLocalizations {
   String get audioplayercaching => 'Audioplayer-Caching';
 
   @override
-  String get letaudioplayercachethesongs => 'Audioplayer die Lieder zwischenspeichern lassen';
+  String get letaudioplayercachethesongs =>
+      'Audioplayer die Lieder zwischenspeichern lassen';
 
   @override
   String get playlistname => 'Playlistname';
 
   @override
-  String get successfullysavedsynctimedelay => 'Die Synchronisierungszeitverzögerung für den Text dieses Titels wurde erfolgreich gespeichert';
+  String get successfullysavedsynctimedelay =>
+      'Die Synchronisierungszeitverzögerung für den Text dieses Titels wurde erfolgreich gespeichert';
 
   @override
-  String get playlistnamealreadyexists => 'Eine Playlist mit demselben Namen existiert bereits';
+  String get playlistnamealreadyexists =>
+      'Eine Playlist mit demselben Namen existiert bereits';
 
   @override
-  String get pleaseenablepongoaccesstophotos => 'Bitte erlauben Sie Pongo den Zugriff auf Fotos';
+  String get pleaseenablepongoaccesstophotos =>
+      'Bitte erlauben Sie Pongo den Zugriff auf Fotos';
 
   @override
   String get onlineplaylist => 'Online Playlist';
@@ -624,7 +671,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get cannotstartalarm => 'Der Alarm kann nicht gestartet werden';
 
   @override
-  String get thequeuemustnotbeemptyinordertostartthealarm => 'Die Warteschlange darf nicht leer sein, um den Alarm zu starten';
+  String get thequeuemustnotbeemptyinordertostartthealarm =>
+      'Die Warteschlange darf nicht leer sein, um den Alarm zu starten';
 
   @override
   String get maximumvolumeofthealarm => 'Maximale Lautstärke des Alarms';
@@ -642,13 +690,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get alarm => 'Alarm';
 
   @override
-  String get cannotcreateasleepalarmwithoutthe => 'Ein Schlafalarm kann nicht ohne \'Einschlafmodus\' oder \'Alarm\' erstellt werden';
+  String get cannotcreateasleepalarmwithoutthe =>
+      'Ein Schlafalarm kann nicht ohne \'Einschlafmodus\' oder \'Alarm\' erstellt werden';
 
   @override
-  String get pongowillgraduallylowerthevolumefor => 'Pongo wird die Lautstärke allmählich senken für';
+  String get pongowillgraduallylowerthevolumefor =>
+      'Pongo wird die Lautstärke allmählich senken für';
 
   @override
-  String get pongowillgraduallyincreasethevolume => 'Pongo wird die Lautstärke allmählich erhöhen';
+  String get pongowillgraduallyincreasethevolume =>
+      'Pongo wird die Lautstärke allmählich erhöhen';
 
   @override
   String get beforeyouneedtowakeupat => 'bevor Sie aufwachen müssen um';
@@ -696,7 +747,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get trackalreadydownloaded => 'Titel ist bereits heruntergeladen';
 
   @override
-  String get successfullydownloadedthetrack => 'Titel wurde erfolgreich heruntergeladen';
+  String get successfullydownloadedthetrack =>
+      'Titel wurde erfolgreich heruntergeladen';
 
   @override
   String get repeatoff => 'Wiederholung ist aus';
@@ -711,7 +763,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get removefromdownloaded => 'Aus heruntergeladenen entfernen';
 
   @override
-  String get removefromdownloadedbody => 'Möchten Sie die ausgewählten Titel aus den heruntergeladenen entfernen?';
+  String get removefromdownloadedbody =>
+      'Möchten Sie die ausgewählten Titel aus den heruntergeladenen entfernen?';
 
   @override
   String get lastlistenedto => 'Zuletzt angehört';
@@ -726,19 +779,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get imagecaching => 'Bildcaching';
 
   @override
-  String get cacheimagestoreducenetworkactivity => 'Die Bilder zwischenspeichern, um die Netzwerkauslastung zu reduzieren';
+  String get cacheimagestoreducenetworkactivity =>
+      'Die Bilder zwischenspeichern, um die Netzwerkauslastung zu reduzieren';
 
   @override
   String get deleteyouraccount => 'Lösche dein Konto';
 
   @override
-  String get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium => 'Durch das Löschen deines Kontos verlierst du alle Vorteile, falls du Premium zahlst';
+  String get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium =>
+      'Durch das Löschen deines Kontos verlierst du alle Vorteile, falls du Premium zahlst';
 
   @override
   String get deleteaccount => 'Konto löschen';
 
   @override
-  String get areyousurezouwanttodeleteyouraccount => 'Bist du sicher, dass du dein Konto löschen möchtest?';
+  String get areyousurezouwanttodeleteyouraccount =>
+      'Bist du sicher, dass du dein Konto löschen möchtest?';
 
   @override
   String get skip => 'Überspringen';
@@ -762,7 +818,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get downloading => 'Wird heruntergeladen';
 
   @override
-  String get downloadhasstarted => 'Download gestartet. SCHLIEßEN SIE DIE APP NICHT!';
+  String get downloadhasstarted =>
+      'Download gestartet. SCHLIEßEN SIE DIE APP NICHT!';
 
   @override
   String get firstadded => 'Zuerst hinzugefügt';

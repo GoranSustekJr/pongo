@@ -31,7 +31,7 @@ class SearchHistoryPhone extends StatelessWidget {
           color: Col.primaryCard.withAlpha(useBlur.value ? 150 : 240),
         ),
         child: AnimatedOpacity(
-          duration: Duration(milliseconds: animations ? 350 : 0),
+          duration: const Duration(milliseconds: /* animations ? 350 :  */ 0),
           opacity: showSearchHistory ? 1 : 0,
           child: ClipRRect(
             child: BackdropFilter(

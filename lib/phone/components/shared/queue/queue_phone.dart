@@ -167,10 +167,9 @@ class _QueuePhoneState extends State<QueuePhone> {
                                         cover: track.artUri.toString(),
                                         albumTrack: track.album != null
                                             ? AlbumTrack(
-                                                id: track.album!
-                                                    .split('..Ææ..')[0],
-                                                name: track.album!
-                                                    .split('..Ææ..')[1],
+                                                id: track.extras!["album"]
+                                                    .split("..Ææ..")[0],
+                                                name: track.album!,
                                                 releaseDate:
                                                     track.extras!["released"],
                                                 images: track.artUri != null

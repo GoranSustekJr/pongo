@@ -86,12 +86,13 @@ class _HomePhoneState extends State<HomePhone> {
                 ),
                 // 2. - search screen
                 AnimatedPositioned(
-                  duration: Duration(
-                      milliseconds: !animations
+                  duration: const Duration(
+                      milliseconds: /* !animations
                           ? 0
                           : searchBarIsSearching.value || focusNode.hasFocus
                               ? 400
-                              : 350),
+                              : 35 */
+                          0),
                   curve: searchBarIsSearching.value || focusNode.hasFocus
                       ? Curves.easeInOut
                       : Curves.fastEaseInToSlowEaseOut,

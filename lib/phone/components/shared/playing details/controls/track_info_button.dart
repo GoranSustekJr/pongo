@@ -41,8 +41,8 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
                     cover: mediaItem.artUri.toString(),
                     albumTrack: mediaItem.album != null
                         ? AlbumTrack(
-                            id: mediaItem.album!.split('..Ææ..')[0],
-                            name: mediaItem.album!.split('..Ææ..')[1],
+                            id: mediaItem.extras!["album"].split("..Ææ..")[0],
+                            name: mediaItem.album!,
                             releaseDate: mediaItem.extras!["released"],
                             images: mediaItem.artUri != null
                                 ? [
