@@ -131,6 +131,8 @@ void main() async {
   darkMode.value = drkMode;
   bool usDynamicBlurhash = await Storage().getUseDynamicBlurhash();
   useDynamicBlurhash = usDynamicBlurhash;
+  bool usLiquidGlass = await Storage().getUseLiquidGlass();
+  liquidGlassEnabled = usLiquidGlass;
 
   if (kIsAndroid) {
     await FlutterDisplayMode.setHighRefreshRate();

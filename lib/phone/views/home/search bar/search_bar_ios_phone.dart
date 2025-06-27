@@ -73,7 +73,6 @@ class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
                         });
                       },
                       child: liquidGlass(
-                        blur: 0,
                         child: CupertinoSearchTextField(
                           controller: widget.searchController,
                           focusNode: widget.focusNode,
@@ -108,7 +107,6 @@ class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
                 ),
                 if (searchBarIsSearching.value || widget.focusNode.hasFocus)
                   liquidGlass(
-                    blur: 0,
                     child: CupertinoButton(
                       sizeStyle: CupertinoButtonSize.medium,
                       padding: EdgeInsets.zero,
@@ -139,7 +137,8 @@ class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
             ),
           ),
         ),
-        // flexibleSpace: kIsApple ? liquidGlassBackground() : appBarBlur(),
+        flexibleSpace:
+            !liquidGlassEnabled ? liquidGlassBackground() : const SizedBox(),
       ),
     );
   }

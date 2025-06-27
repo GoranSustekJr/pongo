@@ -33,6 +33,8 @@ class AppIcons {
 
   static const download = CupertinoIcons.cloud_download;
 
+  static const drop = CupertinoIcons.drop;
+
   static const musicAlbums = CupertinoIcons.music_albums;
 
   static const heart = CupertinoIcons.heart;

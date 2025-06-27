@@ -47,6 +47,7 @@ class Storage {
   static String linearWakeupKey = "LINEARWAKEUPKEY";
   static String dynamicBlurhashKey = "DYNAMICBLURHASH";
   static String useAnimationsKey = "USEANIMATIONSKEY";
+  static String useLiquidGlassKey = "USELIQUIDGLASSKEY";
 
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
   // \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ //
@@ -669,6 +670,21 @@ class Storage {
     String? key = await storage.read(key: useAnimationsKey);
     if (key == null) {
       return true;
+    } else {
+      return key == "true";
+    }
+  }
+
+  // Use liquid glass
+  Future<void> writeUseLiquidGlass(bool useLiquidGlass) async {
+    await storage.write(
+        key: useLiquidGlassKey, value: useLiquidGlass.toString());
+  }
+
+  Future<bool> getUseLiquidGlass() async {
+    String? key = await storage.read(key: useLiquidGlassKey);
+    if (key == null) {
+      return false;
     } else {
       return key == "true";
     }

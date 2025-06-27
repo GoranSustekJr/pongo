@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 import 'package:pongo/phone/widgets/special/liquid_glass_render.dart';
 
 backButton(context) {
@@ -28,18 +29,17 @@ backButton(context) {
       ? liquidGlassLayer(
           child: liquidGlass(
             radius: 360,
-            /* blur: AppConstants().liquidGlassBlur,
-            borderRadius: BorderRadius.circular(360),
-            tint: Col.text,
-             */
-            child: CupertinoButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                showBottomNavBar.value = true;
-                showSearchBar.value = true;
-              },
-              padding: EdgeInsets.zero,
-              child: child,
+            child: liquidGlassBackground(
+              enabled: liquidGlassEnabled,
+              child: CupertinoButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  showBottomNavBar.value = true;
+                  showSearchBar.value = true;
+                },
+                padding: EdgeInsets.zero,
+                child: child,
+              ),
             ),
           ),
         )

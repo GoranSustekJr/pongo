@@ -138,3 +138,6 @@ double queueScrollOffset = 0;
 
 // Use animations
 bool animations = true;
+
+// Use liquid glass
+bool liquidGlassEnabled = false;

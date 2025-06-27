@@ -97,6 +97,16 @@ class AppLocalizationsHr extends AppLocalizations {
       'Dinamički blurhash JE VRLO ZAHTJEVAN ZA TVOJ UREĐAJ. Eksperimentalan je, BRZO ĆE ISPUSTATI BATERIJU i zagrijati uređaj';
 
   @override
+  String get liquidglass => 'Liquid glass';
+
+  @override
+  String get useliquidglass => 'Koristite liquid glass';
+
+  @override
+  String get liquidglasswarning =>
+      'Liquid glass JE VRLO ZAHTJEVAN ZA TVOJ UREĐAJ. Eksperimentalan je, BRZO ĆE ISPUSTATI BATERIJU i zagrijati uređaj';
+
+  @override
   String get linearsleepin => 'Linearno uspavljivanje';
 
   @override

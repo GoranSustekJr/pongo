@@ -73,6 +73,9 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   // Use animations
   bool useAnimations = true;
 
+  // Use liquid glass
+  bool useLiquidGlss = false;
+
   @override
   void initState() {
     super.initState();
@@ -112,6 +115,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
     final linearWkup = await Storage().getLinearWakeup();
     final usDynmicBlurhash = await Storage().getUseDynamicBlurhash();
     final usAnimations = await Storage().getUseAnimations();
+    final usLiquidGlass = await Storage().getUseLiquidGlass();
     setState(() {
       market = mark ?? 'US';
       syncTimeDelay = sync;
@@ -135,6 +139,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
       linearWakeUp = linearWkup;
       usDynamicBlurhash = usDynmicBlurhash;
       useAnimations = usAnimations;
+      useLiquidGlss = usLiquidGlass;
     });
   }
 
@@ -606,6 +611,29 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 });
                                 animations = use;
                                 await Storage().writeUseAnimations(use);
+                              }),
+                              settingsTileSwitcher(
+                                  context,
+                                  false,
+                                  false,
+                                  AppIcons.drop,
+                                  useLiquidGlss,
+                                  AppLocalizations.of(context).liquidglass,
+                                  AppLocalizations.of(context).useliquidglass,
+                                  (use) async {
+                                setState(() {
+                                  useLiquidGlss = use;
+                                });
+
+                                liquidGlassEnabled = use;
+                                await Storage().writeUseLiquidGlass(use);
+
+                                if (use == true) {
+                                  Notifications().showWarningNotification(
+                                      context,
+                                      AppLocalizations.of(context)
+                                          .liquidglasswarning);
+                                }
                               }),
                               settingsTileSwitcher(
                                   context,

@@ -18,6 +18,7 @@ class BottomNavBar extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 768),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
+          color: Colors.black,
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
@@ -31,7 +32,7 @@ class BottomNavBar extends StatelessWidget {
                       valueListenable: currentBlurhash,
                       builder: (context, signedIn, child) {
                         return AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 100),
+                          duration: const Duration(milliseconds: 450),
                           child: Blurhash(
                             key: ValueKey(currentBlurhash.value),
                             blurhash: currentBlurhash.value,

@@ -98,6 +98,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Dynamic blurhash is VERY HARD ON YOUR DEVICE. It is EXPERIMENTAL, will DRAIN THE BATTERY QUICKLY and make the device HOT';
 
   @override
+  String get liquidglass => 'Liquid glass';
+
+  @override
+  String get useliquidglass => 'Use liquid glass';
+
+  @override
+  String get liquidglasswarning =>
+      'Liquid glass is VERY HARD ON YOUR DEVICE. It is EXPERIMENTAL, will DRAIN THE BATTERY QUICKLY and make the device HOT';
+
+  @override
   String get linearsleepin => 'Linear sleepin';
 
   @override

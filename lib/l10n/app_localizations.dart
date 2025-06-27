@@ -262,6 +262,24 @@ abstract class AppLocalizations {
   /// **'Dynamic blurhash is VERY HARD ON YOUR DEVICE. It is EXPERIMENTAL, will DRAIN THE BATTERY QUICKLY and make the device HOT'**
   String get dynamicblurhashwarning;
 
+  /// Liquid glass
+  ///
+  /// In en, this message translates to:
+  /// **'Liquid glass'**
+  String get liquidglass;
+
+  /// Use liquid glass
+  ///
+  /// In en, this message translates to:
+  /// **'Use liquid glass'**
+  String get useliquidglass;
+
+  /// liquidglasswarning
+  ///
+  /// In en, this message translates to:
+  /// **'Liquid glass is VERY HARD ON YOUR DEVICE. It is EXPERIMENTAL, will DRAIN THE BATTERY QUICKLY and make the device HOT'**
+  String get liquidglasswarning;
+
   /// linearsleepin
   ///
   /// In en, this message translates to:

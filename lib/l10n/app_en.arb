@@ -135,6 +135,21 @@
         "description": "dynamicblurhashwarning"
     },
 
+    "liquidglass": "Liquid glass",
+    "@liquidglass": {
+        "description": "Liquid glass"
+    },
+
+    "useliquidglass": "Use liquid glass",
+    "@useliquidglass": {
+        "description": "Use liquid glass"
+    },
+
+    "liquidglasswarning": "Liquid glass is VERY HARD ON YOUR DEVICE. It is EXPERIMENTAL, will DRAIN THE BATTERY QUICKLY and make the device HOT",
+    "@liquidglasswarning": {
+        "description": "liquidglasswarning"
+    },
+
     "linearsleepin": "Linear sleepin",
     "@linearsleepin": {
         "description": "linearsleepin"

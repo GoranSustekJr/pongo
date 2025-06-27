@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 import 'package:pongo/phone/widgets/special/liquid_glass_render.dart';
 
 backLikeButton(context, IconData icon, Function() function) {
@@ -29,10 +30,13 @@ backLikeButton(context, IconData icon, Function() function) {
             /* blur: AppConstants().liquidGlassBlur,
             borderRadius: BorderRadius.circular(360),
             tint: Col.text, */
-            child: CupertinoButton(
-              onPressed: function,
-              padding: EdgeInsets.zero,
-              child: child,
+            child: liquidGlassBackground(
+              enabled: liquidGlassEnabled,
+              child: CupertinoButton(
+                onPressed: function,
+                padding: EdgeInsets.zero,
+                child: child,
+              ),
             ),
           ),
         )

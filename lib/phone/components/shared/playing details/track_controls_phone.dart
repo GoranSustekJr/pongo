@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
+import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 import 'package:pongo/phone/widgets/special/liquid_glass_render.dart';
 import 'controls.dart';
 
@@ -84,10 +85,13 @@ class TrackControlsPhone extends StatelessWidget {
             children: [
               AnimatedOpacity(
                 duration: const Duration(milliseconds: 250),
-                opacity: showQueue ? 1 : 0,
+                opacity: showQueue && !lyricsOn ? 1 : 0,
                 child: liquidGlassLayer(
                   thickness: 40,
-                  child: liquidGlass(radius: 28, child: Container()),
+                  child: liquidGlass(
+                      radius: 28,
+                      child: liquidGlassBackground(
+                          enabled: liquidGlassEnabled, child: Container())),
                 ),
               ),
               ClipRRect(

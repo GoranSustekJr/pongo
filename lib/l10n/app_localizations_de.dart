@@ -95,7 +95,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get dynamicblurhashwarning =>
-      'Dynamischer Blurhash ist SEHR ANSPRUCHSVOLL FÜR DEIN GERÄT. Es ist EXPERIMENTELL, wird DEN AKKU SCHNELL LEEREN und das Gerät ERHITZEN';
+      'Liquid glass ist SEHR ANSPRUCHSVOLL FÜR DEIN GERÄT. Es ist EXPERIMENTELL, wird DEN AKKU SCHNELL LEEREN und das Gerät ERHITZEN';
+
+  @override
+  String get liquidglass => 'Liquid glass';
+
+  @override
+  String get useliquidglass => 'Liquid glass verwenden';
+
+  @override
+  String get liquidglasswarning =>
+      'Liquid glass is VERY HARD ON YOUR DEVICE. It is EXPERIMENTAL, will DRAIN THE BATTERY QUICKLY and make the device HOT';
 
   @override
   String get linearsleepin => 'Lineares Einschlafen';
