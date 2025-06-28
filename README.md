@@ -13,8 +13,13 @@ Pongo is a full stack application for free music streaming. Important to notice 
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
 
+## Demo video
+- https://youtu.be/PcywrO85vYY, 3.3.2025.  
+- ..., 28.7.2025. (Updated version)
+
 ## Features
 
+ - Live lyrics
  - Live lyrics
  - Mix mode
  - Show/Hide songs in playlist
@@ -22,5 +27,21 @@ Pongo is a full stack application for free music streaming. Important to notice 
  - Online/Offline playlists
  - Performance-saving preferences
  - Search preferences
+ - iOS, MacOS, Android supported  
+
+
+ - Apple/Google sign in
+ - See currently played artist/album
+ - Dynamic coloring
+ - Currently played controlls
+ - English/Deutsch/Hrvatski
+ - Pause by tapping on image
+ - Play next/previous on swipe
+ - Account deletion
+ - Liquid glass UI
+ - Queue managment
+ - Repeat and shuffle
+ - Animations
+
 
 ## How does it work?
