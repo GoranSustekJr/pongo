@@ -46,10 +46,22 @@ Pongo is a full stack application for free music streaming. Important to notice 
 
 ## How Does It Work?
 
-### Server side download song
-1. 
+### Server-Side Song Download 💾  
 
-### 🎵 Audio Playback Flow
+1. An **asynchronous function** is started, and the track/video ID is added to a set of currently downloading items.
+2. If a **track ID** is provided, metadata is fetched from the **Spotify API** to determine the corresponding YouTube video ID.
+3. A YouTube video URL is constructed:  
+   `https://www.youtube.com/watch?v={yt_vid}`  
+   and a temporary file path is prepared.
+4. Both the URL and the file path are passed to **`yt-dlp`**, which downloads the audio.
+5. Upon successful download, the **audio duration** is determined using `ffprobe` (required for iOS and macOS native audio players).
+6. A **SHA-512 hash** is computed from the audio to check for duplicates in the database:
+   - If the audio already exists, nothing is added, and temporary files are deleted.
+   - If it's new, both the duration and audio file are inserted into the database before cleanup.
+7. Finally, the track/video ID is removed from the set of currently downloading items.
+
+
+### Audio Playback Flow 🎵  
 
 1. The user starts by searching for a song.
 2. When the desired track is tapped, a WebSocket connection is opened to the server’s `/test` endpoint.
@@ -60,7 +72,7 @@ Pongo is a full stack application for free music streaming. Important to notice 
 5. The selected track is then prepared locally on the user's device and passed to the native audio player.
 6. The native audio player sends a request to the server’s `/play_song` endpoint, which responds with the audio stream.
 
-### 🔀 Mix Mode
+### Mix Mode 🔀  
 
 1. **Enable Mix Mode** in the app's preferences.
 2. When a **single track** (not part of a playlist or album) is played, the standard [Audio Playback Flow](#-audio-playback-flow) is triggered.
