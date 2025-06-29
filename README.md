@@ -44,5 +44,34 @@ Pongo is a full stack application for free music streaming. Important to notice 
 
 
 
-## How does it work?
+## How Does It Work?
 
+### Server side download song
+1. 
+
+### 🎵 Audio Playback Flow
+
+1. The user starts by searching for a song.
+2. When the desired track is tapped, a WebSocket connection is opened to the server’s `/test` endpoint.
+3. The server checks if the track already exists in the database:
+   - If it **does**, the server responds with `{"exists": "true"}` and the connection is closed.
+   - If it **does not**, the server responds with `{"exists": "false"}` and the client waits while the song is downloaded.
+4. Once the song becomes available, the server sends `{"exists": "true"}` to notify the client.
+5. The selected track is then prepared locally on the user's device and passed to the native audio player.
+6. The native audio player sends a request to the server’s `/play_song` endpoint, which responds with the audio stream.
+
+### 🔀 Mix Mode
+
+1. **Enable Mix Mode** in the app's preferences.
+2. When a **single track** (not part of a playlist or album) is played, the standard [Audio Playback Flow](#-audio-playback-flow) is triggered.
+3. After the track finishes, a WebSocket request is sent to:  
+   `/cfc14e13ca191618a06bd94dd5976fccae585e36b3f651b467947288afb51ea8`
+4. The server uses the track ID to fetch metadata from the **Spotify API**.
+5. A search query is generated in the format:  
+   `"<track name> - <artist 1>, <artist 2>, ..."`
+6. This query is sent to YouTube's search endpoint. First valid **video ID** is extracted.
+7. The video ID is used to retrieve the corresponding **YouTube Mix playlist ID**.
+8. A YouTube URL is constructed:  
+   `https://www.youtube.com/watch?v={yt_vid}&list={mix_id}&index=1`
+9. This URL is passed to `yt-dlp`, which downloads the **first 20 songs** in the mix.
+10. As each song is downloaded, the server sends metadata back to the client, which adds the track to the playback queue under **Mix #N**.
