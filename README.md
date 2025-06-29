@@ -12,6 +12,8 @@ Pongo is a full stack application for free music streaming. Important to notice 
 ![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
+![Spotify API](https://img.shields.io/badge/Spotify-1ED760?&style=for-the-badge&logo=spotify&logoColor=white)
+![Shazam API](https://img.shields.io/badge/Shazam-0088FF?style=for-the-badge&logo=Shazam&logoColor=white)
 
 ## Demo video
 - https://youtu.be/PcywrO85vYY, 3.3.2025.  
@@ -19,28 +21,28 @@ Pongo is a full stack application for free music streaming. Important to notice 
 
 ## Features
 
-| Feature                          | Description                                 |
-|----------------------------------|---------------------------------------------|
-| Live lyrics                      | See synchronized lyrics in real time        |
-| Mix mode                         | When single song is played, in the queue will be added 20 songs of similar atmosphere         |
-| Show/Hide songs in playlist      | Toggle visibility of tracks in your playlist without having to remove them    |
-| Sleep mode                       | Gradually increase/decrease volume for certain period of time to allow you smooth falling asleep and waking up            |
-| Online/Offline playlists         | Access downloaded playlists without internet           |
-| Performance-saving preferences   | Reduce UI intensity for smoother playback   |
-| Search preferences               | Customize how search behaves and what it displays                |
-| iOS, MacOS, Android supported    | Works across major platforms                |
-| Apple/Google sign in             | Sign in easily and securly with your Apple or Google ID |
-| See currently played artist/album| Info at a glance while listening            |
-| Dynamic coloring                 | UI adapts to album art colors               |
-| Currently played controls        | Swipe up for full controls                  |
-| English/Deutsch/Hrvatski         | App available in 3 languages                |
-| Pause by tapping on image        | Tap artwork to pause                        |
-| Play next/previous on swipe      | Swipe navigation bar to change songs               |
-| Account deletion                 | Three-tap account deletion from the app       |
-| Liquid glass UI                  | Frosted, fluid visual design                |
-| Queue management                 | Reorder or remove songs in the queue        |
-| Repeat and shuffle               | Toggle repeat and shuffle modes             |
-| Animations                       | Smooth transitions and effects              |
+| Feature                          | Description                                                                                                     |
+|----------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| Live lyrics                      | See synchronized lyrics in real time with the possibility of manual synchronization                             |
+| Mix mode                         | When single song is played, in the queue will be added 20 songs of similar atmosphere                           |
+| Show/Hide songs in playlist      | Toggle visibility of tracks in your playlist without having to remove them                                      |
+| Sleep mode                       | Gradually increase/decrease volume for certain period of time to allow you smooth falling asleep and waking up  |
+| Online/Offline playlists         | Access downloaded playlists without internet                                                                    |
+| Performance-saving preferences   | Reduce UI intensity for smoother playback                                                                       |
+| Search preferences               | Customize how search behaves and what it displays                                                               |
+| iOS, MacOS, Android supported    | Works across major platforms                                                                                    |
+| Apple/Google sign in             | Sign in easily and securly with your Apple or Google ID                                                         |
+| See currently played artist/album| Info at a glance while listening                                                                                |
+| Dynamic coloring                 | UI adapts to album art colors                                                                                   |
+| Currently played controls        | Swipe up for full controls                                                                                      |
+| English/Deutsch/Hrvatski         | App available in 3 languages                                                                                    |
+| Pause by tapping on image        | Tap artwork to pause                                                                                            |
+| Play next/previous on swipe      | Swipe navigation bar to change songs                                                                            |
+| Account deletion                 | Three-tap account deletion from the app                                                                         |
+| Liquid glass UI                  | Frosted, fluid visual design                                                                                    |
+| Queue management                 | Reorder or remove songs in the queue                                                                            |
+| Repeat and shuffle               | Toggle repeat and shuffle modes                                                                                 |
+| Animations                       | Smooth transitions and effects                                                                                  |
 
 
 
@@ -87,3 +89,5 @@ Pongo is a full stack application for free music streaming. Important to notice 
    `https://www.youtube.com/watch?v={yt_vid}&list={mix_id}&index=1`
 9. This URL is passed to `yt-dlp`, which downloads the **first 20 songs** in the mix.
 10. As each song is downloaded, the server sends metadata back to the client, which adds the track to the playback queue under **Mix #N**.
+
+    
