@@ -17,7 +17,7 @@ Pongo is a full stack application for free music streaming. Important to notice 
 
 ## Demo video
 - https://youtu.be/PcywrO85vYY, 3.3.2025.  
-- https://youtube.com/shorts/tdU5W7BBnJc?feature=share, 28.7.2025. (Updated UI and new feature)
+- https://youtu.be/VLkgnx1HZGk, 28.7.2025. (Updated UI and new feature)
 
 ## Features
 
