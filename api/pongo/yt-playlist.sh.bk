@@ -1,0 +1,67 @@
+#!/bin/bash
+# dependencies: curl, grep (GNU grep)
+
+function usage () {
+  echo "usage: yt-playlist"
+  echo "    -h        help"
+  echo "    -s query  search for playlists"
+  echo
+  echo "example usage:"
+  echo "yt-playlist -s 'your search query'"
+  exit 0
+}
+
+# no args -> show usage
+if [[ ${#} -eq 0 ]]; then
+    usage
+fi
+
+# available flags
+optstring=":s:h"
+query=""
+
+while getopts ${optstring} arg; do
+    case "${arg}" in
+        s) query="${OPTARG}" ;;
+        h) usage ;;
+        \?) echo "invalid option: -${OPTARG}"; echo; usage ;;
+        :) echo "Option -${OPTARG} needs an argument"; echo; usage ;;
+    esac
+done
+
+# if no query is set with flags then ask for one
+if [ -z "$query" ]; then
+    echo -n "Search: "
+    read -r query
+fi
+
+# program cancelled -> exit
+if [ -z "$query" ]; then exit; fi
+
+# clean query for URL
+query=$(sed -e 's|+|%2B|g' -e 's|#|%23|g' -e 's|&|%26|g' -e 's| |+|g' <<< "$query")
+
+# get YouTube search results
+response=$(curl -s "https://www.youtube.com/results?search_query=$query")
+
+# if unable to fetch the YouTube results page, inform and exit
+if ! grep -q "script" <<< "$response"; then echo "unable to fetch yt"; exit 1; fi
+
+# regex to match playlist IDs (excluding 'WL')
+pgrep='"playlistId":"(?!WL)([A-Za-z0-9_-]+)"'
+
+# function to get playlist results
+getresults() {
+    grep -oP "$1" <<< "$response" | sed -E 's/"playlistId":"([^"]+)"/\1/' 
+}
+
+# get the first valid playlist ID
+first_playlist_id=$(getresults "$pgrep" | head -n 1)
+
+# Print the playlist link
+if [ -n "$first_playlist_id" ]; then
+    echo "https://www.youtube.com/playlist?list=$first_playlist_id"
+else
+    echo "No playlists found."
+fi
+
