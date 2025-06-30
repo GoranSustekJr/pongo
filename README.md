@@ -88,6 +88,17 @@ Pongo is a full stack application for free music streaming. Important to notice 
 8. A YouTube URL is constructed:  
    `https://www.youtube.com/watch?v={yt_vid}&list={mix_id}&index=1`
 9. This URL is passed to `yt-dlp`, which downloads the **first 20 songs** in the mix.
-10. As each song is downloaded, the server sends metadata back to the client, which adds the track to the playback queue under **Mix #N**.
+10. As each song is downloaded, the server sends metadata back to the client, which adds the track to the playback queue under **Mix #N**.  
 
-    
+
+## App Preview
+
+<img src="https://github.com/user-attachments/assets/1afacff7-c027-48fd-a900-be631d27c1f6" width="293" height="633" />
+<img src="https://github.com/user-attachments/assets/48885f3a-6c38-4289-b09a-2cfe10855a46" width="293" height="633" />
+<img src="https://github.com/user-attachments/assets/535b95df-62f5-4953-92fe-c22e60e55514" width="293" height="633" />
+<img src="https://github.com/user-attachments/assets/a0aac160-664d-410d-b544-bf0be7a2dcbf" width="293" height="633" />
+<img src="https://github.com/user-attachments/assets/c2d8204d-5408-42b1-922b-3eda18445fe1" width="293" height="633" />
+
+
+
+
