@@ -1,0 +1,278 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.9 (Ubuntu 16.9-1.pgdg24.04+1)
+-- Dumped by pg_dump version 16.9 (Ubuntu 16.9-1.pgdg24.04+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
+--
+
+CREATE SCHEMA public;
+
+
+ALTER SCHEMA public OWNER TO pg_database_owner;
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: audio; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.audio (
+    auid bigint NOT NULL,
+    audio bytea,
+    hash character varying(512)
+);
+
+
+ALTER TABLE public.audio OWNER TO postgres;
+
+--
+-- Name: audio_auid_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.audio ALTER COLUMN auid ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.audio_auid_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: duration; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.duration (
+    stid character varying(255),
+    duration double precision
+);
+
+
+ALTER TABLE public.duration OWNER TO postgres;
+
+--
+-- Name: subscription; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.subscription (
+    uid character varying(255),
+    sid character varying(100),
+    start_time timestamp with time zone,
+    expire_time timestamp with time zone
+);
+
+
+ALTER TABLE public.subscription OWNER TO postgres;
+
+--
+-- Name: track; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.track (
+    stid character varying(255),
+    ytvid character varying(15)
+);
+
+
+ALTER TABLE public.track OWNER TO postgres;
+
+--
+-- Name: track_id_audio_id; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.track_id_audio_id (
+    stid character varying(255),
+    auid bigint
+);
+
+
+ALTER TABLE public.track_id_audio_id OWNER TO postgres;
+
+--
+-- Name: user_device; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_device (
+    uid character varying(255),
+    device_id character varying(64)
+);
+
+
+ALTER TABLE public.user_device OWNER TO postgres;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    uid character varying(255),
+    email character varying(320),
+    created timestamp with time zone NOT NULL,
+    name character varying(255),
+    picture character varying(255),
+    max_devices integer,
+    apple_auth boolean,
+    hidden_auth boolean,
+    disabled boolean
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: audio audio_hash_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.audio
+    ADD CONSTRAINT audio_hash_key UNIQUE (hash);
+
+
+--
+-- Name: audio audio_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.audio
+    ADD CONSTRAINT audio_pkey PRIMARY KEY (auid);
+
+
+--
+-- Name: track_id_audio_id track_id_audio_id_stid_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.track_id_audio_id
+    ADD CONSTRAINT track_id_audio_id_stid_key UNIQUE (stid);
+
+
+--
+-- Name: track track_stid_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.track
+    ADD CONSTRAINT track_stid_key UNIQUE (stid);
+
+
+--
+-- Name: users unique_uid; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT unique_uid UNIQUE (uid);
+
+
+--
+-- Name: duration duration_stid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.duration
+    ADD CONSTRAINT duration_stid_fkey FOREIGN KEY (stid) REFERENCES public.track(stid);
+
+
+--
+-- Name: subscription subscription_uid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.subscription
+    ADD CONSTRAINT subscription_uid_fkey FOREIGN KEY (uid) REFERENCES public.users(uid);
+
+
+--
+-- Name: track_id_audio_id track_id_audio_id_auid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.track_id_audio_id
+    ADD CONSTRAINT track_id_audio_id_auid_fkey FOREIGN KEY (auid) REFERENCES public.audio(auid);
+
+
+--
+-- Name: track_id_audio_id track_id_audio_id_stid_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.track_id_audio_id
+    ADD CONSTRAINT track_id_audio_id_stid_fkey FOREIGN KEY (stid) REFERENCES public.track(stid);
+
+
+--
+-- Name: TABLE audio; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.audio TO pongo_user;
+
+
+--
+-- Name: SEQUENCE audio_auid_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.audio_auid_seq TO pongo_user;
+
+
+--
+-- Name: TABLE duration; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.duration TO pongo_user;
+
+
+--
+-- Name: TABLE subscription; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.subscription TO pongo_user;
+
+
+--
+-- Name: TABLE track; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.track TO pongo_user;
+
+
+--
+-- Name: TABLE track_id_audio_id; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.track_id_audio_id TO pongo_user;
+
+
+--
+-- Name: TABLE user_device; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.user_device TO pongo_user;
+
+
+--
+-- Name: TABLE users; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.users TO pongo_user;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
