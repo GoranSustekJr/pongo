@@ -22,18 +22,16 @@ class Mix {
 
     await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
 
-    int i = 0;
-
-    channel.stream.listen((message) async {
+      channel.stream.listen((message) async {
       if (audioServiceHandler.queue.value[0].title == track.name) {
-        i++;
         var response = json.decode(message);
         if (response["duration"] != null) {
           // Create a media item
+          final Track mixTrack = Track.fromMap(response["track"]);
           MediaItem mediaItem = MediaItemObject().create(
-            "online.mix.${response["ytvid"]}",
-            "Mix #$i - ${track.name}",
-            track,
+            "online.mix.${mixTrack.id}",
+            mixTrack.name,
+            mixTrack,
             Duration(milliseconds: (response["duration"]! * 1000).toInt()),
             mix: true,
           );

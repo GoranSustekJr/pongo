@@ -36,8 +36,6 @@ class Storage {
   static String currentPLayingPositionKey = "CURRENTPLAYINGPOSITIONKEY";
   static String cacheImagesKey = "CACHEIMAGESKEY";
   static String localsSortKey = "LOCALSSORTKEY";
-  static String subscriptionKey = "SUBSCRIPTIONKEY";
-  static String subscriptionEndKey = "SUBSCRIPTIONENDKEY";
   static String useBlurKey = "USEBLURKEY";
   static String useMixKey = "USEMIXKEY";
   static String useDetailedBlurhashKey = " USEDETAILEDBLURHASHKEY";
@@ -67,6 +65,14 @@ class Storage {
   }
 
   // Access Token
+  Future<void> writeStreamToken(String? token) async {
+    await storage.write(key: "STREAMTOKEN", value: token);
+  }
+
+  Future<String?> getStreamToken() async {
+    return storage.read(key: "STREAMTOKEN");
+  }
+
   Future<void> writeAccessToken(String? accessToken) async {
     await storage.write(key: accessTokenKey, value: accessToken);
   }
@@ -506,34 +512,6 @@ class Storage {
       return "A-Z";
     } else {
       return key;
-    }
-  }
-
-  // Subscription
-  Future<void> writeSubscription(bool subscription) async {
-    await storage.write(key: subscriptionKey, value: subscription.toString());
-  }
-
-  Future<bool> getSubscription() async {
-    String? key = await storage.read(key: subscriptionKey);
-    if (key == null) {
-      return false;
-    } else {
-      return key == "true";
-    }
-  }
-
-  // Subscription end
-  Future<void> writeSubscriptionEnd(String subscriptionEnd) async {
-    await storage.write(key: subscriptionEndKey, value: subscriptionEnd);
-  }
-
-  Future<DateTime> getSubscriptionEnd() async {
-    String? key = await storage.read(key: subscriptionEndKey);
-    if (key == null) {
-      return DateTime.now();
-    } else {
-      return DateTime.parse(key);
     }
   }
 

@@ -145,69 +145,52 @@ class _QueuePhoneState extends State<QueuePhone> {
                           changeLyricsOn: widget.changeLyricsOn,
                           saveAsPlaylist: () {
                             if (queue != null) {
-                              if (premium.value) {
-                                OpenPlaylist().show(
-                                  context,
-                                  PlaylistHandler(
-                                    type: PlaylistHandlerType.online,
-                                    function:
-                                        PlaylistHandlerFunction.createPlaylist,
-                                    track: queue.map((track) {
-                                      return PlaylistHandlerOnlineTrack(
-                                        id: track.id.split('.')[2],
-                                        name: track.title,
-                                        artist: track.artist != null
-                                            ? (jsonDecode(track
-                                                        .extras!["artists"])
-                                                    as List)
-                                                .map((e) =>
-                                                    e as Map<String, dynamic>)
-                                                .toList()
-                                            : [],
-                                        cover: track.artUri.toString(),
-                                        albumTrack: track.album != null
-                                            ? AlbumTrack(
-                                                id: track.extras!["album"]
-                                                    .split("..Ææ..")[0],
-                                                name: track.album!,
-                                                releaseDate:
-                                                    track.extras!["released"],
-                                                images: track.artUri != null
-                                                    ? [
-                                                        AlbumImagesTrack(
-                                                            url: track.artUri!
-                                                                .toString(),
-                                                            height: null,
-                                                            width: null)
-                                                      ]
-                                                    : [],
-                                              )
-                                            : null,
-                                        playlistHandlerCoverType: track.artUri
-                                                .toString()
-                                                .contains("file:///")
-                                            ? PlaylistHandlerCoverType.bytes
-                                            : PlaylistHandlerCoverType.url,
-                                      );
-                                    }).toList(),
-                                  ),
-                                );
-                              } else {
-                                Notifications().showSpecialNotification(
-                                    notificationsContext.value!,
-                                    AppLocalizations.of(
-                                            notificationsContext.value!)
-                                        .error,
-                                    AppLocalizations.of(
-                                            notificationsContext.value!)
-                                        .premiumisneededtosavethequeue,
-                                    AppIcons.warning, onTap: () {
-                                  if (!premium.value) {
-                                    currentTrackHeight.value = 0;
-                                    navigationBarIndex.value = 2;
-                                  }
-                                });
-                              }
+                              OpenPlaylist().show(
+                                context,
+                                PlaylistHandler(
+                                  type: PlaylistHandlerType.online,
+                                  function:
+                                      PlaylistHandlerFunction.createPlaylist,
+                                  track: queue.map((track) {
+                                    return PlaylistHandlerOnlineTrack(
+                                      id: track.id.split('.')[2],
+                                      name: track.title,
+                                      artist: track.artist != null
+                                          ? (jsonDecode(track
+                                                      .extras!["artists"])
+                                                  as List)
+                                              .map((e) =>
+                                                  e as Map<String, dynamic>)
+                                              .toList()
+                                          : [],
+                                      cover: track.artUri.toString(),
+                                      albumTrack: track.album != null
+                                          ? AlbumTrack(
+                                              id: track.extras!["album"]
+                                                  .split("..Ææ..")[0],
+                                              name: track.album!,
+                                              releaseDate:
+                                                  track.extras!["released"],
+                                              images: track.artUri != null
+                                                  ? [
+                                                      AlbumImagesTrack(
+                                                          url: track.artUri!
+                                                              .toString(),
+                                                          height: null,
+                                                          width: null)
+                                                    ]
+                                                  : [],
+                                            )
+                                          : null,
+                                      playlistHandlerCoverType: track.artUri
+                                              .toString()
+                                              .contains("file:///")
+                                          ? PlaylistHandlerCoverType.bytes
+                                          : PlaylistHandlerCoverType.url,
+                                    );
+                                  }).toList(),
+                                ),
+                              );
                             }
                           },
                         ),

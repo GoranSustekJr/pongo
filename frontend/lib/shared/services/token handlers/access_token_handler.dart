@@ -20,6 +20,10 @@ class AccessTokenhandler {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       await updateSystemWide(context, data["at"]);
+      if (data["st"] != null) {
+        streamToken = data["st"];
+        await Storage().writeStreamToken(streamToken);
+      }
     } else if (response.statusCode == 401) {
       //Bas refresh token! => Sign out
       SignInHandler().signOut(context);

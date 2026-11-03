@@ -87,7 +87,6 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.white.withAlpha(50),
                   focusedHeight: 12,
-                  enabled: premium.value || kIsDesktop,
                   onProgressUpdated: (position) async {
                     updateProgress(position);
                     await audioServiceHandler.seek(

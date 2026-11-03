@@ -1,85 +1,100 @@
-import requests as rq
-from jwt import PyJWKClient
-from google.auth.transport import requests
+import asyncio
+import logging
+
+from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
-from library.db import insert, select
-from library.auth import auth
-from library.auth import jwt as jwts
-from library.auth import apple_auth
-from dotenv import load_dotenv
-import os
 
-# Load .env
-load_dotenv()
+from library import config, db
+from library.auth import apple, tokens
 
-# Get .env vars
-web_client_id = os.getenv('WEB_CLIENT_ID') # Web client id
-ios_client_id = os.getenv('IOS_CLIENT_ID') # iOS client id
-desktop_client_id = os.getenv('DESKTOP_CLIENT_ID') # Desktop client id
+log = logging.getLogger(__name__)
 
-# Verify the user in order to log him in
-def verify_user(token: str, platform: str, device_id: str, apple: bool, connection, cursor):
-    try:
-        hidden_auth = False
-        if apple == False:
-            if platform == "ios": # Checking the platform
-                idinfo = id_token.verify_oauth2_token(token, requests.Request(), ios_client_id)
-            elif platform == "web":
-                idinfo = id_token.verify_oauth2_token(token, requests.Request(), desktop_client_id)
-            else:
-                idinfo = id_token.verify_oauth2_token(token, requests.Request(), web_client_id) # Authenticating with token obtained from google
-        else:
-            if platform == "ios":
-                # Decode the apple token
-                token = apple_auth.retrieve_user_info(token)
+_GOOGLE_AUDIENCE = {
+    "ios": lambda: config.IOS_CLIENT_ID,
+    "web": lambda: config.DESKTOP_CLIENT_ID,
+}
 
-                # User and auth info
-                idinfo = {
-                    "sub": token["sub"],
-                    "email": token["email"],
-                    "name": "",
-                    "picture": "",
-                }
-                
-                # Is info hidden
-                try:
-                    hidden_auth = token["is_private_email"]
-                except Exception as e:
-                    print(e)
 
-        # User data
-        data = {
-            "uid": idinfo["sub"],
-            "email": idinfo["email"], 
-            "name": idinfo["name"],
-            "picture": idinfo["picture"],
+def _verify_google(token: str, platform: str) -> dict:
+    audience = _GOOGLE_AUDIENCE.get(platform, lambda: config.WEB_CLIENT_ID)()
+    return id_token.verify_oauth2_token(token, google_requests.Request(), audience)
+
+
+async def _identity(token: str, platform: str, is_apple: bool) -> dict:
+    if is_apple:
+        claims = await apple.exchange_code(token)
+        return {
+            "uid": claims["sub"],
+            "email": claims.get("email"),
+            "name": "",
+            "picture": "",
+            "hidden": str(claims.get("is_private_email", "false")).lower() == "true",
         }
+    claims = await asyncio.to_thread(_verify_google, token, platform)
+    return {
+        "uid": claims["sub"],
+        "email": claims.get("email"),
+        "name": claims.get("name", ""),
+        "picture": claims.get("picture", ""),
+        "hidden": False,
+    }
 
-        # Insert if new user to db
-        insert.insert_new_user(data["uid"], data["email"], data["name"], data["picture"], apple, hidden_auth, connection, cursor)
 
-        # Insert if new device to db
-        insert.insert_device(data["uid"], device_id, connection, cursor)
+async def _store_user_and_device(identity: dict, is_apple: bool, device_id: str) -> None:
+    enabled = (identity["email"] or "").lower() in config.ALLOWED_EMAILS
+    async with db.pool.connection() as conn:
+        # An allow-listed email can turn on an account that already exists, never turn one off
+        await conn.execute(
+            """
+            INSERT INTO users (uid, email, name, picture, apple_auth, hidden_auth, disabled)
+            VALUES (%(uid)s, %(email)s, %(name)s, %(picture)s, %(apple)s, %(hidden)s, %(disabled)s)
+            ON CONFLICT (uid) DO UPDATE
+            SET disabled = users.disabled AND EXCLUDED.disabled
+            """,
+            {**identity, "apple": is_apple, "disabled": not enabled},
+        )
+        await conn.execute(
+            """
+            INSERT INTO user_device (uid, device_id) VALUES (%s, %s)
+            ON CONFLICT (uid, device_id) DO UPDATE SET last_seen = now()
+            """,
+            (identity["uid"], device_id),
+        )
+        # Signing in on a device past the limit signs out the least recently used one
+        await conn.execute(
+            """
+            DELETE FROM user_device WHERE uid = %(uid)s AND device_id IN (
+                SELECT device_id FROM user_device WHERE uid = %(uid)s
+                ORDER BY last_seen DESC
+                OFFSET (SELECT max_devices FROM users WHERE uid = %(uid)s)
+            )
+            """,
+            {"uid": identity["uid"]},
+        )
 
-        # Generate and retun refresh and access token
-        refresh_token = auth.request_refresh_token(data["uid"], device_id)
-        access_token = auth.request_access_token(data["uid"], refresh_token)
-        return refresh_token, access_token
-    except Exception as e:
-        print(e)
-        
-        
-# Renew access token
-def renew_access_token(refresh_token):
+
+async def sign_in(token: str, platform: str, device_id: str, is_apple: bool) -> dict | None:
     try:
-        # Extract the uid
-        uid = jwts.get_uid_from_at(refresh_token)
-        if uid is not None: # get and return the new access token
-            access_token = auth.request_access_token(uid, refresh_token)
-
-            return access_token
-        else:
-            return None
-    except Exception as e:
-        print(e)
+        identity = await _identity(token, platform, is_apple)
+    except Exception:
+        log.exception("Sign in rejected (platform=%s, apple=%s)", platform, is_apple)
         return None
+
+    await _store_user_and_device(identity, is_apple, device_id)
+    uid, email = identity["uid"], identity["email"]
+    return {
+        "rt+JWT": tokens.create_refresh_token(uid, email, device_id),
+        "at+JWT": tokens.create_access_token(uid, email, device_id),
+        "st": tokens.create_stream_token(uid, device_id),
+    }
+
+
+async def renew(refresh_token: str | None) -> dict | None:
+    session = tokens.decode(refresh_token, "rt+JWT") if refresh_token else None
+    if session is None or await tokens.session_status(session) == "unknown":
+        return None
+    row = await db.fetch_one("SELECT email FROM users WHERE uid = %s", (session.uid,))
+    return {
+        "at": tokens.create_access_token(session.uid, row[0], session.device_id),
+        "st": tokens.create_stream_token(session.uid, session.device_id),
+    }

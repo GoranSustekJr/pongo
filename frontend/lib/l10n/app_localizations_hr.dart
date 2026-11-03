@@ -791,9 +791,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get deleteyouraccount => 'Izbriši svoj račun';
 
   @override
-  String
-      get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium =>
-          'Brisanjem računa izgubit ćeš sve povlastice ako plaćaš premium';
+  String get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium =>
+      'Brisanjem računa bit ćeš odjavljen, a tvoji podaci bit će uklonjeni s poslužitelja.';
 
   @override
   String get deleteaccount => 'Izbriši račun';

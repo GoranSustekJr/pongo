@@ -245,7 +245,7 @@
     "imagecaching": "Bildcaching",
     "cacheimagestoreducenetworkactivity": "Die Bilder zwischenspeichern, um die Netzwerkauslastung zu reduzieren",
     "deleteyouraccount": "Lösche dein Konto",
-    "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": "Durch das Löschen deines Kontos verlierst du alle Vorteile, falls du Premium zahlst",
+    "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": "Durch das Löschen deines Kontos wirst du abgemeldet und deine Daten werden vom Server entfernt.",
     "deleteaccount": "Konto löschen",
     "areyousurezouwanttodeleteyouraccount": "Bist du sicher, dass du dein Konto löschen möchtest?",
     "skip": "Überspringen",

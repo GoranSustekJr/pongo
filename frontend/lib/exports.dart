@@ -21,7 +21,6 @@ export 'package:pongo/phone/views/playlist/spotify%20playlist/playlist_phone.dar
 export 'package:pongo/shared/functions/play/play.dart';
 export 'package:pongo/shared/utils/API%20requests/recommendations.dart';
 export 'package:pongo/phone/components/shared/queue/queue_body_phone.dart';
-export 'package:pongo/phone/views/library/pages/buy%20premium/buy_premium_phone.dart';
 export 'package:pongo/shared/functions/queue/add_to_queue.dart';
 
 export 'package:liquid_glass/liquid_glass.dart';
@@ -39,7 +38,6 @@ export 'package:pongo/phone/views/library/pages/favourites/views/favourites_body
 export 'package:pongo/shared/utils/API%20requests/searialized_data.dart';
 export 'package:pongo/shared/utils/API%20requests/tracks.dart';
 export 'package:pongo/phone/theme/theme.dart';
-export 'package:pongo/shared/utils/API%20requests/premium.dart';
 export 'package:pongo/phone/components/library/locals/play_shuffle_halt_locals.dart';
 export 'package:pongo/phone/views/library/pages/locals/data/locals_data_manager.dart';
 export 'package:pongo/phone/views/library/pages/locals/views/locals_body_phone.dart';
@@ -164,7 +162,5 @@ export 'package:flutter_platform_alert/flutter_platform_alert.dart';
 export 'package:blurhash_ffi/blurhash.dart';
 export 'package:image_cropper/image_cropper.dart';
 export 'package:image_picker/image_picker.dart';
-export 'package:google_mobile_ads/google_mobile_ads.dart';
-export 'package:in_app_purchase/in_app_purchase.dart';
 
 export 'package:pongo/l10n/app_localizations.dart';

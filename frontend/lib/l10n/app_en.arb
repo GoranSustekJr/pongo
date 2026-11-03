@@ -1231,7 +1231,7 @@
         "description": "deleteyouraccount"
     },
 
-    "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": "By deleting your account, you will delete all your privileges if paying premium",
+    "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": "Deleting your account signs you out and removes your data from the server.",
     "@bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": {
         "description": "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium"
     },

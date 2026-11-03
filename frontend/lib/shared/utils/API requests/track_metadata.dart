@@ -51,7 +51,14 @@ class TrackMetadata {
 
       // Second response
       if (responseNum == 2) {
-        if (!exists!) {
+        if (response["duration"] == null) {
+          // The server could not get this track
+          doesNowExist(stid);
+          Notifications().showErrorNotification(
+              notificationsContext.value!,
+              AppLocalizations.of(notificationsContext.value!).error,
+              AppLocalizations.of(notificationsContext.value!).error);
+        } else if (!exists!) {
           // If it was adding, now it is added
           doesNowExist(stid);
           //return response["duration"];
@@ -80,7 +87,8 @@ class TrackMetadata {
 
     // Init websocket connection
     final WebSocketChannel channel =
-        WebSocketChannel.connect(Uri.parse("wss://gogodom.ddns.net:9090/test"));
+        WebSocketChannel.connect(
+        Uri.parse("${AppConstants.SERVER_URL_WSS}test"));
     final accessTokenHandler = Provider.of<AccessToken>(context, listen: false);
 
     // Send the stid
@@ -110,7 +118,10 @@ class TrackMetadata {
 
       // Second response
       if (responseNum == 2) {
-        if (!exists!) {
+        if (response["duration"] == null) {
+          // The server could not get this track
+          doesNowExist(stid);
+        } else if (!exists!) {
           finished(response["duration"]);
           // If it was adding, now it is added
           doesNowExist(stid);

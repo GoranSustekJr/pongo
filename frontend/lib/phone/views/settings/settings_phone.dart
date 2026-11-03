@@ -72,38 +72,17 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                         //Navigationss().nextScreen(context, '/profile', {});
                         Navigations().nextScreen(context, const ProfilePhone());
                       }),
-                      ValueListenableBuilder(
-                          valueListenable: premium,
-                          builder: (context, value, child) {
-                            return Column(
-                              children: [
-                                settingsTile(
-                                    context,
-                                    false,
-                                    premium.value,
-                                    AppIcons.preferences,
-                                    AppIcons.settings,
-                                    AppLocalizations.of(context).preferences,
-                                    AppLocalizations.of(context)
-                                        .yourpreferences, () {
-                                  Navigations().nextScreen(
-                                      context, const PreferencesPhone());
-                                }),
-                                if (!premium.value)
-                                  settingsTile(
-                                      context,
-                                      false,
-                                      true,
-                                      CupertinoIcons.shopping_cart,
-                                      CupertinoIcons.creditcard,
-                                      AppLocalizations.of(context).buypremium,
-                                      AppLocalizations.of(context).premium, () {
-                                    Navigations().nextScreen(
-                                        context, const BuyPremiumPhone());
-                                  }),
-                              ],
-                            );
-                          }),
+                      settingsTile(
+                          context,
+                          false,
+                          true,
+                          AppIcons.preferences,
+                          AppIcons.settings,
+                          AppLocalizations.of(context).preferences,
+                          AppLocalizations.of(context).yourpreferences, () {
+                        Navigations()
+                            .nextScreen(context, const PreferencesPhone());
+                      }),
                       razh(20),
                       settingsText(AppLocalizations.of(context).about),
                       settingsTile(

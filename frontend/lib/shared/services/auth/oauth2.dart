@@ -59,16 +59,14 @@ class OAuth2 {
           final data = jsonDecode(response.body);
           final accessToken = data["at+JWT"];
           final refreshToken = data["rt+JWT"];
+          streamToken = data["st"] ?? "";
+          await Storage().writeStreamToken(streamToken);
           if (accessToken != null && refreshToken != null) {
             SignInHandler().updateSystemWide(true);
 
             AccessTokenhandler().updateSystemWide(context, accessToken);
 
             RefreshTokenhandler().updateSystemWide(context, refreshToken);
-
-            bool premim = (await Premium().isPremium(mainContext.value,
-                accessToken: accessToken))["premium"];
-            premium.value = premim;
           } else if (response.statusCode == 401) {
             // Auth failed
             AccessTokenhandler().renew(context);
@@ -116,16 +114,14 @@ class OAuth2 {
       final data = jsonDecode(response.body);
       final accessToken = data["at+JWT"];
       final refreshToken = data["rt+JWT"];
+          streamToken = data["st"] ?? "";
+          await Storage().writeStreamToken(streamToken);
       if (accessToken != null && refreshToken != null) {
         SignInHandler().updateSystemWide(true);
 
         await AccessTokenhandler().updateSystemWide(context, accessToken);
 
         await RefreshTokenhandler().updateSystemWide(context, refreshToken);
-
-        bool premim = (await Premium()
-            .isPremium(context, accessToken: accessToken))["premium"];
-        premium.value = premim;
       } else if (response.statusCode == 401) {
         // Auth failed
         AccessTokenhandler().renew(context);
@@ -180,16 +176,14 @@ class OAuth2 {
         final data = jsonDecode(response.body);
         final accessToken = data["at+JWT"];
         final refreshToken = data["rt+JWT"];
+          streamToken = data["st"] ?? "";
+          await Storage().writeStreamToken(streamToken);
         if (accessToken != null && refreshToken != null) {
           SignInHandler().updateSystemWide(true);
 
           AccessTokenhandler().updateSystemWide(context, accessToken);
 
           RefreshTokenhandler().updateSystemWide(context, refreshToken);
-
-          bool premim = (await Premium().isPremium(mainContext.value,
-              accessToken: accessToken))["premium"];
-          premium.value = premim;
         }
       } else if (response.statusCode == 401) {
         // Auth failed

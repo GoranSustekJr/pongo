@@ -8,6 +8,10 @@ class AppConstants {
 
   static final String SERVER_URL_WSS = dotenv.get('SERVER_URL_WSS');
 
+  // Audio url for the native player, which can't send auth headers mid-queue
+  static String streamUrl(String stid, {bool caching = false}) =>
+      "$SERVER_URL${caching ? "play_song_caching" : "play_song"}/${kIsApple ? "" : "android/"}$stid?st=$streamToken";
+
   static const String LYRICS_URL = "https://lrclib.net/api/get?";
 
   String BLURHASH = darkMode.value

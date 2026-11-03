@@ -787,7 +787,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium =>
-      'By deleting your account, you will delete all your privileges if paying premium';
+      'Deleting your account signs you out and removes your data from the server.';
 
   @override
   String get deleteaccount => 'Delete account';

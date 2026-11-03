@@ -25,12 +25,6 @@ class _ProfilePhoneState extends State<ProfilePhone>
   // Locale
   String locale = "en";
 
-  // Ad
-  InterstitialAd? interstitialAd;
-
-  String adUnitId =
-      "ca-app-pub-3940256099942544/4411468910"; // "ca-app-pub-3931049547680648/4444030128";
-
   @override
   void initState() {
     super.initState();
@@ -160,22 +154,6 @@ class _ProfilePhoneState extends State<ProfilePhone>
                                 email,
                                 AppLocalizations.of(context).email,
                                 () {}),
-                            settingsTile(
-                              context,
-                              false,
-                              false,
-                              AppIcons.premium,
-                              null,
-                              premium.value
-                                  ? AppLocalizations.of(context).subscribed
-                                  : AppLocalizations.of(context).buypremium,
-                              AppLocalizations.of(context).premium,
-                              () {
-                                if (!premium.value) {
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                            ),
                             settingsTile(
                               context,
                               false,

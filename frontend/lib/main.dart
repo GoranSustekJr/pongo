@@ -40,21 +40,12 @@ void main() async {
     });
   }
 
-  // Ads
-  if (kIsMobile) {
-    MobileAds.instance.initialize();
-    MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
-        testDeviceIds: ["F28981DD-9820-4986-BD79-8839334AF568"]));
-  }
-
   // Audio Session Configuration
   final session = await AudioSession.instance;
   await session.configure(const AudioSessionConfiguration.music());
 
-  bool subscription = await Storage()
-      .getSubscription(); // Premium subscription -> Needed to initialize before AudioHanlder because it depends on premium.value
-
-  premium.value = subscription;
+  // Audio urls carry this token, so it has to be ready before a saved queue is restored
+  streamToken = await Storage().getStreamToken() ?? "";
 
   // Initialize the audio handle
   late AudioHandler audioHandler;

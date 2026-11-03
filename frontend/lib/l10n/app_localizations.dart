@@ -1567,7 +1567,7 @@ abstract class AppLocalizations {
   /// bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium
   ///
   /// In en, this message translates to:
-  /// **'By deleting your account, you will delete all your privileges if paying premium'**
+  /// **'Deleting your account signs you out and removes your data from the server.'**
   String get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium;
 
   /// deleteaccount

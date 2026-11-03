@@ -17,18 +17,11 @@ class AudioServiceHandler extends BaseAudioHandler
   double tempVolume = 1.0;
 
   // Songs played
-  int songsPlayed = 0;
-
   // Timer for sleep mode
   Timer volumeTimer = Timer(const Duration(seconds: 0), () {});
   int activeSleepAlarm = -1;
   bool stopSleepAlarm = false;
   bool mutePlay = false;
-
-  // Ad
-  InterstitialAd? interstitialAd;
-  String adUnitId = "ca-app-pub-3940256099942544/4411468910";
-  //"ca-app-pub-3931049547680648~4426620774"; // Ios test id "ca-app-pub-3940256099942544/4411468910";
 
   // Playlist
   ConcatenatingAudioSource playlist = ConcatenatingAudioSource(children: []);
@@ -38,14 +31,10 @@ class AudioServiceHandler extends BaseAudioHandler
     try {
       audioPlayer.playbackEventStream.listen(broadcastState);
       audioPlayer.setAudioSource(playlist);
-      //listenForNewTracks();
       audioPlayer.processingStateStream.listen((state) async {
         if (state == ProcessingState.completed) {
-          checkToShowAdd();
-
           if (queue.value.length - 1 == audioPlayer.currentIndex) {
             await skipToQueueItem(0);
-            showAdd();
             pause();
           } else {
             skipToNext();
@@ -87,85 +76,18 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Create audio source from media item
   AudioSource createAudioSource(MediaItem item) {
-    /* final accessTokenHandler =
-        Provider.of<AccessToken>(searchScreenContext.value!, listen: false); */
     return item.extras!["downloaded"] == "true"
         ? AudioSource.file(item.extras!["audio"])
         : useCacheAudioSource.value
             ? LockCachingAudioSource(
-                Uri.parse(
-                    "${AppConstants.SERVER_URL}play_song_caching/${kIsApple ? "" : "android/"}${item.id.split(".")[2]}"),
-                /* headers: {
-                  "Authorization": "${accessTokenHandler.accessToken}",
-                  "Content-Type": "application/json",
-                }, */
+                Uri.parse(AppConstants.streamUrl(item.id.split(".")[2],
+                    caching: true)),
                 tag: item,
               )
             : AudioSource.uri(
-                Uri.parse(
-                    "${AppConstants.SERVER_URL}play_song/${kIsApple ? "" : "android/"}${item.id.split(".")[2]}"),
-                /*  headers: {
-                  "Authorization": "${accessTokenHandler.accessToken}",
-                  "Content-Type": "application/json",
-                }, */
+                Uri.parse(AppConstants.streamUrl(item.id.split(".")[2])),
                 tag: item,
               ) as AudioSource;
-  }
-
-  // Check if to show add
-  void checkToShowAdd() async {
-    if (!premium.value && kIsMobile) {
-      songsPlayed++;
-
-      if (songsPlayed > 1) {
-        showAdd();
-        songsPlayed = 0;
-      }
-    }
-  }
-
-  void showAdd() async {
-    if (kIsMobile) {
-      await InterstitialAd.load(
-        adUnitId: adUnitId,
-        request: const AdRequest(),
-        adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (ad) async {
-            ad.fullScreenContentCallback = FullScreenContentCallback(
-                // Called when the ad showed the full screen content.
-                onAdShowedFullScreenContent: (ad) {
-                  pause();
-                },
-                // Called when an impression occurs on the ad.
-                onAdImpression: (ad) {},
-                // Called when the ad failed to show full screen content.
-                onAdFailedToShowFullScreenContent: (ad, err) {
-                  // Dispose the ad here to free resources.
-                  ad.dispose();
-                },
-                // Called when the ad dismissed full screen content.
-                onAdDismissedFullScreenContent: (ad) {
-                  // Dispose the ad here to free resources.
-                  play();
-                  ad.dispose();
-                },
-                // Called when a click is recorded for an ad.
-                onAdClicked: (ad) {});
-
-            debugPrint('$ad loaded.');
-            // Keep a reference to the ad so you can show it later.
-            interstitialAd = ad;
-
-            if (interstitialAd != null && !premium.value) {
-              await interstitialAd!.show();
-            }
-          },
-          onAdFailedToLoad: (LoadAdError error) {
-            debugPrint('InterstitialAd failed to load: $error');
-          },
-        ),
-      );
-    }
   }
 
   // Sleep mode --> Every minute turn a volume down 1% until it reaches 0% => pause the song and return volume to 100%
@@ -335,58 +257,6 @@ class AudioServiceHandler extends BaseAudioHandler
       if (index == null || playlist.isEmpty) return;
       mediaItem.add(playlist[index]);
     });
-  }
-
-  void listenForNewTracks() async {
-    audioPlayer.positionStream.listen(
-      (Duration position) async {
-        if (position == audioPlayer.duration) {
-          await InterstitialAd.load(
-              adUnitId: adUnitId,
-              request: const AdRequest(),
-              adLoadCallback: InterstitialAdLoadCallback(
-                // Called when an ad is successfully received.
-                onAdLoaded: (ad) async {
-                  ad.fullScreenContentCallback = FullScreenContentCallback(
-                      // Called when the ad showed the full screen content.
-                      onAdShowedFullScreenContent: (ad) {
-                        pause();
-                      },
-                      // Called when an impression occurs on the ad.
-                      onAdImpression: (ad) {},
-                      // Called when the ad failed to show full screen content.
-                      onAdFailedToShowFullScreenContent: (ad, err) {
-                        // Dispose the ad here to free resources.
-                        ad.dispose();
-                      },
-                      // Called when the ad dismissed full screen content.
-                      onAdDismissedFullScreenContent: (ad) {
-                        // Dispose the ad here to free resources.
-                        play();
-                        ad.dispose();
-                      },
-                      // Called when a click is recorded for an ad.
-                      onAdClicked: (ad) {});
-
-                  debugPrint('$ad loaded.');
-                  // Keep a reference to the ad so you can show it later.
-                  interstitialAd = ad;
-
-                  if (interstitialAd != null && !premium.value) {
-                    await interstitialAd!.show();
-                  }
-                },
-                // Called when an ad request failed.
-                onAdFailedToLoad: (LoadAdError error) {
-                  debugPrint('InterstitialAd failed to load: $error');
-                },
-              ));
-          /* if (interstitialAd != null) {
-            await interstitialAd!.show();
-          } */
-        }
-      },
-    );
   }
 
   void reorderQueue(AudioServiceHandler audioServiceHandler, int oldIndex,
@@ -573,8 +443,7 @@ class AudioServiceHandler extends BaseAudioHandler
 
   // Seek function to change the playback position
   @override
-  Future<void> seek(Duration position) async =>
-      premium.value || !kIsMobile ? audioPlayer.seek(position) : null;
+  Future<void> seek(Duration position) => audioPlayer.seek(position);
 
   // Skip to a specific item in the queue and start playback
   @override
@@ -593,7 +462,6 @@ class AudioServiceHandler extends BaseAudioHandler
   @override
   Future<void> skipToNext() async {
     await audioPlayer.seekToNext();
-    checkToShowAdd();
   }
 
   // Skip to the previous item in the queue
@@ -604,7 +472,6 @@ class AudioServiceHandler extends BaseAudioHandler
     } else {
       await seek(const Duration(seconds: 0));
     }
-    checkToShowAdd();
   }
 
   // Set repeat mode

@@ -85,10 +85,16 @@ class QueueAddMultiple {
 
               var response = json.decode(message);
 
-              double duration = response["duration"];
-
               // Update state
               removeLoading(tracks[i].id);
+
+              // The server could not get this track, so skip it
+              if (response["duration"] == null) {
+                completer.complete();
+                return;
+              }
+
+              double duration = response["duration"];
               addDuration(tracks[i].id, duration);
 
               // Create MediaItem and add it to the queue

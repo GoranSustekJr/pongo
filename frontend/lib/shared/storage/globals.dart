@@ -91,17 +91,8 @@ ValueNotifier<SearchDataManager?> searchDataManagr = ValueNotifier(null);
 // Cache images
 ValueNotifier<bool> cacheImages = ValueNotifier(false);
 
-// Subscriptions
-List<ProductDetails> subscriptionModels = [];
-
-// In app purchase instance
-InAppPurchase? inAppPurchaseInstance;
-
-// Subsciption level
-ValueNotifier<String> subscriptionLevel = ValueNotifier("");
-
-// Premium
-ValueNotifier<bool> premium = ValueNotifier(true);
+// Authorizes audio urls
+String streamToken = "";
 
 // Use blur
 ValueNotifier<bool> useBlur = ValueNotifier(true);

@@ -247,7 +247,7 @@
     "imagecaching": "Predmemoriranje slika",
     "cacheimagestoreducenetworkactivity": "Predmemorirajte slike kako biste smanjili mrežnu aktivnost",
     "deleteyouraccount": "Izbriši svoj račun",
-    "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": "Brisanjem računa izgubit ćeš sve povlastice ako plaćaš premium",
+    "bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium": "Brisanjem računa bit ćeš odjavljen, a tvoji podaci bit će uklonjeni s poslužitelja.",
     "deleteaccount": "Izbriši račun",
     "areyousurezouwanttodeleteyouraccount": "Jesi li siguran da želiš izbrisati svoj račun?",
     "skip": "Preskoči",

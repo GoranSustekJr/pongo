@@ -88,7 +88,6 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                   iconColor: Colors.white,
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.white.withAlpha(30),
-                  enabled: premium.value,
                   onProgressUpdated: (position) async {
                     updateProgress(position);
                     await audioServiceHandler.seek(

@@ -11,8 +11,7 @@ Pongo is a full stack application for free music streaming. Important to notice 
 ![FastAPI](https://img.shields.io/badge/fastapi-109989?style=for-the-badge&logo=FASTAPI&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
-![Spotify API](https://img.shields.io/badge/Spotify-1ED760?&style=for-the-badge&logo=spotify&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Shazam API](https://img.shields.io/badge/Shazam-0088FF?style=for-the-badge&logo=Shazam&logoColor=white)
 
 ## Demo video
@@ -46,50 +45,53 @@ Pongo is a full stack application for free music streaming. Important to notice 
 
 
 
+## Running it
+
+The API and database run in Docker; the iOS app connects to them over your network.
+
+```sh
+cp .env.example .env            # set DB_PASSWORD, JWT_SECRET, ALLOWED_EMAILS and the sign in ids
+docker compose up -d --build
+curl http://localhost:8081/health
+```
+
+Then create `frontend/.env` with the server address (use your computer's LAN address, not localhost, for a phone):
+
+```
+iosClientID=<Google iOS OAuth client id>
+androidClientID=
+desktopClientID=
+desktopClientSecred=
+SERVER_URL=http://192.168.1.10:8081/
+SERVER_URL_WSS=ws://192.168.1.10:8081/
+```
+
+and run the app with `flutter run --release` from `frontend/`. Accounts start disabled unless their email is in `ALLOWED_EMAILS`; enable others with `scripts/enable_user.sh someone@example.com`.
+
+Audio lives in the `pongo_audio` volume and the database in `pongo_db`. Back up both.
+
+Tests: `flutter test test/catalog_models_test.dart` in `frontend/`, and `python -m pytest tests` in `api/pongo/`.
+
 ## How Does It Work?
 
-### Server-Side Song Download 💾  
+### Catalog
 
-1. An **asynchronous function** is started, and the track/video ID is added to a set of currently downloading items.
-2. If a **track ID** is provided, metadata is fetched from the **Spotify API** to determine the corresponding YouTube video ID.
-3. A YouTube video URL is constructed:  
-   `https://www.youtube.com/watch?v={yt_vid}`  
-   and a temporary file path is prepared.
-4. Both the URL and the file path are passed to **`yt-dlp`**, which downloads the audio.
-5. Upon successful download, the **audio duration** is determined using `ffprobe` (required for iOS and macOS native audio players).
-6. A **SHA-512 hash** is computed from the audio to check for duplicates in the database:
-   - If the audio already exists, nothing is added, and temporary files are deleted.
-   - If it's new, both the duration and audio file are inserted into the database before cleanup.
-7. Finally, the track/video ID is removed from the set of currently downloading items.
+Search, albums, artists, playlists, genres and new releases come from the public [Deezer API](https://developers.deezer.com/api), which needs no key. The server reshapes the responses into the JSON the app's models expect (`api/pongo/library/metadata/deezer.py`), so another provider can be swapped in there.
 
+### Getting a track onto the server
 
-### Audio Playback Flow 🎵  
+1. The app opens a WebSocket to `/test` with the track id. The server answers `exists: true` if it already has the audio, otherwise `exists: false`.
+2. For a new track, the server takes its title, artist and length from Deezer and searches YouTube Music, scoring results on title, artist and length and rejecting other recordings such as karaoke or live versions (`library/track/matcher.py`).
+3. `yt-dlp` downloads the best match as m4a, the file is hashed, and it is stored on the audio volume under its SHA-256 so identical audio is kept once.
+4. The server sends the duration, or `exists: failed` if no good match exists. Concurrent requests for one track share a single download.
 
-1. The user starts by searching for a song.
-2. When the desired track is tapped, a WebSocket connection is opened to the server’s `/test` endpoint.
-3. The server checks if the track already exists in the database:
-   - If it **does**, the server responds with `{"exists": "true"}` and the connection is closed.
-   - If it **does not**, the server responds with `{"exists": "false"}` and the client waits while the song is downloaded.
-4. Once the song becomes available, the server sends `{"exists": "true"}` to notify the client.
-5. The selected track is then prepared locally on the user's device and passed to the native audio player.
-6. The native audio player sends a request to the server’s `/play_song` endpoint, which responds with the audio stream.
+### Playback
 
-### Mix Mode 🔀  
+The native player requests `/play_song/{id}?st=<stream token>`, which serves the file with HTTP range support. The stream token is per device and stops working when the device is removed or the user is disabled.
 
-1. **Enable Mix Mode** in the app's preferences.
-2. When a **single track** (not part of a playlist or album) is played, the standard [Audio Playback Flow](#-audio-playback-flow) is triggered.
-3. After the track finishes, a WebSocket request is sent to:  
-   `/cfc14e13ca191618a06bd94dd5976fccae585e36b3f651b467947288afb51ea8`
-4. The server uses the track ID to fetch metadata from the **Spotify API**.
-5. A search query is generated in the format:  
-   `"<track name> - <artist 1>, <artist 2>, ..."`
-6. This query is sent to YouTube's search endpoint. First valid **video ID** is extracted.
-7. The video ID is used to retrieve the corresponding **YouTube Mix playlist ID**.
-8. A YouTube URL is constructed:  
-   `https://www.youtube.com/watch?v={yt_vid}&list={mix_id}&index=1`
-9. This URL is passed to `yt-dlp`, which downloads the **first 20 songs** in the mix.
-10. As each song is downloaded, the server sends metadata back to the client, which adds the track to the playback queue under **Mix #N**.  
+### Mix Mode
 
+After a single track finishes, the app opens the mix WebSocket. The server builds up to 20 similar tracks from the Deezer radios of the track's artist and related artists, and sends each with its metadata as soon as its audio is ready. Hanging up stops further downloads.
 
 ## App Preview
 

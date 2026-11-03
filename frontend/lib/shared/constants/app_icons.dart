@@ -12,9 +12,6 @@ class AppIcons {
   static final playlist =
       kIsApple ? CupertinoIcons.music_albums : Icons.queue_music_rounded;
 
-  static final premium =
-      kIsApple ? CupertinoIcons.checkmark_circle : Icons.verified_rounded;
-
   static const search = CupertinoIcons.search;
 
   static final library =

@@ -18,10 +18,6 @@
         android:usesCleartextTraffic="true">
         android:requestLegacyExternalStorage="true"
 
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3931049547680648~7600544025"/>
-
         <!-- Main Activity -->
         <activity
             android:name="com.ryanheise.audioservice.AudioServiceActivity"

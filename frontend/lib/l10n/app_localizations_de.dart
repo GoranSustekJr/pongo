@@ -797,7 +797,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium =>
-      'Durch das Löschen deines Kontos verlierst du alle Vorteile, falls du Premium zahlst';
+      'Durch das Löschen deines Kontos wirst du abgemeldet und deine Daten werden vom Server entfernt.';
 
   @override
   String get deleteaccount => 'Konto löschen';

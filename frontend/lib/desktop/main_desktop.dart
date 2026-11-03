@@ -21,17 +21,6 @@ class _MyAppDesktopState extends State<MyAppDesktop>
   // Locale
   Locale? locale;
 
-  final InAppPurchase inAppPurchase = InAppPurchase.instance; // InAppPurchase
-  final String premiumId =
-      "pongoo1810premium"; // Premium subscription identifier
-
-  /* bool storeAvailable = true; // Check if store is available for the device
-  List<ProductDetails> products = []; // List of product details
-  List<PurchaseDetails> purchases = []; // List of purchase details
-  late StreamSubscription<List<PurchaseDetails>>
-      subscription; // Listen for updates that are betrift mit purchases
-  bool isPurchaseInProgress = false; // is a purchase in progress */
-
   @override
   void initState() {
     super.initState();
@@ -40,19 +29,7 @@ class _MyAppDesktopState extends State<MyAppDesktop>
     WidgetsBinding.instance.addObserver(this);
 
     // Init functions
-    checkIfPremium();
     getLocale();
-  }
-
-  // Premium
-  void checkIfPremium() async {
-    // Premium
-    Map response = await Premium().isPremium(context);
-    premium.value = response["premium"];
-    await Storage().writeSubscription(response["premium"]);
-    if (premium.value) {
-      await Storage().writeSubscriptionEnd(response["expires"]);
-    }
   }
 
   // Set locale
