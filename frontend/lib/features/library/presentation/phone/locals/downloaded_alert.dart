@@ -1,4 +1,6 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter_platform_alert/flutter_platform_alert.dart';
+
+import 'package:pongo/l10n/app_localizations.dart';
 
 Future<CustomButton> removeDownloadedAlert(context) async {
   final ok = await FlutterPlatformAlert.showCustomAlert(

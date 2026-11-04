@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/l10n/app_localizations.dart';
 
 appleNumberPicker(context, int number, Function(int) function) {
   showCupertinoModalPopup(

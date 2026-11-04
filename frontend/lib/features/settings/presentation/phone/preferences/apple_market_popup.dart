@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/markets.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/l10n/app_localizations.dart';
 
 appleMarketPopup(context, String market, Function(String) function) {
   showCupertinoModalPopup(

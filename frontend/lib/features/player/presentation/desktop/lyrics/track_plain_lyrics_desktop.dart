@@ -1,6 +1,9 @@
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
+import 'package:flutter/material.dart';
 
-import 'package:pongo/exports.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class TrackPlainLyricsDesktop extends StatelessWidget {
   final List<dynamic> lyrics;

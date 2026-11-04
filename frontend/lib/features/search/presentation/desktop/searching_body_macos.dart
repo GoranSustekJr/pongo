@@ -1,6 +1,32 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:kr_pull_down_button/pull_down_button.dart';
+import 'package:macos_ui/macos_ui.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/navigation/navigation.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/features/album/presentation/phone/album_phone.dart';
+import 'package:pongo/features/artist/presentation/phone/artist_phone.dart';
+import 'package:pongo/features/player/data/mix_api.dart';
+import 'package:pongo/features/player/data/play.dart';
+import 'package:pongo/features/playlists/presentation/phone/catalog/playlist_phone.dart';
 import 'package:pongo/features/search/presentation/desktop/search_track_pulldown_menu_items_macos.dart';
+import 'package:pongo/features/search/presentation/phone/search_result_text.dart';
+import 'package:pongo/features/search/presentation/phone/search_result_tile.dart';
+import 'package:pongo/features/search/presentation/phone/search_track_pulldown_menu_items.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/models/catalog/album.dart';
+import 'package:pongo/shared/models/catalog/artist.dart';
+import 'package:pongo/shared/models/catalog/playlist.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:pongo/shared/widgets/phone/trailing.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class SearchingBodyMacos extends StatelessWidget {
   final List<Track> tracks;

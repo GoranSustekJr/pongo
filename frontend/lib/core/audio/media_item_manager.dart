@@ -1,6 +1,22 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
-import 'package:pongo/exports.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:blurhash_ffi/blurhash.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/network/connectivity_handler.dart';
+import 'package:pongo/core/notifications/notifications.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/features/player/data/track_metadata_api.dart';
+import 'package:pongo/l10n/app_localizations.dart';
 
 class MediaItemManager with ChangeNotifier {
   final AudioServiceHandler audioServiceHandler;

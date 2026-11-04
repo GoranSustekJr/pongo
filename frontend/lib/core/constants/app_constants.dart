@@ -1,7 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:ui';
-import 'package:pongo/exports.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
 
 class AppConstants {
   static final String SERVER_URL = dotenv.get('SERVER_URL');

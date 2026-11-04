@@ -1,6 +1,11 @@
-import 'package:pongo/exports.dart';
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:interactive_slider_path/interactive_slider.dart' as isf;
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/shared/widgets/marquee.dart';
 
 class DesktopTrackProgress extends StatefulWidget {
   final String album;

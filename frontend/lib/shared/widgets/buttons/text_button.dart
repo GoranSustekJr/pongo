@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/platform.dart';
 
 textButton(String txt, Function() function, TextStyle style,
     {EdgeInsets? edgeInsets, double borderRadius = 0}) {

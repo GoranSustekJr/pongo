@@ -1,4 +1,9 @@
-import 'package:pongo/exports.dart';
+import 'dart:convert';
+
+import 'package:audio_service/audio_service.dart';
+
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class MediaItemObject {
   MediaItem create(String id, String name, Track track, Duration duration,

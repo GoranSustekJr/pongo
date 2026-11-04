@@ -1,6 +1,23 @@
-import 'package:pongo/exports.dart';
-import 'package:pongo/features/shell/presentation/phone/bottom_navigation_bar.dart';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/navigation/navigation.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/features/album/data/album_api.dart';
+import 'package:pongo/features/album/presentation/phone/album_phone.dart';
+import 'package:pongo/features/artist/data/artist_api.dart';
+import 'package:pongo/features/artist/presentation/phone/artist_phone.dart';
 import 'package:pongo/features/home/presentation/phone/home_main_phone.dart';
+import 'package:pongo/features/library/presentation/phone/library_main_phone.dart';
+import 'package:pongo/features/player/presentation/phone/playing_details/playing_details_phone.dart';
+import 'package:pongo/features/playlists/presentation/phone/handler/playlist_handler_phone.dart';
+import 'package:pongo/features/settings/presentation/phone/settings_main_phone.dart';
+import 'package:pongo/features/shell/presentation/phone/bottom_navigation_bar.dart';
+import 'package:pongo/shared/models/catalog/album.dart';
+import 'package:pongo/shared/models/catalog/artist.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class BottomNavigationScreenPhone extends StatefulWidget {
   const BottomNavigationScreenPhone({super.key});

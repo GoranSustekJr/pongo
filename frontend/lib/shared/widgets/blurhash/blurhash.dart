@@ -1,8 +1,10 @@
 // ignore_for_file: non_nullable_equals_parameter
 
-import 'package:flutter_blurhash/flutter_blurhash.dart';
-import 'package:pongo/exports.dart';
 import 'dart:ui' as ui;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 const _DEFAULT_SIZE = 32;
 

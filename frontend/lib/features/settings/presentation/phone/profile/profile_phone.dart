@@ -1,6 +1,23 @@
-import 'package:pongo/features/settings/presentation/phone/profile/profile_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 
-import 'package:pongo/exports.dart';
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/secure_storage.dart';
+import 'package:pongo/features/auth/data/sign_in_handler.dart';
+import 'package:pongo/features/auth/data/user_data.dart';
+import 'package:pongo/features/settings/data/delete_account_api.dart';
+import 'package:pongo/features/settings/presentation/phone/profile/delete_account_alert.dart';
+import 'package:pongo/features/settings/presentation/phone/profile/locale_popup.dart';
+import 'package:pongo/features/settings/presentation/phone/profile/profile_image.dart';
+import 'package:pongo/features/settings/presentation/phone/widgets/settings_tile.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/buttons/text_button.dart';
+import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class ProfilePhone extends StatefulWidget {
   const ProfilePhone({super.key});

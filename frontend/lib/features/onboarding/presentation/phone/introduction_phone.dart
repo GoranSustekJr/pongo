@@ -1,5 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:intro_slider/intro_slider.dart';
-import 'package:pongo/exports.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/secure_storage.dart';
+import 'package:pongo/l10n/app_localizations.dart';
 
 class IntroductionPhone extends StatefulWidget {
   const IntroductionPhone({super.key});

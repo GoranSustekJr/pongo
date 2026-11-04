@@ -1,6 +1,16 @@
+import 'dart:async';
+
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:pongo/exports.dart';
+import 'package:provider/provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class TrackSyncLyricsDesktop extends StatefulWidget {
   final bool lyricsOn;

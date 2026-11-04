@@ -1,3 +1,4 @@
+
 String calculateBestImage(List images) {
   if (images.isNotEmpty) {
     int best = 0;

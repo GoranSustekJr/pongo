@@ -1,4 +1,15 @@
-import 'package:pongo/exports.dart';
+import 'dart:convert';
+
+import 'package:audio_service/audio_service.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/notifications/notifications.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/features/player/data/track_metadata_api.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class AddToQueue {
   // Add type spotify track

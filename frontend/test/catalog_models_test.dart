@@ -1,6 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pongo/exports.dart';
+
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/shared/models/catalog/album.dart';
+import 'package:pongo/shared/models/catalog/artist.dart';
 import 'package:pongo/shared/models/catalog/category.dart';
+import 'package:pongo/shared/models/catalog/playlist.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 // The fixture is real API output: the models must keep parsing what the server sends.
 void main() {

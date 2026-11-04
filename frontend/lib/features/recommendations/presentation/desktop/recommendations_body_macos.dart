@@ -1,6 +1,12 @@
-import 'package:pongo/exports.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/features/recommendations/data/recommendations_data_manager.dart';
 import 'package:pongo/features/recommendations/presentation/phone/sections/recommendations_categories.dart';
 import 'package:pongo/features/recommendations/presentation/phone/sections/recommendations_history.dart';
+import 'package:pongo/l10n/app_localizations.dart';
 
 class RecommendationsBodyMacos extends StatelessWidget {
   final RecommendationsDataManager dataManager;

@@ -1,5 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/shared/widgets/image/image_compatible.dart';
+import 'package:pongo/shared/widgets/phone/inkwell.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class QueueTile extends StatelessWidget {
   final String title;

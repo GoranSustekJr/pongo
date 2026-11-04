@@ -1,7 +1,16 @@
+import 'dart:io';
 import 'dart:ui';
 
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/playlists/models/playlist_handler.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/marquee.dart';
 import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class SelectedTracksPhone extends StatelessWidget {
   final bool show;

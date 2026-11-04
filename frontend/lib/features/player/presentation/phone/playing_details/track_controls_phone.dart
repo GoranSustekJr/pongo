@@ -1,8 +1,24 @@
+import 'dart:convert';
 import 'dart:ui';
+
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/library/data/download_api.dart';
+import 'package:pongo/features/player/presentation/phone/playing_details/controls/other_controls_phone.dart';
+import 'package:pongo/features/player/presentation/phone/playing_details/controls/play_control_phone.dart';
+import 'package:pongo/features/player/presentation/phone/playing_details/controls/title_artist_visualizer_phone.dart';
+import 'package:pongo/features/player/presentation/phone/playing_details/controls/track_progress_phone.dart';
+import 'package:pongo/features/player/presentation/phone/playing_details/controls/volume_control_phone.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
 import 'package:pongo/shared/widgets/phone/liquid_glass_render.dart';
-import 'package:pongo/features/player/presentation/phone/playing_details/controls.dart';
 
 class TrackControlsPhone extends StatelessWidget {
   final MediaItem currentMediaItem;

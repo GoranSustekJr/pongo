@@ -1,7 +1,12 @@
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
 import 'package:pongo/features/shell/presentation/desktop/title_bar/title_bar_other_control_macos.dart';
 import 'package:pongo/features/shell/presentation/desktop/title_bar/title_bar_play_control_macos.dart';
 import 'package:pongo/features/shell/presentation/desktop/title_bar/title_bar_title_macos.dart';
-import 'package:pongo/exports.dart';
 
 TitleBar titleBarMacos(BuildContext context,
     AudioServiceHandler audioServiceHandler, bool queue, Function() showQueue) {

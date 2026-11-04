@@ -1,4 +1,6 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
 
 Widget shimmContainer(double width, double height, double radius) {
   return Align(

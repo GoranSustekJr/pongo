@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
+
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/player/presentation/phone/current_track_info.dart';
-import 'package:pongo/exports.dart';
 import 'package:pongo/features/shell/presentation/phone/bottom_navigation_bar_navigation.dart';
 
 class Bottom extends StatelessWidget {

@@ -1,4 +1,7 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
 
 loadingScaffold(context, ValueKey key) {
   Size size = MediaQuery.of(context).size;

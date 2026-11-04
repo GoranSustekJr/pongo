@@ -1,4 +1,8 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/features/playlists/models/playlist_handler.dart';
+import 'package:pongo/features/search/data/search_data_manager.dart';
 
 // Bottom Nav Bar Index
 ValueNotifier<int> navigationBarIndex = ValueNotifier(0);

@@ -1,5 +1,6 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
 
 class PlayPauseMini extends StatefulWidget {
   final AsyncSnapshot<PlaybackState> playbackState;

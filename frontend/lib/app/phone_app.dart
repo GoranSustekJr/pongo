@@ -1,6 +1,19 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
-import 'package:pongo/exports.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:in_app_notification/in_app_notification.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/theme/theme.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/secure_storage.dart';
+import 'package:pongo/features/auth/presentation/phone/auth_redirect_screen_phone.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/l10n/l10n.dart';
+import 'package:pongo/shared/widgets/blurhash/background.dart';
 
 class MyAppPhone extends StatefulWidget {
   const MyAppPhone({super.key});

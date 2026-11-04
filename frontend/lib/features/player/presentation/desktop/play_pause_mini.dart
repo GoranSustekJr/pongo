@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
 
 playPauseMini(bool playing, Function() function) {
   return Theme(

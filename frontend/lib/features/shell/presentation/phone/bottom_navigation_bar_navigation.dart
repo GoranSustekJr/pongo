@@ -1,6 +1,15 @@
 import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/network/connectivity_handler.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/shared/widgets/blurhash/blurhash.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});

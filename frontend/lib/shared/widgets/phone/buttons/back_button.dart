@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
 import 'package:pongo/shared/widgets/phone/liquid_glass_render.dart';
 

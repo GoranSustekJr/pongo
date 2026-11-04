@@ -1,4 +1,12 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/features/auth/presentation/phone/google_logo.dart';
+import 'package:pongo/features/auth/presentation/phone/sign_in_button_phone.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class SignInPhone extends StatefulWidget {
   const SignInPhone({super.key});

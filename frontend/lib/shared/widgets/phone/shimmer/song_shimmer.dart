@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:pongo/exports.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/shared/widgets/shimmer/shimmer_container.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 songTileSchimmer(context, bool first, bool last) {
   double radius = 7.5;

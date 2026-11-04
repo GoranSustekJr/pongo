@@ -1,4 +1,27 @@
-import 'package:pongo/exports.dart';
+import 'dart:io';
+
+import 'package:audio_service/audio_service.dart';
+import 'package:blurhash_ffi/blurhash.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_platform_alert/flutter_platform_alert.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/notifications/notifications.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/features/player/data/play.dart';
+import 'package:pongo/features/player/presentation/phone/alerts/halt_alert.dart';
+import 'package:pongo/features/playlists/data/open_playlist.dart';
+import 'package:pongo/features/playlists/data/playlist_functions.dart';
+import 'package:pongo/features/playlists/models/playlist_handler.dart';
+import 'package:pongo/features/playlists/presentation/phone/online/change_online_playlist_name_phone.dart';
+import 'package:pongo/features/playlists/presentation/phone/track_from_playlist_alert.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class LocalPlaylistDataManager with ChangeNotifier {
   final BuildContext context;

@@ -1,4 +1,7 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/auth/presentation/phone/sign_in_phone.dart';
 import 'package:pongo/features/shell/presentation/phone/bottom_navigation_screen_phone.dart';
 
 class AuthRedirectPhone extends StatelessWidget {

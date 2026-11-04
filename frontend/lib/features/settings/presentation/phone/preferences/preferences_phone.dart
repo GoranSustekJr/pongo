@@ -1,13 +1,29 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:just_audio/just_audio.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/markets.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/notifications/notifications.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/secure_storage.dart';
 import 'package:pongo/features/settings/presentation/phone/preferences/apple_lyrics_text_align_picker.dart';
+import 'package:pongo/features/settings/presentation/phone/preferences/apple_market_popup.dart';
 import 'package:pongo/features/settings/presentation/phone/preferences/apple_number_picker.dart';
+import 'package:pongo/features/settings/presentation/phone/widgets/settings_text.dart';
+import 'package:pongo/features/settings/presentation/phone/widgets/settings_tile.dart';
 import 'package:pongo/features/settings/presentation/phone/widgets/settings_tile_int.dart';
 import 'package:pongo/features/settings/presentation/phone/widgets/settings_tile_switcher.dart';
-
-import 'package:pongo/exports.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
+import 'package:pongo/shared/widgets/phone/loading_scaffold.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class PreferencesPhone extends StatefulWidget {
   const PreferencesPhone({super.key});

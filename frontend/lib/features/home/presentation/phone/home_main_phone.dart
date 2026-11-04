@@ -1,4 +1,6 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/core/constants/app_constants.dart';
 import 'package:pongo/features/home/presentation/phone/home_phone.dart';
 
 class HomeMainPhone extends StatefulWidget {

@@ -1,11 +1,23 @@
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:interactive_slider/interactive_slider.dart';
-import 'package:pongo/exports.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/sleep_alarm/data/sleep_alarm_data_manager.dart';
 import 'package:pongo/features/sleep_alarm/presentation/phone/sleep_alarm_tile.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
+import 'package:pongo/shared/widgets/phone/buttons/back_like_button.dart';
+import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
 import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
+import 'package:pongo/shared/widgets/phone/sticky_header_delegate.dart';
 
 class SleepAlarmPhone extends StatelessWidget {
   const SleepAlarmPhone({super.key});

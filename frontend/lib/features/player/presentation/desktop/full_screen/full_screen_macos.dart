@@ -1,5 +1,16 @@
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:macos_ui/macos_ui.dart';
+import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/audio/media_item_manager.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/player/presentation/desktop/full_screen/full_screen_body_macos.dart';
-import 'package:pongo/exports.dart';
+import 'package:pongo/shared/widgets/blurhash/blurhash.dart';
 
 class FullScreenMacos extends StatefulWidget {
   const FullScreenMacos({super.key});

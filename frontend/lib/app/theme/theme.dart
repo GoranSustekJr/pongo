@@ -1,6 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
 
 class AppTheme {
   final dark = ThemeData(

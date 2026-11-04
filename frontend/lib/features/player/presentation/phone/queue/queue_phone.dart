@@ -1,4 +1,15 @@
-import 'package:pongo/exports.dart';
+import 'dart:convert';
+
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/player/presentation/phone/queue/queue_body_phone.dart';
+import 'package:pongo/features/playlists/data/open_playlist.dart';
+import 'package:pongo/features/playlists/models/playlist_handler.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class QueuePhone extends StatefulWidget {
   final bool showQueue;

@@ -1,5 +1,16 @@
-import 'package:pongo/exports.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/library/data/locals_data_manager.dart';
 import 'package:pongo/features/library/presentation/phone/locals/locals_tile.dart';
+import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
+import 'package:pongo/shared/widgets/phone/trailing.dart';
 
 class LocalsBodyPhone extends StatefulWidget {
   final LocalsDataManager localsDataManager;

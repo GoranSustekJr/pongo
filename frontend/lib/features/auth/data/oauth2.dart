@@ -1,10 +1,21 @@
+import 'dart:convert';
+
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:http/http.dart' as http;
-import 'package:pongo/exports.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:googleapis_auth/googleapis_auth.dart' as auth;
+import 'package:http/http.dart' as http;
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/secure_storage.dart';
+import 'package:pongo/features/auth/data/access_token_handler.dart';
+import 'package:pongo/features/auth/data/refresh_token_handler.dart';
+import 'package:pongo/features/auth/data/sign_in_handler.dart';
 
 class OAuth2 {
   final String oauth2APIClientID = kIsApple || kIsMacOS

@@ -1,10 +1,25 @@
+import 'dart:convert';
+
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/audio/media_item_manager.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/notifications/notifications.dart';
+import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/lyrics_desktop.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/play_control_desktop.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/track_progress_desktop.dart';
-import 'package:pongo/exports.dart';
 import 'package:pongo/features/search/data/shazam_api.dart';
+import 'package:pongo/l10n/app_localizations.dart';
 import 'package:pongo/shared/widgets/image/image_desktop.dart';
+import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class FullScreenBodyMacos extends StatelessWidget {
   final bool showLyrics;

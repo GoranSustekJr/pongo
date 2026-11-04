@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/platform.dart';
 
 iconTextButton(IconData icon, String text, TextStyle style, Function() function,
     Color color,

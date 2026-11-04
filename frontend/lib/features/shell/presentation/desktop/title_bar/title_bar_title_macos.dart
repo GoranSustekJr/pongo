@@ -1,8 +1,22 @@
 // ignore_for_file: unrelated_type_equality_checks
 
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
 
-import 'package:pongo/exports.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/features/artist/data/artist_api.dart';
+import 'package:pongo/features/artist/presentation/phone/artist_phone.dart';
+import 'package:pongo/shared/models/catalog/artist.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:pongo/shared/widgets/image/image_compatible.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class TitleBarTitleMacos extends StatelessWidget {
   final MediaItem currentMediaItem;

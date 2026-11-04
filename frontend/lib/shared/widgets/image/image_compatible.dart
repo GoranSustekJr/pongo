@@ -1,4 +1,9 @@
-import 'package:pongo/exports.dart';
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/core/state/globals.dart';
 
 // ignore: must_be_immutable
 class ImageCompatible extends StatelessWidget {

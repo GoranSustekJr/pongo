@@ -1,4 +1,6 @@
-import 'package:pongo/exports.dart';
+import 'package:sqflite/sqflite.dart';
+
+import 'package:pongo/core/storage/database/database_helper.dart';
 
 Future<void> insertSearchHistorySrch(
     DatabaseHelper dbHelper, String qry) async {

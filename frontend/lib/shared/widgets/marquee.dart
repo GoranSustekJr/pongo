@@ -1,4 +1,4 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
 
 LayoutBuilder marquee(
     String text, TextStyle style, int? maxLines, TextOverflow? textOverflow,

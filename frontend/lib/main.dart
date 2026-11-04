@@ -1,7 +1,27 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:pongo/exports.dart';
+
+import 'package:audio_service/audio_service.dart';
+import 'package:audio_session/audio_session.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:macos_ui/macos_ui.dart';
+import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:window_manager/window_manager.dart';
+
+import 'package:pongo/app/desktop_app.dart';
+import 'package:pongo/app/phone_app.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/audio/volume_manager.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/network/connectivity_handler.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/core/storage/secure_storage.dart';
+import 'package:pongo/features/auth/models/access_token.dart';
 
 Future<void> configureMacosWindowUtils() async {
   const config = MacosWindowUtilsConfig(

@@ -1,6 +1,23 @@
 import 'dart:ui';
 
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:kr_pull_down_button/pull_down_button.dart';
+import 'package:star_menu/star_menu.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/features/playlists/data/open_playlist.dart';
+import 'package:pongo/features/playlists/models/playlist_handler.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:pongo/shared/widgets/image/image_compatible.dart';
+import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
+import 'package:pongo/shared/widgets/phone/buttons/back_like_button.dart';
 import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
 
 class SliverAppBarPhone extends StatelessWidget {

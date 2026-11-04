@@ -1,4 +1,5 @@
-import 'package:pongo/exports.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class Artist {
   final String id;

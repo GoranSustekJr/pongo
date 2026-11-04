@@ -1,4 +1,13 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/features/recommendations/presentation/phone/recommendations_phone.dart';
+import 'package:pongo/features/search/presentation/phone/search_bar/search_bar_android_phone.dart';
+import 'package:pongo/features/search/presentation/phone/search_bar/search_bar_ios_phone.dart';
+import 'package:pongo/features/search/presentation/phone/search_history_phone.dart';
+import 'package:pongo/features/search/presentation/phone/search_phone.dart';
 
 class HomePhone extends StatefulWidget {
   const HomePhone({super.key});

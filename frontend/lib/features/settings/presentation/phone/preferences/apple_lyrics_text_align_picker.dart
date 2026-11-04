@@ -1,6 +1,9 @@
 import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/l10n/app_localizations.dart';
 
 appleLyricsTextAlignPicker(context, int initial, Function(int) onChanged) {
   showCupertinoModalPopup(

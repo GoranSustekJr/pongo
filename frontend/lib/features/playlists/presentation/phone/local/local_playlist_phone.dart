@@ -1,5 +1,23 @@
 import 'dart:ui';
-import 'package:pongo/exports.dart';
+
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/playlists/data/local_playlist_data_manager.dart';
+import 'package:pongo/features/playlists/presentation/phone/local/local_playlist_app_bar_phone.dart';
+import 'package:pongo/features/playlists/presentation/phone/local/local_playlist_body_phone.dart';
+import 'package:pongo/features/playlists/presentation/phone/local/play_shuffle_halt_local_playlist.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/blurhash/blurhash.dart';
+import 'package:pongo/shared/widgets/buttons/text_button.dart';
+import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
+import 'package:pongo/shared/widgets/phone/shimmer/song_shimmer.dart';
+import 'package:pongo/shared/widgets/phone/sticky_header_delegate.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class LocalPlaylistPhone extends StatelessWidget {
   final int lpid;

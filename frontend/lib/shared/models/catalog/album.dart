@@ -1,4 +1,4 @@
-import 'package:pongo/exports.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
 
 class Album {
   final String id;

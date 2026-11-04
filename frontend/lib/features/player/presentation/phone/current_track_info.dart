@@ -1,7 +1,20 @@
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_platform_alert/flutter_platform_alert.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/player/presentation/phone/alerts/halt_alert.dart';
+import 'package:pongo/features/player/presentation/phone/play_pause_mini.dart';
+import 'package:pongo/shared/widgets/image/image_compatible.dart';
+import 'package:pongo/shared/widgets/marquee.dart';
 import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
 import 'package:pongo/shared/widgets/phone/liquid_glass_render.dart';
-
-import 'package:pongo/exports.dart';
+import 'package:pongo/shared/widgets/space.dart';
+import 'package:pongo/shared/widgets/swipe_to_snap_back.dart';
 
 class TrackInfo extends StatefulWidget {
   const TrackInfo({super.key});

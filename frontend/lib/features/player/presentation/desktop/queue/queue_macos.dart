@@ -1,5 +1,9 @@
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
 import 'package:pongo/features/player/presentation/desktop/queue/queue_body_macos.dart';
-import 'package:pongo/exports.dart';
 
 class QueueMacos extends StatefulWidget {
   final bool editQueue;

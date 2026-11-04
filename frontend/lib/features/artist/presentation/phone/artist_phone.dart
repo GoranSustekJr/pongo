@@ -1,9 +1,25 @@
 import 'dart:ui';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
 
-import 'package:pongo/exports.dart';
-import 'package:pongo/features/artist/presentation/phone/artist_body_phone.dart';
+import 'package:blurhash_ffi/blurhash.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/features/artist/data/artist_api.dart';
+import 'package:pongo/features/artist/presentation/phone/artist_body_phone.dart';
+import 'package:pongo/shared/models/catalog/album.dart';
+import 'package:pongo/shared/models/catalog/artist.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:pongo/shared/widgets/image/image_compatible.dart';
+import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
+import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
+import 'package:pongo/shared/widgets/phone/loading_scaffold.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class ArtistPhone extends StatefulWidget {
   final BuildContext context;

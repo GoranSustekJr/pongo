@@ -1,5 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/features/recommendations/data/recommendations_data_manager.dart';
 import 'package:pongo/features/recommendations/presentation/desktop/recommendations_body_macos.dart';
-import 'package:pongo/exports.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
 import 'package:pongo/shared/widgets/phone/shimmer/recommended_shimmer.dart';
 
 class RecommendationsMacos extends StatelessWidget {

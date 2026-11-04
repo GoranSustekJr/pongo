@@ -1,4 +1,6 @@
-import 'package:pongo/exports.dart';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 
 final kIsDesktop = kIsLinux || kIsWindows || kIsMacOS;
 

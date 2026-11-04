@@ -1,4 +1,7 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/state/globals.dart';
 
 Widget inkWell(
   Widget child,

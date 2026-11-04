@@ -1,7 +1,31 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/desktop_app.dart';
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/secure_storage.dart';
+import 'package:pongo/features/auth/data/sign_in_handler.dart';
+import 'package:pongo/features/auth/data/user_data.dart';
+import 'package:pongo/features/library/presentation/desktop/favourites_macos.dart';
+import 'package:pongo/features/library/presentation/desktop/locals_macos.dart';
+import 'package:pongo/features/player/presentation/desktop/lyrics/lyrics_macos.dart';
 import 'package:pongo/features/player/presentation/desktop/queue/queue_buttons_macos.dart';
 import 'package:pongo/features/player/presentation/desktop/queue/queue_macos.dart';
-import 'package:pongo/exports.dart';
+import 'package:pongo/features/playlists/presentation/desktop/offline_playlists_macos.dart';
+import 'package:pongo/features/playlists/presentation/desktop/online_playlists_macos.dart';
+import 'package:pongo/features/search/presentation/desktop/search_macos.dart';
+import 'package:pongo/features/settings/presentation/desktop/settings_macos.dart';
+import 'package:pongo/features/shell/presentation/desktop/title_bar/title_bar_macos.dart';
+import 'package:pongo/features/sleep_alarm/presentation/desktop/sleep_alarm_macos.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class MainMacos extends StatefulWidget {
   const MainMacos({super.key});

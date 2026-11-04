@@ -1,4 +1,4 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
 
 searchResultText(String txt, TextStyle style) {
   return Padding(

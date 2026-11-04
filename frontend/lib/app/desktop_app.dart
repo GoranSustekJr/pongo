@@ -1,8 +1,21 @@
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:in_app_notification_desktop/in_app_notification.dart' as iand;
+import 'package:macos_ui/macos_ui.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/secure_storage.dart';
 import 'package:pongo/features/auth/presentation/desktop/sign_in_macos.dart';
 import 'package:pongo/features/player/presentation/desktop/full_screen/full_screen_macos.dart';
 import 'package:pongo/features/shell/presentation/desktop/home_macos.dart';
-import 'package:pongo/exports.dart';
-import 'package:in_app_notification_desktop/in_app_notification.dart' as iand;
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/l10n/l10n.dart';
 
 class MyAppDesktop extends StatefulWidget {
   const MyAppDesktop({super.key});

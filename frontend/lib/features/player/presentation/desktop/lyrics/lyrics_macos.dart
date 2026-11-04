@@ -1,5 +1,13 @@
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/audio/media_item_manager.dart';
+import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/lyrics_body_macos.dart';
-import 'package:pongo/exports.dart';
+import 'package:pongo/shared/widgets/blurhash/blurhash.dart';
 
 class LyricsMacos extends StatefulWidget {
   const LyricsMacos({super.key});

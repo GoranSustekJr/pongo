@@ -1,9 +1,23 @@
 import 'dart:ui';
+
+import 'package:blurhash_ffi/blurhash.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
-import 'package:pongo/exports.dart';
-import 'package:pongo/shared/widgets/phone/sliver_app_bar.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/album/data/album_api.dart';
 import 'package:pongo/features/album/presentation/phone/album_body_phone.dart';
+import 'package:pongo/features/album/presentation/phone/play_shuffle_halt_album.dart';
+import 'package:pongo/features/player/data/play.dart';
+import 'package:pongo/shared/models/catalog/album.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
+import 'package:pongo/shared/widgets/phone/loading_scaffold.dart';
+import 'package:pongo/shared/widgets/phone/sliver_app_bar.dart';
+import 'package:pongo/shared/widgets/phone/sticky_header_delegate.dart';
 
 class AlbumPhone extends StatefulWidget {
   final BuildContext context;

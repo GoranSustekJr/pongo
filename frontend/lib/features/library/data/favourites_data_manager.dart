@@ -1,4 +1,18 @@
-import 'package:pongo/exports.dart';
+import 'dart:convert';
+
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/features/player/data/track_play_api.dart';
+import 'package:pongo/features/playlists/data/open_playlist.dart';
+import 'package:pongo/features/playlists/models/playlist_handler.dart';
+import 'package:pongo/shared/data/tracks_api.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class FavouritesDataManager with ChangeNotifier {
   final BuildContext context;

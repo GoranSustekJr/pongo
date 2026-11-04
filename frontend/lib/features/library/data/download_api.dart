@@ -1,6 +1,24 @@
-import 'package:pongo/exports.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart' as syspaths;
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/notifications/notifications.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/features/auth/data/access_token_handler.dart';
+import 'package:pongo/features/auth/models/access_token.dart';
+import 'package:pongo/features/player/data/track_metadata_api.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class Download {
   Future<void> singleWithoutAPI(String stid, Uint8List audio, double duration,

@@ -1,7 +1,12 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
 
 Widget searchHistoryTile(
     String txt, bool last, Function() function, Function() removeFunction) {

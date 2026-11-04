@@ -1,4 +1,15 @@
-import 'package:pongo/exports.dart';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'package:pongo/core/notifications/notifications.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/features/player/data/play.dart';
+import 'package:pongo/features/playlists/presentation/phone/online/change_online_playlist_name_phone.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class PlaylistFunctions {
   final BuildContext context;

@@ -1,4 +1,16 @@
-import 'package:pongo/exports.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/audio/media_item_manager.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/player/presentation/phone/lyrics/lyrics_button_phone.dart';
+import 'package:pongo/features/player/presentation/phone/lyrics/lyrics_phone.dart';
+import 'package:pongo/features/player/presentation/phone/playing_details/track_controls_phone.dart';
+import 'package:pongo/features/player/presentation/phone/playing_details/track_image_phone.dart';
+import 'package:pongo/features/player/presentation/phone/queue/queue_phone.dart';
+import 'package:pongo/shared/widgets/blurhash/blurhash.dart';
 
 class PlayingDetailsPhone extends StatelessWidget {
   final Function(String) showAlbum;

@@ -1,5 +1,11 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/core/storage/secure_storage.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/features/recommendations/data/recommendations_api.dart';
+import 'package:pongo/shared/models/catalog/album.dart';
 import 'package:pongo/shared/models/catalog/category.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class RecommendationsDataManager with ChangeNotifier {
   final BuildContext context;

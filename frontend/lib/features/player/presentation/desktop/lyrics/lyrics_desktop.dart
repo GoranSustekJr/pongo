@@ -1,8 +1,16 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/notifications/notifications.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/track_plain_lyrics_desktop.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/track_sync_lyrics_desktop.dart';
-import 'package:pongo/exports.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class LyricsDesktop extends StatefulWidget {
   final List<dynamic> plainLyrics;

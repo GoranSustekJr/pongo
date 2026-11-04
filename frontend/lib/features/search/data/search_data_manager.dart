@@ -1,5 +1,10 @@
+import 'package:flutter/material.dart';
+
 import 'package:pongo/features/search/data/search_api.dart';
-import 'package:pongo/exports.dart';
+import 'package:pongo/shared/models/catalog/album.dart';
+import 'package:pongo/shared/models/catalog/artist.dart';
+import 'package:pongo/shared/models/catalog/playlist.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class SearchDataManager with ChangeNotifier {
   final BuildContext context;

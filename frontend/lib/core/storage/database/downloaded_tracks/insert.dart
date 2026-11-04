@@ -1,4 +1,9 @@
-import 'package:pongo/exports.dart';
+import 'dart:convert';
+
+import 'package:sqflite/sqflite.dart';
+
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/core/storage/database/downloaded_tracks/query.dart';
 
 Future<void> insertDownloadedTrck(
   DatabaseHelper dbHelper,

@@ -1,10 +1,20 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:pongo/exports.dart';
+
+import 'package:pongo/app/navigation/navigation.dart';
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
 import 'package:pongo/features/onboarding/presentation/phone/introduction_phone.dart';
 import 'package:pongo/features/settings/presentation/phone/about/about_phone.dart';
-import 'package:pongo/features/settings/presentation/phone/profile/profile_phone.dart';
 import 'package:pongo/features/settings/presentation/phone/preferences/preferences_phone.dart';
+import 'package:pongo/features/settings/presentation/phone/profile/profile_phone.dart';
+import 'package:pongo/features/settings/presentation/phone/widgets/settings_text.dart';
+import 'package:pongo/features/settings/presentation/phone/widgets/settings_tile.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class SettingsPhone extends StatefulWidget {
   const SettingsPhone({super.key});

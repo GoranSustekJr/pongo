@@ -1,10 +1,29 @@
+import 'dart:convert';
+
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/audio/media_item_manager.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:pongo/features/album/data/album_api.dart';
+import 'package:pongo/features/album/presentation/phone/album_phone.dart';
+import 'package:pongo/features/artist/data/artist_api.dart';
+import 'package:pongo/features/artist/presentation/phone/artist_phone.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/lyrics_desktop.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/play_control_desktop.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/track_progress_desktop.dart';
-import 'package:pongo/exports.dart';
 import 'package:pongo/features/search/data/shazam_api.dart' show Shazam;
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/models/catalog/album.dart';
+import 'package:pongo/shared/models/catalog/artist.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 import 'package:pongo/shared/widgets/image/image_desktop.dart';
+import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class LyricsBodyMacos extends StatelessWidget {
   final MediaItemManager mediaItemManager;

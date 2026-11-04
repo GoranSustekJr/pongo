@@ -1,5 +1,15 @@
-import 'package:pongo/exports.dart';
+import 'dart:convert';
+
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
 import 'package:pongo/features/player/data/queue_add_multiple_api.dart';
+import 'package:pongo/features/player/data/track_play_api.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
 
 class PlaySingle {
   Future<void> onlineTrack(

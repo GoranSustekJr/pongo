@@ -1,7 +1,21 @@
 import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:pongo/app/navigation/navigation.dart';
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/settings/presentation/phone/about/pdf_view.dart';
+import 'package:pongo/features/settings/presentation/phone/widgets/settings_text.dart';
+import 'package:pongo/features/settings/presentation/phone/widgets/settings_tile.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class AboutPhone extends StatefulWidget {
   const AboutPhone({super.key});

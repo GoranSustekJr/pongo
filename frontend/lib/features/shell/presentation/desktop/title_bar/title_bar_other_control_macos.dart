@@ -1,5 +1,14 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class TitleBarMacos extends StatelessWidget {
   final MediaItem currentMediaItem;

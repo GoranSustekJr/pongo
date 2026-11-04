@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
+
+import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/player/presentation/phone/lyrics/track_plain_lyrics_phone.dart';
 import 'package:pongo/features/player/presentation/phone/lyrics/track_sync_lyrics_phone.dart';
-import 'package:pongo/exports.dart';
+import 'package:pongo/l10n/app_localizations.dart';
 
 class LyricsPhone extends StatefulWidget {
   final List<dynamic> plainLyrics;

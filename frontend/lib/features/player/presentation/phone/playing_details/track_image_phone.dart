@@ -1,5 +1,10 @@
 import 'package:figma_spring_curve/figma_spring_curve.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/shared/widgets/image/image_compatible.dart';
 
 class TrackImagePhone extends StatelessWidget {
   final bool lyricsOn;

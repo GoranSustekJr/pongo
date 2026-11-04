@@ -126,6 +126,9 @@ dependencies:
 
   
 
+  intl: ^0.20.3
+  path: ^1.9.1
+  timezone: ^0.10.0
 dependency_overrides:
   fading_edge_scrollview: ^4.1.1
 

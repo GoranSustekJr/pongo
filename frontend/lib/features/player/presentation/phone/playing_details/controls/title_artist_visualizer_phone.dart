@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/search/data/shazam_api.dart';
 
 class TitleArtistVisualizerPhone extends StatelessWidget {

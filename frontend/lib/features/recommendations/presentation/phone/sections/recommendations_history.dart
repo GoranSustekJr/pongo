@@ -1,4 +1,18 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/player/data/mix_api.dart';
+import 'package:pongo/features/player/data/play.dart';
+import 'package:pongo/features/recommendations/data/recommendations_data_manager.dart';
+import 'package:pongo/features/recommendations/presentation/phone/recommended_tile.dart';
+import 'package:pongo/features/search/presentation/phone/search_result_text.dart';
+import 'package:pongo/features/search/presentation/phone/search_result_tile.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/phone/trailing.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class RecommendationsHistory extends StatelessWidget {
   final RecommendationsDataManager dataManager;

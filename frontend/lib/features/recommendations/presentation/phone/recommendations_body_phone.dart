@@ -1,7 +1,13 @@
-import 'package:pongo/exports.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/features/recommendations/data/recommendations_data_manager.dart';
 import 'package:pongo/features/recommendations/presentation/phone/sections/recommendations_categories.dart';
 import 'package:pongo/features/recommendations/presentation/phone/sections/recommendations_history.dart';
-
+import 'package:pongo/l10n/app_localizations.dart';
 class RecommendationsBodyPhone extends StatelessWidget {
   final RecommendationsDataManager dataManager;
   const RecommendationsBodyPhone({super.key, required this.dataManager});
@@ -69,7 +75,6 @@ class RecommendationsBodyPhone extends StatelessWidget {
 }
 
 /* import 'package:spotify_api/spotify_api.dart' as sp;
-import 'package:pongo/exports.dart';
 
 class RecommendationsBodyPhone extends StatefulWidget {
   final List<Track> pTracks;

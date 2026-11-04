@@ -1,7 +1,22 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
+
+import 'package:pongo/app/navigation/navigation.dart';
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/features/album/presentation/phone/album_phone.dart';
+import 'package:pongo/features/recommendations/data/recommendations_data_manager.dart';
+import 'package:pongo/features/recommendations/presentation/phone/recommended_tile.dart';
+import 'package:pongo/features/search/presentation/phone/search_result_text.dart';
+import 'package:pongo/features/search/presentation/phone/search_result_tile.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/image/image_compatible.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class RecommendationsCategories extends StatelessWidget {
   final RecommendationsDataManager dataManager;

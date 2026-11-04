@@ -1,8 +1,20 @@
 // ignore_for_file: library_private_types_in_public_api
 
+
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/notifications/notifications.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
 import 'package:pongo/features/player/presentation/phone/playing_details/controls/track_info_button.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
 
 class OtherControlsPhone extends StatefulWidget {
   final bool lyricsOn;

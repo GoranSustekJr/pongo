@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:pongo/exports.dart';
+
+import 'package:pongo/core/constants/app_constants.dart';
+import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
 
 class PDFView extends StatefulWidget {
   const PDFView({super.key});

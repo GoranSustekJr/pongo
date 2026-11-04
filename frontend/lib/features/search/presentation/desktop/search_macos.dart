@@ -1,8 +1,16 @@
 import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
 import 'package:pongo/features/recommendations/presentation/desktop/recommendations_macos.dart';
 import 'package:pongo/features/search/presentation/desktop/searching_macos.dart';
-import 'package:pongo/exports.dart';
+import 'package:pongo/l10n/app_localizations.dart';
 
 class SearchMacos extends StatefulWidget {
   const SearchMacos({super.key});

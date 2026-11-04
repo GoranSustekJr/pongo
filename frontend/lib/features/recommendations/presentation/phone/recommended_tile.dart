@@ -2,8 +2,21 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_desktop_context_menu/flutter_desktop_context_menu.dart';
-import 'package:pongo/exports.dart';
+import 'package:kr_pull_down_button/pull_down_button.dart';
+import 'package:star_menu/star_menu.dart';
+
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/core/storage/database/database_helper.dart';
+import 'package:pongo/core/utils/calculate_image_resolution.dart';
 import 'package:pongo/features/recommendations/presentation/desktop/recommended_track_pulldown_menu_items_desktop.dart';
+import 'package:pongo/features/recommendations/presentation/phone/recommended_track_pulldown_menu_items.dart';
+import 'package:pongo/features/search/presentation/phone/search_result_tile.dart';
+import 'package:pongo/features/search/presentation/phone/search_track_pulldown_menu_items.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/image/image_compatible.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class RecommendedTile extends StatelessWidget {
   final dynamic data;

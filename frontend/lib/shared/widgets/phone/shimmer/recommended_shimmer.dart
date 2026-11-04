@@ -1,6 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'package:pongo/exports.dart';
+import 'package:pongo/app/theme/colors.dart';
+import 'package:pongo/core/constants/platform.dart';
+import 'package:pongo/features/search/presentation/phone/search_result_text.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/widgets/shimmer/shimmer_container.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class RecommendedShimmer extends StatelessWidget {
   final bool history;

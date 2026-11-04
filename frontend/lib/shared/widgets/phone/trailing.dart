@@ -1,5 +1,7 @@
-import 'package:pongo/exports.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/theme/colors.dart';
 
 class Trailing extends StatelessWidget {
   final bool show;

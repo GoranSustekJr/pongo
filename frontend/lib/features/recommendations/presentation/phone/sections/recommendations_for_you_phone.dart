@@ -1,4 +1,19 @@
-import 'package:pongo/exports.dart';
+import 'package:flutter/material.dart';
+
+import 'package:pongo/app/navigation/navigation.dart';
+import 'package:pongo/core/audio/audio_service_handler.dart';
+import 'package:pongo/features/artist/presentation/phone/artist_phone.dart';
+import 'package:pongo/features/player/data/play.dart';
+import 'package:pongo/features/recommendations/presentation/phone/recommended_tile.dart';
+import 'package:pongo/features/search/presentation/phone/search_result_text.dart';
+import 'package:pongo/features/search/presentation/phone/search_result_tile.dart';
+import 'package:pongo/l10n/app_localizations.dart';
+import 'package:pongo/shared/models/catalog/album.dart';
+import 'package:pongo/shared/models/catalog/artist.dart';
+import 'package:pongo/shared/models/catalog/playlist.dart';
+import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:pongo/shared/widgets/phone/trailing.dart';
+import 'package:pongo/shared/widgets/space.dart';
 
 class RecommendationsForYouPhone extends StatelessWidget {
   final List<Track> pTracks;
