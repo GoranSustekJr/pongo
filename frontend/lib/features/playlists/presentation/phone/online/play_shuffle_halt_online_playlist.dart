@@ -48,7 +48,7 @@ class PlayShuffleHaltOnlinePlaylist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlayShuffleHaltBar(
-      playingId: "online.playlist:${opid}",
+      playingId: "online.playlist:$opid",
       missingTracks: missingTracks,
       loadingShuffle: loadingShuffle,
       color: Colors.white,

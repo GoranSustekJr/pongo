@@ -4,6 +4,7 @@ import 'package:interactive_slider/interactive_slider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:pongo/core/audio/volume_manager.dart';
+
 class VolumeControlPhone extends StatelessWidget {
   const VolumeControlPhone({super.key});
   @override
@@ -65,9 +66,6 @@ class VolumeControlPhone extends StatelessWidget {
     );
   }
 }
-
-
-
 
 /*
 

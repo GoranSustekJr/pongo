@@ -167,8 +167,8 @@ class _QueuePhoneState extends State<QueuePhone> {
                                       id: track.id.split('.')[2],
                                       name: track.title,
                                       artist: track.artist != null
-                                          ? (jsonDecode(track
-                                                      .extras!["artists"])
+                                          ? (jsonDecode(
+                                                      track.extras!["artists"])
                                                   as List)
                                               .map((e) =>
                                                   e as Map<String, dynamic>)
