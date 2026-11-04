@@ -1,112 +1,25 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/notifications/notifications.dart';
-import 'package:pongo/core/state/globals.dart';
+import 'package:pongo/core/network/api_client.dart';
 import 'package:pongo/core/storage/secure_storage.dart';
-import 'package:pongo/features/auth/data/access_token_handler.dart';
-import 'package:pongo/features/auth/models/access_token.dart';
 
 class ArtistSpotify {
   // Initialize the API
 
   Future<Map> get(context, String said) async {
-    int tries = 0;
-
-    try {
-      while (tries < 2) {
-        tries++;
-        final accessTokenHandler =
-            Provider.of<AccessToken>(context, listen: false);
-
-        String market = await Storage().getMarket() ?? 'US';
-
-        final response = await http.post(
-          Uri.parse("${AppConstants.SERVER_URL}get_artist_metadata"),
-          body: jsonEncode(
-            {
-              "at+JWT": accessTokenHandler.accessToken,
-              "said": said,
-              "market": market,
-            },
-          ),
-        );
-
-        if (response.statusCode == 200) {
-          Map<String, dynamic> data = jsonDecode(response.body);
-
-          return data;
-        } else if (response.statusCode == 401) {
-          if (jsonDecode(response.body)["detail"] == "Disabled") {
-            Notifications()
-                .showDisabledNotification(notificationsContext.value!);
-            break;
-          } else {
-            if (tries < 2) {
-              await AccessTokenhandler().renew(context);
-            } else {
-              break; // Exit the loop after the second attempt
-            }
-          }
-        } else {
-          return {}; // Handle other status codes as needed
-        }
-      }
-    } catch (e) {
-      // print(e);
-      return {};
-    }
-    return {};
+    return const ApiClient().postBuilt(context, "get_artist_metadata",
+        () async {
+      String market = await Storage().getMarket() ?? 'US';
+      return {
+        "said": said,
+        "market": market,
+      };
+    });
   }
 
 // Get artist image
   Future<Map> getImage(context, String said) async {
-    int tries = 0;
-
-    try {
-      while (tries < 2) {
-        tries++;
-        final accessTokenHandler =
-            Provider.of<AccessToken>(context, listen: false);
-
-        final response = await http.post(
-          Uri.parse(
-              "${AppConstants.SERVER_URL}caf5cc332d474f35ff74e94af44f2a7801b620b2ce0196560e038b511d14986e"),
-          body: jsonEncode(
-            {
-              "at+JWT": accessTokenHandler.accessToken,
-              "said": said,
-            },
-          ),
-        );
-
-        if (response.statusCode == 200) {
-          Map<String, dynamic> data = jsonDecode(response.body);
-
-          return data;
-        } else if (response.statusCode == 401) {
-          if (jsonDecode(response.body)["detail"] == "Disabled") {
-            Notifications()
-                .showDisabledNotification(notificationsContext.value!);
-            break;
-          } else {
-            if (tries < 2) {
-              await AccessTokenhandler().renew(context);
-            } else {
-              break; // Exit the loop after the second attempt
-            }
-          }
-        } else {
-          return {}; // Handle other status codes as needed
-        }
-      }
-    } catch (e) {
-      // print(e);
-      return {};
-    }
-    return {};
+    return const ApiClient().post(context,
+        "caf5cc332d474f35ff74e94af44f2a7801b620b2ce0196560e038b511d14986e", {
+      "said": said,
+    });
   }
 }

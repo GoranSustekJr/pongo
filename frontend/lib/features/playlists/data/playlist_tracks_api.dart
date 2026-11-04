@@ -1,108 +1,20 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
-
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/notifications/notifications.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/auth/data/access_token_handler.dart';
-import 'package:pongo/features/auth/models/access_token.dart';
+import 'package:pongo/core/network/api_client.dart';
 
 class PlaylistSpotify {
   // Initialize the API
 
   Future<Map> get(context, String spid) async {
-    int tries = 0;
-
-    try {
-      while (tries < 2) {
-        tries++;
-        final accessTokenHandler =
-            Provider.of<AccessToken>(context, listen: false);
-
-        //print(accessTokenHandler.accessToken);
-        final response = await http.post(
-          Uri.parse("${AppConstants.SERVER_URL}get_playlist"),
-          body: jsonEncode(
-            {
-              "at+JWT": accessTokenHandler.accessToken,
-              "spid": spid,
-            },
-          ),
-        );
-
-        if (response.statusCode == 200) {
-          Map<String, dynamic> data = jsonDecode(response.body);
-
-          return data;
-        } else if (response.statusCode == 401) {
-          if (jsonDecode(response.body)["detail"] == "Disabled") {
-            Notifications()
-                .showDisabledNotification(notificationsContext.value!);
-            break;
-          } else {
-            if (tries < 2) {
-              await AccessTokenhandler().renew(context);
-            } else {
-              break; // Exit the loop after the second attempt
-            }
-          }
-        } else {
-          return {}; // Handle other status codes as needed
-        }
-      }
-    } catch (e) {
-      //print(e);
-
-      return {};
-    }
-    return {};
+    return const ApiClient().postBuilt(context, "get_playlist", () async {
+      //print(accessTokenHandler.accessToken);
+      return {
+        "spid": spid,
+      };
+    });
   }
 
   Future<Map> getShuffle(context, String spid) async {
-    int tries = 0;
-
-    try {
-      while (tries < 2) {
-        tries++;
-        final accessTokenHandler =
-            Provider.of<AccessToken>(context, listen: false);
-
-        final response = await http.post(
-          Uri.parse("${AppConstants.SERVER_URL}get_playlist_shuffle"),
-          body: jsonEncode(
-            {
-              "at+JWT": accessTokenHandler.accessToken,
-              "spid": spid,
-            },
-          ),
-        );
-
-        if (response.statusCode == 200) {
-          Map<String, dynamic> data = jsonDecode(response.body);
-
-          return data;
-        } else if (response.statusCode == 401) {
-          if (jsonDecode(response.body)["detail"] == "Disabled") {
-            Notifications()
-                .showDisabledNotification(notificationsContext.value!);
-            break;
-          } else {
-            if (tries < 2) {
-              await AccessTokenhandler().renew(context);
-            } else {
-              break; // Exit the loop after the second attempt
-            }
-          }
-        } else {
-          return {}; // Handle other status codes as needed
-        }
-      }
-    } catch (e) {
-      // print(e);
-      return {};
-    }
-    return {};
+    return const ApiClient().post(context, "get_playlist_shuffle", {
+      "spid": spid,
+    });
   }
 }

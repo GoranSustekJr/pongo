@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:provider/provider.dart';
 
+import 'package:pongo/core/network/api_client.dart';
 import 'package:pongo/core/constants/app_constants.dart';
 import 'package:pongo/core/constants/app_icons.dart';
 import 'package:pongo/core/notifications/notifications.dart';
@@ -198,49 +199,10 @@ class Download {
   }
 
   Future<Map> playlist(BuildContext context, List<String> stids) async {
-    int tries = 0;
-
-    try {
-      while (tries < 2) {
-        tries++;
-        final accessTokenHandler =
-            Provider.of<AccessToken>(context, listen: false);
-
-        final response = await http.post(
-          Uri.parse("${AppConstants.SERVER_URL}download_a_playlist"),
-          headers: {'Connection': 'keep-alive'},
-          body: jsonEncode(
-            {
-              "at+JWT": accessTokenHandler.accessToken,
-              "stids": stids,
-            },
-          ),
-        );
-
-        if (response.statusCode == 200) {
-          Map<String, dynamic> data = jsonDecode(response.body);
-
-          return data;
-        } else if (response.statusCode == 401) {
-          if (jsonDecode(response.body)["detail"] == "Disabled") {
-            Notifications()
-                .showDisabledNotification(notificationsContext.value!);
-            break;
-          } else {
-            if (tries < 2) {
-              await AccessTokenhandler().renew(context);
-            } else {
-              break; // Exit the loop after the second attempt
-            }
-          }
-        } else {
-          return {}; // Handle other status codes as needed
-        }
-      }
-    } catch (e) {
-      //print(e);
-      return {};
-    }
-    return {};
+    return const ApiClient().post(context, "download_a_playlist", {
+      "stids": stids,
+    }, headers: {
+      'Connection': 'keep-alive'
+    });
   }
 }

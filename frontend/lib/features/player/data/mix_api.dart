@@ -32,7 +32,7 @@ class Mix {
 
     await audioServiceHandler.setShuffleMode(AudioServiceShuffleMode.none);
 
-      channel.stream.listen((message) async {
+    channel.stream.listen((message) async {
       if (audioServiceHandler.queue.value[0].title == track.name) {
         var response = json.decode(message);
         if (response["duration"] != null) {

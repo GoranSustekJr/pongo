@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import 'package:pongo/core/network/api_client.dart';
 import 'package:pongo/core/constants/app_constants.dart';
 import 'package:pongo/core/notifications/notifications.dart';
 import 'package:pongo/core/state/globals.dart';
@@ -97,8 +98,7 @@ class TrackMetadata {
     //  Overlay.of(context).insert(overlayEntry);
 
     // Init websocket connection
-    final WebSocketChannel channel =
-        WebSocketChannel.connect(
+    final WebSocketChannel channel = WebSocketChannel.connect(
         Uri.parse("${AppConstants.SERVER_URL_WSS}test"));
     final accessTokenHandler = Provider.of<AccessToken>(context, listen: false);
 
@@ -246,49 +246,8 @@ class TrackMetadata {
   }
 
   Future<Map> getDuration(context, String stid) async {
-    int tries = 0;
-
-    try {
-      while (tries < 2) {
-        tries++;
-        final accessTokenHandler =
-            Provider.of<AccessToken>(context, listen: false);
-
-        final response = await http.post(
-          Uri.parse("${AppConstants.SERVER_URL}get_track_duration"),
-          body: jsonEncode(
-            {
-              "at+JWT": accessTokenHandler.accessToken,
-              "stid": stid,
-            },
-          ),
-        );
-
-        if (response.statusCode == 200) {
-          Map<String, dynamic> data = jsonDecode(response.body);
-
-          return data;
-        } else if (response.statusCode == 401) {
-          if (jsonDecode(response.body)["detail"] == "Disabled") {
-            Notifications()
-                .showDisabledNotification(notificationsContext.value!);
-            break;
-          } else {
-            if (tries < 2) {
-              await AccessTokenhandler().renew(context);
-            } else {
-              break; // Exit the loop after the second attempt
-            }
-          }
-        } else {
-          return {}; // Handle other status codes as needed
-        }
-      }
-    } catch (e) {
-      // print(e);
-
-      return {};
-    }
-    return {};
+    return const ApiClient().post(context, "get_track_duration", {
+      "stid": stid,
+    });
   }
 }
