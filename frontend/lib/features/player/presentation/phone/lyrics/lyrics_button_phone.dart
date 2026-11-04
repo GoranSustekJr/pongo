@@ -1,9 +1,9 @@
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/constants/app_constants.dart';
 import 'package:pongo/core/constants/app_icons.dart';
@@ -60,10 +60,7 @@ class LyricsButtonPhone extends StatelessWidget {
                   child: liquidGlass(
                     radius: 360,
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: useBlur.value && !kIsApple ? 10 : 0,
-                        sigmaY: useBlur.value && !kIsApple ? 10 : 0,
-                      ),
+                      filter: nonAppleBlur(10),
                       child: Container(
                         width: 40,
                         height: 40,
@@ -95,10 +92,7 @@ class LyricsButtonPhone extends StatelessWidget {
                   child: liquidGlass(
                     radius: 360,
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: useBlur.value && !kIsApple ? 10 : 0,
-                        sigmaY: useBlur.value && !kIsApple ? 10 : 0,
-                      ),
+                      filter: nonAppleBlur(10),
                       child: Container(
                         height: 40,
                         width: 150,
@@ -197,10 +191,7 @@ class LyricsButtonPhone extends StatelessWidget {
                   child: liquidGlass(
                     radius: 360,
                     child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: useBlur.value && !kIsApple ? 10 : 0,
-                        sigmaY: useBlur.value && !kIsApple ? 10 : 0,
-                      ),
+                      filter: nonAppleBlur(10),
                       child: Container(
                         width: 40,
                         height: 40,

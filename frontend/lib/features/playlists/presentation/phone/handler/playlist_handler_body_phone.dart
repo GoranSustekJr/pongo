@@ -1,11 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
 import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/playlists/models/playlist_handler.dart';
 import 'package:pongo/features/playlists/presentation/phone/handler/playlist_handler_body_add_playlist_phone.dart';
@@ -101,9 +100,7 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
               borderRadius: BorderRadius.circular(60),
               child: liquidGlassBackground(
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                      sigmaX: useBlur.value && !kIsApple ? 5 : 0,
-                      sigmaY: useBlur.value && !kIsApple ? 5 : 0),
+                  filter: nonAppleBlur(5),
                   child: Container(
                     color: Colors.black.withAlpha(useBlur.value ? 50 : 200),
                     child: Row(

@@ -1,14 +1,11 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
+import 'package:pongo/features/player/presentation/phone/play_shuffle_halt_bar.dart';
 import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
 import 'package:pongo/core/constants/app_icons.dart';
 import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_text_button.dart';
 
-class PlayShuffleHaltLocals extends StatefulWidget {
+class PlayShuffleHaltLocals extends StatelessWidget {
   final List missingTracks;
   final bool allSelected;
   final bool loadingShuffle;
@@ -38,139 +35,47 @@ class PlayShuffleHaltLocals extends StatefulWidget {
   });
 
   @override
-  State<PlayShuffleHaltLocals> createState() => _PlayShuffleHaltLocalsState();
-}
-
-class _PlayShuffleHaltLocalsState extends State<PlayShuffleHaltLocals> {
-  @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
-    return StreamBuilder(
-        stream: audioServiceHandler.mediaItem.stream,
-        builder: (context, mediaItemStream) {
-          bool showPlay = mediaItemStream.data == null
-              ? true
-              : "library.locals" !=
-                  '${mediaItemStream.data!.id.split('.')[0]}.${mediaItemStream.data!.id.split('.')[1]}';
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            switchInCurve: Curves.fastOutSlowIn,
-            switchOutCurve: Curves.fastOutSlowIn,
-            child: widget.edit
-                ? Row(
-                    key: const ValueKey(true),
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      iconButton(
-                        widget.allSelected
-                            ? AppIcons.checkmark
-                            : AppIcons.uncheckmark,
-                        Col.icon,
-                        widget.selectAll,
-                        edgeInsets: EdgeInsets.zero,
-                      ),
-                      iconButton(
-                        AppIcons.musicAlbums,
-                        Col.icon,
-                        () {
-                          widget.addToPlaylist();
-                        },
-                        edgeInsets: EdgeInsets.zero,
-                      ),
-                      iconButton(
-                        AppIcons.trash,
-                        Col.icon,
-                        () {
-                          widget.remove();
-                        },
-                        edgeInsets: EdgeInsets.zero,
-                      ),
-                      iconButton(
-                        AppIcons.cancel,
-                        Col.icon,
-                        widget.stopEdit,
-                        edgeInsets: EdgeInsets.zero,
-                      ),
-                    ],
-                  )
-                : AnimatedSwitcher(
-                    key: const ValueKey(false),
-                    duration: const Duration(milliseconds: 300),
-                    switchInCurve: Curves.fastOutSlowIn,
-                    switchOutCurve: Curves.fastOutSlowIn,
-                    child: showPlay
-                        ? Row(
-                            key: const ValueKey(true),
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              widget.frontWidget,
-                              iconTextButton(
-                                AppIcons.play,
-                                "Play",
-                                TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: !showPlay || widget.loadingShuffle
-                                      ? Col.icon.withAlpha(125)
-                                      : Col.icon,
-                                ),
-                                widget.play,
-                                !showPlay || widget.loadingShuffle
-                                    ? Col.icon.withAlpha(125)
-                                    : Col.icon,
-                                padding: EdgeInsets.zero,
-                              ),
-                              iconTextButton(
-                                AppIcons.shuffle,
-                                " Shuffle",
-                                TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: widget.missingTracks.isNotEmpty
-                                      ? Col.icon.withAlpha(125)
-                                      : widget.loadingShuffle
-                                          ? Col.icon.withAlpha(125)
-                                          : Col.icon,
-                                ),
-                                widget.shuffle,
-                                widget.missingTracks.isNotEmpty
-                                    ? Col.icon.withAlpha(125)
-                                    : widget.loadingShuffle
-                                        ? Col.icon.withAlpha(125)
-                                        : Col.icon,
-                                padding: EdgeInsets.zero,
-                              ),
-                              widget.endWidget
-                            ],
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            key: const ValueKey(false),
-                            children: [
-                              widget.frontWidget,
-                              iconTextButton(
-                                AppIcons.halt,
-                                " Halt",
-                                TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: Col.icon,
-                                ),
-                                () async {
-                                  await audioServiceHandler.halt();
-                                },
-                                Col.icon,
-                                padding: EdgeInsets.zero,
-                              ),
-                              widget.endWidget,
-                            ],
-                          ),
-                  ),
-          );
-        });
+    return PlayShuffleHaltBar(
+      playingId: "library.locals",
+      missingTracks: missingTracks,
+      loadingShuffle: loadingShuffle,
+      color: Col.icon,
+      play: play,
+      shuffle: shuffle,
+      frontWidget: frontWidget,
+      endWidget: endWidget,
+      edit: edit,
+      editActions: [
+        iconButton(
+          allSelected ? AppIcons.checkmark : AppIcons.uncheckmark,
+          Col.icon,
+          selectAll,
+          edgeInsets: EdgeInsets.zero,
+        ),
+        iconButton(
+          AppIcons.musicAlbums,
+          Col.icon,
+          () {
+            addToPlaylist();
+          },
+          edgeInsets: EdgeInsets.zero,
+        ),
+        iconButton(
+          AppIcons.trash,
+          Col.icon,
+          () {
+            remove();
+          },
+          edgeInsets: EdgeInsets.zero,
+        ),
+        iconButton(
+          AppIcons.cancel,
+          Col.icon,
+          stopEdit,
+          edgeInsets: EdgeInsets.zero,
+        )
+      ],
+    );
   }
 }

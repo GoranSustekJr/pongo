@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:blurhash_ffi/blurhash.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/audio/audio_service_handler.dart';
 import 'package:pongo/core/constants/app_constants.dart';
@@ -282,15 +282,7 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
                                               BorderRadius.circular(60),
                                           child: liquidGlassBackground(
                                             child: BackdropFilter(
-                                              filter: ImageFilter.blur(
-                                                  sigmaX:
-                                                      useBlur.value && !kIsApple
-                                                          ? 10
-                                                          : 0,
-                                                  sigmaY:
-                                                      useBlur.value && !kIsApple
-                                                          ? 10
-                                                          : 0),
+                                              filter: nonAppleBlur(10),
                                               child: PlayShuffleHaltPlaylist(
                                                 playlist: widget.playlist,
                                                 missingTracks: missingTracks,

@@ -1,9 +1,9 @@
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/constants/app_icons.dart';
 import 'package:pongo/core/constants/platform.dart';
@@ -62,9 +62,7 @@ class BottomNavBar extends StatelessWidget {
                 ),
               ),
               BackdropFilter(
-                filter: ImageFilter.blur(
-                    sigmaX: useBlur.value && !kIsApple ? 10 : 0,
-                    sigmaY: useBlur.value && !kIsApple ? 10 : 0),
+                filter: nonAppleBlur(10),
                 child: Container(
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(

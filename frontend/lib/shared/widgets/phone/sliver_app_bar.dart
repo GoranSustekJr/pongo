@@ -1,9 +1,9 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:kr_pull_down_button/pull_down_button.dart';
 import 'package:star_menu/star_menu.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/constants/app_constants.dart';
 import 'package:pongo/core/constants/app_icons.dart';
@@ -285,10 +285,7 @@ class SliverAppBarPhone extends StatelessWidget {
                     kIsDesktop ? BorderRadius.circular(15) : BorderRadius.zero,
                 child: liquidGlassBackground(
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: useBlur.value && !kIsApple ? 10 : 0,
-                      sigmaY: useBlur.value && !kIsApple ? 10 : 0,
-                    ),
+                    filter: nonAppleBlur(10),
                     child: Container(),
                   ),
                 ),

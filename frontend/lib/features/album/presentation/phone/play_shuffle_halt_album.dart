@@ -1,13 +1,9 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
+import 'package:pongo/features/player/presentation/phone/play_shuffle_halt_bar.dart';
 import 'package:pongo/shared/models/catalog/album.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_text_button.dart';
 
-class PlayShuffleHaltAlbum extends StatefulWidget {
+class PlayShuffleHaltAlbum extends StatelessWidget {
   final Album album;
   final List missingTracks;
   final bool loadingShuffle;
@@ -23,112 +19,14 @@ class PlayShuffleHaltAlbum extends StatefulWidget {
   });
 
   @override
-  State<PlayShuffleHaltAlbum> createState() => _PlayShuffleHaltAlbumState();
-}
-
-class _PlayShuffleHaltAlbumState extends State<PlayShuffleHaltAlbum> {
-  /* // Pulsating shuffle icon
-  late AnimationController controller;
-  late Animation<Color?> colorAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    )..repeat(reverse: true);
-
-    colorAnimation = ColorTween(
-      begin: Colors.white,
-      end: Colors.white.withAlpha(100),
-    ).animate(controller);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  } */
-
-  @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
-    return StreamBuilder(
-        stream: audioServiceHandler.mediaItem.stream,
-        builder: (context, mediaItemStream) {
-          bool showPlay = mediaItemStream.data == null
-              ? true
-              : "online.album:${widget.album.id}" !=
-                  '${mediaItemStream.data!.id.split('.')[0]}.${mediaItemStream.data!.id.split('.')[1]}';
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: showPlay
-                ? Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      iconTextButton(
-                        AppIcons.play,
-                        "Play",
-                        TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: !showPlay || widget.loadingShuffle
-                              ? Colors.white.withAlpha(125)
-                              : Colors.white,
-                        ),
-                        widget.play,
-                        !showPlay || widget.loadingShuffle
-                            ? Colors.white.withAlpha(125)
-                            : Colors.white,
-                        padding: EdgeInsets.zero,
-                      ),
-                      iconTextButton(
-                        AppIcons.shuffle,
-                        " Shuffle",
-                        TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: widget.missingTracks.isNotEmpty
-                              ? Colors.white.withAlpha(125)
-                              : widget.loadingShuffle
-                                  ? Colors.white.withAlpha(125)
-                                  : Colors.white,
-                        ),
-                        widget.shuffle,
-                        widget.missingTracks.isNotEmpty
-                            ? Colors.white.withAlpha(125)
-                            : widget.loadingShuffle
-                                ? Colors.white.withAlpha(125)
-                                : Colors.white,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
-                  )
-                : Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    key: const ValueKey(false),
-                    children: [
-                      iconTextButton(
-                        AppIcons.halt,
-                        " Halt",
-                        const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.white,
-                        ),
-                        () async {
-                          await audioServiceHandler.halt();
-                        },
-                        Colors.white,
-                        padding: EdgeInsets.zero,
-                      ),
-                    ],
-                  ),
-          );
-        });
+    return PlayShuffleHaltBar(
+      playingId: "online.album:${album.id}",
+      missingTracks: missingTracks,
+      loadingShuffle: loadingShuffle,
+      color: Colors.white,
+      play: play,
+      shuffle: shuffle,
+    );
   }
 }

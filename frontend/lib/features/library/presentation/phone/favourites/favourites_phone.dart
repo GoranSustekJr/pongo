@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -116,13 +115,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                                     3),
                                     child: liquidGlassBackground(
                                       child: BackdropFilter(
-                                          filter: ImageFilter.blur(
-                                              sigmaX: useBlur.value && !kIsApple
-                                                  ? 10
-                                                  : 0,
-                                              sigmaY: useBlur.value && !kIsApple
-                                                  ? 10
-                                                  : 0),
+                                          filter: nonAppleBlur(10),
                                           child: Container()),
                                     ),
                                   ),

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:blurhash_ffi/blurhash.dart';
@@ -10,11 +9,11 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/audio/audio_service_handler.dart';
 import 'package:pongo/core/constants/app_constants.dart';
 import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
 import 'package:pongo/core/notifications/notifications.dart';
 import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/core/storage/database/database_helper.dart';
@@ -630,13 +629,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(60),
                                         child: BackdropFilter(
-                                          filter: ImageFilter.blur(
-                                              sigmaX: useBlur.value && !kIsApple
-                                                  ? 10
-                                                  : 0,
-                                              sigmaY: useBlur.value && !kIsApple
-                                                  ? 10
-                                                  : 0),
+                                          filter: nonAppleBlur(10),
                                           child: PlayShuffleHaltOnlinePlaylist(
                                             opid: widget.opid,
                                             missingTracks: missingTracks,

@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +7,7 @@ import 'package:kr_pull_down_button/pull_down_button.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/audio/audio_service_handler.dart';
 import 'package:pongo/core/constants/app_constants.dart';
@@ -67,9 +67,7 @@ class QueueButtonPhone extends StatelessWidget {
               child: liquidGlassBackground(
                 enabled: liquidGlassEnabled,
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                      sigmaX: useBlur.value && !kIsApple ? 10 : 0,
-                      sigmaY: useBlur.value && !kIsApple ? 10 : 0),
+                  filter: nonAppleBlur(10),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,

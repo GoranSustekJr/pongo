@@ -1,10 +1,9 @@
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
 import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/playlists/models/playlist_handler.dart';
 import 'package:pongo/l10n/app_localizations.dart';
@@ -42,9 +41,7 @@ class SelectedTracksPhone extends StatelessWidget {
           borderRadius: BorderRadius.circular(60),
           child: liquidGlassBackground(
             child: BackdropFilter(
-              filter: ImageFilter.blur(
-                  sigmaX: useBlur.value && !kIsApple ? 10 : 0,
-                  sigmaY: useBlur.value && !kIsApple ? 10 : 0),
+              filter: nonAppleBlur(10),
               child: Container(
                 color: Colors.black.withAlpha(useBlur.value ? 50 : 200),
                 child: playlistHandlerTracks.length == 1

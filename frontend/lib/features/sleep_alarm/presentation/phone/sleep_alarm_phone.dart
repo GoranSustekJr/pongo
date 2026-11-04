@@ -1,10 +1,10 @@
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_slider/interactive_slider.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/constants/app_constants.dart';
 import 'package:pongo/core/constants/app_icons.dart';
@@ -76,11 +76,7 @@ class SleepAlarmPhone extends StatelessWidget {
                                     (MediaQuery.of(context).size.height / 3),
                             child: liquidGlassBackground(
                               child: BackdropFilter(
-                                  filter: ImageFilter.blur(
-                                      sigmaX:
-                                          useBlur.value && !kIsApple ? 10 : 0,
-                                      sigmaY:
-                                          useBlur.value && !kIsApple ? 10 : 0),
+                                  filter: nonAppleBlur(10),
                                   child: Container()),
                             ),
                           ),
@@ -116,9 +112,7 @@ class SleepAlarmPhone extends StatelessWidget {
                       child: ClipRRect(
                         child: liquidGlassBackground(
                           child: BackdropFilter(
-                            filter: ImageFilter.blur(
-                                sigmaX: useBlur.value && !kIsApple ? 10 : 0,
-                                sigmaY: useBlur.value && !kIsApple ? 10 : 0),
+                            filter: nonAppleBlur(10),
                             child: Container(
                               width: MediaQuery.of(context).size.width,
                               height: 75,
