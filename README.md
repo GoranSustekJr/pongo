@@ -72,6 +72,26 @@ Audio lives in the `pongo_audio` volume and the database in `pongo_db`. Back up 
 
 Tests: `flutter test test/catalog_models_test.dart` in `frontend/`, and `python -m pytest tests` in `api/pongo/`.
 
+## Frontend structure
+
+```
+frontend/lib/
+  main.dart
+  app/        App widgets, theme and navigation
+  core/       Audio, network client, storage, notifications, constants
+  shared/     Models, data and widgets used by several features
+  features/   One folder per feature
+    <feature>/
+      data/          API requests and data managers
+      models/
+      presentation/
+        phone/
+        desktop/
+        widgets/     Shared by phone and desktop
+```
+
+Import each symbol from the file that declares it, using `package:pongo/...` paths. Authenticated requests go through `core/network/api_client.dart`.
+
 ## How Does It Work?
 
 ### Catalog
