@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pongo/exports.dart';
-import 'package:pongo/shared/models/spotify/category.dart';
+import 'package:pongo/shared/models/catalog/category.dart';
 
 // The fixture is real API output: the models must keep parsing what the server sends.
 void main() {

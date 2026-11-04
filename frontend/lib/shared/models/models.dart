@@ -1,7 +1,7 @@
-export 'access_token.dart';
-export 'playlist_handler.dart';
-export 'sleep_alarm.dart';
+export 'package:pongo/features/auth/models/access_token.dart';
+export 'package:pongo/features/playlists/models/playlist_handler.dart';
+export 'package:pongo/features/sleep_alarm/models/sleep_alarm.dart';
 
-export 'spotify/album.dart';
-export 'spotify/artist.dart';
-export 'spotify/playlist.dart';
+export 'package:pongo/shared/models/catalog/album.dart';
+export 'package:pongo/shared/models/catalog/artist.dart';
+export 'package:pongo/shared/models/catalog/playlist.dart';

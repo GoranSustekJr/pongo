@@ -1,0 +1,130 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:pongo/exports.dart';
+import 'package:pongo/features/onboarding/presentation/phone/introduction_phone.dart';
+import 'package:pongo/features/settings/presentation/phone/about/about_phone.dart';
+import 'package:pongo/features/settings/presentation/phone/profile/profile_phone.dart';
+import 'package:pongo/features/settings/presentation/phone/preferences/preferences_phone.dart';
+
+class SettingsPhone extends StatefulWidget {
+  const SettingsPhone({super.key});
+
+  @override
+  State<SettingsPhone> createState() => _SettingsPhoneState();
+}
+
+class _SettingsPhoneState extends State<SettingsPhone> {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: AppConstants().backgroundBoxDecoration,
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              snap: true,
+              floating: true,
+              pinned: true,
+              stretch: true,
+              automaticallyImplyLeading: false,
+              expandedHeight: kIsApple
+                  ? MediaQuery.of(context).size.height / 5
+                  : MediaQuery.of(context).size.height / 4,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
+                title: Text(
+                  AppLocalizations.of(context).settings,
+                  style: TextStyle(
+                    fontSize: kIsApple ? 30 : 40,
+                    fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w800,
+                    color: Col.text,
+                  ),
+                ),
+                stretchModes: const [
+                  StretchMode.zoomBackground,
+                  StretchMode.blurBackground,
+                  StretchMode.fadeTitle,
+                ],
+              ),
+            ),
+            // Other slivers for your Wi-Fi settings content
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return Column(
+                    children: [
+                      razh(kIsApple ? size.width / 5 : size.width / 4),
+                      settingsText(AppLocalizations.of(context).profile),
+                      settingsTile(
+                          context,
+                          true,
+                          false,
+                          AppIcons.profile,
+                          AppIcons.settings,
+                          AppLocalizations.of(context).profile,
+                          AppLocalizations.of(context).yourprofile, () {
+                        //Navigationss().nextScreen(context, '/profile', {});
+                        Navigations().nextScreen(context, const ProfilePhone());
+                      }),
+                      settingsTile(
+                          context,
+                          false,
+                          true,
+                          AppIcons.preferences,
+                          AppIcons.settings,
+                          AppLocalizations.of(context).preferences,
+                          AppLocalizations.of(context).yourpreferences, () {
+                        Navigations()
+                            .nextScreen(context, const PreferencesPhone());
+                      }),
+                      razh(20),
+                      settingsText(AppLocalizations.of(context).about),
+                      settingsTile(
+                        context,
+                        true,
+                        false,
+                        CupertinoIcons.info_circle,
+                        AppIcons.musicAlbums,
+                        AppLocalizations.of(context).about,
+                        AppLocalizations.of(context).aboutpongo,
+                        () {
+                          Navigations().nextScreen(
+                            context,
+                            const AboutPhone(),
+                          );
+                        },
+                      ),
+                      settingsTile(
+                        context,
+                        false,
+                        true,
+                        CupertinoIcons.chart_bar_fill,
+                        AppIcons.settings,
+                        "Tipps & tricks",
+                        "Pongo tipps & tricks",
+                        () {
+                          Navigations().nextScreen(
+                            context,
+                            const IntroductionPhone(),
+                          );
+                        },
+                        special: true,
+                      ),
+                    ],
+                  );
+                },
+                childCount: 1,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
