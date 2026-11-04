@@ -1,8 +1,8 @@
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/constants/app_icons.dart';
 import 'package:pongo/core/state/globals.dart';
@@ -44,9 +44,7 @@ class SearchHistoryPhone extends StatelessWidget {
           opacity: showSearchHistory ? 1 : 0,
           child: ClipRRect(
             child: BackdropFilter(
-              filter: ImageFilter.blur(
-                  sigmaX: useBlur.value ? 10 : 0,
-                  sigmaY: useBlur.value ? 10 : 0),
+              filter: appBlur(10),
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.only(

@@ -1,7 +1,7 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/constants/app_constants.dart';
 import 'package:pongo/core/constants/app_icons.dart';
@@ -94,10 +94,7 @@ class LocalPlaylistAppBarPhone extends StatelessWidget {
                     : scrollControllerOffset /
                         (MediaQuery.of(context).size.height / 2),
             child: BackdropFilter(
-              filter: ImageFilter.blur(
-                sigmaX: useBlur.value ? 10 : 0,
-                sigmaY: useBlur.value ? 10 : 0,
-              ),
+              filter: appBlur(10),
               child: Container(),
             ),
           ),

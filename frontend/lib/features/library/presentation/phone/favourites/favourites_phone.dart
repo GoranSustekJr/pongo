@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/audio/audio_service_handler.dart';
 import 'package:pongo/core/constants/app_constants.dart';
@@ -168,9 +169,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(60),
                                       child: BackdropFilter(
-                                        filter: ImageFilter.blur(
-                                            sigmaX: useBlur.value ? 10 : 0,
-                                            sigmaY: useBlur.value ? 10 : 0),
+                                        filter: appBlur(10),
                                         child: PlayShuffleHaltFavourites(
                                           missingTracks: favouritesItemManager
                                               .missingTracks,

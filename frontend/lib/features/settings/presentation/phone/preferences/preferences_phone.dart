@@ -1,10 +1,10 @@
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:just_audio/just_audio.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/constants/app_constants.dart';
 import 'package:pongo/core/constants/app_icons.dart';
@@ -203,10 +203,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                       ),
                       flexibleSpace: ClipRRect(
                         child: BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: useBlur.value ? 10 : 0,
-                            sigmaY: useBlur.value ? 10 : 0,
-                          ),
+                          filter: appBlur(10),
                           child: FlexibleSpaceBar(
                             centerTitle: true,
                             title: Text(

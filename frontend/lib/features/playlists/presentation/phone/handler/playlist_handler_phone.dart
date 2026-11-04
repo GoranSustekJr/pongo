@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/constants/app_icons.dart';
 import 'package:pongo/core/notifications/notifications.dart';
@@ -211,8 +211,7 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
     Size size = MediaQuery.of(context).size;
     return ClipRRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(
-            sigmaX: useBlur.value ? 12.5 : 0, sigmaY: useBlur.value ? 12.5 : 0),
+        filter: appBlur(12.5),
         child: Container(
           height: size.height,
           width: size.width,

@@ -1,8 +1,8 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/constants/app_constants.dart';
 import 'package:pongo/core/constants/app_icons.dart';
@@ -116,11 +116,7 @@ class LocalPlaylistPhone extends StatelessWidget {
                                               borderRadius:
                                                   BorderRadius.circular(60),
                                               child: BackdropFilter(
-                                                filter: ImageFilter.blur(
-                                                    sigmaX:
-                                                        useBlur.value ? 10 : 0,
-                                                    sigmaY:
-                                                        useBlur.value ? 10 : 0),
+                                                filter: appBlur(10),
                                                 child:
                                                     PlayShuffleHaltLocalPlaylist(
                                                   lpid: lpid,

@@ -1,9 +1,86 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:sqflite/sqflite.dart';
 
 import 'package:pongo/core/storage/database/database_helper.dart';
+
+Future<void> insertDownloadedTrck(
+  DatabaseHelper dbHelper,
+  String stid,
+  String audio,
+  List<Map<String, dynamic>> artists,
+  String title,
+  int duration,
+  String? image,
+) async {
+  Database db = await dbHelper.database;
+
+  bool alreadyExists = await downloadedTrckAlreadyExists(dbHelper, stid);
+
+  if (!alreadyExists) {
+    Map<String, dynamic> trackData = {
+      'stid': stid,
+      'audio': audio,
+      'artists': jsonEncode(artists),
+      'title': title,
+      'duration': duration,
+      'image': image,
+    };
+
+    await db.insert('downloaded_tracks', trackData);
+  }
+}
+
+Future<List<Map<String, dynamic>>> queryAllDownloadedTrcks(
+    DatabaseHelper dbHelper) async {
+  Database db = await dbHelper.database;
+  return await db
+      .rawQuery('SELECT * FROM downloaded_tracks ORDER BY title ASC');
+}
+
+Future<int> queryAllDownloadedTrcksLength(DatabaseHelper dbHelper) async {
+  Database db = await dbHelper.database;
+  final result = await db.rawQuery('SELECT COUNT(*) FROM downloaded_tracks');
+  return Sqflite.firstIntValue(result) ?? 0;
+}
+
+Future<bool> downloadedTrckAlreadyExists(
+    DatabaseHelper dbHelper, String stid) async {
+  Database db = await dbHelper.database;
+
+  // Query the downloaded_tracks table to check for the given stid
+  final List<Map<String, dynamic>> result = await db.query(
+    'downloaded_tracks',
+    columns: ['stid'], // Only need the stid column for the check
+    where: 'stid = ?',
+    whereArgs: [stid],
+  );
+
+  // If result is not empty, the track exists
+  return result.isNotEmpty;
+}
+
+Future<List<String>> queryMssingStids(
+    List<String> stids, DatabaseHelper dbHelper) async {
+  String placeholders = List.generate(stids.length, (_) => '?').join(', ');
+
+  Database db = await dbHelper.database;
+
+  List<Map<String, dynamic>> results = await db.rawQuery(
+    "SELECT stid FROM downloaded_tracks WHERE stid IN ($placeholders)",
+    stids,
+  );
+
+  List<String> exsitingStids =
+      results.map((row) => row['stid'] as String).toList();
+
+  List<String> missingStids =
+      stids.where((stid) => !exsitingStids.contains(stid)).toList();
+
+  return missingStids;
+}
 
 // Track
 Future<void> removeDownloadedTrck(

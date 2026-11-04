@@ -1,10 +1,10 @@
-import 'dart:ui';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/audio/audio_service_handler.dart';
 import 'package:pongo/core/constants/app_constants.dart';
@@ -105,9 +105,7 @@ class LocalsPhone extends StatelessWidget {
                                 ),
                                 flexibleSpace: ClipRRect(
                                   child: BackdropFilter(
-                                    filter: ImageFilter.blur(
-                                        sigmaX: useBlur.value ? 10 : 0,
-                                        sigmaY: useBlur.value ? 10 : 0),
+                                    filter: appBlur(10),
                                     child: FlexibleSpaceBar(
                                       centerTitle: true,
                                       title: Text(
@@ -150,9 +148,7 @@ class LocalsPhone extends StatelessWidget {
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(60),
                                         child: BackdropFilter(
-                                          filter: ImageFilter.blur(
-                                              sigmaX: useBlur.value ? 10 : 0,
-                                              sigmaY: useBlur.value ? 10 : 0),
+                                          filter: appBlur(10),
                                           child: PlayShuffleHaltLocals(
                                             missingTracks: const [],
                                             loadingShuffle: false,

@@ -1,14 +1,13 @@
-import 'dart:ui';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/audio/audio_service_handler.dart';
 import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/state/globals.dart';
 import 'package:pongo/features/player/presentation/phone/queue/queue_tile.dart';
 import 'package:pongo/shared/widgets/phone/trailing.dart';
 import 'package:pongo/shared/widgets/space.dart';
@@ -79,9 +78,7 @@ class QueueBodyMacos extends StatelessWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: BackdropFilter(
-                                  filter: ImageFilter.blur(
-                                      sigmaX: useBlur.value ? 10 : 0,
-                                      sigmaY: useBlur.value ? 10 : 0),
+                                  filter: appBlur(10),
                                   child: child,
                                 ),
                               ),

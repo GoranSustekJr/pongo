@@ -1,9 +1,9 @@
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:pongo/shared/widgets/app_blur.dart';
 import 'package:pongo/app/navigation/navigation.dart';
 import 'package:pongo/app/theme/colors.dart';
 import 'package:pongo/core/constants/app_constants.dart';
@@ -74,10 +74,7 @@ class _AboutPhoneState extends State<AboutPhone> with WidgetsBindingObserver {
               ),
               flexibleSpace: ClipRRect(
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: useBlur.value ? 10 : 0,
-                    sigmaY: useBlur.value ? 10 : 0,
-                  ),
+                  filter: appBlur(10),
                   child: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Text(
