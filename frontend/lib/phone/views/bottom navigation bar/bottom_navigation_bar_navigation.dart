@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
 import '../../../exports.dart';
 
 class BottomNavBar extends StatelessWidget {

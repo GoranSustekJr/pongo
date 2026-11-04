@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
-import 'package:pongo/shared/constants/app_constants.dart';
 import 'package:pongo/shared/constants/platform.dart';
 import 'package:pongo/shared/storage/storage.dart';
-
-import '../../theme/colors.dart';
 
 Widget liquidGlassLayer({
   Widget child = const SizedBox(),

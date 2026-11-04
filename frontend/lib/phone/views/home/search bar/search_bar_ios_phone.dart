@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:pongo/exports.dart';
 import 'package:pongo/phone/widgets/special/liquid_glass_background.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:pongo/phone/widgets/special/liquid_glass_render.dart';
 
 class SearchBarIOSPhone extends StatefulWidget {
