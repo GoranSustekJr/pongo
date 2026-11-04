@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_slider/interactive_slider.dart';
@@ -76,8 +75,7 @@ class SleepAlarmPhone extends StatelessWidget {
                                     (MediaQuery.of(context).size.height / 3),
                             child: liquidGlassBackground(
                               child: BackdropFilter(
-                                  filter: nonAppleBlur(10),
-                                  child: Container()),
+                                  filter: nonAppleBlur(10), child: Container()),
                             ),
                           ),
                           FlexibleSpaceBar(

@@ -26,7 +26,7 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItemsApple(
   return [
     PullDownMenuItem(
       onTap: () async {
-        await Download().single(track);
+        await DownloadApi().single(track);
       },
       title: AppLocalizations.of(context).download,
       icon: AppIcons.download,
@@ -346,7 +346,7 @@ List<Widget> searchTrackPulldownMenuItemsAndroid(
           ),
         ),
         () async {
-          await Download().single(track);
+          await DownloadApi().single(track);
           StarMenuOverlay.dispose();
         },
       ),

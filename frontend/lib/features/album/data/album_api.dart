@@ -1,6 +1,6 @@
 import 'package:pongo/core/network/api_client.dart';
 
-class AlbumSpotify {
+class AlbumApi {
   // Initialize the API
 
   Future<Map> getData(context, String salid) async {

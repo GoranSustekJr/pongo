@@ -304,7 +304,7 @@ class SearchingBodyMacos extends StatelessWidget {
                                     );
 
                                     if (useMix.value) {
-                                      Mix().getMix(context, tracks[index]);
+                                      MixApi().getMix(context, tracks[index]);
                                     }
                                   },
                                 );

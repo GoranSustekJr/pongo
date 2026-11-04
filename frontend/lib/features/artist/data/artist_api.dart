@@ -1,7 +1,7 @@
 import 'package:pongo/core/network/api_client.dart';
 import 'package:pongo/core/storage/secure_storage.dart';
 
-class ArtistSpotify {
+class ArtistApi {
   // Initialize the API
 
   Future<Map> get(context, String said) async {

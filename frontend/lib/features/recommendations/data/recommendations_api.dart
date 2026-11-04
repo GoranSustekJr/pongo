@@ -2,7 +2,7 @@ import 'package:pongo/core/network/api_client.dart';
 import 'package:pongo/core/storage/database/database_helper.dart';
 import 'package:pongo/core/storage/secure_storage.dart';
 
-class Recommendations {
+class RecommendationsApi {
   Future<Map> get(context) async {
     return const ApiClient().postBuilt(context, "get_recommendations",
         () async {

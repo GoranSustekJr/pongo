@@ -90,7 +90,8 @@ ValueNotifier<PlaylistHandler?> playlistHandler = ValueNotifier(null);
 ValueNotifier<BuildContext?> notificationsContext = ValueNotifier(null);
 
 // Search data manager
-ValueNotifier<SearchDataManager?> searchDataManagr = ValueNotifier(null);
+ValueNotifier<SearchDataManager?> currentSearchDataManager =
+    ValueNotifier(null);
 
 // Cache images
 ValueNotifier<bool> cacheImages = ValueNotifier(false);

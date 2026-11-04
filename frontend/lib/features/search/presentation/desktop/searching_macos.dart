@@ -22,7 +22,7 @@ class _SearchingMacosState extends State<SearchingMacos> {
   void initState() {
     super.initState();
     searchDataManager = SearchDataManager(context);
-    searchDataManagr.value = searchDataManager;
+    currentSearchDataManager.value = searchDataManager;
   }
 
   // Listen For Query Parameter Change

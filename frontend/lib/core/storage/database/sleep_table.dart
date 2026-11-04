@@ -5,8 +5,6 @@ import 'package:pongo/features/sleep_alarm/models/sleep_alarm.dart';
 
 // Insert sleep alarm
 
-
-
 Future<int> insertSleepAlrm(
     DatabaseHelper dbHelper, SleepAlarm sleepAlarm) async {
   // init db
@@ -32,8 +30,6 @@ Future<int> insertSleepAlrm(
 }
 
 // Artists
-
-
 
 Future<List<SleepAlarm>> querySleepAlrms(DatabaseHelper dbHelper) async {
   Database db = await dbHelper.database;

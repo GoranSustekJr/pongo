@@ -9,7 +9,7 @@ import 'package:pongo/core/storage/secure_storage.dart';
 import 'package:pongo/features/auth/data/sign_in_handler.dart';
 import 'package:pongo/features/auth/models/access_token.dart';
 
-class AccessTokenhandler {
+class AccessTokenHandler {
   Future<void> updateSystemWide(context, accessToken) async {
     await Storage().writeAccessToken(accessToken);
     final accessTokenProvided =

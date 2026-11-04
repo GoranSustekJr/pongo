@@ -1,7 +1,7 @@
 import 'package:pongo/core/network/api_client.dart';
 import 'package:pongo/features/auth/data/sign_in_handler.dart';
 
-class DeleteAccount {
+class DeleteAccountApi {
   // Initialize the API
 
   Future delete(context) async {

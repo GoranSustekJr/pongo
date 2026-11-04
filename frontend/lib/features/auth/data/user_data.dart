@@ -30,7 +30,7 @@ class UserData {
         return data;
       } else if (response.statusCode == 401) {
         if (tries < 2) {
-          await AccessTokenhandler().renew(context);
+          await AccessTokenHandler().renew(context);
         } else {
           break; // Exit the loop after the second attempt
         }

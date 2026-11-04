@@ -185,7 +185,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
   getTrackData() async {
     if (stids.isNotEmpty) {
       // Get the tracks data
-      final trackThatExist = await Tracks().getDurations(context, stids);
+      final trackThatExist = await TracksApi().getDurations(context, stids);
 
       setState(() {
         existingTracks = {

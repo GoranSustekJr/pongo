@@ -1,4 +1,3 @@
-
 import 'package:blurhash_ffi/blurhash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
@@ -78,7 +77,7 @@ class _ArtistPhoneState extends State<ArtistPhone> {
   }
 
   void initArtist() async {
-    final data = await ArtistSpotify().get(context, widget.artist.id);
+    final data = await ArtistApi().get(context, widget.artist.id);
 
     final blurHash = widget.artist.image != ""
         ? await BlurhashFFI.encode(

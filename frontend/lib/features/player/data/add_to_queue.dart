@@ -12,7 +12,7 @@ import 'package:pongo/l10n/app_localizations.dart';
 import 'package:pongo/shared/models/catalog/track.dart';
 
 class AddToQueue {
-  // Add type spotify track
+  // Add a catalog track
 
   // Add type track
   Future<void> addTypeTrackLast(
@@ -25,10 +25,10 @@ class AddToQueue {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
-    final duration = await TrackMetadata().getDuration(context, track.id);
+    final duration = await TrackMetadataApi().getDuration(context, track.id);
 
     if (duration["duration"] == null) {
-      TrackMetadata().checkTrackExists(
+      TrackMetadataApi().checkTrackExists(
         context,
         track.id,
         doesNotExist,
@@ -98,10 +98,10 @@ class AddToQueue {
     final audioServiceHandler =
         Provider.of<AudioHandler>(context, listen: false)
             as AudioServiceHandler;
-    final duration = await TrackMetadata().getDuration(context, track.id);
+    final duration = await TrackMetadataApi().getDuration(context, track.id);
 
     if (duration["duration"] == null) {
-      TrackMetadata().checkTrackExists(
+      TrackMetadataApi().checkTrackExists(
         context,
         track.id,
         doesNotExist,

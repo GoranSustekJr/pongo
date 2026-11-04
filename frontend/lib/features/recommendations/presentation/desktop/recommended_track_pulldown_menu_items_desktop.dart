@@ -22,7 +22,7 @@ Menu recommendedTrackPulldownMenuItemsDesktop(
       MenuItem(
           label: AppLocalizations.of(context).download,
           onClick: (menuItem) async {
-            await Download().single(track);
+            await DownloadApi().single(track);
           }),
       MenuItem.separator(),
       MenuItem(

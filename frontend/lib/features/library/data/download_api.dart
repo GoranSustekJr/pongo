@@ -21,7 +21,7 @@ import 'package:pongo/features/player/data/track_metadata_api.dart';
 import 'package:pongo/l10n/app_localizations.dart';
 import 'package:pongo/shared/models/catalog/track.dart';
 
-class Download {
+class DownloadApi {
   Future<void> singleWithoutAPI(String stid, Uint8List audio, double duration,
       String? imageUrl, String name, List<Map<String, dynamic>> artists) async {
     bool exists = await DatabaseHelper().downloadedTrackAlreadyExists(stid);
@@ -87,7 +87,7 @@ class Download {
       bool exists = await DatabaseHelper().downloadedTrackAlreadyExists(id);
 
       if (!exists) {
-        await TrackMetadata().checkTrackExists(
+        await TrackMetadataApi().checkTrackExists(
           // Check if exists and then get the duration
           mainContext.value!,
           id,
@@ -166,7 +166,7 @@ class Download {
                     break;
                   } else {
                     if (tries < 2) {
-                      await AccessTokenhandler().renew(mainContext.value)!;
+                      await AccessTokenHandler().renew(mainContext.value)!;
                     } else {
                       break; // Exit the loop after the second attempt
                     }

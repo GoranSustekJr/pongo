@@ -75,12 +75,12 @@ class OAuth2 {
           if (accessToken != null && refreshToken != null) {
             SignInHandler().updateSystemWide(true);
 
-            AccessTokenhandler().updateSystemWide(context, accessToken);
+            AccessTokenHandler().updateSystemWide(context, accessToken);
 
-            RefreshTokenhandler().updateSystemWide(context, refreshToken);
+            RefreshTokenHandler().updateSystemWide(context, refreshToken);
           } else if (response.statusCode == 401) {
             // Auth failed
-            AccessTokenhandler().renew(context);
+            AccessTokenHandler().renew(context);
           }
         }
       }
@@ -125,17 +125,17 @@ class OAuth2 {
       final data = jsonDecode(response.body);
       final accessToken = data["at+JWT"];
       final refreshToken = data["rt+JWT"];
-          streamToken = data["st"] ?? "";
-          await Storage().writeStreamToken(streamToken);
+      streamToken = data["st"] ?? "";
+      await Storage().writeStreamToken(streamToken);
       if (accessToken != null && refreshToken != null) {
         SignInHandler().updateSystemWide(true);
 
-        await AccessTokenhandler().updateSystemWide(context, accessToken);
+        await AccessTokenHandler().updateSystemWide(context, accessToken);
 
-        await RefreshTokenhandler().updateSystemWide(context, refreshToken);
+        await RefreshTokenHandler().updateSystemWide(context, refreshToken);
       } else if (response.statusCode == 401) {
         // Auth failed
-        AccessTokenhandler().renew(context);
+        AccessTokenHandler().renew(context);
       }
     }
   }
@@ -187,18 +187,18 @@ class OAuth2 {
         final data = jsonDecode(response.body);
         final accessToken = data["at+JWT"];
         final refreshToken = data["rt+JWT"];
-          streamToken = data["st"] ?? "";
-          await Storage().writeStreamToken(streamToken);
+        streamToken = data["st"] ?? "";
+        await Storage().writeStreamToken(streamToken);
         if (accessToken != null && refreshToken != null) {
           SignInHandler().updateSystemWide(true);
 
-          AccessTokenhandler().updateSystemWide(context, accessToken);
+          AccessTokenHandler().updateSystemWide(context, accessToken);
 
-          RefreshTokenhandler().updateSystemWide(context, refreshToken);
+          RefreshTokenHandler().updateSystemWide(context, refreshToken);
         }
       } else if (response.statusCode == 401) {
         // Auth failed
-        AccessTokenhandler().renew(context);
+        AccessTokenHandler().renew(context);
       } else {
         //  print(response.statusCode);
         //  print(response.reasonPhrase);

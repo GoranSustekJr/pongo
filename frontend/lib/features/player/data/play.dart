@@ -92,7 +92,7 @@ class PlayMultiple {
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // Add tracks with the check if they exist
-        QueueAddMultiple().add(
+        QueueAddMultipleApi().add(
             audioServiceHandler,
             baseId,
             tracks,

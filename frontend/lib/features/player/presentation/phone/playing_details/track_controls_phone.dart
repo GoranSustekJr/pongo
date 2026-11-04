@@ -205,7 +205,8 @@ class TrackControlsPhone extends StatelessWidget {
                                         : null,
                                   ),
                                   downloadTrack: () async {
-                                    await Download().single(currentMediaItem);
+                                    await DownloadApi()
+                                        .single(currentMediaItem);
                                   },
                                   changeLyricsOn: changeLyricsOn,
                                   changeShowQueue: changeShowQueue,

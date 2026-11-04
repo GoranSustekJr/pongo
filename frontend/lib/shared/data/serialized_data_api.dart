@@ -1,6 +1,6 @@
 import 'package:pongo/core/network/api_client.dart';
 
-class SearializedData {
+class SerializedDataApi {
   Future<Map> tracks(context, List<String> stids) async {
     return const ApiClient().post(context, "get_serialized_tracks", {
       "stids": stids,

@@ -12,7 +12,7 @@ appleLocalePopup(String locale, Function(String) function) {
       PullDownMenuItem(
         title: 'English',
         onTap: () {
-          MyAppPhone.setLocale(context, const Locale('en'));
+          PhoneApp.setLocale(context, const Locale('en'));
           Storage().writeLocale("en");
           function("en");
         },
@@ -21,7 +21,7 @@ appleLocalePopup(String locale, Function(String) function) {
       PullDownMenuItem(
         title: 'Deutsch',
         onTap: () {
-          MyAppPhone.setLocale(context, const Locale('de'));
+          PhoneApp.setLocale(context, const Locale('de'));
           Storage().writeLocale("de");
           function("de");
         },
@@ -30,7 +30,7 @@ appleLocalePopup(String locale, Function(String) function) {
       PullDownMenuItem(
         title: 'Hrvatski',
         onTap: () {
-          MyAppPhone.setLocale(context, const Locale('hr'));
+          PhoneApp.setLocale(context, const Locale('hr'));
           Storage().writeLocale("hr");
           function("hr");
         },

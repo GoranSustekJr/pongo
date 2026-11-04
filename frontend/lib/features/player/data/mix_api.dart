@@ -11,7 +11,7 @@ import 'package:pongo/features/auth/models/access_token.dart';
 import 'package:pongo/shared/models/catalog/track.dart';
 import 'package:pongo/shared/models/media_item.dart';
 
-class Mix {
+class MixApi {
   // Get mix endpoints
   getMix(context, Track track) async {
     // Init the audioServiceHandler

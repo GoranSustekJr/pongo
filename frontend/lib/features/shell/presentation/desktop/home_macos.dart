@@ -415,7 +415,7 @@ class _HomeStateMacos extends State<MainMacos> {
                               ),
                             ],
                             onChanged: (value) async {
-                              MyAppDesktop.setLocale(context, Locale(value!));
+                              DesktopApp.setLocale(context, Locale(value!));
                               Storage().writeLocale(value);
                               setState(() {
                                 locale = value;

@@ -341,7 +341,7 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                                         .downloadhasstarted,
                                     AppIcons.download);
 
-                                final downloaded = await Download().playlist(
+                                final downloaded = await DownloadApi().playlist(
                                     context, widget.playlistHandler.toDownload);
 
                                 if (downloaded.isNotEmpty) {
@@ -350,7 +350,7 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                                         .playlistHandler.track!
                                         .where((track) => track.id == stid)
                                         .first;
-                                    await Download().singleWithoutAPI(
+                                    await DownloadApi().singleWithoutAPI(
                                       stid,
                                       base64Decode(downloaded[stid][1]),
                                       downloaded[stid][0],
@@ -419,7 +419,7 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                   }
                 },
                 titleController: titleController,
-                addTracksToPlalists: () async {
+                addTracksToPlaylists: () async {
                   if (!working && selectedPlaylists.isNotEmpty) {
                     setState(() {
                       working = true;
@@ -487,7 +487,7 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                               AppLocalizations.of(context).downloadhasstarted,
                               AppIcons.download);
 
-                          final downloaded = await Download().playlist(
+                          final downloaded = await DownloadApi().playlist(
                               context, widget.playlistHandler.toDownload);
 
                           if (downloaded.isNotEmpty) {
@@ -496,7 +496,7 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
                                   .playlistHandler.track!
                                   .where((track) => track.id == stid)
                                   .first;
-                              await Download().singleWithoutAPI(
+                              await DownloadApi().singleWithoutAPI(
                                 stid,
                                 base64Decode(downloaded[stid][1]),
                                 downloaded[stid][0],

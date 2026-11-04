@@ -155,15 +155,15 @@ class RecommendationsCategories extends StatelessWidget {
                     ? CupertinoButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (searchDataManagr.value != null) {
+                          if (currentSearchDataManager.value != null) {
                             if (kIsMobile) {
-                              searchDataManagr.value!.search(
+                              currentSearchDataManager.value!.search(
                                 dataManager.categories[index].name,
                               );
                               navigationBarIndex.value = 0;
                               searchBarIsSearching.value = true;
                             } else {
-                              searchDataManagr.value!.search(
+                              currentSearchDataManager.value!.search(
                                 dataManager.categories[index].name,
                               );
                               navigationBarIndex.value = 0;
@@ -176,8 +176,8 @@ class RecommendationsCategories extends StatelessWidget {
                     : CupertinoButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (searchDataManagr.value != null) {
-                            searchDataManagr.value!.search(
+                          if (currentSearchDataManager.value != null) {
+                            currentSearchDataManager.value!.search(
                               dataManager.categories[index].name,
                             );
                             navigationBarIndex.value = 0;

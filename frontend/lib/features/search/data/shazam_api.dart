@@ -10,7 +10,7 @@ import 'package:pongo/features/auth/data/access_token_handler.dart';
 import 'package:pongo/features/auth/models/access_token.dart';
 import 'package:pongo/l10n/app_localizations.dart';
 
-class Shazam {
+class ShazamApi {
   Future<void> shazamIt(context, String stid) async {
     int tries = 0;
     try {
@@ -46,7 +46,7 @@ class Shazam {
             break;
           } else {
             if (tries < 2) {
-              await AccessTokenhandler().renew(context);
+              await AccessTokenHandler().renew(context);
             } else {
               break; // Exit the loop after the second attempt
             }

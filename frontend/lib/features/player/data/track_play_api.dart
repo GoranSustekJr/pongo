@@ -22,7 +22,7 @@ class TrackPlay {
     // Use a Completer to ensure the function completes only when all async operations are done
     final completer = Completer<void>();
 
-    await TrackMetadata().checkTrackExists(
+    await TrackMetadataApi().checkTrackExists(
       context,
       track.id,
       addLoading,

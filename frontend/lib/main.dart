@@ -1,6 +1,5 @@
 // ignore_for_file: depend_on_referenced_packages
 
-
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
@@ -178,7 +177,7 @@ void main() async {
         child: ValueListenableBuilder(
           valueListenable: darkMode,
           builder: (context, _, __) {
-            return kIsMobile ? const MyAppPhone() : const MyAppDesktop();
+            return kIsMobile ? const PhoneApp() : const DesktopApp();
           },
         ),
       ),

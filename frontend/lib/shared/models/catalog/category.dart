@@ -1,10 +1,9 @@
-
 class SpCategory {
   final String id;
   final String name;
   final List<SpCategoryIcon> categoryIcons;
 
-  // Creata a spotify category from a Map
+  // Create a category from a Map
   factory SpCategory.fromMap(Map<String, dynamic> map) {
     return SpCategory(
       id: map["id"],

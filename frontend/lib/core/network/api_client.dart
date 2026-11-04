@@ -70,7 +70,7 @@ class ApiClient {
         Notifications().showDisabledNotification(notificationsContext.value!);
         return null;
       }
-      if (attempt < 2) await AccessTokenhandler().renew(context);
+      if (attempt < 2) await AccessTokenHandler().renew(context);
     }
     return null;
   }

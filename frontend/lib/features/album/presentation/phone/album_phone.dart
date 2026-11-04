@@ -1,4 +1,3 @@
-
 import 'package:blurhash_ffi/blurhash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
@@ -76,7 +75,7 @@ class _AlbumPhoneState extends State<AlbumPhone> {
 
   void getTracks() async {
     // Get the album tracks, missing tracks and durations
-    final data = await AlbumSpotify().getTracks(context, widget.album.id);
+    final data = await AlbumApi().getTracks(context, widget.album.id);
 
     // Get the blurhash from the cover image
     final blurHash = widget.album.image != ""

@@ -38,7 +38,7 @@ List<MacosPulldownMenuEntry> searchTrackPulldownMenuItemsMacos(
             ],
           )),
       onTap: () async {
-        await Download().single(track);
+        await DownloadApi().single(track);
       },
     ),
     const MacosPulldownMenuDivider(),

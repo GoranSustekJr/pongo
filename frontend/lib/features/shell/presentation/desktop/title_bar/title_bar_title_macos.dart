@@ -106,7 +106,7 @@ class TitleBarTitleMacos extends StatelessWidget {
                           return CupertinoButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
-                              Map artistData = await ArtistSpotify()
+                              Map artistData = await ArtistApi()
                                   .getImage(context, artist["id"]);
                               showMacosSheet(
                                 context: context,

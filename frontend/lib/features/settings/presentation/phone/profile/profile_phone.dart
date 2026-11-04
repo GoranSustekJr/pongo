@@ -182,7 +182,7 @@ class _ProfilePhoneState extends State<ProfilePhone>
                               () async {
                                 final ok = await deleteAccountAlert(context);
                                 if (ok == CustomButton.positiveButton) {
-                                  await DeleteAccount().delete(context);
+                                  await DeleteAccountApi().delete(context);
                                 }
                               },
                             ),

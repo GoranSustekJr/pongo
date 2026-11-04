@@ -15,11 +15,11 @@ import 'package:pongo/l10n/app_localizations.dart';
 import 'package:pongo/l10n/l10n.dart';
 import 'package:pongo/shared/widgets/blurhash/background.dart';
 
-class MyAppPhone extends StatefulWidget {
-  const MyAppPhone({super.key});
+class PhoneApp extends StatefulWidget {
+  const PhoneApp({super.key});
 
   @override
-  State<MyAppPhone> createState() => _MyAppPhoneState();
+  State<PhoneApp> createState() => _MyAppPhoneState();
   static void setLocale(BuildContext context, Locale newLocale) {
     _MyAppPhoneState? state =
         context.findAncestorStateOfType<_MyAppPhoneState>();
@@ -27,7 +27,7 @@ class MyAppPhone extends StatefulWidget {
   }
 }
 
-class _MyAppPhoneState extends State<MyAppPhone> with WidgetsBindingObserver {
+class _MyAppPhoneState extends State<PhoneApp> with WidgetsBindingObserver {
   // Locale
   Locale? locale;
 

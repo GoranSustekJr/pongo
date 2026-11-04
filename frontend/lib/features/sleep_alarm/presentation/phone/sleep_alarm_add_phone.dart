@@ -340,7 +340,6 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
   }
 }
 
-
 /*
   "donotterminatetheapp": "Do NOT terminate the app",
   "cannotstartalarm": "Can't start the alarm",

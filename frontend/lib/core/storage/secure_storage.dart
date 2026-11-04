@@ -17,7 +17,6 @@ class Storage {
   static String singedInKey = "SIGNEDIN";
   static String accessTokenKey = "ACCESSTOKENKEY";
   static String refreshTokenKey = "REFRESHTOKENKEY";
-  static String spotifyAPIKey = "SPOTIFYAPIKEY";
   static String oauth2APIKey = "OAUTH2APIKEY";
   static String oauth2APIClientIDKey = "OAUTH2APICLIENTIDKEY";
   static String localeKey = "LOCALEKEY";
@@ -100,20 +99,6 @@ class Storage {
 
   Future<String?> getRefreshToken() async {
     String? key = await storage.read(key: refreshTokenKey);
-    if (key == null) {
-      return null;
-    } else {
-      return key;
-    }
-  }
-
-  // Spotify API Key
-  Future<void> writeSpotifyAPIKey(String spotifyAPI) async {
-    await storage.write(key: spotifyAPIKey, value: spotifyAPI);
-  }
-
-  Future<String?> getSpotifyAPIKey() async {
-    String? key = await storage.read(key: spotifyAPIKey);
     if (key == null) {
       return null;
     } else {

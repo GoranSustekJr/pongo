@@ -49,7 +49,7 @@ class RecommendationsDataManager with ChangeNotifier {
     categoriesEnabled = getCatgories;
 
     if (historyEnabled || categoriesEnabled) {
-      final data = await Recommendations().get(context);
+      final data = await RecommendationsApi().get(context);
 
       if (data.isNotEmpty) {
         // Set the history

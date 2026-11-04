@@ -160,11 +160,11 @@ class Notifications {
         context: context,
         duration: const Duration(seconds: 10),
         onTap: () {
-          if (searchDataManagr.value != null) {
+          if (currentSearchDataManager.value != null) {
             currentTrackHeight.value = 0; // Close the details screen if up
             navigationBarIndex.value = 0; // Send to search screen
             // Search the name and song
-            searchDataManagr.value!.search(
+            currentSearchDataManager.value!.search(
               "$title - $subtitle",
             );
             searchBarIsSearching.value = true; // Focus
@@ -252,11 +252,11 @@ class Notifications {
         duration: const Duration(seconds: 10),
         onTap: () {
           if (!fullscreenPlaying.value) {
-            if (searchDataManagr.value != null) {
+            if (currentSearchDataManager.value != null) {
               currentTrackHeight.value = 0; // Close the details screen if up
               navigationBarIndex.value = 0; // Send to search screen
               // Search the name and song
-              searchDataManagr.value!.search(
+              currentSearchDataManager.value!.search(
                 "$title - $subtitle",
               );
               searchBarIsSearching.value = true; // Focus

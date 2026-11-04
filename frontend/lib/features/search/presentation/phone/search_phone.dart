@@ -22,7 +22,7 @@ class _SearchPhoneState extends State<SearchPhone> {
   void initState() {
     super.initState();
     searchDataManager = SearchDataManager(context);
-    searchDataManagr.value = searchDataManager;
+    currentSearchDataManager.value = searchDataManager;
   }
 
   // Listen For Query Parameter Change

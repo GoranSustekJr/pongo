@@ -16,7 +16,7 @@ import 'package:pongo/features/artist/presentation/phone/artist_phone.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/lyrics_desktop.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/play_control_desktop.dart';
 import 'package:pongo/features/player/presentation/desktop/lyrics/track_progress_desktop.dart';
-import 'package:pongo/features/search/data/shazam_api.dart' show Shazam;
+import 'package:pongo/features/search/data/shazam_api.dart' show ShazamApi;
 import 'package:pongo/l10n/app_localizations.dart';
 import 'package:pongo/shared/models/catalog/album.dart';
 import 'package:pongo/shared/models/catalog/artist.dart';
@@ -131,9 +131,8 @@ class LyricsBodyMacos extends StatelessWidget {
                                               padding: EdgeInsets.zero,
                                               onPressed: () async {
                                                 Map artistData =
-                                                    await ArtistSpotify()
-                                                        .getImage(context,
-                                                            artist["id"]);
+                                                    await ArtistApi().getImage(
+                                                        context, artist["id"]);
                                                 showMacosSheet(
                                                   context: context,
                                                   builder: (_) => ArtistPhone(
@@ -221,7 +220,8 @@ class LyricsBodyMacos extends StatelessWidget {
                                             padding: EdgeInsets.zero,
                                             onPressed: () async {
                                               if (!shazaming) {
-                                                await Shazam().shazamIt(context,
+                                                await ShazamApi().shazamIt(
+                                                    context,
                                                     mediaItem.id.split('.')[2]);
                                               }
                                             },
@@ -269,7 +269,7 @@ class LyricsBodyMacos extends StatelessWidget {
                     duration: mediaItem.duration,
                     showAlbum: (_) async {
                       if (mediaItem.album != null) {
-                        Map album = await AlbumSpotify().getData(
+                        Map album = await AlbumApi().getData(
                             context, mediaItem.album!.split("..Ææ..")[0]);
 
                         showMacosSheet(

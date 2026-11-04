@@ -23,7 +23,7 @@ List<Widget> recommendedTrackCupertinoContextMenuActions(
       ? [
           CupertinoContextMenuAction(
             onPressed: () async {
-              await Download().single(track);
+              await DownloadApi().single(track);
               Navigator.of(context, rootNavigator: true).pop();
             },
             trailingIcon: AppIcons.download,

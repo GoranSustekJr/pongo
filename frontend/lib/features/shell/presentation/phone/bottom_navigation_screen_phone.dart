@@ -126,7 +126,7 @@ class _BottomNavigationScreenPhoneState
                             showArtist: (aid) async {
                               currentTrackHeight.value = 0;
                               navigationBarIndex.value = 0;
-                              Map artist = await ArtistSpotify()
+                              Map artist = await ArtistApi()
                                   .getImage(context, jsonDecode(aid)["id"]);
 
                               Navigations().nextScreen(
@@ -152,7 +152,7 @@ class _BottomNavigationScreenPhoneState
                               currentTrackHeight.value = 0;
                               navigationBarIndex.value = 0;
                               Map album =
-                                  await AlbumSpotify().getData(context, salid);
+                                  await AlbumApi().getData(context, salid);
                               Navigations().nextScreen(
                                 searchScreenContext.value,
                                 AlbumPhone(

@@ -208,7 +208,7 @@ class FullScreenBodyMacos extends StatelessWidget {
                           padding: EdgeInsets.zero,
                           onPressed: () async {
                             if (!shazaming) {
-                              await Shazam().shazamIt(
+                              await ShazamApi().shazamIt(
                                   context, mediaItem.id.split('.')[2]);
                             }
                           },

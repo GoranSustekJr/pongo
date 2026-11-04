@@ -97,7 +97,7 @@ class FavouritesDataManager with ChangeNotifier {
         .toList();
 
     if (lengthOfFavourites > 0) {
-      final trackThatExist = await Tracks().getDurations(
+      final trackThatExist = await TracksApi().getDurations(
           context, favourites.map((favourite) => favourite.id).toList());
 
       // Add tracks to favourites list and update
@@ -211,7 +211,7 @@ class FavouritesDataManager with ChangeNotifier {
             );
           });
         } else {
-          final data = await Tracks().getDurations(context, missingTracks);
+          final data = await TracksApi().getDurations(context, missingTracks);
 
           if (data["durations"] != null) {
             existingTracks.addAll({
@@ -276,7 +276,7 @@ class FavouritesDataManager with ChangeNotifier {
       loadingShuffle = true;
 
       // Set global id of the playlist
-      final data = await Tracks().getDurations(context, missingTracks);
+      final data = await TracksApi().getDurations(context, missingTracks);
       if (data["durations"] != null) {
         existingTracks.addAll({
           for (var item in data["durations"])

@@ -27,7 +27,7 @@ class PlaylistHandlerBodyPhone extends StatefulWidget {
   final dynamic newPlaylistCover;
   final List<int> selectedPlaylists;
   final Function() createPlaylistFunction;
-  final Function() addTracksToPlalists;
+  final Function() addTracksToPlaylists;
   final Function() changeCreatePlaylist;
   final Function(int) selectPlaylist;
   final Function() pickImage;
@@ -39,7 +39,7 @@ class PlaylistHandlerBodyPhone extends StatefulWidget {
     required this.onlyCreatePlaylist,
     required this.currentPlaylistsCoverImages,
     required this.createPlaylistFunction,
-    required this.addTracksToPlalists,
+    required this.addTracksToPlaylists,
     required this.changeCreatePlaylist,
     required this.currentPlaylists,
     required this.playlistTrackMap,
@@ -160,7 +160,7 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
                           child: iconButton(
                             CupertinoIcons.plus,
                             Colors.white,
-                            widget.addTracksToPlalists,
+                            widget.addTracksToPlaylists,
                             edgeInsets: EdgeInsets.zero,
                           ),
                         ),

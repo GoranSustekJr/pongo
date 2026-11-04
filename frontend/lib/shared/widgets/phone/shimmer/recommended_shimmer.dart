@@ -173,8 +173,6 @@ class RecommendedShimmer extends StatelessWidget {
   }
 }
 
-
-
 /* class RecommendedShimmer extends StatelessWidget {
   final bool forYou;
   final bool pongo;

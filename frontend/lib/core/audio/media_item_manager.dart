@@ -126,7 +126,7 @@ class MediaItemManager with ChangeNotifier {
         connected = internetConnectivityHandler.isConnected;
       }
       if (enableLyrics.value && connected) {
-        final lyrics = await TrackMetadata().getLyrics(
+        final lyrics = await TrackMetadataApi().getLyrics(
           context,
           mediaItem.title,
           mediaItem.artist ?? "",

@@ -101,7 +101,7 @@ class _PlaylistPhoneState extends State<PlaylistPhone> {
 
   void getTracks() async {
     // Get the album tracks, missing tracks and durations
-    final data = await PlaylistSpotify().get(context, widget.playlist.id);
+    final data = await PlaylistTracksApi().get(context, widget.playlist.id);
 
     // Get the blurhash from the cover image
     final blurHash = widget.playlist.image != ""

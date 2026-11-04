@@ -12,8 +12,8 @@ class SignInHandler {
   signOut(context) async {
     updateSystemWide(false);
 
-    AccessTokenhandler().updateSystemWide(context, null);
+    AccessTokenHandler().updateSystemWide(context, null);
 
-    RefreshTokenhandler().updateSystemWide(context, null);
+    RefreshTokenHandler().updateSystemWide(context, null);
   }
 }

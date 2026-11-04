@@ -12,7 +12,7 @@ import 'package:pongo/core/utils/calculate_image_resolution.dart';
 import 'package:pongo/features/auth/models/access_token.dart';
 import 'package:pongo/shared/models/catalog/track.dart';
 
-class QueueAddMultiple {
+class QueueAddMultipleApi {
   Future<void> add(
       AudioServiceHandler audioServiceHandler,
       String baseId,

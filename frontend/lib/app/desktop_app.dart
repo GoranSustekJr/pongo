@@ -17,11 +17,11 @@ import 'package:pongo/features/shell/presentation/desktop/home_macos.dart';
 import 'package:pongo/l10n/app_localizations.dart';
 import 'package:pongo/l10n/l10n.dart';
 
-class MyAppDesktop extends StatefulWidget {
-  const MyAppDesktop({super.key});
+class DesktopApp extends StatefulWidget {
+  const DesktopApp({super.key});
 
   @override
-  State<MyAppDesktop> createState() => _MyAppDesktopState();
+  State<DesktopApp> createState() => _MyAppDesktopState();
   static void setLocale(BuildContext context, Locale newLocale) {
     _MyAppDesktopState? state =
         context.findAncestorStateOfType<_MyAppDesktopState>();
@@ -29,8 +29,7 @@ class MyAppDesktop extends StatefulWidget {
   }
 }
 
-class _MyAppDesktopState extends State<MyAppDesktop>
-    with WidgetsBindingObserver {
+class _MyAppDesktopState extends State<DesktopApp> with WidgetsBindingObserver {
   // Locale
   Locale? locale;
 

@@ -1,6 +1,6 @@
 import 'package:pongo/core/network/api_client.dart';
 
-class PlaylistSpotify {
+class PlaylistTracksApi {
   // Initialize the API
 
   Future<Map> get(context, String spid) async {

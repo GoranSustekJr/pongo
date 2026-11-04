@@ -142,7 +142,7 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     onPressed: () async {
                       if (!shazaming) {
-                        await Shazam().shazamIt(context, stid);
+                        await ShazamApi().shazamIt(context, stid);
                       }
                     },
                     child: Image.asset(

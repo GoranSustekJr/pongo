@@ -229,7 +229,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                           widget.loadingAdd,
                           widget.loadingRemove);
                       if (useMix.value) {
-                        Mix().getMix(context, widget.tracks[index]);
+                        MixApi().getMix(context, widget.tracks[index]);
                       }
                     },
                   );

@@ -32,10 +32,10 @@ class SearchDataManager with ChangeNotifier {
 
   SearchDataManager(this.context);
 
-  // Search Spotify Tracks
+  // Search tracks
   Future<void> search(String searchQuery) async {
     query = searchQuery;
-    final result = await SearchSpotify().search(context, query);
+    final result = await SearchApi().search(context, query);
 
     // Updating the data
     // Track

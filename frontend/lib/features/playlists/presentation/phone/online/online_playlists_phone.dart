@@ -1,4 +1,3 @@
-
 import 'package:blurhash_ffi/blurhash.dart';
 import 'package:flutter/material.dart';
 

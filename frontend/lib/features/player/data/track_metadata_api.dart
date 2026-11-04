@@ -13,7 +13,7 @@ import 'package:pongo/features/auth/data/access_token_handler.dart';
 import 'package:pongo/features/auth/models/access_token.dart';
 import 'package:pongo/l10n/app_localizations.dart';
 
-class TrackMetadata {
+class TrackMetadataApi {
   checkTrackExists(context, String stid, Function(String) doesNotExist,
       Function(String) doesNowExist, Function(double) finished) async {
     // Overlay
@@ -54,7 +54,7 @@ class TrackMetadata {
             //  print("Exists: $exists; ${response["exists"] == "false"}");
             doesNotExist(stid);
           } else {
-            await AccessTokenhandler().renew(context);
+            await AccessTokenHandler().renew(context);
             return checkSongExistsNoRenewal(
                 context, stid, doesNotExist, doesNowExist, finished);
           }
