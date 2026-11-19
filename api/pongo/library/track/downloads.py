@@ -12,7 +12,7 @@ from cachetools import TTLCache
 
 from library import config, db, limits
 from library.metadata import deezer
-from library.track import matcher
+from library.track import loudness, matcher
 
 log = logging.getLogger(__name__)
 
@@ -108,17 +108,19 @@ async def _fetch(stid: str) -> float:
     with tempfile.TemporaryDirectory(dir=config.TEMP_DIR) as folder:
         audio = await _download_audio(video_id, Path(folder))
         duration = await _audio_duration(audio)
+        level = await loudness.measure(audio)
         sha256, path, size = await asyncio.to_thread(_store_file, audio)
 
     async with db.pool.connection() as conn:
         # Different catalog tracks can resolve to the same audio
         cursor = await conn.execute(
             """
-            INSERT INTO audio (sha256, path, size_bytes) VALUES (%s, %s, %s)
+            INSERT INTO audio (sha256, path, size_bytes, loudness, loudness_checked)
+            VALUES (%s, %s, %s, %s, true)
             ON CONFLICT (sha256) DO UPDATE SET path = EXCLUDED.path
             RETURNING auid
             """,
-            (sha256, path, size),
+            (sha256, path, size, level),
         )
         auid = (await cursor.fetchone())[0]
         await conn.execute(

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:clock/clock.dart';
@@ -54,6 +55,7 @@ class PongoAudioHandler extends BaseAudioHandler {
     AudioPlayer? player,
     this._alarmLog,
     this._cacheDirectory,
+    this._gainFor,
   }) : player = player ?? AudioPlayer() {
     this.player.playbackEventStream.listen(
       (_) => _broadcastState(),
@@ -75,6 +77,8 @@ class PongoAudioHandler extends BaseAudioHandler {
   // Where streamed tracks are cached, one file per track ID; just_audio's
   // default keys the cache on the URL, which changes with each stream token.
   final String? _cacheDirectory;
+  // Decibels to play a track at, to even out loudness between tracks.
+  final Future<double?> Function(String stid)? _gainFor;
   final VolumeService _volumeService;
   final SleepAlarmLog? _alarmLog;
   final _messages = StreamController<PlayerMessage>.broadcast();
@@ -88,6 +92,9 @@ class PongoAudioHandler extends BaseAudioHandler {
   );
 
   double _volume = 1;
+  // The volume before the loudness gain, and the gain as a factor
+  double _level = 1;
+  double _gainFactor = 1;
   double _fadeVolume = 1;
   Timer? _volumeTimer;
   Timer? _wakeTimer;
@@ -113,8 +120,9 @@ class PongoAudioHandler extends BaseAudioHandler {
   /// Emits the loop mode.
   Stream<LoopMode> get loopModeStream => player.loopModeStream;
 
-  /// Emits the player volume.
-  Stream<double> get volumeStream => player.volumeStream;
+  /// Emits the volume the user and the sleep alarms set, before the track's
+  /// loudness gain.
+  Stream<double> get volumeStream => player.volumeStream.map((_) => _level);
 
   void _onProcessingStateChanged(ProcessingState state) {
     if (state != ProcessingState.completed) return;
@@ -129,6 +137,7 @@ class PongoAudioHandler extends BaseAudioHandler {
     final items = queue.value;
     if (_replacingQueue || index == null || index >= items.length) return;
     mediaItem.add(items[index]);
+    unawaited(_applyGainOf(items[index]));
   }
 
   /// The audio source that plays [item].
@@ -244,8 +253,25 @@ class PongoAudioHandler extends BaseAudioHandler {
 
   /// Sets the player volume to [volume].
   Future<void> setVolume(double volume) async {
-    await player.setVolume(volume);
+    await _setPlayerVolume(volume);
     _volume = volume;
+  }
+
+  /// Plays at [level] times the current track's loudness gain, so every
+  /// volume change keeps tracks about equally loud.
+  Future<void> _setPlayerVolume(double level) {
+    _level = level;
+    return player.setVolume(level * _gainFactor);
+  }
+
+  Future<void> _applyGainOf(MediaItem item) async {
+    final gain = await _gainFor?.call(item.id.split('.')[2]);
+    // The queue may have moved on while the gain was looked up
+    if (mediaItem.value?.id != item.id) return;
+    final factor = gain == null ? 1.0 : pow(10, gain / 20).toDouble();
+    if (factor == _gainFactor) return;
+    _gainFactor = factor;
+    await _setPlayerVolume(_level);
   }
 
   @override
@@ -304,20 +330,20 @@ class PongoAudioHandler extends BaseAudioHandler {
     const steps = 10;
     final stepSize = _fadeVolume / steps;
     for (var i = 0; i < steps; i++) {
-      unawaited(player.setVolume(_fadeVolume - stepSize * (i + 1)));
+      unawaited(_setPlayerVolume(_fadeVolume - stepSize * (i + 1)));
       await Future<void>.delayed(const Duration(milliseconds: 10));
     }
-    unawaited(player.setVolume(0));
+    unawaited(_setPlayerVolume(0));
   }
 
   Future<void> _fadeIn() async {
     const steps = 10;
     final stepSize = _fadeVolume / steps;
     for (var i = 0; i < steps; i++) {
-      unawaited(player.setVolume(stepSize * (i + 1)));
+      unawaited(_setPlayerVolume(stepSize * (i + 1)));
       await Future<void>.delayed(const Duration(milliseconds: 50));
     }
-    unawaited(player.setVolume(_fadeVolume));
+    unawaited(_setPlayerVolume(_fadeVolume));
   }
 
   /// Starts [alarm]: fades the music out and, if set, wakes the user later.
@@ -348,7 +374,7 @@ class PongoAudioHandler extends BaseAudioHandler {
     _cancelSleepAlarmTimers();
     _blockPlayback = false;
     await player.pause();
-    await player.setVolume(1);
+    await _setPlayerVolume(1);
   }
 
   void _cancelSleepAlarmTimers() {
@@ -357,7 +383,7 @@ class PongoAudioHandler extends BaseAudioHandler {
   }
 
   void _fadeToSleep(SleepAlarm alarm) {
-    var volume = player.volume;
+    var volume = _level;
     final stepMilliseconds = (alarm.sleepDuration * 60 / 100 * 1000).toInt();
     // play() completes only once playback pauses again, so don't wait for it.
     unawaited(player.play());
@@ -373,13 +399,13 @@ class PongoAudioHandler extends BaseAudioHandler {
           await _waitToWakeUp(alarm);
         } else {
           await player.pause();
-          await player.setVolume(1);
+          await _setPlayerVolume(1);
           _activeSleepAlarm = -1;
         }
         return;
       }
       volume = _step(volume, down: true, linear: preferences.linearSleepIn);
-      await player.setVolume(volume);
+      await _setPlayerVolume(volume);
     });
   }
 
@@ -389,7 +415,7 @@ class PongoAudioHandler extends BaseAudioHandler {
     final (:fadeInAt, :fadeIn) = wakeUpSchedule(alarm, clock.now());
     _log('fade in at $fadeInAt for $fadeIn');
     _blockPlayback = true;
-    await player.setVolume(0);
+    await _setPlayerVolume(0);
     unawaited(player.play());
     var lastHeartbeat = clock.now();
 
@@ -438,7 +464,7 @@ class PongoAudioHandler extends BaseAudioHandler {
       timer,
     ) async {
       volume = _step(volume, down: false, linear: preferences.linearWakeUp);
-      await player.setVolume(volume);
+      await _setPlayerVolume(volume);
       if ((volume * 100).round() % 25 == 0) {
         _log('volume $volume, player ${player.volume}');
       }

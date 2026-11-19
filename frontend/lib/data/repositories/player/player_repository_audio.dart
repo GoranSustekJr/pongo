@@ -15,6 +15,7 @@ import '../../services/local/secure_storage_service.dart';
 import 'media_items.dart';
 import 'mix_refill.dart';
 import 'player_repository.dart';
+import 'track_gains.dart';
 
 /// A [PlayerRepository] that plays through [PongoAudioHandler].
 class PlayerRepositoryAudio implements PlayerRepository {
@@ -24,6 +25,7 @@ class PlayerRepositoryAudio implements PlayerRepository {
     required this._apiClient,
     required this._socketService,
     required this._storage,
+    this._gains,
   }) {
     _handler.mediaItem.listen((item) {
       _currentItem.value = item;
@@ -32,6 +34,8 @@ class PlayerRepositoryAudio implements PlayerRepository {
     _handler.queue.listen((items) {
       _queue.value = items;
       _reportQueueToMix();
+      // So each track plays at its gain from the start
+      unawaited(_gains?.prefetch([for (final item in items) item.stid]));
     });
   }
 
@@ -39,6 +43,7 @@ class PlayerRepositoryAudio implements PlayerRepository {
   final ApiClient _apiClient;
   final TrackSocketService _socketService;
   final SecureStorageService _storage;
+  final TrackGains? _gains;
 
   final _currentItem = ValueNotifier<MediaItem?>(null);
   final _queue = ValueNotifier<List<MediaItem>>(const []);

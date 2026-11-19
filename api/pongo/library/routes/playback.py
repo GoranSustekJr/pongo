@@ -11,6 +11,7 @@ from library import config, db, limits
 from library.auth import tokens
 from library.auth.tokens import current_session
 from library.metadata import deezer
+from library.track import loudness
 from library.track.downloads import TrackUnavailable, ensure_track, ensure_tracks, queue_of
 
 log = logging.getLogger(__name__)
@@ -33,6 +34,13 @@ async def _audio_file(stid: str) -> FileResponse:
 async def play_song(stid: str, st: str | None = None):
     await tokens.check_stream_token(st)
     return await _audio_file(stid)
+
+
+@router.post("/track_gains", dependencies=[Depends(current_session)])
+async def track_gains(request: Request):
+    """Decibels to play each track at so they sound about as loud as each other."""
+    stids = [str(s) for s in (await request.json()).get("stids") or []][: config.MAX_BATCH_TRACKS]
+    return {"gains": await loudness.gains(stids)}
 
 
 @router.post("/download_track/{stid}", dependencies=[Depends(current_session)])

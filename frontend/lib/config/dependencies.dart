@@ -18,6 +18,7 @@ import '../data/repositories/lyrics/lyrics_repository.dart';
 import '../data/repositories/lyrics/lyrics_repository_remote.dart';
 import '../data/repositories/player/player_repository.dart';
 import '../data/repositories/player/player_repository_audio.dart';
+import '../data/repositories/player/track_gains.dart';
 import '../data/repositories/playlists/playlist_repository.dart';
 import '../data/repositories/playlists/playlist_repository_local.dart';
 import '../data/repositories/settings/settings_repository.dart';
@@ -75,11 +76,13 @@ Future<List<SingleChildWidget>> createProviders(AppConfig config) async {
 
   final alarmLog = SleepAlarmLog();
   final cacheDirectory = '${(await getTemporaryDirectory()).path}/tracks';
+  final gains = TrackGains(apiClient: apiClient, table: database.trackGains);
   final handler = await AudioService.init(
     builder: () => PongoAudioHandler(
       volumeService: volume,
       alarmLog: alarmLog,
       cacheDirectory: cacheDirectory,
+      gainFor: gains.gainFor,
       streamUrl: (stid, {caching = false}) =>
           '${config.serverUrl}'
           '${caching ? 'play_song_caching' : 'play_song'}/'
@@ -117,6 +120,7 @@ Future<List<SingleChildWidget>> createProviders(AppConfig config) async {
     apiClient: apiClient,
     socketService: socketService,
     storage: storage,
+    gains: gains,
   );
   await player.restoreState();
 

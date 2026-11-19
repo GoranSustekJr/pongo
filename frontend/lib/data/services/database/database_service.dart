@@ -9,6 +9,7 @@ import 'online_playlists_table.dart';
 import 'play_history_table.dart';
 import 'search_history_table.dart';
 import 'sleep_alarms_table.dart';
+import 'track_gains_table.dart';
 
 /// The app's SQLite database and its tables.
 ///
@@ -20,7 +21,7 @@ class DatabaseService {
   /// The database file name inside the platform's databases directory.
   final String fileName;
 
-  static const _version = 39;
+  static const _version = 40;
 
   late final Database _database;
 
@@ -55,6 +56,9 @@ class DatabaseService {
 
   /// Sleep timers and alarms.
   late final SleepAlarmsTable sleepAlarms = SleepAlarmsTable(_database);
+
+  /// Loudness gains per track.
+  late final TrackGainsTable trackGains = TrackGainsTable(_database);
 
   /// Opens the database, creating or migrating it as needed.
   Future<void> open() async {
@@ -160,11 +164,16 @@ class DatabaseService {
         alarm_clock_linear BOOLEAN
       )
     ''');
+    await TrackGainsTable.create(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Track IDs shorter than 21 characters are left over from the old catalog.
-    await db.execute('DELETE FROM lfh_tracks WHERE LENGTH(stid) < 21');
+    if (oldVersion < 39) {
+      // Track IDs shorter than 21 characters are left over from the old
+      // catalog.
+      await db.execute('DELETE FROM lfh_tracks WHERE LENGTH(stid) < 21');
+    }
+    if (oldVersion < 40) await TrackGainsTable.create(db);
   }
 }
 

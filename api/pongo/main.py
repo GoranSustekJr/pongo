@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -7,6 +8,7 @@ from fastapi.responses import JSONResponse
 from library import config, db, limits, migrations
 from library.metadata import deezer
 from library.routes import account, catalog, playback
+from library.track import loudness
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -17,7 +19,9 @@ async def lifespan(_: FastAPI):
     config.TEMP_DIR.mkdir(parents=True, exist_ok=True)
     await db.pool.open(wait=True)
     await migrations.apply_pending()
+    measuring = asyncio.create_task(loudness.measure_stored())
     yield
+    measuring.cancel()
     await deezer.close()
     await db.pool.close()
 

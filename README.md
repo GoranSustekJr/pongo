@@ -37,6 +37,7 @@ The iOS app comes first; macOS and Android follow later.
 |----------------------------------|-----------------------------------------------------------------------------------------------------------------|
 | Live lyrics                      | See synchronized lyrics in real time with the possibility of manual synchronization                             |
 | Mix mode                         | When a single song is played, similar songs keep being added before the queue runs out                          |
+| Even volume                      | Loud songs are turned down so every song plays at about the same loudness                                       |
 | Show/Hide songs in playlist      | Toggle visibility of tracks in your playlist without having to remove them                                      |
 | Sleep mode                       | Gradually increase/decrease volume for certain period of time to allow you smooth falling asleep and waking up  |
 | Online/Offline playlists         | Access downloaded playlists without internet                                                                    |
