@@ -1,0 +1,10 @@
+# HTTPS in front of the API, with a Let's Encrypt certificate for PONGO_DOMAIN.
+# Let's Encrypt checks the domain over port 80, so the router forwards 80 and 443 here.
+{$PONGO_DOMAIN} {
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+	# WebSockets and the Range requests the player makes pass straight through
+	reverse_proxy api:8081
+}

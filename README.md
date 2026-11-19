@@ -68,6 +68,17 @@ SERVER_URL_WSS=ws://192.168.1.10:8081/
 
 and run the app with `flutter run --release` from `frontend/`. Accounts start disabled unless their email is in `ALLOWED_EMAILS`; enable others with `scripts/enable_user.sh someone@example.com`.
 
+### Reaching it from the internet
+
+Over the internet the server is only served over HTTPS, through [Caddy](https://caddyserver.com), which gets a Let's Encrypt certificate for your hostname (a no-ip one works). Set `PONGO_DOMAIN` in `.env`, forward ports 80 and 443 on the router to the server (Let's Encrypt checks the hostname over port 80), and start it with the public override, which also limits the API's plain HTTP port to the server itself:
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.public.yml up -d --build
+curl https://$PONGO_DOMAIN/health
+```
+
+Build the app against `SERVER_URL=https://<hostname>/` and `SERVER_URL_WSS=wss://<hostname>/`. The iOS app allows plain HTTP only to the local network, so the LAN setup above keeps working for development.
+
 Audio lives in the `pongo_audio` volume and the database in `pongo_db`. Back up both.
 
 Tests: `flutter test test/catalog_models_test.dart` in `frontend/`, and `python -m pytest tests` in `api/pongo/`.

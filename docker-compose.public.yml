@@ -1,0 +1,31 @@
+# For reaching the server from the internet. Serves the API over HTTPS only:
+#   docker compose -f docker-compose.yml -f docker-compose.public.yml up -d
+services:
+  api:
+    # Only Caddy and this machine can reach the API's plain HTTP port
+    ports: !override
+      - "127.0.0.1:${API_PORT:-8081}:8081"
+    environment:
+      # Trust Caddy's X-Forwarded-For so logs show the real client address
+      FORWARDED_ALLOW_IPS: "*"
+
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      PONGO_DOMAIN: ${PONGO_DOMAIN:?Set PONGO_DOMAIN in .env to the server's hostname}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Certificates, so a restart doesn't request new ones
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
