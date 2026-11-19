@@ -302,7 +302,7 @@ struct UserPlaylistView: View {
 
     private func setCover() async {
         guard let data = try? await pickedCover?.loadTransferable(type: Data.self),
-            let cover = UIImage(data: data)?.squareThumbnail(side: 600)
+            let cover = PlatformImage(data: data)?.squareThumbnail(side: 600)
         else { return }
         if kind == .online {
             try? await model.database.setOnlinePlaylistCover(playlist.id, cover)
@@ -325,18 +325,32 @@ struct UserPlaylistView: View {
     }
 }
 
-extension UIImage {
+extension PlatformImage {
     /// The image cropped to a square of [side] points as JPEG, small enough
     /// to sync.
     func squareThumbnail(side: CGFloat) -> Data? {
         let scale = side / min(size.width, size.height)
         let drawn = CGSize(width: size.width * scale, height: size.height * scale)
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        let image = UIGraphicsImageRenderer(size: CGSize(width: side, height: side), format: format).image { _ in
-            draw(in: CGRect(x: (side - drawn.width) / 2, y: (side - drawn.height) / 2, width: drawn.width, height: drawn.height))
-        }
-        return image.jpegData(compressionQuality: 0.8)
+        let frame = CGRect(x: (side - drawn.width) / 2, y: (side - drawn.height) / 2, width: drawn.width, height: drawn.height)
+        #if os(macOS)
+            guard let source = platformCGImage,
+                let context = CGContext(
+                    data: nil, width: Int(side), height: Int(side), bitsPerComponent: 8, bytesPerRow: 0,
+                    space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
+            else { return nil }
+            context.interpolationQuality = .high
+            context.draw(source, in: frame)
+            return context.makeImage().flatMap {
+                NSBitmapImageRep(cgImage: $0).representation(using: .jpeg, properties: [.compressionFactor: 0.8])
+            }
+        #else
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1
+            let image = UIGraphicsImageRenderer(size: CGSize(width: side, height: side), format: format).image { _ in
+                draw(in: frame)
+            }
+            return image.jpegData(compressionQuality: 0.8)
+        #endif
     }
 }
 
@@ -413,7 +427,7 @@ struct PlaylistCreateForm: View {
         .onChange(of: pickedPhoto) {
             Task {
                 guard let data = try? await pickedPhoto?.loadTransferable(type: Data.self) else { return }
-                cover = UIImage(data: data)?.squareThumbnail(side: 600)
+                cover = PlatformImage(data: data)?.squareThumbnail(side: 600)
             }
         }
         .onAppear { focused = true }

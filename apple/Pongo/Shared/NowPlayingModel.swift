@@ -35,7 +35,7 @@ final class NowPlayingModel {
     /// The current track's cover blurred into its colors, behind the mini
     /// player. Kept here so the mini player doesn't fade it in again each
     /// time it's rebuilt.
-    private(set) var backdrop: UIImage?
+    private(set) var backdrop: PlatformImage?
     private var backdropURL: URL?
 
     /// Blurs the cover at [url] into [backdrop], unless it's the one there.
@@ -57,7 +57,7 @@ final class NowPlayingModel {
         accentURL = url
         let color = await url.asyncMap { await ImagePipeline.shared.accent(for: $0) } ?? nil
         guard accentURL == url else { return }
-        withAnimation(.easeInOut(duration: 0.6)) { accent = color.map(Color.init(uiColor:)) ?? .white }
+        withAnimation(.easeInOut(duration: 0.6)) { accent = color.map(Color.init(platformColor:)) ?? .white }
     }
 
     /// Loads the lyrics and saved delay of [item] unless they're loaded.

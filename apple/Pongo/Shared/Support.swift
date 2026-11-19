@@ -83,6 +83,7 @@ struct ToastView: View {
     }
 }
 
+#if os(iOS)
 /// Shows the toasts in a window of their own above everything, so they
 /// appear over the player and sheets too.
 @MainActor
@@ -121,6 +122,7 @@ private struct ToastHost: View {
         .preferredColorScheme(model.settings.settings.darkMode ? .dark : .light)
     }
 }
+#endif
 
 // MARK: - Images
 
@@ -129,21 +131,21 @@ actor ImagePipeline {
     static let shared = ImagePipeline()
 
     // Thread-safe, so views can read it while they draw
-    nonisolated(unsafe) private static let memory = NSCache<NSURL, UIImage>()
-    private let blurredMemory = NSCache<NSURL, UIImage>()
-    private var accents: [URL: UIColor] = [:]
-    private var loading: [URL: Task<UIImage?, Never>] = [:]
+    nonisolated(unsafe) private static let memory = NSCache<NSURL, PlatformImage>()
+    private let blurredMemory = NSCache<NSURL, PlatformImage>()
+    private var accents: [URL: PlatformColor] = [:]
+    private var loading: [URL: Task<PlatformImage?, Never>] = [:]
     private let context = CIContext()
 
-    func image(for url: URL) async -> UIImage? {
+    func image(for url: URL) async -> PlatformImage? {
         if let image = Self.memory.object(forKey: url as NSURL) { return image }
         if let task = loading[url] { return await task.value }
-        let task = Task<UIImage?, Never> {
+        let task = Task<PlatformImage?, Never> {
             let data: Data? =
                 url.isFileURL
                 ? try? Data(contentsOf: url)
                 : try? await URLSession.shared.data(for: URLRequest(url: url, cachePolicy: .returnCacheDataElseLoad)).0
-            return await data.flatMap(UIImage.init(data:))?.byPreparingForDisplay()
+            return await data.flatMap(PlatformImage.init(data:))?.byPreparingForDisplay()
         }
         loading[url] = task
         let image = await task.value
@@ -152,14 +154,14 @@ actor ImagePipeline {
         return image
     }
 
-    func cached(_ url: URL) -> UIImage? { Self.memory.object(forKey: url as NSURL) }
+    func cached(_ url: URL) -> PlatformImage? { Self.memory.object(forKey: url as NSURL) }
 
     /// The image at [url] if it's loaded, without waiting.
-    nonisolated static func loaded(_ url: URL) -> UIImage? { memory.object(forKey: url as NSURL) }
+    nonisolated static func loaded(_ url: URL) -> PlatformImage? { memory.object(forKey: url as NSURL) }
 
     /// The image at [url] shrunk and blurred into a soft field of its colors,
     /// which scales up to full screen without a costly live blur.
-    func blurred(for url: URL) async -> UIImage? {
+    func blurred(for url: URL) async -> PlatformImage? {
         if let image = blurredMemory.object(forKey: url as NSURL) { return image }
         guard let source = await image(for: url), let blurred = await blur(source) else { return nil }
         blurredMemory.setObject(blurred, forKey: url as NSURL)
@@ -168,10 +170,10 @@ actor ImagePipeline {
 
     /// An image stored as [data], such as a playlist's cover, blurred the
     /// same way.
-    func blurred(data: Data) async -> UIImage? {
+    func blurred(data: Data) async -> PlatformImage? {
         let key = NSURL(string: "data:\(data.hashValue)")!
         if let image = blurredMemory.object(forKey: key) { return image }
-        guard let source = UIImage(data: data), let blurred = await blur(source) else { return nil }
+        guard let source = PlatformImage(data: data), let blurred = await blur(source) else { return nil }
         blurredMemory.setObject(blurred, forKey: key)
         return blurred
     }
@@ -179,10 +181,10 @@ actor ImagePipeline {
     /// A light, lively color of the cover at [url], for controls drawn over
     /// its blurred colors: the most colorful part of it, made pale enough to
     /// stand out. Grey covers give white.
-    func accent(for url: URL) async -> UIColor? {
+    func accent(for url: URL) async -> PlatformColor? {
         if let accent = accents[url] { return accent }
         guard let source = await image(for: url),
-            let cgImage = await source.byPreparingThumbnail(ofSize: CGSize(width: 24, height: 24))?.cgImage
+            let cgImage = await source.byPreparingThumbnail(ofSize: CGSize(width: 24, height: 24))?.platformCGImage
         else { return nil }
         let side = 24
         var pixels = [UInt8](repeating: 0, count: side * side * 4)
@@ -194,7 +196,7 @@ actor ImagePipeline {
         }
         var best: (score: CGFloat, hue: CGFloat, saturation: CGFloat) = (-1, 0, 0)
         for start in stride(from: 0, to: pixels.count, by: 4) {
-            let color = UIColor(
+            let color = PlatformColor(
                 red: CGFloat(pixels[start]) / 255, green: CGFloat(pixels[start + 1]) / 255,
                 blue: CGFloat(pixels[start + 2]) / 255, alpha: 1)
             var hue: CGFloat = 0, saturation: CGFloat = 0, brightness: CGFloat = 0, alpha: CGFloat = 0
@@ -202,21 +204,21 @@ actor ImagePipeline {
             let score = saturation * brightness
             if score > best.score { best = (score, hue, saturation) }
         }
-        let accent = UIColor(hue: best.hue, saturation: min(best.saturation, 0.42), brightness: 1, alpha: 1)
+        let accent = PlatformColor(hue: best.hue, saturation: min(best.saturation, 0.42), brightness: 1, alpha: 1)
         accents[url] = accent
         return accent
     }
 
-    private func blur(_ source: UIImage) async -> UIImage? {
-        guard let small = await source.byPreparingThumbnail(ofSize: CGSize(width: 64, height: 64)),
-            let input = CIImage(image: small)
+    private func blur(_ source: PlatformImage) async -> PlatformImage? {
+        guard let small = await source.byPreparingThumbnail(ofSize: CGSize(width: 64, height: 64))?.platformCGImage
         else { return nil }
+        let input = CIImage(cgImage: small)
         let extent = input.extent
         let output = input.clampedToExtent()
             .applyingGaussianBlur(sigma: 7)
             .applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 1.35])
             .cropped(to: extent)
-        return context.createCGImage(output, from: extent).map(UIImage.init(cgImage:))
+        return context.createCGImage(output, from: extent).map(PlatformImage.init(cgImage:))
     }
 
     func clear() {
@@ -233,7 +235,7 @@ struct CoverImage: View {
     var data: Data?
     var placeholder = "music.note"
 
-    @State private var image: UIImage?
+    @State private var image: PlatformImage?
 
     init(url: URL?, placeholder: String = "music.note") {
         self.url = url
@@ -254,8 +256,8 @@ struct CoverImage: View {
         Color.pongoCard.opacity(0.6)
             .overlay {
                 // A loaded cover shows from the first frame, so rebuilt views don't flash
-                if let image = image ?? url.flatMap(ImagePipeline.loaded) ?? data.flatMap(UIImage.init(data:)) {
-                    Image(uiImage: image).resizable().scaledToFill()
+                if let image = image ?? url.flatMap(ImagePipeline.loaded) ?? data.flatMap(PlatformImage.init(data:)) {
+                    Image(platformImage: image).resizable().scaledToFill()
                 } else {
                     Image(systemName: placeholder).font(.title3).foregroundStyle(.secondary)
                 }
@@ -290,6 +292,7 @@ func formatTime(_ seconds: Double) -> String {
     return String(format: "%d:%02d", total / 60, total % 60)
 }
 
+#if os(iOS)
 /// Taps of the Taptic Engine that confirm what the user did.
 @MainActor
 enum Haptics {
@@ -304,3 +307,18 @@ enum Haptics {
 
     static func error() { UINotificationFeedbackGenerator().notificationOccurred(.error) }
 }
+#else
+/// The trackpad's feedback for what the user did. A Mac only gives it as a
+/// slider snaps to its end; other actions are silent.
+@MainActor
+enum Haptics {
+    static func tap() {}
+
+    /// A slider reached its end.
+    static func edge() { NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now) }
+
+    static func select() {}
+
+    static func error() {}
+}
+#endif

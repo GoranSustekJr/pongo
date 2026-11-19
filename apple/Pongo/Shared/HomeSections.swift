@@ -321,7 +321,7 @@ struct ChartSection: View {
 /// A big album card whose caption is tinted with the cover's colors.
 struct ReleaseCard: View {
     let album: Album
-    @State private var tint: UIImage?
+    @State private var tint: PlatformImage?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -338,7 +338,7 @@ struct ReleaseCard: View {
                 Color(white: 0.18)
                     .overlay {
                         if let tint {
-                            Image(uiImage: tint).resizable().scaledToFill().transition(.opacity)
+                            Image(platformImage: tint).resizable().scaledToFill().transition(.opacity)
                         }
                     }
                     .overlay { Color.black.opacity(0.25) }

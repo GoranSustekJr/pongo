@@ -1,4 +1,4 @@
-# Pongo for iOS (native)
+# Pongo for iOS and macOS (native)
 
 A SwiftUI rewrite of the Flutter app in `frontend/`. It talks to the same
 server, uses the same database layout and sync format, so a library syncs
@@ -11,10 +11,15 @@ between this app and the Flutter one.
   settings, downloads and the player. It builds for iOS and macOS and has no
   third-party dependencies.
 - `Pongo/`: the iOS app (SwiftUI). `App/` creates the services, and `Shared/`
-  holds the screens.
+  holds the screens. The Mac app compiles this folder too, except the
+  iPhone-only files listed in the `PongoMac` target's exceptions.
+- `PongoMac/`: the Mac app's own window: the sidebar, the player in the
+  toolbar, the lyrics and queue panel, the full-window player, the menus and
+  the Settings window. `Pongo/Shared/Platform.swift` maps the few UIKit and
+  AppKit differences the shared screens meet.
 - `LiveLyrics/`: the widget extension that draws the Live Activity, and
   `Shared/` (top level) what it and the app both use.
-- `Config/`: build settings and the Info.plist.
+- `Config/`: build settings, the Info.plists and the Mac entitlements.
 - `scripts/generate_strings.py`: generates `Pongo/Resources/Localizable.xcstrings`
   and `Pongo/Shared/Strings.swift` from the Flutter `.arb` files plus
   `scripts/extra_strings.json`. Run it after changing either.
@@ -95,11 +100,28 @@ xcrun simctl launch booted com.example.pongo.swift -PongoDemo -PongoDemoScreen l
 
 ## macOS
 
-`PongoCore` already builds for macOS. Platform code is behind `#if os(iOS)`:
-the audio session, the device volume and the artwork for Now Playing. Adding a
-Mac app means:
+Open the project and run the `Pongo Mac` scheme, or:
 
-- a macOS target in the project that shares `Pongo/Shared`
-- replacing the few UIKit pieces in the UI (`UIImage` in `Support.swift` and
-  `PlaylistViews.swift`, `DeviceVolume.swift`) with platform-neutral ones
-- a Mac layout (sidebar instead of tabs) in place of `MainTabView`
+```
+xcodebuild -project Pongo.xcodeproj -scheme "Pongo Mac" -destination 'platform=macOS' build
+```
+
+It uses the same `Pongo.local.xcconfig`, server and Google client as the
+iPhone app. The window is laid out like Mac music apps:
+
+- the sidebar holds home, search (its field sits on top), favourites,
+  downloads, the sleep alarm and the playlists
+- the toolbar holds the transport, the song playing with a scrubber (its cover
+  opens the full-window player), the volume, AirPlay and the lyrics and queue
+  buttons, which open a panel at the side
+- the Controls menu has play, next and previous (⌘→, ⌘←), volume (⌘↑, ⌘↓),
+  shuffle, repeat and halt; the space bar plays and pauses, ⌘L opens the
+  lyrics, ⌥⌘U the queue and ⇧⌘F the full player
+- media keys, Now Playing and the sleep alarm work as on the iPhone, as do
+  moods, mixes, smart shuffle, lyrics translation and lyric cards (right-click
+  a line)
+
+The iPhone's Live Activity, haptics and device volume have no Mac
+counterpart; the alarm ramps the app's own volume instead. `-PongoDemo` works
+on the Mac too, with the screens `player`, `playerlyrics`, `lyrics`, `queue`,
+`favourites`, `sleep` and `search`.

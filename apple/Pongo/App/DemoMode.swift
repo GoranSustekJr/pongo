@@ -1,6 +1,9 @@
 #if DEBUG
+    import CoreText
+    import ImageIO
     import PongoCore
     import SwiftUI
+    import UniformTypeIdentifiers
 
     /// Sample content for looking at the UI in the simulator without signing
     /// in. Debug builds only, and only when launched with `-PongoDemo`;
@@ -19,7 +22,7 @@
             return arguments[index + 1]
         }
 
-        private static let songs: [(name: String, artist: String, album: String, seconds: Double, colors: [UIColor])] = [
+        private static let songs: [(name: String, artist: String, album: String, seconds: Double, colors: [PlatformColor])] = [
             ("Blinding Lights", "The Weeknd", "After Hours", 200, [.systemRed, .black]),
             ("Levitating", "Dua Lipa", "Future Nostalgia", 203, [.systemPink, .systemPurple]),
             ("Bohemian Rhapsody", "Queen", "A Night at the Opera", 355, [.systemIndigo, .systemTeal]),
@@ -114,18 +117,31 @@
             if model.recents.items.isEmpty, let album = HomeCache.load()?.newReleases.first {
                 model.recents.add(.album(album))
             }
+            #if os(macOS)
+                snapshotWindow()
+                switch screen {
+                case "player": model.router.showsPlayer = true
+                case "lyrics":
+                    model.router.inspector = .lyrics
+                    seekToPosition(model)
+                case "playerlyrics":
+                    model.nowPlaying.lyricsOn = true
+                    model.router.showsPlayer = true
+                    seekToPosition(model)
+                case "queue": model.router.inspector = .queue
+                case "favourites": model.router.section = .favourites
+                case "sleep": model.router.section = .sleepAlarms
+                case "search": model.router.search(for: "Queen")
+                default: break
+                }
+                return
+            #endif
             switch screen {
             case "player": model.router.showsPlayer = true
             case "lyrics":
                 model.nowPlaying.lyricsOn = true
                 model.router.showsPlayer = true
-                // Into the song, so a line is being sung
-                if let seconds = arguments(after: "-PongoDemoPosition").flatMap(Double.init) {
-                    Task {
-                        try? await Task.sleep(for: .seconds(2))
-                        model.player.seek(to: seconds)
-                    }
-                }
+                seekToPosition(model)
             case "card":
                 model.nowPlaying.lyricsOn = true
                 model.router.showsPlayer = true
@@ -152,23 +168,65 @@
             }
         }
 
+        #if os(macOS)
+            /// With `-PongoDemoSnapshot <path>`, saves a picture of the window
+            /// there a few seconds after launch, to look at the UI without
+            /// screen recording.
+            static func snapshotWindow() {
+                guard let path = arguments(after: "-PongoDemoSnapshot") else { return }
+                Task {
+                    try? await Task.sleep(for: .seconds(8))
+                    guard let window = NSApp.windows.first(where: { $0.isVisible && $0.frame.width > 400 }),
+                        let view = window.contentView?.superview,
+                        let bitmap = view.bitmapImageRepForCachingDisplay(in: view.bounds)
+                    else { return }
+                    view.cacheDisplay(in: view.bounds, to: bitmap)
+                    try? bitmap.representation(using: .png, properties: [:])?.write(to: URL(filePath: path))
+                }
+            }
+        #endif
+
+        /// Jumps into the song as `-PongoDemoPosition` asks, so a line is
+        /// being sung.
+        private static func seekToPosition(_ model: AppModel) {
+            guard let seconds = arguments(after: "-PongoDemoPosition").flatMap(Double.init) else { return }
+            Task {
+                try? await Task.sleep(for: .seconds(2))
+                model.player.seek(to: seconds)
+            }
+        }
+
         /// A gradient cover written to the caches directory.
-        private static func cover(_ index: Int, _ colors: [UIColor]) -> URL {
+        private static func cover(_ index: Int, _ colors: [PlatformColor]) -> URL {
             let url = URL.cachesDirectory.appending(path: "demo-cover-\(index).png")
             if FileManager.default.fileExists(atPath: url.path) { return url }
-            let size = CGSize(width: 600, height: 600)
-            let image = UIGraphicsImageRenderer(size: size).image { context in
+            let side = 600
+            guard
+                let context = CGContext(
+                    data: nil, width: side, height: side, bitsPerComponent: 8, bytesPerRow: 0,
+                    space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue),
                 let gradient = CGGradient(
                     colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors.map(\.cgColor) as CFArray,
-                    locations: [0, 1])!
-                context.cgContext.drawLinearGradient(
-                    gradient, start: .zero, end: CGPoint(x: size.width, y: size.height), options: [])
-                let text = NSAttributedString(
-                    string: "♪", attributes: [.font: UIFont.systemFont(ofSize: 260, weight: .bold),
-                                             .foregroundColor: UIColor.white.withAlphaComponent(0.85)])
-                text.draw(at: CGPoint(x: 190, y: 120))
+                    locations: [0, 1])
+            else { return url }
+            context.drawLinearGradient(
+                gradient, start: CGPoint(x: 0, y: side), end: CGPoint(x: side, y: 0), options: [])
+            let font = CTFontCreateWithName("Helvetica-Bold" as CFString, 260, nil)
+            let text = NSAttributedString(
+                string: "♪",
+                attributes: [
+                    NSAttributedString.Key(kCTFontAttributeName as String): font,
+                    NSAttributedString.Key(kCTForegroundColorAttributeName as String):
+                        CGColor(gray: 1, alpha: 0.85),
+                ])
+            context.textPosition = CGPoint(x: 210, y: 200)
+            CTLineDraw(CTLineCreateWithAttributedString(text), context)
+            if let image = context.makeImage(),
+                let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)
+            {
+                CGImageDestinationAddImage(destination, image, nil)
+                CGImageDestinationFinalize(destination)
             }
-            try? image.pngData()?.write(to: url)
             return url
         }
     }

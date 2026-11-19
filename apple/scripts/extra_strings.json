@@ -50,5 +50,15 @@
   "removefromqueue": {"en": "Remove from queue", "de": "Aus der Warteschlange entfernen", "hr": "Ukloni iz reda"},
   "clearupcoming": {"en": "Clear upcoming", "de": "Kommende leeren", "hr": "Očisti nadolazeće"},
   "endsat": {"en": "ends at", "de": "endet um", "hr": "završava u"},
-  "mixkeepsgoing": {"en": "Then the mix keeps going", "de": "Danach geht der Mix weiter", "hr": "Zatim se miks nastavlja"}
+  "mixkeepsgoing": {"en": "Then the mix keeps going", "de": "Danach geht der Mix weiter", "hr": "Zatim se miks nastavlja"},
+  "controls": {"en": "Controls", "de": "Steuerung", "hr": "Kontrole"},
+  "pause": {"en": "Pause", "de": "Pause", "hr": "Pauza"},
+  "previous": {"en": "Previous", "de": "Zurück", "hr": "Prethodna"},
+  "volumeup": {"en": "Increase volume", "de": "Lauter", "hr": "Pojačaj"},
+  "volumedown": {"en": "Decrease volume", "de": "Leiser", "hr": "Utišaj"},
+  "repeatmode": {"en": "Repeat", "de": "Wiederholen", "hr": "Ponavljanje"},
+  "openplayer": {"en": "Show player", "de": "Player anzeigen", "hr": "Prikaži player"},
+  "closeplayer": {"en": "Hide player", "de": "Player ausblenden", "hr": "Sakrij player"},
+  "general": {"en": "General", "de": "Allgemein", "hr": "Općenito"},
+  "volume": {"en": "Volume", "de": "Lautstärke", "hr": "Glasnoća"}
 }

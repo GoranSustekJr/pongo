@@ -163,8 +163,7 @@ struct SleepAlarmEditor: View {
                                 Text(verbatim: "\(minutes) min").tag(minutes)
                             }
                         }
-                        .pickerStyle(.wheel)
-                        .frame(height: 130)
+                        .wheelPicker()
                         Toggle(L10n.linearsleepin, isOn: $alarm.sleepLinear)
                     }
                 } footer: {
@@ -177,7 +176,7 @@ struct SleepAlarmEditor: View {
                     }
                     if alarm.alarmClock {
                         DatePicker(selection: wakeDate, displayedComponents: .hourAndMinute) {}
-                            .datePickerStyle(.wheel)
+                            .wheelDatePicker()
                             .labelsHidden()
                             .frame(maxWidth: .infinity)
                         Stepper(value: $alarm.beforeEndTimeMin, in: 5...120, step: 5) {

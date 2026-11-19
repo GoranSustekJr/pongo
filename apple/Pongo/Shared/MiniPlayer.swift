@@ -71,9 +71,9 @@ struct MiniPlayer: View {
     /// The song's colors filling the accessory's glass. They spill past its
     /// edges and the accessory's own shape cuts them, so they keep its shape
     /// while the tab bar grows and shrinks.
-    @ViewBuilder private func background(_ backdrop: UIImage?) -> some View {
+    @ViewBuilder private func background(_ backdrop: PlatformImage?) -> some View {
         if let backdrop {
-            Image(uiImage: backdrop).resizable().scaledToFill()
+            Image(platformImage: backdrop).resizable().scaledToFill()
                 .overlay { Color.black.opacity(0.18) }
                 .opacity(0.9)
                 .padding(-30)

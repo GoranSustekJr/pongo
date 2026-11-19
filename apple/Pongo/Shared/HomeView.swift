@@ -17,10 +17,12 @@ struct HomeView: View {
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: showsSearch)
-            .searchable(
-                text: $query, isPresented: $searchActive, placement: .navigationBarDrawer(displayMode: .always),
-                prompt: L10n.searchsongsartistsalbums
-            )
+            #if os(iOS)
+                .searchable(
+                    text: $query, isPresented: $searchActive, placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: L10n.searchsongsartistsalbums
+                )
+            #endif
             .onSubmit(of: .search) { model.rememberSearch(query) }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(removing: .title)
@@ -37,7 +39,7 @@ struct HomeView: View {
 /// Recommendations from the play history and the charts: shortcuts under
 /// the greeting, mixes, the recent tracks, new releases, the charts and the
 /// genres. The last page shows at once while a fresh one loads.
-private struct RecommendationsView: View {
+struct RecommendationsView: View {
     @Environment(AppModel.self) private var model
     @State private var feed: HomeFeed?
     @State private var mixes: [HomeMix] = []

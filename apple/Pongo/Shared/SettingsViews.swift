@@ -290,7 +290,7 @@ struct AboutView: View {
             }
             Section(L10n.about) {
                 Button {
-                    UIPasteboard.general.string = mail
+                    copyToPasteboard(mail)
                     model.messages.show(mail, systemImage: "doc.on.doc")
                 } label: {
                     GroupedRow(systemImage: "envelope.fill", title: mail, subtitle: L10n.contactusviamail) {
@@ -323,19 +323,35 @@ struct AboutView: View {
 }
 
 /// A PDF shown page after page.
-struct PDFDocumentView: UIViewRepresentable {
-    let url: URL
+#if os(macOS)
+    struct PDFDocumentView: NSViewRepresentable {
+        let url: URL
 
-    func makeUIView(context: Context) -> PDFView {
-        let view = PDFView()
-        view.autoScales = true
-        view.backgroundColor = .clear
-        view.document = PDFDocument(url: url)
-        return view
+        func makeNSView(context: Context) -> PDFView {
+            let view = PDFView()
+            view.autoScales = true
+            view.backgroundColor = .clear
+            view.document = PDFDocument(url: url)
+            return view
+        }
+
+        func updateNSView(_ nsView: PDFView, context: Context) {}
     }
+#else
+    struct PDFDocumentView: UIViewRepresentable {
+        let url: URL
 
-    func updateUIView(_ uiView: PDFView, context: Context) {}
-}
+        func makeUIView(context: Context) -> PDFView {
+            let view = PDFView()
+            view.autoScales = true
+            view.backgroundColor = .clear
+            view.document = PDFDocument(url: url)
+            return view
+        }
+
+        func updateUIView(_ uiView: PDFView, context: Context) {}
+    }
+#endif
 
 /// The countries whose catalogs search can use.
 enum Markets {

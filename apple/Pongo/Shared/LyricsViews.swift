@@ -54,6 +54,15 @@ struct LyricsPanel: View {
     }
 }
 
+extension EnvironmentValues {
+    /// The size of lyrics lines: big on the iPhone's player, smaller in the
+    /// Mac's side panel.
+    @Entry var lyricsTextSize: CGFloat = 35
+    /// Closes the lyrics, where they show in a panel of their own rather than
+    /// in the player.
+    @Entry var closeLyrics: (() -> Void)?
+}
+
 /// Lyrics alignment as SwiftUI needs it.
 extension LyricsAlignment {
     var text: TextAlignment {
@@ -101,7 +110,9 @@ struct SyncedLyricsView: View {
         GeometryReader { geometry in
             ScrollViewReader { proxy in
                 ScrollView {
-                    LazyVStack(alignment: alignment.frame.horizontal, spacing: 22) {
+                    // Every line laid out, not lazily, so scrolling to the current one lands
+                    // exactly even when lines wrap to different heights
+                    VStack(alignment: alignment.frame.horizontal, spacing: 22) {
                         ForEach(lines) { line in
                             lineView(line, alignment: alignment)
                                 .id(line.id)
@@ -109,10 +120,10 @@ struct SyncedLyricsView: View {
                                     model.player.seek(to: max(line.time - Double(model.nowPlaying.delay) / 1000, 0))
                                     resumeFollowing(proxy, after: .zero)
                                 }
-                                // Held, the line goes on a card to share
-                                .onLongPressGesture(minimumDuration: 0.45) {
-                                    model.nowPlaying.shareLyrics(
-                                        lines.map(\.text), at: lines.firstIndex(of: line) ?? 0, item: model.player.current)
+                                // Held, or right-clicked on a Mac, the line goes on a card to share
+                                .onLongPressGesture(minimumDuration: 0.45) { share(line) }
+                                .contextMenu {
+                                    Button(L10n.sharelyrics, systemImage: "square.and.arrow.up") { share(line) }
                                 }
                         }
                     }
@@ -133,7 +144,17 @@ struct SyncedLyricsView: View {
                     guard !userScrolling else { return }
                     withAnimation(.spring(duration: 0.5, bounce: 0.1)) { scroll(proxy, to: index) }
                 }
-                .onAppear { scroll(proxy, to: active) }
+                .task {
+                    // Once laid out: a Mac's scroll view doesn't exist yet when this appears,
+                    // and would stay at the top
+                    await Task.yield()
+                    scroll(proxy, to: active)
+                }
+                // A resized panel rewraps the lines, which moves the current one
+                .onChange(of: geometry.size) {
+                    guard !userScrolling else { return }
+                    scroll(proxy, to: active)
+                }
                 .background {
                     ActiveLineTracker(lines: lines, active: $active)
                 }
@@ -152,10 +173,12 @@ struct SyncedLyricsView: View {
             case 2: 0.6
             default: 0.4
             }
+        // Before the first line is sung, it stays sharp as the one coming up
+        let upcoming = active == nil && line.id == lines.first?.id
         let blur: CGFloat =
             switch distance {
             case 0: 0
-            case 1: 2.25
+            case 1: upcoming ? 0 : 2.25
             case -1: 2.75
             default: 3.5
             }
@@ -163,6 +186,10 @@ struct SyncedLyricsView: View {
             line: line, translation: model.nowPlaying.translations[line.text], alignment: alignment,
             isActive: distance == 0 && !userScrolling,
             opacity: userScrolling ? max(opacity, 0.6) : opacity, blur: userScrolling ? 0 : blur)
+    }
+
+    private func share(_ line: LyricsLine) {
+        model.nowPlaying.shareLyrics(lines.map(\.text), at: lines.firstIndex(of: line) ?? 0, item: model.player.current)
     }
 
     private func scroll(_ proxy: ScrollViewProxy, to index: Int?) {
@@ -185,6 +212,7 @@ struct SyncedLyricsView: View {
 /// One line of synced lyrics.
 private struct LyricsLineView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lyricsTextSize) private var textSize
     let line: LyricsLine
     /// The line in the user's language, shown under it.
     let translation: String?
@@ -198,10 +226,10 @@ private struct LyricsLineView: View {
         // lights it up instead of swapping it
         VStack(alignment: alignment.frame.horizontal, spacing: 6) {
             Text(line.text.isEmpty ? "♪" : line.text)
-                .font(.system(size: 35, weight: .bold))
+                .font(.system(size: textSize, weight: .bold))
             if let translation {
                 Text(translation)
-                    .font(.system(size: 21, weight: .semibold))
+                    .font(.system(size: textSize * 0.6, weight: .semibold))
                     .opacity(0.6)
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }
@@ -238,6 +266,7 @@ private struct ActiveLineTracker: View {
 /// Plain lyrics, scrolled by hand.
 struct PlainLyricsView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.lyricsTextSize) private var textSize
     let lines: [String]
     var bottomInset: CGFloat
 
@@ -250,9 +279,9 @@ struct PlainLyricsView: View {
                         let blank = line.trimmingCharacters(in: .whitespaces).isEmpty
                         VStack(alignment: alignment.frame.horizontal, spacing: 6) {
                             Text(blank ? " " : line)
-                                .font(.system(size: blank ? 15 : 35, weight: .bold))
+                                .font(.system(size: blank ? 15 : textSize, weight: .bold))
                             if let translation = model.nowPlaying.translations[line] {
-                                Text(translation).font(.system(size: 21, weight: .semibold)).opacity(0.6)
+                                Text(translation).font(.system(size: textSize * 0.6, weight: .semibold)).opacity(0.6)
                             }
                         }
                             .multilineTextAlignment(alignment.text)
@@ -261,6 +290,11 @@ struct PlainLyricsView: View {
                             .contentShape(.rect)
                             .onLongPressGesture(minimumDuration: 0.45) {
                                 model.nowPlaying.shareLyrics(lines, at: index, item: model.player.current)
+                            }
+                            .contextMenu {
+                                Button(L10n.sharelyrics, systemImage: "square.and.arrow.up") {
+                                    model.nowPlaying.shareLyrics(lines, at: index, item: model.player.current)
+                                }
                             }
                     }
                 }
@@ -312,13 +346,16 @@ struct LyricsMessage: View {
 /// and switching between synced and plain lyrics.
 struct LyricsBar: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.closeLyrics) private var closeLyrics
 
     var body: some View {
         let state = model.nowPlaying
         HStack(spacing: 0) {
             Spacer()
             GlassIconButton(systemImage: "quote.bubble.fill", isOn: true) {
-                withAnimation(.spring(duration: 0.55, bounce: 0.12)) { state.toggleLyrics(model) }
+                withAnimation(.spring(duration: 0.55, bounce: 0.12)) {
+                    if let closeLyrics { closeLyrics() } else { state.toggleLyrics(model) }
+                }
             }
             Spacer()
             HStack(spacing: 0) {

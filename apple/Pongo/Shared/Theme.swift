@@ -7,18 +7,12 @@ extension Color {
     /// The teal of the Flutter app's accents.
     static let pongoTeal = Color(red: 32 / 255, green: 178 / 255, blue: 170 / 255)
     /// Cards and placeholders: navy in dark mode, white in light mode.
-    static let pongoCard = Color(
-        uiColor: UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(red: 28 / 255, green: 39 / 255, blue: 85 / 255, alpha: 1) : .white
-        })
+    static let pongoCard = adaptive(
+        light: .white, dark: PlatformColor(red: 28 / 255, green: 39 / 255, blue: 85 / 255, alpha: 1))
     /// The navy behind everything in dark mode, off-white in light mode.
-    static let pongoSurface = Color(
-        uiColor: UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(red: 20 / 255, green: 28 / 255, blue: 61 / 255, alpha: 1)
-                : UIColor(white: 0.996, alpha: 1)
-        })
+    static let pongoSurface = adaptive(
+        light: PlatformColor(white: 0.996, alpha: 1),
+        dark: PlatformColor(red: 20 / 255, green: 28 / 255, blue: 61 / 255, alpha: 1))
 }
 
 extension EnvironmentValues {
@@ -82,7 +76,7 @@ struct ArtworkBackground: View {
     /// where they are when it's paused.
     var isMoving = false
 
-    @State private var image: UIImage?
+    @State private var image: PlatformImage?
     /// Seconds the colors moved before they last stopped.
     @State private var movedBefore: Double = 0
     @State private var movingSince: Date?
@@ -130,12 +124,12 @@ struct ArtworkBackground: View {
 
     /// The blurred cover twice, turning slowly against each other, so its
     /// colors flow into one another.
-    private func colors(_ image: UIImage, phase: Double) -> some View {
+    private func colors(_ image: PlatformImage, phase: Double) -> some View {
         ZStack {
-            Image(uiImage: image).resizable().scaledToFill()
+            Image(platformImage: image).resizable().scaledToFill()
                 .scaleEffect(1.6)
                 .rotationEffect(.degrees(phase * 7))
-            Image(uiImage: image).resizable().scaledToFill()
+            Image(platformImage: image).resizable().scaledToFill()
                 .scaleEffect(2.1)
                 .rotationEffect(.degrees(150 - phase * 11))
                 .offset(x: sin(phase * 0.35) * 70, y: cos(phase * 0.27) * 110)

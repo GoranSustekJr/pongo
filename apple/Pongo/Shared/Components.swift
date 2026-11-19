@@ -263,14 +263,14 @@ struct CollectionScreen<Bar: View, Content: View, Actions: View>: View {
         .scrollEdgeEffectHidden(true, for: .all)
         .background { ArtworkBackground(url: coverURL, data: coverData, dim: 0.3) }
         .environment(\.colorScheme, blurred ? .dark : colorScheme)
-        .toolbarColorScheme(blurred || !collapsed ? .dark : nil, for: .navigationBar)
+        .navigationBarColorScheme(blurred || !collapsed ? .dark : nil)
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text(title).font(.headline).lineLimit(1).opacity(collapsed ? 1 : 0)
             }
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .barTrailing) {
                 Menu {
                     actions
                 } label: {
@@ -373,10 +373,8 @@ struct Shelf<Item: Identifiable, Content: View>: View {
 
 extension Color {
     /// The icons' color: white on dark, near black on light.
-    static let pongoIcon = Color(
-        uiColor: UIColor { traits in
-            traits.userInterfaceStyle == .dark ? UIColor(white: 1, alpha: 0.9) : UIColor(white: 0, alpha: 0.8)
-        })
+    static let pongoIcon = adaptive(
+        light: PlatformColor(white: 0, alpha: 0.8), dark: PlatformColor(white: 1, alpha: 0.9))
 }
 
 /// A row of the library and settings screens: an icon, a title with an
@@ -489,10 +487,8 @@ struct TrackEditor<Actions: View>: View {
         }
         .listStyle(.plain)
         .pongoBackground()
-        .environment(\.editMode, Self.editing)
+        .alwaysSelecting()
     }
-
-    private static var editing: Binding<EditMode>? { Binding<EditMode>(get: { .active }, set: { _ in }) }
 
     private func row(_ track: Track) -> some View {
         let isHidden = hidden[track.id] == true
@@ -511,7 +507,7 @@ struct TrackEditor<Actions: View>: View {
 
     @ToolbarContentBuilder private var toolbar: some ToolbarContent {
         let allSelected = selection.count == tracks.count
-        ToolbarItem(placement: .topBarLeading) {
+        ToolbarItem(placement: .barLeading) {
             Button(allSelected ? L10n.deselectall : L10n.selectall) {
                 selection = allSelected ? [] : Set(tracks.map(\.id))
             }
@@ -519,7 +515,7 @@ struct TrackEditor<Actions: View>: View {
         ToolbarItem(placement: .confirmationAction) {
             Button(L10n.done) { dismiss() }
         }
-        ToolbarItemGroup(placement: .bottomBar) {
+        ToolbarItemGroup(placement: .barBottom) {
             actions(tracks.filter { selection.contains($0.id) }, { dismiss() })
                 .disabled(selection.isEmpty)
         }

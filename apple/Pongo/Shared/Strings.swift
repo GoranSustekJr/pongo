@@ -54,9 +54,11 @@ extension L10n {
     static var `clearyourassetimagecache`: String { tr("clearyourassetimagecache") }
     static var `clearyouraudioplayercache`: String { tr("clearyouraudioplayercache") }
     static var `close`: String { tr("close") }
+    static var `closeplayer`: String { tr("closeplayer") }
     static var `compilations`: String { tr("compilations") }
     static var `contactusviamail`: String { tr("contactusviamail") }
     static var `continuee`: String { tr("continuee") }
+    static var `controls`: String { tr("controls") }
     static var `countrycode`: String { tr("countrycode") }
     static var `create`: String { tr("create") }
     static var `createnewplaylist`: String { tr("createnewplaylist") }
@@ -108,6 +110,7 @@ extension L10n {
     static var `fullscreen`: String { tr("fullscreen") }
     static var `gaplessalbums`: String { tr("gaplessalbums") }
     static var `gaplessalbumsdescription`: String { tr("gaplessalbumsdescription") }
+    static var `general`: String { tr("general") }
     static var `genres`: String { tr("genres") }
     static var `goodafternoon`: String { tr("goodafternoon") }
     static var `goodevening`: String { tr("goodevening") }
@@ -184,9 +187,11 @@ extension L10n {
     static var `onlinefavouritesongs`: String { tr("onlinefavouritesongs") }
     static var `onlineplaylist`: String { tr("onlineplaylist") }
     static var `onlineplaylists`: String { tr("onlineplaylists") }
+    static var `openplayer`: String { tr("openplayer") }
     static var `or`: String { tr("or") }
     static var `ourprivacypolicy`: String { tr("ourprivacypolicy") }
     static var `ourtermsandconditions`: String { tr("ourtermsandconditions") }
+    static var `pause`: String { tr("pause") }
     static var `picklines`: String { tr("picklines") }
     static var `plain`: String { tr("plain") }
     static var `play`: String { tr("play") }
@@ -213,6 +218,7 @@ extension L10n {
     static var `premium`: String { tr("premium") }
     static var `premiumisneededtodownloadatrack`: String { tr("premiumisneededtodownloadatrack") }
     static var `premiumisneededtosavethequeue`: String { tr("premiumisneededtosavethequeue") }
+    static var `previous`: String { tr("previous") }
     static var `privacypolicy`: String { tr("privacypolicy") }
     static var `profile`: String { tr("profile") }
     static var `queue`: String { tr("queue") }
@@ -232,6 +238,7 @@ extension L10n {
     static var `removetrackfromplaylist`: String { tr("removetrackfromplaylist") }
     static var `removetracksfromplaylist`: String { tr("removetracksfromplaylist") }
     static var `repeat`: String { tr("repeat") }
+    static var `repeatmode`: String { tr("repeatmode") }
     static var `repeatoff`: String { tr("repeatoff") }
     static var `repeatthequeue`: String { tr("repeatthequeue") }
     static var `repeatthissong`: String { tr("repeatthissong") }
@@ -316,6 +323,9 @@ extension L10n {
     static var `userinterface`: String { tr("userinterface") }
     static var `usesynctimedelay`: String { tr("usesynctimedelay") }
     static var `version`: String { tr("version") }
+    static var `volume`: String { tr("volume") }
+    static var `volumedown`: String { tr("volumedown") }
+    static var `volumeup`: String { tr("volumeup") }
     static var `wanttohelpoutlyrics`: String { tr("wanttohelpoutlyrics") }
     static var `warning`: String { tr("warning") }
     static var `yourmoods`: String { tr("yourmoods") }

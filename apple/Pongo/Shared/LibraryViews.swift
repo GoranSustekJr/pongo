@@ -134,7 +134,7 @@ struct FavouritesView: View {
         }
         .searchable(text: $filter)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .barTrailing) {
                 Button(L10n.edit) { editing = true }.disabled(tracks.isEmpty)
             }
         }
@@ -219,7 +219,7 @@ struct DownloadsView: View {
         }
         .searchable(text: $filter)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .barTrailing) {
                 Menu {
                     Picker(selection: model.settings.binding(\.localsSort)) {
                         Text(verbatim: "A-Z").tag(LocalsSort.titleAscending)
@@ -231,7 +231,7 @@ struct DownloadsView: View {
                     Image(systemName: "arrow.up.arrow.down")
                 }
             }
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .barTrailing) {
                 Button(L10n.edit) { editing = true }.disabled(downloads.isEmpty)
             }
         }

@@ -18,16 +18,26 @@ struct LyricCardSheet: View {
     let request: LyricCardRequest
 
     @State private var selected: Set<Int> = []
-    @State private var cover: UIImage?
-    @State private var backdrop: UIImage?
-    @State private var rendered: UIImage?
+    @State private var cover: PlatformImage?
+    @State private var backdrop: PlatformImage?
+    @State private var rendered: PlatformImage?
 
     /// More lines than this don't fit a card.
     private let maxLines = 6
 
     var body: some View {
         VStack(spacing: 18) {
-            Capsule().fill(.white.opacity(0.35)).frame(width: 38, height: 5).padding(.top, 8)
+            #if os(macOS)
+                // A Mac sheet has no grabber to swipe it away
+                HStack {
+                    Spacer()
+                    Button(L10n.done) { model.nowPlaying.lyricCard = nil }
+                        .keyboardShortcut(.cancelAction)
+                }
+                .padding([.top, .horizontal], 14)
+            #else
+                Capsule().fill(.white.opacity(0.35)).frame(width: 38, height: 5).padding(.top, 8)
+            #endif
             LyricCardView(
                 lines: chosenLines, translations: request.translations, title: request.item.track.name, artist: request.item.track.artistNames,
                 cover: cover, backdrop: backdrop, accent: model.nowPlaying.accent
@@ -63,7 +73,7 @@ struct LyricCardSheet: View {
     @ViewBuilder
     private var share: some View {
         if let rendered {
-            let image = Image(uiImage: rendered)
+            let image = Image(platformImage: rendered)
             ShareLink(item: image, preview: SharePreview(request.item.track.name, image: image)) {
                 Label(L10n.sharelyrics, systemImage: "square.and.arrow.up")
                     .font(.system(size: 16, weight: .semibold))
@@ -134,7 +144,7 @@ struct LyricCardSheet: View {
                 lines: chosenLines, translations: request.translations, title: request.item.track.name, artist: request.item.track.artistNames,
                 cover: cover, backdrop: backdrop, accent: model.nowPlaying.accent))
         renderer.scale = 3
-        rendered = renderer.uiImage
+        rendered = renderer.platformImage
     }
 }
 
@@ -146,8 +156,8 @@ struct LyricCardView: View {
     var translations: [String: String] = [:]
     let title: String
     let artist: String
-    let cover: UIImage?
-    let backdrop: UIImage?
+    let cover: PlatformImage?
+    let backdrop: PlatformImage?
     let accent: Color
 
     var body: some View {
@@ -177,7 +187,7 @@ struct LyricCardView: View {
             HStack(spacing: 11) {
                 Group {
                     if let cover {
-                        Image(uiImage: cover).resizable().scaledToFill()
+                        Image(platformImage: cover).resizable().scaledToFill()
                     } else {
                         Image(systemName: "music.note").foregroundStyle(.white.opacity(0.7))
                     }
@@ -202,7 +212,7 @@ struct LyricCardView: View {
             ZStack {
                 Color(white: 0.12)
                 if let backdrop {
-                    Image(uiImage: backdrop).resizable().scaledToFill().scaleEffect(1.3)
+                    Image(platformImage: backdrop).resizable().scaledToFill().scaleEffect(1.3)
                 }
                 LinearGradient(
                     colors: [.black.opacity(0.15), .black.opacity(0.5)], startPoint: .top, endPoint: .bottom)
