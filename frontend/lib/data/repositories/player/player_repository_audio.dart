@@ -110,7 +110,7 @@ class PlayerRepositoryAudio implements PlayerRepository {
   List<int> get shuffleIndices => _player.shuffleIndices;
 
   @override
-  Stream<double> get volumeStream => _player.volumeStream;
+  Stream<double> get volumeStream => _handler.volumeStream;
 
   @override
   int? get currentIndex => _player.currentIndex;
