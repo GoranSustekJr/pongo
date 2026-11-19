@@ -62,7 +62,7 @@ dependencies:
   flutter_platform_alert: ^0.9.1
   super_context_menu: ^0.9.1
   kr_pull_down_button: ^1.0.1
-  popup_menu_plus: ^0.0.6
+  popup_menu_plus: ^0.1.0
   settings_ui: ^4.0.2
   flutter_secure_storage: ^10.3.4
   http: ^1.2.1
