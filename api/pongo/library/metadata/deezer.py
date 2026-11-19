@@ -105,6 +105,9 @@ def _playlist_shape(playlist: dict) -> dict:
 
 # Catalog
 async def search(query: str) -> dict:
+    # Deezer decodes the query twice, so a once-encoded "+" arrives as a space
+    # and "z++" would search for "z"
+    query = query.replace("+", "%2B")
     tracks, albums, artists, playlists = await asyncio.gather(
         _get("/search/track", q=query, limit=50),
         _get("/search/album", q=query, limit=25),
@@ -180,6 +183,20 @@ async def get_new_releases() -> dict:
     if not albums["data"]:
         albums = await _get("/chart/0/albums", limit=50)
     return {"albums": {"items": [album_shape(a) for a in albums["data"]]}}
+
+
+async def get_charts(limit: int = 25) -> dict:
+    # The home page works without charts, so they must not fail it
+    try:
+        chart = await _get("/chart/0", limit=limit)
+    except (DeezerError, httpx.HTTPError) as error:
+        log.warning("Deezer charts unavailable: %s", error)
+        return {"tracks": [], "artists": [], "playlists": []}
+    return {
+        "tracks": [track_shape(t) for t in chart["tracks"]["data"]],
+        "artists": [artist_shape(a) for a in chart["artists"]["data"]],
+        "playlists": [_playlist_shape(p) for p in chart["playlists"]["data"]],
+    }
 
 
 async def get_mix(stid: str, size: int = 20) -> list[dict]:

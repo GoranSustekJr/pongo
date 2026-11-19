@@ -99,16 +99,19 @@ async def get_artist_images(request: Request):
 @router.post("/get_recommendations")
 async def get_recommendations(request: Request):
     data = await request.json()
-    history = [_catalog_id(s) for s in data.get("history") or []]
-    categories, history_tracks, new_releases = await asyncio.gather(
+    # Phones can still hold ids from before the Deezer catalog; skip those
+    history = [str(s) for s in data.get("history") or [] if str(s).isdigit()]
+    categories, history_tracks, new_releases, charts = await asyncio.gather(
         deezer.get_genres(data.get("category_num", 20)),
         deezer.get_tracks(history),
         deezer.get_new_releases(),
+        deezer.get_charts(),
     )
     return {
         "history": {"tracks": history_tracks} if history else None,
         "categories": categories,
         "new_releases": new_releases,
+        "charts": charts,
     }
 
 

@@ -1,3 +1,5 @@
+import asyncio
+
 from library.metadata import deezer
 
 COVER = {"cover_xl": "xl.jpg", "cover_small": "small.jpg"}
@@ -34,3 +36,39 @@ def test_album_without_artist_uses_the_given_one():
     shaped = deezer.album_shape({"id": 1, "title": "X", "record_type": "compile"}, {"id": 9, "name": "Y"})
     assert shaped["album_type"] == "compilation"
     assert shaped["artists"] == [{"id": "9", "name": "Y"}]
+
+
+def test_search_keeps_plus_signs_for_deezers_double_decoding(monkeypatch):
+    queries = []
+
+    async def fake_get(path, **params):
+        queries.append(params["q"])
+        return {"data": []}
+
+    monkeypatch.setattr(deezer, "_get", fake_get)
+    asyncio.run(deezer.search("z++"))
+    assert set(queries) == {"z%2B%2B"}
+
+
+def test_charts_are_shaped_for_the_app(monkeypatch):
+    async def chart(path, **params):
+        assert path == "/chart/0"
+        return {
+            "tracks": {"data": [{"id": 1, "title": "Song", "duration": 100, "artist": {"id": 2, "name": "A"}}]},
+            "artists": {"data": [{"id": 2, "name": "A", "picture_xl": "xl.jpg"}]},
+            "playlists": {"data": [{"id": 3, "title": "Hits", "picture_xl": "xl.jpg"}]},
+        }
+
+    monkeypatch.setattr(deezer, "_get", chart)
+    charts = asyncio.run(deezer.get_charts())
+    assert charts["tracks"][0]["id"] == "1"
+    assert charts["artists"][0]["images"][0]["url"] == "xl.jpg"
+    assert charts["playlists"][0]["name"] == "Hits"
+
+
+def test_charts_failure_leaves_the_sections_empty(monkeypatch):
+    async def failing(path, **params):
+        raise deezer.DeezerError("down")
+
+    monkeypatch.setattr(deezer, "_get", failing)
+    assert asyncio.run(deezer.get_charts()) == {"tracks": [], "artists": [], "playlists": []}
