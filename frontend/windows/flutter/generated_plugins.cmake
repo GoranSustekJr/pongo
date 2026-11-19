@@ -11,14 +11,15 @@ list(APPEND FLUTTER_PLUGIN_LIST
   irondash_engine_context
   pdfx
   permission_handler_windows
-  screen_retriever
   super_native_extensions
   url_launcher_windows
-  window_manager
+  volume_controller
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   blurhash_ffi
+  flutter_local_notifications_windows
+  jni
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
