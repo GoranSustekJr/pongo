@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/buttons/text_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/back_like_button.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../app/view_models/app_settings_view_model.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/themes/dimens.dart';
+import '../../../../core/ui/app_blur.dart';
+import '../../../../core/ui/buttons/text_button.dart';
+import '../../../../core/ui/phone/buttons/back_button.dart';
+import '../../../../core/ui/phone/buttons/back_like_button.dart';
+import '../../../../core/ui/phone/liquid_glass_background.dart';
 
 class OnlinePlaylistAppBarPhone extends StatelessWidget {
   final String title;
@@ -18,18 +18,19 @@ class OnlinePlaylistAppBarPhone extends StatelessWidget {
   final double scrollControllerOffset;
   final Function() changeCover;
   final Function() changeTitle;
-  const OnlinePlaylistAppBarPhone(
-      {super.key,
-      required this.title,
-      required this.cover,
-      required this.edit,
-      required this.scrollControllerOffset,
-      required this.changeCover,
-      required this.changeTitle});
+  const OnlinePlaylistAppBarPhone({
+    super.key,
+    required this.title,
+    required this.cover,
+    required this.edit,
+    required this.scrollControllerOffset,
+    required this.changeCover,
+    required this.changeTitle,
+  });
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return SliverAppBar(
       snap: false,
       collapsedHeight: kToolbarHeight,
@@ -50,9 +51,10 @@ class OnlinePlaylistAppBarPhone extends StatelessWidget {
                     ? SizedBox(
                         key: const ValueKey(true),
                         child: textButton(
-                            AppLocalizations.of(context).changename,
-                            changeTitle,
-                            const TextStyle(color: Colors.white)),
+                          AppLocalizations.of(context).changename,
+                          changeTitle,
+                          const TextStyle(color: Colors.white),
+                        ),
                       )
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -77,26 +79,27 @@ class OnlinePlaylistAppBarPhone extends StatelessWidget {
         titlePadding: EdgeInsets.zero,
         centerTitle: true,
         title: AppBar(
-          backgroundColor: useBlur.value
+          backgroundColor: context.readSettings.useBlur
               ? Col.transp
-              : Col.realBackground.withAlpha(
+              : context.colors.realBackground.withAlpha(
                   ((MediaQuery.of(context).size.height / 2 <=
                                   scrollControllerOffset
                               ? 1
                               : scrollControllerOffset /
-                                  (MediaQuery.of(context).size.height / 2)) *
-                          AppConstants().noBlur)
-                      .toInt()),
+                                    (MediaQuery.of(context).size.height / 2)) *
+                          Dimens.noBlur)
+                      .toInt(),
+                ),
           automaticallyImplyLeading: false,
           flexibleSpace: Opacity(
             opacity:
                 MediaQuery.of(context).size.height / 2 <= scrollControllerOffset
-                    ? 1
-                    : scrollControllerOffset /
-                        (MediaQuery.of(context).size.height / 2),
+                ? 1
+                : scrollControllerOffset /
+                      (MediaQuery.of(context).size.height / 2),
             child: liquidGlassBackground(
               child: BackdropFilter(
-                filter: nonAppleBlur(10),
+                filter: nonAppleBlur(context, 10),
                 child: Container(),
               ),
             ),
@@ -122,13 +125,12 @@ class OnlinePlaylistAppBarPhone extends StatelessWidget {
                               height: size.width - 60,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: Col.primaryCard.withAlpha(200),
+                                color: context.colors.primaryCard.withAlpha(
+                                  200,
+                                ),
                               ),
                               child: const Center(
-                                child: Icon(
-                                  AppIcons.blankAlbum,
-                                  size: 50,
-                                ),
+                                child: Icon(AppIcons.blankAlbum, size: 50),
                               ),
                             ),
                     ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:pongo/features/player/presentation/phone/play_shuffle_halt_bar.dart';
-import 'package:pongo/shared/models/catalog/album.dart';
+import '../../../../domain/models/catalog/album.dart';
+import '../../../player/widgets/phone/play_shuffle_halt_bar.dart';
 
 class PlayShuffleHaltAlbum extends StatelessWidget {
   final Album album;
@@ -21,7 +21,7 @@ class PlayShuffleHaltAlbum extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlayShuffleHaltBar(
-      playingId: "online.album:${album.id}",
+      playingId: 'online.album:${album.id}',
       missingTracks: missingTracks,
       loadingShuffle: loadingShuffle,
       color: Colors.white,

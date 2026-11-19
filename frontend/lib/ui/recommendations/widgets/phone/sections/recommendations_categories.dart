@@ -1,53 +1,46 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 
-import 'package:pongo/app/navigation/navigation.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/album/presentation/phone/album_phone.dart';
-import 'package:pongo/features/recommendations/data/recommendations_data_manager.dart';
-import 'package:pongo/features/recommendations/presentation/phone/recommended_tile.dart';
-import 'package:pongo/features/search/presentation/phone/search_result_text.dart';
-import 'package:pongo/features/search/presentation/phone/search_result_tile.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/image/image_compatible.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../routing/navigation.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../album/widgets/phone/album_phone.dart';
+import '../../../../core/ui/image/image_compatible.dart';
+import '../../../../core/ui/space.dart';
+import '../../../../player/view_models/player_view_model.dart';
+import '../../../../search/widgets/phone/search_result_tile.dart';
+import '../../../../shell/view_models/shell_view_model.dart';
+import '../../../view_models/recommendations_view_model.dart';
+import '../recommended_tile.dart';
+import 'recommendations_track_row.dart';
 
 class RecommendationsCategories extends StatelessWidget {
-  final RecommendationsDataManager dataManager;
-  final AudioServiceHandler audioServiceHandler;
+  final RecommendationsViewModel dataManager;
+  final PlayerViewModel player;
+
+  /// Shown between the new releases and the genres.
+  final Widget? middle;
 
   const RecommendationsCategories({
     super.key,
     required this.dataManager,
-    required this.audioServiceHandler,
+    required this.player,
+    this.middle,
   });
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return Column(
       children: [
-        if (dataManager.categories.isNotEmpty ||
-            dataManager.newReleases.isNotEmpty)
-          searchResultText(
-              AppLocalizations.of(context).explore,
-              TextStyle(
-                fontSize: kIsApple ? 24 : 25,
-                fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w700,
-                color: Col.text,
-              )),
-        if (dataManager.categories.isNotEmpty ||
-            dataManager.newReleases.isNotEmpty)
+        if (dataManager.newReleases.isNotEmpty) ...[
+          homeSectionTitle(AppLocalizations.of(context).newreleases),
           razh(10),
+        ],
         if (dataManager.newReleases.isNotEmpty)
           SizedBox(
-            height: kIsDesktop ? 200 : 160,
+            height: RecommendedTile.height,
             width: MediaQuery.of(context).size.width,
             child: ListView.builder(
               padding: const EdgeInsets.only(left: 10, right: 10),
@@ -61,11 +54,12 @@ class RecommendationsCategories extends StatelessWidget {
                   onTap: () {
                     if (kIsMobile) {
                       Navigations().nextScreen(
-                          context,
-                          AlbumPhone(
-                            album: dataManager.newReleases[index],
-                            context: context,
-                          ));
+                        context,
+                        AlbumPhone(
+                          album: dataManager.newReleases[index],
+                          context: context,
+                        ),
+                      );
                     } else {
                       showMacosSheet(
                         context: context,
@@ -81,7 +75,12 @@ class RecommendationsCategories extends StatelessWidget {
               },
             ),
           ),
-        if (dataManager.categories.isNotEmpty) razh(10),
+        if (dataManager.newReleases.isNotEmpty) razh(30),
+        ?middle,
+        if (dataManager.categories.isNotEmpty) ...[
+          homeSectionTitle(AppLocalizations.of(context).genres),
+          razh(10),
+        ],
         if (dataManager.categories.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 7.5),
@@ -95,8 +94,8 @@ class RecommendationsCategories extends StatelessWidget {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: kIsDesktop
                     ? size.width > 1200
-                        ? 4
-                        : 3
+                          ? 4
+                          : 3
                     : 2,
                 childAspectRatio: 120 / 80,
                 crossAxisSpacing: 15,
@@ -104,47 +103,51 @@ class RecommendationsCategories extends StatelessWidget {
               ),
               itemCount: dataManager.categories.length,
               itemBuilder: (context, index) {
-                Widget child = Container(
+                final Widget child = Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(7.5),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                   child: Stack(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(7.5),
+                        borderRadius: BorderRadius.circular(14),
                         child: ImageCompatible(
                           image: dataManager
-                              .categories[index].categoryIcons[0].url,
+                              .categories[index]
+                              .categoryIcons[0]
+                              .url,
                           width: double.infinity,
                           height: double.infinity,
                         ),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        child: Container(
+                      Positioned.fill(
+                        child: DecoratedBox(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(7.5),
+                            borderRadius: BorderRadius.circular(14),
                             gradient: LinearGradient(
                               colors: [
-                                Colors.black.withOpacity(0.5),
-                                Colors.black.withOpacity(0.8),
-                                Colors.black.withOpacity(0.5),
+                                Colors.black.withValues(alpha: 0),
+                                Colors.black.withValues(alpha: 0.7),
                               ],
-                              stops: const [0.0, 0.5, 1.0],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
+                              stops: const [0.4, 1.0],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
                             ),
                           ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              dataManager.categories[index].name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
-                            ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 12,
+                        right: 12,
+                        bottom: 10,
+                        child: Text(
+                          dataManager.categories[index].name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -154,36 +157,16 @@ class RecommendationsCategories extends StatelessWidget {
                 return kIsApple
                     ? CupertinoButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () {
-                          if (currentSearchDataManager.value != null) {
-                            if (kIsMobile) {
-                              currentSearchDataManager.value!.search(
-                                dataManager.categories[index].name,
-                              );
-                              navigationBarIndex.value = 0;
-                              searchBarIsSearching.value = true;
-                            } else {
-                              currentSearchDataManager.value!.search(
-                                dataManager.categories[index].name,
-                              );
-                              navigationBarIndex.value = 0;
-                              searchBarIsSearching.value = true;
-                            }
-                          }
-                        },
+                        onPressed: () => context.shell.requestSearch(
+                          dataManager.categories[index].name,
+                        ),
                         child: child,
                       )
                     : CupertinoButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () {
-                          if (currentSearchDataManager.value != null) {
-                            currentSearchDataManager.value!.search(
-                              dataManager.categories[index].name,
-                            );
-                            navigationBarIndex.value = 0;
-                            searchBarIsSearching.value = true;
-                          }
-                        },
+                        onPressed: () => context.shell.requestSearch(
+                          dataManager.categories[index].name,
+                        ),
                         child: child,
                       );
               },

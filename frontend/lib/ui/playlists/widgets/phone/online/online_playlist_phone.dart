@@ -1,45 +1,32 @@
-import 'dart:io';
-
-import 'package:audio_service/audio_service.dart';
-import 'package:blurhash_ffi/blurhash.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
-import 'package:image_cropper/image_cropper.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/notifications/notifications.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/features/player/data/play.dart';
-import 'package:pongo/features/player/presentation/phone/alerts/halt_alert.dart';
-import 'package:pongo/features/playlists/data/open_playlist.dart';
-import 'package:pongo/features/playlists/data/playlist_functions.dart';
-import 'package:pongo/features/playlists/models/online_playlist_track.dart';
-import 'package:pongo/features/playlists/models/playlist_handler.dart';
-import 'package:pongo/features/playlists/presentation/phone/online/change_online_playlist_name_phone.dart';
-import 'package:pongo/features/playlists/presentation/phone/online/online_playlist_app_bar_phone.dart';
-import 'package:pongo/features/playlists/presentation/phone/online/online_playlist_body_phone.dart';
-import 'package:pongo/features/playlists/presentation/phone/online/play_shuffle_halt_online_playlist.dart';
-import 'package:pongo/features/playlists/presentation/phone/track_from_playlist_alert.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/data/tracks_api.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/blurhash/blurhash.dart';
-import 'package:pongo/shared/widgets/buttons/text_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/phone/loading_scaffold.dart';
-import 'package:pongo/shared/widgets/phone/shimmer/song_shimmer.dart';
-import 'package:pongo/shared/widgets/phone/sticky_header_delegate.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../domain/models/catalog/track.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../app/view_models/app_settings_view_model.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/themes/dimens.dart';
+import '../../../../core/ui/app_blur.dart';
+import '../../../../core/ui/blurhash/blurhash.dart';
+import '../../../../core/ui/buttons/text_button.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../../core/ui/phone/loading_scaffold.dart';
+import '../../../../core/ui/phone/shimmer/song_shimmer.dart';
+import '../../../../core/ui/phone/sticky_header_delegate.dart';
+import '../../../../core/ui/space.dart';
+import '../../../../player/widgets/phone/alerts/halt_alert.dart';
+import '../../../../shell/view_models/shell_view_model.dart';
+import '../../../view_models/online_playlist_view_model.dart';
+import '../../../view_models/open_playlist.dart';
+import '../pick_cover.dart';
+import '../track_from_playlist_alert.dart';
+import 'change_online_playlist_name_phone.dart';
+import 'online_playlist_app_bar_phone.dart';
+import 'online_playlist_body_phone.dart';
+import 'play_shuffle_halt_online_playlist.dart';
 
 class OnlinePlaylistPhone extends StatefulWidget {
   final int opid;
@@ -63,508 +50,118 @@ class OnlinePlaylistPhone extends StatefulWidget {
 }
 
 class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
-  // Track stids
-  List<String> stids = [];
-
-  // Playlist data
-  MemoryImage? cover;
-  String title = "";
-  String blurhash = "";
-
-  // Hidden songs
-  Map<String, bool> hidden = {};
-
-  // Show body
-  bool showBody = false;
-
-  // Tracks
-  List<Track> tracks = [];
-
-  // Edit
-  bool edit = false;
-
-  // Cover image for background
-  List<MemoryImage> coverImages = [];
-
-  // Player
-  List<MediaItem> mediaItem = [];
-
-  // Length of item list
-  int listLength = 0;
-
-  // Selected tracks for editing
-  List<String> selectedStids = [];
-
-  // Manage Tracks That Do Not Exist
-  List<String> loading = [];
+  late final OnlinePlaylistViewModel viewModel;
 
   // Scroll controller
-  late ScrollController scrollController;
-
-  // Cancel play function
-  bool cancel = false;
+  final scrollController = ScrollController();
 
   // Offset
   double scrollControllerOffset = 0;
 
-  // Tracks
-  List<String> missingTracks = [];
-  Map<String, double> existingTracks = {};
-
-  // Loading shuffle
-  bool loadingShuffle = false;
-
-  // Playlist functions
-  late PlaylistFunctions playlistFunctions;
+  bool get showBody => viewModel.showBody;
+  bool get edit => viewModel.edit;
+  String get title => viewModel.title;
+  String get blurhash => viewModel.blurhash;
+  MemoryImage? get cover =>
+      viewModel.cover == null ? widget.cover : MemoryImage(viewModel.cover!);
+  List<Track> get tracks => viewModel.tracks;
+  Map<String, bool> get hidden => viewModel.hidden;
+  List<String> get selectedStids => viewModel.selectedStids;
+  List<String> get missingTracks => viewModel.missingTracks;
+  List<String> get loading => viewModel.loading;
+  bool get loadingShuffle => viewModel.loadingShuffle;
+  int get listLength => viewModel.listLength;
 
   @override
   void initState() {
     super.initState();
-    cover = widget.cover;
-    title = widget.title;
-    blurhash = widget.blurhash;
-    scrollController = ScrollController();
-    scrollController.addListener(scrollControllerListener);
-
-    getTracks();
-  }
-
-  scrollControllerListener() {
-    setState(() {
-      if (scrollController.offset < 0) {
-        scrollControllerOffset = 0;
-      } else {
-        scrollControllerOffset = scrollController.offset;
-      }
-    });
-  }
-
-  void getTracks() async {
-    // Get tracks count in the playlist
-    int len =
-        await DatabaseHelper().queryOnlineTracksLengthForPlaylist(widget.opid);
-
-    // Set tracks length in order to show shimmer
-    setState(() {
-      listLength = len;
-    });
-
-    // get the stid list
-    List<OnlinePlaylistTrack> onlinePlaylistTrackss =
-        await DatabaseHelper().queryOnlineTracksForPlaylist(widget.opid);
-
-    // init the help variables
-    List<String> stidList = [];
-    Map<String, bool> hiddn = {};
-
-    // get the stid list from the stidss list and set the hidden status in the help variables
-    for (OnlinePlaylistTrack onlinePlaylistTrack in onlinePlaylistTrackss) {
-      stidList.add(onlinePlaylistTrack.stid);
-      hiddn[onlinePlaylistTrack.stid] = (onlinePlaylistTrack.hidden);
-    }
-
-    // Set states
-    setState(() {
-      stids = stidList;
-      hidden = hiddn;
-      tracks = onlinePlaylistTrackss
-          .map((onlinePlaylistTrack) => Track(
-                id: onlinePlaylistTrack.stid,
-                name: onlinePlaylistTrack.title,
-                artists: onlinePlaylistTrack.artistTrack,
-                album: onlinePlaylistTrack.albumTrack,
-              ))
-          .toList();
-      showBody = true;
-    });
-
-    // Get every track data
-    getTrackData();
-  }
-
-  getTrackData() async {
-    if (stids.isNotEmpty) {
-      // Get the tracks data
-      final trackThatExist = await TracksApi().getDurations(context, stids);
-
-      setState(() {
-        existingTracks = {
-          for (var item in trackThatExist["durations"])
-            item[0] as String: item[1] as double
-        }; // existing tracks durations, runtimetype Map<String, double>
-
-        missingTracks = (trackThatExist["missing_tracks"] as List<dynamic>)
-            .cast<String>(); // Missing tracks stids
-      });
-    }
-  }
-
-  void addLoading(String stid) {
-    if (mounted) {
-      setState(() {
-        loading.add(stid);
-      });
-    }
-  }
-
-  void removeLoading(String stid) {
-    if (mounted) {
-      setState(() {
-        loading.remove(stid);
-      });
-    }
-  }
-
-  void addDuration(String stid, double duration) {
-    if (mounted) {
-      setState(() {
-        missingTracks.remove(stid);
-        existingTracks[stid] = duration;
-      });
-    }
-  }
-
-  play({int index = 0}) async {
-    if (!loadingShuffle) {
-      PlayMultiple().onlineTrack(
-        "online.playlist:${widget.opid}",
-        tracks.where((track) => hidden[track.id] == false).toList(),
-        missingTracks,
-        existingTracks,
-        addLoading,
-        removeLoading,
-        addDuration,
-        index: index,
-      );
-    }
-  }
-
-  void playShuffle() {
-    if (!loadingShuffle && missingTracks.isEmpty) {
-      PlayMultiple().onlineTrack(
-        "online.playlist:${widget.opid}",
-        tracks.where((track) => hidden[track.id] == false).toList(),
-        missingTracks,
-        existingTracks,
-        addLoading,
-        removeLoading,
-        addDuration,
-        shuffle: true,
-      );
-    }
-  }
-
-  Future<void> move<T>(List<T> list, int currentIndex, int newIndex) async {
-    if (currentIndex == newIndex) return;
-    final item = list.removeAt(currentIndex);
-    list.insert(newIndex, item);
-  }
-
-  void showSelected() async {
-    if (selectedStids.isNotEmpty) {
-      await DatabaseHelper()
-          .updateOnlinePlaylistShow(widget.opid, selectedStids);
-      setState(() {
-        // Remove from hidden
-        for (var key in hidden.keys) {
-          if (selectedStids.contains(key)) {
-            hidden[key] = false;
-          }
-        }
-        selectedStids.clear();
-        edit = false;
-      });
-    }
-  }
-
-  void hideSelected() async {
-    if (selectedStids.isNotEmpty) {
-      await DatabaseHelper()
-          .updateOnlinePlaylistHide(widget.opid, selectedStids);
-      setState(() {
-        // Remove from hidden
-
-        for (var key in hidden.keys) {
-          if (selectedStids.contains(key)) {
-            hidden[key] = true;
-          }
-        }
-        selectedStids.clear();
-        edit = false;
-      });
-    }
-  }
-
-  void changeTitle() async {
-    newPlaylistTitle(
-      context,
-      widget.opid,
-      (newTitle) {
-        setState(() {
-          title = newTitle;
-        });
-        widget.updateTitle(newTitle);
-      },
+    viewModel = OnlinePlaylistViewModel(
+      id: widget.opid,
+      title: widget.title,
+      cover: widget.cover?.bytes,
+      blurhash: widget.blurhash,
+      playlists: context.read(),
+      player: context.read(),
+      blurhashService: context.read(),
+      catalog: context.read(),
+      downloads: context.read(),
     );
+    viewModel.addListener(_onViewModelChanged);
+    scrollController.addListener(scrollControllerListener);
   }
 
-  void changeCover() async {
-    if (edit) {
-      XFile? pickedFile;
+  void _onViewModelChanged() => setState(() {});
 
-      try {
-        pickedFile = await ImagePicker().pickImage(
-          source: ImageSource.gallery,
-          requestFullMetadata: false,
-        );
-      } catch (e) {
-        if (e.toString().contains("access_denied")) {
-          Notifications().showWarningNotification(
-            context,
-            AppLocalizations.of(context).pleaseallowaccesstophotogalery,
-          );
-          return;
-        }
-      }
-      Uint8List? bytes;
-
-      if (pickedFile != null) {
-        // Crop the image to a square
-        CroppedFile? croppedFile = await ImageCropper().cropImage(
-          sourcePath: pickedFile.path,
-          maxHeight: 600,
-          maxWidth: 600,
-          aspectRatio: const CropAspectRatio(
-            ratioX: 1,
-            ratioY: 1,
-          ), // Square aspect ratio
-
-          uiSettings: [
-            AndroidUiSettings(
-              toolbarTitle: AppLocalizations.of(context).cropimage,
-              toolbarColor: Colors.black,
-              toolbarWidgetColor: Colors.white,
-              hideBottomControls: true,
-            ),
-            IOSUiSettings(
-              title: AppLocalizations.of(context).cropimage,
-              cancelButtonTitle: AppLocalizations.of(context).cancel,
-              doneButtonTitle: AppLocalizations.of(context).okey,
-            ),
-          ],
-        );
-
-        if (croppedFile != null) {
-          bytes = await File(croppedFile.path).readAsBytes();
-          if (bytes.isNotEmpty) {
-            await DatabaseHelper()
-                .updateOnlinePlaylistCover(widget.opid, bytes);
-            final String blurHash = await BlurhashFFI.encode(
-              MemoryImage(bytes),
-              componentX: 3,
-              componentY: 3,
-            );
-            setState(() {
-              cover = MemoryImage(bytes!);
-              blurhash = blurHash;
-            });
-            widget.updateCover(MemoryImage(bytes));
-          }
-        }
-      }
-    } else {
-      final audioServiceHandler =
-          Provider.of<AudioHandler>(context, listen: false)
-              as AudioServiceHandler;
-      if (audioServiceHandler.mediaItem.value != null) {
-        if ("online.playlist:${widget.opid}" ==
-            '${audioServiceHandler.mediaItem.value!.id.split('.')[0]}.${audioServiceHandler.mediaItem.value!.id.split('.')[1]}') {
-          CustomButton ok = await haltAlert(context);
-          if (ok == CustomButton.positiveButton) {
-            currentTrackHeight.value = 0;
-            final audioServiceHandler =
-                Provider.of<AudioHandler>(context, listen: false)
-                    as AudioServiceHandler;
-
-            await audioServiceHandler.halt();
-            setState(() {
-              edit = true;
-            });
-          }
-        } else {
-          setState(() {
-            edit = true;
-          });
-        }
-      } else {
-        setState(() {
-          edit = true;
-        });
-      }
-    }
-  }
-
-  void stopEdit() {
+  void scrollControllerListener() {
     setState(() {
-      edit = false;
-      selectedStids.clear();
+      scrollControllerOffset = scrollController.offset < 0
+          ? 0
+          : scrollController.offset;
     });
   }
 
-  void remove() async {
-    // Rremove tracks from playlist
-    if (selectedStids.isNotEmpty) {
-      CustomButton ok = await removeTrackFromPlaylistAlert(context);
-      if (ok == CustomButton.positiveButton) {
-        await DatabaseHelper()
-            .removeTracksFromOnlinePlaylist(widget.opid, selectedStids);
+  Future<void> play({int index = 0}) => viewModel.play(index: index);
 
-        setState(() {
-          tracks.clear();
-          selectedStids.clear();
-          hidden.clear();
-          edit = false;
-        });
+  Future<void> playShuffle() => viewModel.playShuffle();
 
-        getTracks();
-      }
+  Future<void> showSelected() => viewModel.showSelected();
+
+  Future<void> hideSelected() => viewModel.hideSelected();
+
+  void changeTitle() {
+    newPlaylistTitle(context, (newTitle) async {
+      await viewModel.rename(newTitle);
+      widget.updateTitle(newTitle);
+    });
+  }
+
+  Future<void> changeCover() async {
+    if (edit) {
+      final bytes = await pickSquareCover(context);
+      if (bytes == null || bytes.isEmpty) return;
+      await viewModel.setCover(bytes);
+      widget.updateCover(MemoryImage(bytes));
+      return;
     }
+    var halt = false;
+    if (viewModel.isPlaying) {
+      final CustomButton ok = await haltAlert(context);
+      if (ok != CustomButton.positiveButton || !mounted) return;
+      context.shell.currentTrackHeight.value = 0;
+      halt = true;
+    }
+    await viewModel.startEdit(haltPlayback: halt);
+  }
+
+  void stopEdit() => viewModel.stopEdit();
+
+  Future<void> remove() async {
+    if (selectedStids.isEmpty) return;
+    final CustomButton ok = await removeTrackFromPlaylistAlert(context);
+    if (ok == CustomButton.positiveButton) await viewModel.removeSelected();
   }
 
   void addToPlaylist() {
-    if (selectedStids.isNotEmpty) {
-      OpenPlaylist().show(
-          context,
-          PlaylistHandler(
-              type: PlaylistHandlerType.online,
-              function: PlaylistHandlerFunction.addToPlaylist,
-              track: selectedStids.map((stid) {
-                final track =
-                    tracks.where((track) => track.id == stid).toList()[0];
-                return PlaylistHandlerOnlineTrack(
-                  id: track.id,
-                  name: track.name,
-                  artist: track.artists
-                      .map((artist) => {"id": artist.id, "name": artist.name})
-                      .toList(),
-                  cover: calculateWantedResolutionForTrack(
-                      track.album != null
-                          ? track.album!.images
-                          : track.album!.images,
-                      150,
-                      150),
-                  albumTrack: track.album,
-                  playlistHandlerCoverType: PlaylistHandlerCoverType.url,
-                );
-              }).toList()));
-    }
+    final handler = viewModel.addSelectedToPlaylist();
+    if (handler != null) OpenPlaylist().show(context, handler);
   }
 
-  void select(stid) {
-    // Select track
-    setState(() {
-      if (selectedStids.contains(stid)) {
-        selectedStids.remove(stid);
-      } else {
-        selectedStids.add(stid);
-      }
-    });
-  }
+  void select(String stid) => viewModel.select(stid);
 
-  void moveTrack(oldIndex, newIndex) async {
-    if (oldIndex == newIndex) return;
-    setState(() {
-      final item = tracks.removeAt(oldIndex);
-      tracks.insert(
-        oldIndex < newIndex ? newIndex - 1 : newIndex,
-        item,
-      );
+  Future<void> moveTrack(int oldIndex, int newIndex) =>
+      viewModel.moveTrack(oldIndex, newIndex);
 
-      final stid = stids.removeAt(oldIndex);
-      stids.insert(
-        oldIndex < newIndex ? newIndex - 1 : newIndex,
-        stid,
-      );
+  void selectAll() => viewModel.selectAll();
 
-      // Get the new order
-      Map<String, Track> trackMap = {for (var track in tracks) track.id: track};
-      List<Track> newTrack = stids.map((stid) => trackMap[stid]!).toList();
-
-      DatabaseHelper().updateOnlinePlaylistOrder(
-        widget.opid,
-        newTrack
-            .map(
-              (track) => OnlinePlaylistTrack(
-                opid: widget.opid,
-                stid: track.id,
-                title: track.name,
-                artistTrack: track.artists,
-                albumTrack: track.album,
-                image: calculateWantedResolutionForTrack(
-                    track.album != null
-                        ? track.album!.images
-                        : track.album!.images,
-                    150,
-                    150),
-                orderNumber: -1,
-                hidden: hidden[track.id] ?? false,
-              ),
-            )
-            .toList(),
-      );
-    });
-  }
-
-  // Select all stids
-  selectAll() {
-    setState(() {
-      if (selectedStids.length != tracks.length) {
-        selectedStids.clear();
-        selectedStids.addAll(tracks.map((track) => track.id));
-      } else {
-        selectedStids.clear();
-      }
-    });
-  }
-
-  // Download the tracks/playlist
-  void download() async {
-    if (selectedStids.isNotEmpty) {
-      // Get the tracks that need to be downloaded
-      List<String> toDownload =
-          await DatabaseHelper().queryMissingStids(selectedStids);
-
-      // Open playlist helper and add them to a playlist or create a new playlist
-      OpenPlaylist().show(
-        context,
-        PlaylistHandler(
-          toDownload: toDownload,
-          type: PlaylistHandlerType.offline,
-          function: PlaylistHandlerFunction.addToPlaylist,
-          track: tracks.where((track) => selectedStids.contains(track.id)).map(
-            (track) {
-              return PlaylistHandlerOnlineTrack(
-                id: track.id,
-                name: track.name,
-                artist: track.artists
-                    .map((artist) => {"id": artist.id, "name": artist.name})
-                    .toList(),
-                cover: calculateBestImageForTrack(
-                  track.album!.images,
-                ),
-                albumTrack: track.album,
-                playlistHandlerCoverType: PlaylistHandlerCoverType.url,
-              );
-            },
-          ).toList(),
-        ),
-      );
-    }
+  Future<void> download() async {
+    final handler = await viewModel.downloadSelected();
+    if (handler != null && mounted) OpenPlaylist().show(context, handler);
   }
 
   @override
   void dispose() {
-    cancel = true;
+    viewModel.removeListener(_onViewModelChanged);
+    viewModel.dispose();
     scrollController.removeListener(scrollControllerListener);
     scrollController.dispose();
     super.dispose();
@@ -572,7 +169,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 400),
       child: showBody
@@ -580,7 +177,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
               key: const ValueKey(true),
               width: size.width,
               height: size.height,
-              decoration: AppConstants().backgroundBoxDecoration,
+              decoration: context.colors.backgroundBoxDecoration,
               child: Stack(
                 children: [
                   Blurhash(
@@ -616,26 +213,30 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                 maxHeight: 40,
                                 child: Padding(
                                   padding: const EdgeInsets.only(
-                                      left: 15, right: 15, top: 5),
+                                    left: 15,
+                                    right: 15,
+                                    top: 5,
+                                  ),
                                   child: liquidGlassBackground(
                                     child: Container(
                                       decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(60),
-                                          color: useBlur.value
-                                              ? Col.transp
-                                              : Col.realBackground.withAlpha(
-                                                  AppConstants().noBlur)),
+                                        borderRadius: BorderRadius.circular(60),
+                                        color: context.readSettings.useBlur
+                                            ? Col.transp
+                                            : context.colors.realBackground
+                                                  .withAlpha(Dimens.noBlur),
+                                      ),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(60),
                                         child: BackdropFilter(
-                                          filter: nonAppleBlur(10),
+                                          filter: nonAppleBlur(context, 10),
                                           child: PlayShuffleHaltOnlinePlaylist(
                                             opid: widget.opid,
                                             missingTracks: missingTracks,
                                             loadingShuffle: loadingShuffle,
                                             edit: edit,
-                                            allSelected: selectedStids.length ==
+                                            allSelected:
+                                                selectedStids.length ==
                                                 tracks.length,
                                             frontWidget: const SizedBox(),
                                             endWidget: const SizedBox(),
@@ -664,32 +265,46 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                 child: tracks.isNotEmpty || listLength < 1
                                     ? SizedBox(
                                         key: const ValueKey(true),
-                                        child: stids.isEmpty
+                                        child: tracks.isEmpty
                                             ? Column(
                                                 children: [
                                                   razh(50),
                                                   iconButton(
-                                                      AppIcons.blankTrack,
-                                                      Colors.white, () {
-                                                    navigationBarIndex.value =
-                                                        0;
-                                                    searchFocusNode.value
-                                                        .requestFocus();
-                                                  }, size: 60),
+                                                    AppIcons.blankTrack,
+                                                    Colors.white,
+                                                    () {
+                                                      context
+                                                              .shell
+                                                              .navigationBarIndex
+                                                              .value =
+                                                          0;
+                                                      context
+                                                          .shell
+                                                          .searchFocusNode
+                                                          .requestFocus();
+                                                    },
+                                                    size: 60,
+                                                  ),
                                                   textButton(
-                                                      AppLocalizations.of(
-                                                              context)
-                                                          .addtrackstoyoutplaylist,
-                                                      () {
-                                                    navigationBarIndex.value =
-                                                        0;
-                                                    searchFocusNode.value
-                                                        .requestFocus();
-                                                  },
-                                                      const TextStyle(
-                                                          color: Colors.white),
-                                                      edgeInsets:
-                                                          EdgeInsets.zero)
+                                                    AppLocalizations.of(
+                                                      context,
+                                                    ).addtrackstoyoutplaylist,
+                                                    () {
+                                                      context
+                                                              .shell
+                                                              .navigationBarIndex
+                                                              .value =
+                                                          0;
+                                                      context
+                                                          .shell
+                                                          .searchFocusNode
+                                                          .requestFocus();
+                                                    },
+                                                    const TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                    edgeInsets: EdgeInsets.zero,
+                                                  ),
                                                 ],
                                               )
                                             : OnlinePlaylistBodyPhone(
@@ -697,7 +312,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                                 tracks: tracks,
                                                 missingTracks: missingTracks,
                                                 loading: loading,
-                                                numberOfSTIDS: stids.length,
+                                                numberOfSTIDS: tracks.length,
                                                 hidden: hidden,
                                                 edit: edit,
                                                 play: (index) {
@@ -714,7 +329,8 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                           ListView.builder(
                                             padding: EdgeInsets.only(
                                               top: 35,
-                                              bottom: MediaQuery.of(context)
+                                              bottom:
+                                                  MediaQuery.of(context)
                                                       .padding
                                                       .bottom +
                                                   15,
@@ -727,7 +343,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                                               return songTileSchimmer(
                                                 context,
                                                 index == 0,
-                                                index == listLength--,
+                                                index == listLength - 1,
                                               );
                                             },
                                           ),
@@ -739,7 +355,7 @@ class _OnlinePlaylistPhoneState extends State<OnlinePlaylistPhone> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             )

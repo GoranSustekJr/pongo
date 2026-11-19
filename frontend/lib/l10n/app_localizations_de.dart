@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -796,7 +797,8 @@ class AppLocalizationsDe extends AppLocalizations {
   String get deleteyouraccount => 'Lösche dein Konto';
 
   @override
-  String get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium =>
+  String
+  get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium =>
       'Durch das Löschen deines Kontos wirst du abgemeldet und deine Daten werden vom Server entfernt.';
 
   @override
@@ -836,4 +838,28 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get lastadded => 'Zuletzt hinzugefügt';
+
+  @override
+  String get goodmorning => 'Guten Morgen';
+
+  @override
+  String get goodafternoon => 'Guten Tag';
+
+  @override
+  String get goodevening => 'Guten Abend';
+
+  @override
+  String get toptracks => 'Top-Titel';
+
+  @override
+  String get popularartists => 'Beliebte Künstler';
+
+  @override
+  String get featuredplaylists => 'Empfohlene Playlists';
+
+  @override
+  String get newreleases => 'Neuerscheinungen';
+
+  @override
+  String get genres => 'Genres';
 }

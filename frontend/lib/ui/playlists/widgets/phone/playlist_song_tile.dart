@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/image/image_compatible.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../domain/models/catalog/track.dart';
+import '../../../../utils/image_resolution.dart';
+import '../../../../utils/platform.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/ui/image/image_compatible.dart';
+import '../../../core/ui/space.dart';
 
 class PlaylistSongTile extends StatelessWidget {
   final Track track;
@@ -28,12 +28,12 @@ class PlaylistSongTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double radius = 15;
-    BorderRadius borderRadius = BorderRadius.only(
-      topLeft: first ? Radius.circular(radius) : Radius.zero,
-      topRight: first ? Radius.circular(radius) : Radius.zero,
-      bottomLeft: last ? Radius.circular(radius) : Radius.zero,
-      bottomRight: last ? Radius.circular(radius) : Radius.zero,
+    const double radius = 15;
+    final BorderRadius borderRadius = BorderRadius.only(
+      topLeft: first ? const Radius.circular(radius) : Radius.zero,
+      topRight: first ? const Radius.circular(radius) : Radius.zero,
+      bottomLeft: last ? const Radius.circular(radius) : Radius.zero,
+      bottomRight: last ? const Radius.circular(radius) : Radius.zero,
     );
 
     final Widget child = Column(
@@ -43,7 +43,7 @@ class PlaylistSongTile extends StatelessWidget {
           Container(
             height: 1,
             width: MediaQuery.of(context).size.width - 75,
-            color: Col.onIcon.withAlpha(50),
+            color: context.colors.onIcon.withAlpha(50),
           ),
         Row(
           children: [
@@ -55,21 +55,18 @@ class PlaylistSongTile extends StatelessWidget {
                 height: 50,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7.5),
-                  color: Col.realBackground.withAlpha(150),
+                  color: context.colors.realBackground.withAlpha(150),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7.5),
-                  child: track.album ==
+                  child:
+                      track.album ==
                           null //!track["track"].keys.contains("album")
                       ? Center(
                           child: Icon(AppIcons.blankTrack, color: Colors.white),
                         )
                       : ImageCompatible(
-                          image: calculateWantedResolutionForTrack(
-                            track.album!.images,
-                            100,
-                            100,
-                          ),
+                          image: imageUrlForSize(track.album!.images, 100, 100),
                         ),
                 ),
               ),
@@ -105,9 +102,7 @@ class PlaylistSongTile extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
-              child: trailing,
-            ),
+            SizedBox(child: trailing),
           ],
         ),
       ],
@@ -128,16 +123,12 @@ class PlaylistSongTile extends StatelessWidget {
                   ),
                   child: CupertinoButton(
                     padding: EdgeInsets.zero,
-                    onPressed: () {
-                      function();
-                    },
+                    onPressed: function,
                     child: child,
                   ),
                 )
               : InkWell(
-                  onTap: () {
-                    function();
-                  },
+                  onTap: function,
                   splashColor: Colors.white.withAlpha(100),
                   borderRadius: borderRadius,
                   child: Container(

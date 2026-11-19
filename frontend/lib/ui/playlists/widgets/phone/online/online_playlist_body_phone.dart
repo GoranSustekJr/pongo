@@ -1,18 +1,15 @@
 import 'dart:ui';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/library/presentation/phone/favourites/favourites_tile.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/trailing.dart';
+import '../../../../../domain/models/catalog/track.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../core/ui/phone/trailing.dart';
+import '../../../../library/widgets/phone/favourites/favourites_tile.dart';
+import '../../../../player/view_models/player_view_model.dart';
 
 class OnlinePlaylistBodyPhone extends StatelessWidget {
   final int opid;
@@ -44,19 +41,19 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Not hiddent tracks
-    List<Track> shownTracks =
-        tracks.where((track) => hidden[track.id] != true || edit).toList();
+    final List<Track> shownTracks = tracks
+        .where((track) => hidden[track.id] != true || edit)
+        .toList();
 
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final player = context.player;
 
     return Padding(
       padding: const EdgeInsets.only(),
       child: StreamBuilder(
         key: const ValueKey(false),
-        stream: audioServiceHandler.mediaItem.stream,
+        stream: player.currentItemStream,
         builder: (context, snapshot) {
-          final String id = snapshot.data != null ? snapshot.data!.id : "";
+          final String id = snapshot.data != null ? snapshot.data!.id : '';
 
           return ReorderableListView.builder(
             padding: EdgeInsets.only(
@@ -66,14 +63,17 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
             itemCount: shownTracks.length,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            onReorder: (oldIndex, newIndex) {
+            onReorderItem: (oldIndex, newIndex) {
+              // The handlers below expect the index from before the item is
+              // removed
+              if (newIndex > oldIndex) newIndex += 1;
               if (edit) {}
               move(oldIndex, newIndex);
             },
             proxyDecorator: (child, index, animation) => Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Col.primaryCard.withAlpha(175),
+                color: context.colors.primaryCard.withAlpha(175),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
@@ -102,28 +102,25 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
                           child: Padding(
                             padding: const EdgeInsets.only(right: 5),
                             child: Trailing(
-                                forceWhite: true,
-                                show: !loading.contains(shownTracks[index].id),
-                                showThis: id ==
-                                        "online.playlist:$opid.${shownTracks[index].id}" &&
-                                    audioServiceHandler
-                                            .audioPlayer.currentIndex ==
-                                        index,
-                                trailing: const Icon(
-                                  key: ValueKey(true),
-                                  AppIcons.loading,
-                                  color: Colors.white,
-                                )),
+                              forceWhite: true,
+                              show: !loading.contains(shownTracks[index].id),
+                              showThis:
+                                  id ==
+                                      'online.playlist:$opid.${shownTracks[index].id}' &&
+                                  player.currentIndex == index,
+                              trailing: const Icon(
+                                key: ValueKey(true),
+                                AppIcons.loading,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                         if (edit && hidden[shownTracks[index].id] == true)
                           const SizedBox(
                             height: 40,
                             width: 20,
-                            child: Icon(
-                              AppIcons.hide,
-                              color: Colors.white,
-                            ),
+                            child: Icon(AppIcons.hide, color: Colors.white),
                           ),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
@@ -152,34 +149,12 @@ class OnlinePlaylistBodyPhone extends StatelessWidget {
                         select(shownTracks[index].id);
                       }
                     : () async {
-                        final playNew = audioServiceHandler.mediaItem.value !=
-                                null
-                            ? "${audioServiceHandler.mediaItem.value!.id.split(".")[0]}.${audioServiceHandler.mediaItem.value!.id.split(".")[1]}" !=
-                                "online.playlist:$opid"
-                            : true;
-
-                        final skipTo =
-                            audioServiceHandler.mediaItem.value != null
-                                ? audioServiceHandler.mediaItem.value!.id
-                                        .split(".")[2] !=
-                                    shownTracks[index].id
-                                : false;
-
-                        if (playNew) {
-                          changeTrackOnTap.value = true;
-                          play(index);
-                        } else if (skipTo &&
-                            (audioServiceHandler.playlist.length - 1) >=
-                                index &&
-                            changeTrackOnTap.value) {
-                          await audioServiceHandler.skipToQueueItem(index);
-                        } else {
-                          if (audioServiceHandler.audioPlayer.playing) {
-                            await audioServiceHandler.pause();
-                          } else {
-                            await audioServiceHandler.play();
-                          }
-                        }
+                        await context.player.playCollectionTrack(
+                          collectionId: 'online.playlist:$opid',
+                          stid: shownTracks[index].id,
+                          index: index,
+                          playCollection: () async => play(index),
+                        );
                       },
               );
             },

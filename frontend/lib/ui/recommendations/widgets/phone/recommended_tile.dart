@@ -5,27 +5,29 @@ import 'package:flutter_desktop_context_menu/flutter_desktop_context_menu.dart';
 import 'package:kr_pull_down_button/pull_down_button.dart';
 import 'package:star_menu/star_menu.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/features/recommendations/presentation/desktop/recommended_track_pulldown_menu_items_desktop.dart';
-import 'package:pongo/features/recommendations/presentation/phone/recommended_track_pulldown_menu_items.dart';
-import 'package:pongo/features/search/presentation/phone/search_result_tile.dart';
-import 'package:pongo/features/search/presentation/phone/search_track_pulldown_menu_items.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/image/image_compatible.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../domain/models/catalog/album.dart' show Album;
+import '../../../../domain/models/catalog/artist.dart' show Artist;
+import '../../../../domain/models/catalog/playlist.dart' show Playlist;
+import '../../../../domain/models/catalog/track.dart';
+import '../../../../utils/platform.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/ui/image/image_compatible.dart';
+import '../../../core/ui/space.dart';
+import '../../../core/view_models/track_actions_view_model.dart';
+import '../../../search/widgets/phone/search_result_tile.dart';
+import '../../../search/widgets/phone/search_track_pulldown_menu_items.dart';
+import '../desktop/recommended_track_pulldown_menu_items_desktop.dart';
 
 class RecommendedTile extends StatelessWidget {
-  final dynamic data;
+  static double get height => kIsDesktop ? 200 : 178;
+  static double get _imageSize => kIsDesktop ? 160 : 140;
+
+  /// The [Track], [Playlist], [Artist] or [Album] shown.
+  final Object data;
   final bool showLoading;
   final TileType type;
   final Function() onTap;
   final Widget? trailing;
-  final Function(String)? doesNotExist;
-  final Function(String)? doesNowExist;
   const RecommendedTile({
     super.key,
     required this.data,
@@ -33,89 +35,40 @@ class RecommendedTile extends StatelessWidget {
     required this.type,
     required this.onTap,
     this.trailing,
-    this.doesNotExist,
-    this.doesNowExist,
   });
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    final String imageUrl;
-    final String title;
-    final String subtitle;
-    final IconData noImage;
-    final List<Widget> pullDownMenuItems;
-
-    switch (type) {
-      case TileType.track:
-        imageUrl = data.album != null
-            ? calculateWantedResolutionForTrack(data.album.images, 300, 300)
-            : '';
-        title = data.name;
-        subtitle = data.artists.map((artist) => artist.name).join(', ');
-        noImage = AppIcons.blankTrack;
-        pullDownMenuItems = recommendedTrackCupertinoContextMenuActions(
-            context, data, "recommended.single.", doesNotExist!, doesNowExist!);
-        break;
-
-      case TileType.playlist:
-        imageUrl = data.image ?? '';
-        title = data.name;
-        subtitle = data.description != null
-            ? data.description!.contains("<a href=spotify:")
-                ? AppLocalizations.of(context).playlist
-                : data.description!
-            : AppLocalizations.of(context).playlist;
-        noImage = AppIcons.blankAlbum;
-        pullDownMenuItems = [const SizedBox()];
-        break;
-
-      case TileType.artist:
-        imageUrl = data.image ?? '';
-        title = data.name;
-        subtitle = AppLocalizations.of(context).artist;
-        noImage = AppIcons.blankArtist;
-        pullDownMenuItems = [const SizedBox()];
-        break;
-
-      case TileType.album:
-        imageUrl = data.image ?? '';
-        title = data.name;
-        subtitle = data.artists.join(", ");
-        noImage = AppIcons.blankAlbum;
-        pullDownMenuItems = [const SizedBox()];
-        break;
-    }
+    final Size size = MediaQuery.of(context).size;
+    final (:imageUrl, :title, :subtitle, :noImage) = tileContent(context, data);
 
     // Start menu --> android popup
-    StarMenuController starMenuController = StarMenuController();
+    final StarMenuController starMenuController = StarMenuController();
 
     // Star menu global key
-    GlobalKey globalKey = GlobalKey();
+    final GlobalKey globalKey = GlobalKey();
 
-    Widget child = Column(
+    final Widget child = Column(
       crossAxisAlignment: type == TileType.artist
           ? CrossAxisAlignment.center
           : CrossAxisAlignment.start,
       children: [
         Container(
-          height: kIsDesktop ? 160 : 120,
-          width: kIsDesktop ? 160 : 120,
+          height: _imageSize,
+          width: _imageSize,
           decoration: BoxDecoration(
-            borderRadius:
-                BorderRadius.circular(type == TileType.artist ? 360 : 7.5),
-            color: Col.realBackground.withAlpha(150),
+            borderRadius: BorderRadius.circular(
+              type == TileType.artist ? 360 : 14,
+            ),
+            color: context.colors.realBackground.withAlpha(150),
           ),
           child: ClipRRect(
-            borderRadius:
-                BorderRadius.circular(type == TileType.artist ? 360 : 7.5),
-            child: imageUrl == ""
-                ? Center(
-                    child: Icon(noImage, color: Col.icon),
-                  )
-                : SizedBox(
-                    child: ImageCompatible(image: imageUrl),
-                  ),
+            borderRadius: BorderRadius.circular(
+              type == TileType.artist ? 360 : 14,
+            ),
+            child: imageUrl == ''
+                ? Center(child: Icon(noImage, color: context.colors.icon))
+                : SizedBox(child: ImageCompatible(image: imageUrl)),
           ),
         ),
         razh(2.5),
@@ -134,9 +87,10 @@ class RecommendedTile extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: kIsApple ? 14 : 15,
-                          fontWeight:
-                              kIsApple ? FontWeight.w500 : FontWeight.w600,
-                          color: Col.text,
+                          fontWeight: kIsApple
+                              ? FontWeight.w500
+                              : FontWeight.w600,
+                          color: context.colors.text,
                         ),
                         textAlign: TextAlign.left,
                       ),
@@ -149,9 +103,10 @@ class RecommendedTile extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: kIsApple ? 12 : 13,
-                          fontWeight:
-                              kIsApple ? FontWeight.w400 : FontWeight.w500,
-                          color: Col.text.withAlpha(175),
+                          fontWeight: kIsApple
+                              ? FontWeight.w400
+                              : FontWeight.w500,
+                          color: context.colors.text.withAlpha(175),
                         ),
                         textAlign: TextAlign.left,
                       ),
@@ -159,10 +114,10 @@ class RecommendedTile extends StatelessWidget {
                   ],
                 ),
               ),
-              if (trailing != null) trailing!,
+              ?trailing,
             ],
           ),
-        )
+        ),
       ],
     );
 
@@ -170,39 +125,38 @@ class RecommendedTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 7.5),
       child: SizedBox(
         key: globalKey,
-        height: kIsDesktop ? 200 : 160,
-        width: kIsDesktop ? 160 : 120,
+        height: height,
+        width: _imageSize,
         child: GestureDetector(
           onSecondaryTap: () async {
             if (kIsDesktop) {
-              if (type == TileType.track) {
-                popUpContextMenu(
+              if (data case final Track track) {
+                await popUpContextMenu(
                   recommendedTrackPulldownMenuItemsDesktop(
-                      context,
-                      data,
-                      "recommended.single",
-                      false, //favourite,
-                      doesNotExist!,
-                      doesNowExist!),
+                    context,
+                    track,
+                    'recommended.single',
+                    false, //favourite,
+                  ),
                 );
               }
             }
           },
           onLongPressStart: (LongPressStartDetails details) async {
             if (kIsMobile) {
-              bool isFavourite =
-                  await DatabaseHelper().favouriteTrackAlreadyExists(data.id);
-              if (type == TileType.track) {
+              if (data case final Track track) {
+                final bool isFavourite = await context.trackActions.isFavourite(
+                  track.id,
+                );
+                if (!context.mounted) return;
                 if (true) {
-                  showPullDownMenu(
+                  await showPullDownMenu(
                     context: context,
                     items: searchTrackPulldownMenuItemsApple(
                       context,
-                      data,
-                      "recommended.single.",
+                      track,
+                      'recommended.single',
                       isFavourite,
-                      doesNotExist!,
-                      doesNowExist!,
                     ),
                     position: RelativeRect.fromLTRB(
                       details.globalPosition.dx >= 260
@@ -229,7 +183,7 @@ class RecommendedTile extends StatelessWidget {
                             blurSigmaX: 5,
                             blurSigmaY: 5,
                             padding: EdgeInsets.zero,
-                            color: Col.realBackground.withAlpha(200),
+                            color: context.colors.realBackground.withAlpha(200),
                           ),
                           linearShapeParams: const LinearShapeParams(
                               alignment: LinearAlignment.center)),
@@ -241,8 +195,6 @@ class RecommendedTile extends StatelessWidget {
                         data,
                         "recommended.single.",
                         isFavourite,
-                        doesNotExist!,
-                        doesNowExist!,
                       ),
                       parentContext: globalKey.currentContext,
                     ),

@@ -1,8 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 
-import 'package:pongo/l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
 
-Future<CustomButton> removeTrackFromPlaylistAlert(context) async {
+Future<CustomButton> removeTrackFromPlaylistAlert(BuildContext context) async {
   final ok = await FlutterPlatformAlert.showCustomAlert(
     windowTitle: AppLocalizations.of(context).removefromplaylist,
     text: AppLocalizations.of(context).removeselectedfromplaylist,

@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/features/settings/presentation/phone/widgets/settings_tile_frame.dart';
+import '../../../../core/themes/colors.dart';
+import 'settings_tile_frame.dart';
 
-settingsTileInt(context, bool first, bool last, IconData icon, int trailingNum,
-    String title, String? subtitle, Function() function) {
+Widget settingsTileInt(
+  BuildContext context,
+  bool first,
+  bool last,
+  IconData icon,
+  int trailingNum,
+  String title,
+  String? subtitle,
+  Function() function,
+) {
   return settingsTileFrame(
     context,
     first: first,
@@ -21,7 +29,7 @@ settingsTileInt(context, bool first, bool last, IconData icon, int trailingNum,
         child: Center(
           child: Text(
             trailingNum.toString(),
-            style: TextStyle(color: Col.text),
+            style: TextStyle(color: context.colors.text),
           ),
         ),
       ),

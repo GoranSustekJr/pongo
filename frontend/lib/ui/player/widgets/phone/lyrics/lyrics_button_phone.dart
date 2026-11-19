@@ -2,18 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/notifications/notifications.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_render.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../app/view_models/app_settings_view_model.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/themes/dimens.dart';
+import '../../../../core/ui/app_blur.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../../core/ui/phone/liquid_glass_render.dart';
 
 class LyricsButtonPhone extends StatelessWidget {
   final String stid;
@@ -25,6 +22,7 @@ class LyricsButtonPhone extends StatelessWidget {
   final Function() plus;
   final Function() minus;
   final Function() resetSyncTimeDelay;
+  final Future<void> Function() saveSyncTimeDelay;
   const LyricsButtonPhone({
     super.key,
     required this.stid,
@@ -36,6 +34,7 @@ class LyricsButtonPhone extends StatelessWidget {
     required this.useSynced,
     required this.changeUseSynced,
     required this.resetSyncTimeDelay,
+    required this.saveSyncTimeDelay,
   });
 
   @override
@@ -53,13 +52,13 @@ class LyricsButtonPhone extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               liquidGlassBackground(
-                enabled: liquidGlassEnabled,
+                enabled: context.readSettings.useLiquidGlass,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(60),
                   child: liquidGlass(
                     radius: 360,
                     child: BackdropFilter(
-                      filter: nonAppleBlur(10),
+                      filter: nonAppleBlur(context, 10),
                       child: Container(
                         width: 40,
                         height: 40,
@@ -67,11 +66,16 @@ class LyricsButtonPhone extends StatelessWidget {
                           borderRadius: BorderRadius.circular(60),
                           color: kIsDesktop
                               ? const MacosColor.fromRGBO(
-                                  40, 40, 40, 0.8) // Add transparency here
-                              : useBlur.value
-                                  ? Col.transp
-                                  : Col.realBackground
-                                      .withAlpha(AppConstants().noBlur),
+                                  40,
+                                  40,
+                                  40,
+                                  0.8,
+                                ) // Add transparency here
+                              : context.readSettings.useBlur
+                              ? Col.transp
+                              : context.colors.realBackground.withAlpha(
+                                  Dimens.noBlur,
+                                ),
                         ),
                         child: iconButton(
                           lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
@@ -85,13 +89,13 @@ class LyricsButtonPhone extends StatelessWidget {
                 ),
               ),
               liquidGlassBackground(
-                enabled: liquidGlassEnabled,
+                enabled: context.readSettings.useLiquidGlass,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(60),
                   child: liquidGlass(
                     radius: 360,
                     child: BackdropFilter(
-                      filter: nonAppleBlur(10),
+                      filter: nonAppleBlur(context, 10),
                       child: Container(
                         height: 40,
                         width: 150,
@@ -99,11 +103,16 @@ class LyricsButtonPhone extends StatelessWidget {
                           borderRadius: BorderRadius.circular(60),
                           color: kIsDesktop
                               ? const MacosColor.fromRGBO(
-                                  40, 40, 40, 0.8) // Add transparency here
-                              : useBlur.value
-                                  ? Col.transp
-                                  : Col.realBackground
-                                      .withAlpha(AppConstants().noBlur),
+                                  40,
+                                  40,
+                                  40,
+                                  0.8,
+                                ) // Add transparency here
+                              : context.readSettings.useBlur
+                              ? Col.transp
+                              : context.colors.realBackground.withAlpha(
+                                  Dimens.noBlur,
+                                ),
                         ),
                         child: Row(
                           children: [
@@ -111,42 +120,28 @@ class LyricsButtonPhone extends StatelessWidget {
                               GestureDetector(
                                 child: CupertinoButton(
                                   padding: const EdgeInsets.only(),
+                                  onPressed: minus,
                                   child: const Icon(
                                     CupertinoIcons.minus,
                                     color: Colors.white,
                                   ),
-                                  onPressed: () {
-                                    minus();
-                                  },
                                 ),
                               ),
                             if (!kIsApple)
                               IconButton(
-                                onPressed: () {
-                                  minus();
-                                },
+                                onPressed: minus,
                                 icon: const Icon(CupertinoIcons.minus),
                               ),
                             Expanded(child: Container()),
                             FittedBox(
                               fit: BoxFit.scaleDown,
                               child: GestureDetector(
-                                onLongPress: () async {
-                                  await DatabaseHelper()
-                                      .insertSyncTimeDelay(stid, syncTimeDelay);
-                                  Notifications().showSpecialNotification(
-                                    context,
-                                    AppLocalizations.of(context).successful,
-                                    AppLocalizations.of(context)
-                                        .successfullysavedsynctimedelay,
-                                    CupertinoIcons.time,
-                                  );
-                                },
+                                onLongPress: saveSyncTimeDelay,
                                 child: CupertinoButton(
                                   padding: EdgeInsets.zero,
                                   onPressed: resetSyncTimeDelay,
                                   child: Text(
-                                    "${syncTimeDelay / 1000} s",
+                                    '${syncTimeDelay / 1000} s',
                                     style: const TextStyle(
                                       fontSize: 13,
                                       color: Colors.white,
@@ -160,21 +155,17 @@ class LyricsButtonPhone extends StatelessWidget {
                             Expanded(child: Container()),
                             if (!kIsApple)
                               IconButton(
-                                onPressed: () {
-                                  plus();
-                                },
+                                onPressed: plus,
                                 icon: const Icon(CupertinoIcons.plus),
                               ),
                             if (kIsApple)
                               CupertinoButton(
                                 padding: const EdgeInsets.only(),
+                                onPressed: plus,
                                 child: const Icon(
                                   CupertinoIcons.plus,
                                   color: Colors.white,
                                 ),
-                                onPressed: () {
-                                  plus();
-                                },
                               ),
                           ],
                         ),
@@ -184,13 +175,13 @@ class LyricsButtonPhone extends StatelessWidget {
                 ),
               ),
               liquidGlassBackground(
-                enabled: liquidGlassEnabled,
+                enabled: context.readSettings.useLiquidGlass,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(60),
                   child: liquidGlass(
                     radius: 360,
                     child: BackdropFilter(
-                      filter: nonAppleBlur(10),
+                      filter: nonAppleBlur(context, 10),
                       child: Container(
                         width: 40,
                         height: 40,
@@ -198,11 +189,16 @@ class LyricsButtonPhone extends StatelessWidget {
                           borderRadius: BorderRadius.circular(60),
                           color: kIsDesktop
                               ? const MacosColor.fromRGBO(
-                                  40, 40, 40, 0.8) // Add transparency here
-                              : useBlur.value
-                                  ? Col.transp
-                                  : Col.realBackground
-                                      .withAlpha(AppConstants().noBlur),
+                                  40,
+                                  40,
+                                  40,
+                                  0.8,
+                                ) // Add transparency here
+                              : context.readSettings.useBlur
+                              ? Col.transp
+                              : context.colors.realBackground.withAlpha(
+                                  Dimens.noBlur,
+                                ),
                         ),
                         child: iconButton(
                           useSynced

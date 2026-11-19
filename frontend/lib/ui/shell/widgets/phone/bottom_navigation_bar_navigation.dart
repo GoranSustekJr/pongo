@@ -1,22 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/network/connectivity_handler.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/shared/widgets/blurhash/blurhash.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/platform.dart';
+import '../../../app/view_models/app_settings_view_model.dart';
+import '../../../app/view_models/connectivity_view_model.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/ui/app_blur.dart';
+import '../../../core/ui/blurhash/blurhash.dart';
+import '../../../player/view_models/player_view_model.dart';
+import '../../view_models/shell_view_model.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final internetConnectivityHandler =
-        Provider.of<InternetConnectivityHandler>(context);
+    final internetConnectivityHandler = context.watch<ConnectivityViewModel>();
+    if (kIsIOS && context.readSettings.useLiquidGlass) {
+      return _glassBar(context, internetConnectivityHandler);
+    }
     return SafeArea(
       child: Container(
         key: const ValueKey(false),
@@ -36,18 +42,21 @@ class BottomNavBar extends StatelessWidget {
                   opacity: const AlwaysStoppedAnimation<double>(1),
                   child: ClipRRect(
                     child: ValueListenableBuilder(
-                      valueListenable: currentBlurhash,
+                      valueListenable: context.player.currentBlurhash,
                       builder: (context, signedIn, child) {
                         return AnimatedSwitcher(
                           duration: const Duration(milliseconds: 450),
                           child: Blurhash(
-                            key: ValueKey(currentBlurhash.value),
-                            blurhash: currentBlurhash.value,
+                            key: ValueKey(
+                              (context.player.currentBlurhash.value ??
+                                  context.colors.defaultBlurhash),
+                            ),
+                            blurhash:
+                                (context.player.currentBlurhash.value ??
+                                context.colors.defaultBlurhash),
                             sigmaX: 0,
                             sigmaY: 0,
-                            child: Container(
-                              color: Colors.transparent,
-                            ),
+                            child: Container(color: Colors.transparent),
                           ),
                         );
                       },
@@ -56,28 +65,28 @@ class BottomNavBar extends StatelessWidget {
                 ),
               ),
               Positioned.fill(
-                child: Container(
-                  color: Colors.black.withAlpha(50),
-                ),
+                child: Container(color: Colors.black.withAlpha(50)),
               ),
               BackdropFilter(
-                filter: nonAppleBlur(10),
+                filter: nonAppleBlur(context, 10),
                 child: Container(
                   clipBehavior: Clip.hardEdge,
                   decoration: BoxDecoration(
-                    color: Col.realBackground.withAlpha(useBlur.value
-                        ? kIsApple
-                            ? 0
-                            : 150
-                        : 250),
+                    color: context.colors.realBackground.withAlpha(
+                      context.readSettings.useBlur
+                          ? kIsApple
+                                ? 0
+                                : 150
+                          : 250,
+                    ),
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: Container(
-                    color: darkMode.value
+                    color: context.readSettings.darkMode
                         ? Col.transp
                         : Colors.black.withAlpha(45),
                     child: ValueListenableBuilder<int>(
-                      valueListenable: navigationBarIndex,
+                      valueListenable: context.shell.navigationBarIndex,
                       builder: (context, value, child) {
                         return Row(
                           mainAxisSize: MainAxisSize.max,
@@ -89,61 +98,87 @@ class BottomNavBar extends StatelessWidget {
                                     MainAxisAlignment.spaceAround,
                                 children: [
                                   CupertinoButton(
-                                      child: Icon(AppIcons.search,
-                                          color: navigationBarIndex.value == 0
-                                              ? Colors.white
-                                              : Colors.white.withAlpha(150)),
-                                      onPressed: () {
-                                        navigationBarIndex.value = 0;
-                                      }),
+                                    child: Icon(
+                                      AppIcons.search,
+                                      color:
+                                          context
+                                                  .shell
+                                                  .navigationBarIndex
+                                                  .value ==
+                                              0
+                                          ? Colors.white
+                                          : Colors.white.withAlpha(150),
+                                    ),
+                                    onPressed: () {
+                                      context.shell.navigationBarIndex.value =
+                                          0;
+                                    },
+                                  ),
                                   CupertinoButton(
-                                      child: Icon(AppIcons.library,
-                                          color: navigationBarIndex.value == 1
-                                              ? Colors.white
-                                              : Colors.white.withAlpha(150)),
-                                      onPressed: () {
-                                        navigationBarIndex.value = 1;
-                                      }),
+                                    child: Icon(
+                                      AppIcons.library,
+                                      color:
+                                          context
+                                                  .shell
+                                                  .navigationBarIndex
+                                                  .value ==
+                                              1
+                                          ? Colors.white
+                                          : Colors.white.withAlpha(150),
+                                    ),
+                                    onPressed: () {
+                                      context.shell.navigationBarIndex.value =
+                                          1;
+                                    },
+                                  ),
                                   CupertinoButton(
-                                      child: Icon(AppIcons.settings,
-                                          color: navigationBarIndex.value == 2
-                                              ? Colors.white
-                                              : Colors.white.withAlpha(150)),
-                                      onPressed: () {
-                                        navigationBarIndex.value = 2;
-                                      }),
+                                    child: Icon(
+                                      AppIcons.settings,
+                                      color:
+                                          context
+                                                  .shell
+                                                  .navigationBarIndex
+                                                  .value ==
+                                              2
+                                          ? Colors.white
+                                          : Colors.white.withAlpha(150),
+                                    ),
+                                    onPressed: () {
+                                      context.shell.navigationBarIndex.value =
+                                          2;
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
-                            StreamBuilder(
-                              stream: internetConnectivityHandler
-                                  .connectivityStream,
-                              builder: (context, snapshot) {
+                            Builder(
+                              builder: (context) {
                                 return AnimatedContainer(
                                   duration: const Duration(milliseconds: 500),
                                   curve: Curves.easeInOutCirc,
                                   width:
                                       !internetConnectivityHandler.isConnected
-                                          ? 65
-                                          : 0,
+                                      ? 65
+                                      : 0,
                                   height: 50,
                                   child: Center(
                                     child: Icon(
                                       internetConnectivityHandler.isConnected
                                           ? CupertinoIcons.wifi
                                           : CupertinoIcons.wifi_slash,
-                                      color: internetConnectivityHandler
+                                      color:
+                                          internetConnectivityHandler
                                               .isConnected
                                           ? Colors.blue
                                           : Colors.red,
-                                    ), /* PulsatingIcon(
+                                    ) /* PulsatingIcon(
                                         icon: internetConnectivityHandler.isConnected
                                             ? CupertinoIcons.wifi
                                             : CupertinoIcons.wifi_slash,
                                         color: internetConnectivityHandler.isConnected
                                             ? Colors.blue
                                             : Colors.red,
-                                      ), */
+                                      ), */,
                                   ),
                                 );
                               },
@@ -158,6 +193,66 @@ class BottomNavBar extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _glassBar(
+    BuildContext context,
+    ConnectivityViewModel internetConnectivityHandler,
+  ) {
+    return SafeArea(
+      child: ValueListenableBuilder<int>(
+        valueListenable: context.shell.navigationBarIndex,
+        builder: (context, index, child) {
+          return Row(
+            children: [
+              Expanded(
+                child: GlassTabBar.bottom(
+                  selectedIndex: index,
+                  onTabSelected: (tab) =>
+                      context.shell.navigationBarIndex.value = tab,
+                  horizontalPadding: 16,
+                  verticalPadding: 6,
+                  barHeight: 56,
+                  iconSize: 24,
+                  selectedIconColor: Col.primary,
+                  unselectedIconColor: context.colors.text.withAlpha(170),
+                  tabs: [
+                    GlassTab(
+                      icon: const Icon(AppIcons.home),
+                      activeIcon: const Icon(AppIcons.homeFill),
+                      semanticLabel: AppLocalizations.of(context).search,
+                    ),
+                    GlassTab(
+                      icon: Icon(AppIcons.library),
+                      activeIcon: const Icon(AppIcons.libraryFill),
+                      semanticLabel: AppLocalizations.of(context).library,
+                    ),
+                    GlassTab(
+                      icon: Icon(AppIcons.settings),
+                      activeIcon: const Icon(CupertinoIcons.settings_solid),
+                      semanticLabel: AppLocalizations.of(context).settings,
+                    ),
+                  ],
+                ),
+              ),
+              Builder(
+                builder: (context) {
+                  return internetConnectivityHandler.isConnected
+                      ? const SizedBox()
+                      : const Padding(
+                          padding: EdgeInsets.only(right: 16),
+                          child: Icon(
+                            CupertinoIcons.wifi_slash,
+                            color: Colors.red,
+                          ),
+                        );
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:kr_pull_down_button/pull_down_button.dart';
 import 'package:star_menu/star_menu.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/features/playlists/data/open_playlist.dart';
-import 'package:pongo/features/playlists/models/playlist_handler.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/image/image_compatible.dart';
-import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/back_like_button.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
+import '../../../../domain/models/catalog/track.dart';
+import '../../../../domain/models/playlists/playlist_handler.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/image_resolution.dart';
+import '../../../../utils/platform.dart';
+import '../../../app/view_models/app_settings_view_model.dart';
+import '../../../playlists/view_models/open_playlist.dart';
+import '../../app_icons.dart';
+import '../../themes/colors.dart';
+import '../../themes/dimens.dart';
+import '../../view_models/track_actions_view_model.dart';
+import '../app_blur.dart';
+import '../image/image_compatible.dart';
+import 'buttons/back_button.dart';
+import 'buttons/back_like_button.dart';
+import 'liquid_glass_background.dart';
 
 class SliverAppBarPhone extends StatelessWidget {
   final String name;
@@ -34,18 +34,13 @@ class SliverAppBarPhone extends StatelessWidget {
 
   final GlobalKey globalKey = GlobalKey();
 
-  final TextStyle textStyle = TextStyle(
-      overflow: TextOverflow.ellipsis,
-      color: Col.text,
-      fontSize: 18,
-      fontWeight: FontWeight.w400);
-
   @override
   Widget build(BuildContext context) {
-    void download() async {
+    Future<void> download() async {
       // Get the tracks that need to be downloaded
-      List<String> toDownload = await DatabaseHelper()
-          .queryMissingStids(tracks.map((track) => track.id).toList());
+      final List<String> toDownload = await context.trackActions
+          .missingDownloads(tracks.map((track) => track.id).toList());
+      if (!context.mounted) return;
 
       OpenPlaylist().show(
         context,
@@ -54,20 +49,16 @@ class SliverAppBarPhone extends StatelessWidget {
           toDownload: toDownload,
           function: PlaylistHandlerFunction.createPlaylist,
           track: tracks
-              .map((track) => PlaylistHandlerOnlineTrack(
-                    id: track.id,
-                    name: track.name,
-                    artist: track.artists
-                        .map((artist) => {"id": artist.id, "name": artist.name})
-                        .toList(),
-                    cover: calculateBestImageForTrack(
-                      track.album != null
-                          ? track.album!.images
-                          : track.album!.images,
-                    ),
-                    albumTrack: track.album,
-                    playlistHandlerCoverType: PlaylistHandlerCoverType.url,
-                  ))
+              .map(
+                (track) => PlaylistHandlerOnlineTrack(
+                  id: track.id,
+                  name: track.name,
+                  artist: track.artists,
+                  cover: bestImageUrl(track.album?.images ?? const []),
+                  albumTrack: track.album,
+                  playlistHandlerCoverType: PlaylistHandlerCoverType.url,
+                ),
+              )
               .toList(),
         ),
       );
@@ -82,23 +73,7 @@ class SliverAppBarPhone extends StatelessWidget {
         PlaylistHandler(
           type: PlaylistHandlerType.online,
           function: PlaylistHandlerFunction.createPlaylist,
-          track: tracks
-              .map((track) => PlaylistHandlerOnlineTrack(
-                    id: track.id,
-                    name: track.name,
-                    artist: track.artists
-                        .map((artist) => {"id": artist.id, "name": artist.name})
-                        .toList(),
-                    cover: calculateWantedResolutionForTrack(
-                        track.album != null
-                            ? track.album!.images
-                            : track.album!.images,
-                        150,
-                        150),
-                    albumTrack: track.album,
-                    playlistHandlerCoverType: PlaylistHandlerCoverType.url,
-                  ))
-              .toList(),
+          track: tracks.map(onlineHandlerTrack).toList(),
         ),
       );
       if (!kIsApple) {
@@ -135,35 +110,36 @@ class SliverAppBarPhone extends StatelessWidget {
           ),
           Container(
             key: globalKey,
-            child: backLikeButton(
-              context,
-              AppIcons.playlist,
-              () {
-                // IOS
-                // if (kIsIOS) {
-                showPullDownMenu(
-                    context: context,
-                    items: [
-                      PullDownMenuItem(
-                          icon: AppIcons.addToQueue,
-                          onTap: addToPlaylist,
-                          title: AppLocalizations.of(context).addtoplaylist),
-                      const PullDownMenuDivider(),
-                      PullDownMenuItem(
-                          icon: AppIcons.download,
-                          onTap: download,
-                          title: AppLocalizations.of(context).download),
-                    ],
-                    position: RelativeRect.fromLTRB(
-                        30,
-                        Scaffold.of(context).appBarMaxHeight == null
-                            ? MediaQuery.of(context).padding.top +
-                                AppBar().preferredSize.height
-                            : Scaffold.of(context).appBarMaxHeight!,
-                        20,
-                        0),
-                    topWidget: const SizedBox());
-                /* } else {
+            child: backLikeButton(context, AppIcons.playlist, () {
+              // IOS
+              // if (kIsIOS) {
+              showPullDownMenu(
+                context: context,
+                items: [
+                  PullDownMenuItem(
+                    icon: AppIcons.addToQueue,
+                    onTap: addToPlaylist,
+                    title: AppLocalizations.of(context).addtoplaylist,
+                  ),
+                  const PullDownMenuDivider(),
+                  PullDownMenuItem(
+                    icon: AppIcons.download,
+                    onTap: download,
+                    title: AppLocalizations.of(context).download,
+                  ),
+                ],
+                position: RelativeRect.fromLTRB(
+                  30,
+                  Scaffold.of(context).appBarMaxHeight == null
+                      ? MediaQuery.of(context).padding.top +
+                            AppBar().preferredSize.height
+                      : Scaffold.of(context).appBarMaxHeight!,
+                  20,
+                  0,
+                ),
+                topWidget: const SizedBox(),
+              );
+              /* } else {
                   // Android
                   StarMenuOverlay.displayStarMenu(
                     globalKey.currentContext!,
@@ -175,7 +151,7 @@ class SliverAppBarPhone extends StatelessWidget {
                             blurSigmaX: 5,
                             blurSigmaY: 5,
                             padding: EdgeInsets.zero,
-                            color: Col.realBackground.withAlpha(200),
+                            color: context.colors.realBackground.withAlpha(200),
                           ),
                           linearShapeParams: const LinearShapeParams(
                               alignment: LinearAlignment.center)),
@@ -204,7 +180,7 @@ class SliverAppBarPhone extends StatelessWidget {
                                   ),
                                   Icon(
                                     AppIcons.download,
-                                    color: Col.text,
+                                    color: context.colors.text,
                                     size: 18,
                                   )
                                 ],
@@ -235,7 +211,7 @@ class SliverAppBarPhone extends StatelessWidget {
                                   ),
                                   Icon(
                                     AppIcons.addToQueue,
-                                    color: Col.text,
+                                    color: context.colors.text,
                                     size: 18,
                                   )
                                 ],
@@ -249,42 +225,46 @@ class SliverAppBarPhone extends StatelessWidget {
                     ),
                   );
                 } */
-              },
-            ),
+            }),
           ),
         ],
       ),
       automaticallyImplyLeading: false,
       flexibleSpace: ClipRRect(
-        borderRadius:
-            kIsDesktop ? BorderRadius.circular(15) : BorderRadius.zero,
+        borderRadius: kIsDesktop
+            ? BorderRadius.circular(15)
+            : BorderRadius.zero,
         child: FlexibleSpaceBar(
           titlePadding: EdgeInsets.zero,
           centerTitle: true,
           title: AppBar(
-            backgroundColor: useBlur.value
+            backgroundColor: context.readSettings.useBlur
                 ? Col.transp
-                : Col.realBackground.withAlpha(
+                : context.colors.realBackground.withAlpha(
                     ((MediaQuery.of(context).size.height / 2 <=
                                     scrollControllerOffset
                                 ? 1
                                 : scrollControllerOffset /
-                                    (MediaQuery.of(context).size.height / 2)) *
-                            AppConstants().noBlur)
-                        .toInt()),
+                                      (MediaQuery.of(context).size.height /
+                                          2)) *
+                            Dimens.noBlur)
+                        .toInt(),
+                  ),
             automaticallyImplyLeading: false,
             flexibleSpace: Opacity(
-              opacity: MediaQuery.of(context).size.height / 2 <=
+              opacity:
+                  MediaQuery.of(context).size.height / 2 <=
                       scrollControllerOffset
                   ? 1
                   : scrollControllerOffset /
-                      (MediaQuery.of(context).size.height / 2),
+                        (MediaQuery.of(context).size.height / 2),
               child: ClipRRect(
-                borderRadius:
-                    kIsDesktop ? BorderRadius.circular(15) : BorderRadius.zero,
+                borderRadius: kIsDesktop
+                    ? BorderRadius.circular(15)
+                    : BorderRadius.zero,
                 child: liquidGlassBackground(
                   child: BackdropFilter(
-                    filter: nonAppleBlur(10),
+                    filter: nonAppleBlur(context, 10),
                     child: Container(),
                   ),
                 ),
@@ -302,9 +282,7 @@ class SliverAppBarPhone extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: ImageCompatible(
-                      image: image,
-                    ),
+                    child: ImageCompatible(image: image),
                   ),
                 ),
               ),

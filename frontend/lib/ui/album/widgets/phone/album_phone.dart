@@ -1,22 +1,20 @@
-import 'package:blurhash_ffi/blurhash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
+import 'package:provider/provider.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/album/data/album_api.dart';
-import 'package:pongo/features/album/presentation/phone/album_body_phone.dart';
-import 'package:pongo/features/album/presentation/phone/play_shuffle_halt_album.dart';
-import 'package:pongo/features/player/data/play.dart';
-import 'package:pongo/shared/models/catalog/album.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/phone/loading_scaffold.dart';
-import 'package:pongo/shared/widgets/phone/sliver_app_bar.dart';
-import 'package:pongo/shared/widgets/phone/sticky_header_delegate.dart';
+import '../../../../domain/models/catalog/album.dart';
+import '../../../../utils/platform.dart';
+import '../../../app/view_models/app_settings_view_model.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/themes/dimens.dart';
+import '../../../core/ui/app_blur.dart';
+import '../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../core/ui/phone/loading_scaffold.dart';
+import '../../../core/ui/phone/sliver_app_bar.dart';
+import '../../../core/ui/phone/sticky_header_delegate.dart';
+import '../../view_models/album_view_model.dart';
+import 'album_body_phone.dart';
+import 'play_shuffle_halt_album.dart';
 
 class AlbumPhone extends StatefulWidget {
   final BuildContext context;
@@ -28,158 +26,37 @@ class AlbumPhone extends StatefulWidget {
 }
 
 class _AlbumPhoneState extends State<AlbumPhone> {
-  // Show body
-  bool showBody = false;
-
-  // Tracks
-  List<Track> tracks = [];
-  List<String> missingTracks = [];
-  Map<String, double> existingTracks = {};
-
-  // Blurhash
-  String blurhash = "";
+  late final AlbumViewModel viewModel;
 
   // Scroll controller
-  late ScrollController scrollController;
+  final scrollController = ScrollController();
 
   // Offset
   double scrollControllerOffset = 0;
 
-  // Manage Tracks That Do Not Exist
-  List<String> loading = [];
-
-  // Cancel play function
-  bool cancel = false;
-
-  // Loading shuffle boolean
-  bool loadingShuffle = false;
-
   @override
   void initState() {
     super.initState();
-    scrollController = ScrollController();
+    viewModel = AlbumViewModel(
+      album: widget.album,
+      catalog: context.read(),
+      player: context.read(),
+      blurhash: context.read(),
+    );
     scrollController.addListener(scrollControllerListener);
-
-    getTracks();
   }
 
-  scrollControllerListener() {
+  void scrollControllerListener() {
     setState(() {
-      if (scrollController.offset < 0) {
-        scrollControllerOffset = 0;
-      } else {
-        scrollControllerOffset = scrollController.offset;
-      }
+      scrollControllerOffset = scrollController.offset < 0
+          ? 0
+          : scrollController.offset;
     });
-  }
-
-  void getTracks() async {
-    // Get the album tracks, missing tracks and durations
-    final data = await AlbumApi().getTracks(context, widget.album.id);
-
-    // Get the blurhash from the cover image
-    final blurHash = widget.album.image != ""
-        ? await BlurhashFFI.encode(
-            NetworkImage(
-              widget.album.image,
-            ),
-            componentX: 3,
-            componentY: 3,
-          )
-        : AppConstants().BLURHASH;
-
-    // init track list - data
-    final List<dynamic> dta = [];
-
-    // Add tracks to dta var
-    for (var track in data["items"]) {
-      track["album"] = {
-        "id": widget.album.id,
-        "name": widget.album.name,
-        "images": [
-          {"url": widget.album.image, "height": null, "width": null}
-        ],
-        "release_date": "",
-      };
-
-      dta.add(track);
-    }
-
-    // Set state for the statefullwidget
-    setState(() {
-      blurhash = blurHash;
-
-      existingTracks = {
-        for (var item in data["durations"]) item[0] as String: item[1] as double
-      }; // existing tracks durations, runtimetype Map<String, double>
-
-      tracks = Track.fromMapList(dta); // Tracks, runntimetype List<Track>
-
-      missingTracks = (data["missing_tracks"] as List<dynamic>)
-          .cast<String>(); // Missing tracks stids
-
-      showBody = true; // Show the body
-    });
-  }
-
-  void addLoading(String stid) {
-    if (mounted) {
-      setState(() {
-        loading.add(stid);
-      });
-    }
-  }
-
-  void removeLoading(String stid) {
-    if (mounted) {
-      setState(() {
-        loading.remove(stid);
-      });
-    }
-  }
-
-  void addDuration(String stid, double duration) {
-    if (mounted) {
-      setState(() {
-        missingTracks.remove(stid);
-        existingTracks[stid] = duration;
-      });
-    }
-  }
-
-  play({int index = 0}) async {
-    if (!loadingShuffle) {
-      PlayMultiple().onlineTrack(
-        "online.album:${widget.album.id}",
-        tracks,
-        missingTracks,
-        existingTracks,
-        addLoading,
-        removeLoading,
-        addDuration,
-        index: index,
-      );
-    }
-  }
-
-  void playShuffle() {
-    if (!loadingShuffle && missingTracks.isEmpty) {
-      PlayMultiple().onlineTrack(
-        "online.album:${widget.album.id}",
-        tracks,
-        missingTracks,
-        existingTracks,
-        addLoading,
-        removeLoading,
-        addDuration,
-        shuffle: true,
-      );
-    }
   }
 
   @override
   void dispose() {
-    cancel = true;
+    viewModel.dispose();
     scrollController.removeListener(scrollControllerListener);
     scrollController.dispose();
     super.dispose();
@@ -187,7 +64,17 @@ class _AlbumPhoneState extends State<AlbumPhone> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
+    return ListenableBuilder(
+      listenable: viewModel,
+      builder: (context, _) => _buildBody(context, size),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, Size size) {
+    final blurhash = viewModel.blurhash ?? context.colors.defaultBlurhash;
+    final tracks = viewModel.tracks;
+    final missingTracks = viewModel.missingTracks;
     return ClipRRect(
       borderRadius: kIsDesktop ? BorderRadius.circular(15) : BorderRadius.zero,
       child: SizedBox(
@@ -195,7 +82,7 @@ class _AlbumPhoneState extends State<AlbumPhone> {
         height: kIsDesktop ? 500 : size.height,
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 400),
-          child: showBody
+          child: viewModel.showBody
               ? Stack(
                   key: ValueKey(blurhash),
                   children: [
@@ -206,41 +93,44 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                         borderRadius: kIsDesktop
                             ? BorderRadius.circular(15)
                             : BorderRadius.zero,
-                        child: BlurHash(
-                          hash: blurhash,
-                        ),
+                        child: BlurHash(hash: blurhash),
                       ),
                     ),
                     Container(
                       width: kIsDesktop ? 800 : size.width,
                       height: kIsDesktop ? 500 : size.height,
                       decoration: BoxDecoration(
-                          color: Colors.black.withAlpha(50),
-                          borderRadius:
-                              kIsDesktop ? BorderRadius.circular(15) : null),
+                        color: Colors.black.withAlpha(50),
+                        borderRadius: kIsDesktop
+                            ? BorderRadius.circular(15)
+                            : null,
+                      ),
                       child: Scaffold(
                         extendBodyBehindAppBar: true,
                         extendBody: true,
                         backgroundColor: Col.transp,
                         body: Theme(
                           data: ThemeData(
-                              scrollbarTheme: kIsDesktop
-                                  ? ScrollbarThemeData(
-                                      thumbColor: MaterialStateProperty.all(
-                                          Colors.white.withAlpha(100)),
-                                    )
-                                  : null),
+                            scrollbarTheme: kIsDesktop
+                                ? ScrollbarThemeData(
+                                    thumbColor: WidgetStateProperty.all(
+                                      Colors.white.withAlpha(100),
+                                    ),
+                                  )
+                                : null,
+                          ),
                           child: Scrollbar(
                             controller: scrollController,
                             child: CustomScrollView(
                               controller: scrollController,
                               slivers: <Widget>[
                                 SliverAppBarPhone(
-                                    name: widget.album.name,
-                                    tracks: tracks,
-                                    scrollControllerOffset:
-                                        scrollControllerOffset,
-                                    image: widget.album.image),
+                                  name: widget.album.name,
+                                  tracks: tracks,
+                                  scrollControllerOffset:
+                                      scrollControllerOffset,
+                                  image: widget.album.image,
+                                ),
                                 SliverPersistentHeader(
                                   pinned: true,
                                   delegate: StickyHeaderDelegate(
@@ -248,29 +138,34 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                                     maxHeight: 40,
                                     child: Padding(
                                       padding: const EdgeInsets.only(
-                                          left: 15, right: 15, top: 5),
+                                        left: 15,
+                                        right: 15,
+                                        top: 5,
+                                      ),
                                       child: Container(
                                         decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(60),
-                                            color: useBlur.value
-                                                ? Col.transp
-                                                : Col.realBackground.withAlpha(
-                                                    AppConstants().noBlur)),
+                                          borderRadius: BorderRadius.circular(
+                                            60,
+                                          ),
+                                          color: context.readSettings.useBlur
+                                              ? Col.transp
+                                              : context.colors.realBackground
+                                                    .withAlpha(Dimens.noBlur),
+                                        ),
                                         child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(60),
+                                          borderRadius: BorderRadius.circular(
+                                            60,
+                                          ),
                                           child: liquidGlassBackground(
                                             child: BackdropFilter(
-                                              filter: nonAppleBlur(10),
+                                              filter: nonAppleBlur(context, 10),
                                               child: PlayShuffleHaltAlbum(
                                                 album: widget.album,
                                                 missingTracks: missingTracks,
-                                                loadingShuffle: loadingShuffle,
-                                                play: () {
-                                                  play(index: 0);
-                                                },
-                                                shuffle: playShuffle,
+                                                loadingShuffle:
+                                                    viewModel.loadingShuffle,
+                                                play: viewModel.play,
+                                                shuffle: viewModel.shuffle,
                                               ),
                                             ),
                                           ),
@@ -284,10 +179,9 @@ class _AlbumPhoneState extends State<AlbumPhone> {
                                     album: widget.album,
                                     tracks: tracks,
                                     missingTracks: missingTracks,
-                                    loading: loading,
-                                    play: (index) {
-                                      play(index: index);
-                                    },
+                                    loading: viewModel.loading,
+                                    play: (index) =>
+                                        viewModel.play(index: index),
                                   ),
                                 ),
                               ],

@@ -1,25 +1,70 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/image/image_compatible.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../domain/models/catalog/album.dart';
+import '../../../../domain/models/catalog/artist.dart';
+import '../../../../domain/models/catalog/playlist.dart';
+import '../../../../domain/models/catalog/track.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/image_resolution.dart';
+import '../../../../utils/platform.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/ui/image/image_compatible.dart';
+import '../../../core/ui/space.dart';
 
 enum TileType { playlist, artist, album, track }
 
+/// What a tile shows for [data], a [Track], [Playlist], [Artist] or [Album].
+({String imageUrl, String title, String subtitle, IconData noImage})
+tileContent(BuildContext context, Object data) {
+  final l10n = AppLocalizations.of(context);
+  return switch (data) {
+    final Track track => (
+      imageUrl: track.album != null
+          ? imageUrlForSize(track.album!.images, 300, 300)
+          : '',
+      title: track.name,
+      subtitle: track.artistNames,
+      noImage: AppIcons.blankTrack,
+    ),
+    final Playlist playlist => (
+      imageUrl: playlist.image,
+      title: playlist.name,
+      subtitle: switch (playlist.description) {
+        final String description
+            when !description.contains('<a href=spotify:') =>
+          description,
+        _ => l10n.playlist,
+      },
+      noImage: AppIcons.blankAlbum,
+    ),
+    final Artist artist => (
+      imageUrl: artist.image,
+      title: artist.name,
+      subtitle: l10n.artist,
+      noImage: AppIcons.blankArtist,
+    ),
+    final Album album => (
+      imageUrl: album.image,
+      title: album.name,
+      subtitle: album.artists.join(', '),
+      noImage: AppIcons.blankAlbum,
+    ),
+    _ => throw ArgumentError.value(data, 'data', 'Unsupported tile data'),
+  };
+}
+
 class SearchResultTile extends StatelessWidget {
-  final dynamic data;
+  /// The [Track], [Playlist], [Artist] or [Album] shown.
+  final Object data;
   final bool pushWhite;
   final TileType type;
   final Function() onTap;
   final Widget? trailing;
   const SearchResultTile({
     super.key,
-    this.data,
+    required this.data,
     required this.type,
     required this.onTap,
     this.trailing,
@@ -28,66 +73,27 @@ class SearchResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String imageUrl;
-    final String title;
-    final String subtitle;
-    final IconData noImage;
+    final (:imageUrl, :title, :subtitle, :noImage) = tileContent(context, data);
 
-    switch (type) {
-      case TileType.track:
-        imageUrl = data.album != null
-            ? calculateWantedResolutionForTrack(data.album.images, 300, 300)
-            : '';
-        title = data.name;
-        subtitle = data.artists.map((artist) => artist.name).join(', ');
-        noImage = AppIcons.blankTrack;
-        break;
-
-      case TileType.playlist:
-        imageUrl = data.image ?? '';
-        title = data.name;
-        subtitle = data.description != null
-            ? data.description!.contains("<a href=spotify:")
-                ? AppLocalizations.of(context).playlist
-                : data.description!
-            : AppLocalizations.of(context).playlist;
-        noImage = AppIcons.blankAlbum;
-        break;
-
-      case TileType.artist:
-        imageUrl = data.image ?? '';
-        title = data.name;
-        subtitle = AppLocalizations.of(context).artist;
-        noImage = AppIcons.blankArtist;
-        break;
-
-      case TileType.album:
-        imageUrl = data.image ?? '';
-        title = data.name;
-        subtitle = data.artists.join(", ");
-        noImage = AppIcons.blankAlbum;
-        break;
-    }
-
-    Widget widget = Row(
+    final Widget widget = Row(
       children: [
         Container(
           width: 65,
           height: 65,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(7.5),
-            color: Col.realBackground.withAlpha(150),
+            color: context.colors.realBackground.withAlpha(150),
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(7.5),
-            child: imageUrl == ""
+            child: imageUrl == ''
                 ? Center(
-                    child: Icon(noImage,
-                        color: pushWhite ? Colors.white : Col.icon),
+                    child: Icon(
+                      noImage,
+                      color: pushWhite ? Colors.white : context.colors.icon,
+                    ),
                   )
-                : ImageCompatible(
-                    image: imageUrl,
-                  ),
+                : ImageCompatible(image: imageUrl),
           ),
         ),
         razw(12.5),
@@ -104,7 +110,7 @@ class SearchResultTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18.5,
                   fontWeight: FontWeight.w600,
-                  color: pushWhite ? Colors.white : Col.text,
+                  color: pushWhite ? Colors.white : context.colors.text,
                 ),
               ),
               razh(2),
@@ -115,15 +121,15 @@ class SearchResultTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: pushWhite ? Colors.white : Col.text.withAlpha(200),
+                  color: pushWhite
+                      ? Colors.white
+                      : context.colors.text.withAlpha(200),
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(
-          child: trailing,
-        ),
+        SizedBox(child: trailing),
       ],
     );
 
@@ -141,8 +147,8 @@ class SearchResultTile extends StatelessWidget {
           : Material(
               color: Col.transp,
               child: InkWell(
-                splashColor: Col.text.withAlpha(50),
-                highlightColor: Col.text.withAlpha(25),
+                splashColor: context.colors.text.withAlpha(50),
+                highlightColor: context.colors.text.withAlpha(25),
                 onTap: onTap,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15, right: 5),

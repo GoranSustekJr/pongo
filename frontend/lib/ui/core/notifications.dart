@@ -4,19 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:in_app_notification/in_app_notification.dart';
 import 'package:in_app_notification_desktop/in_app_notification.dart' as iand;
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/image/image_compatible.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_render.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../l10n/app_localizations.dart';
+import '../../utils/platform.dart';
+import '../app/view_models/app_settings_view_model.dart';
+import '../shell/view_models/shell_view_model.dart';
+import 'app_icons.dart';
+import 'themes/colors.dart';
+import 'ui/image/image_compatible.dart';
+import 'ui/phone/liquid_glass_background.dart';
+import 'ui/phone/liquid_glass_render.dart';
+import 'ui/space.dart';
 
 class Notifications {
   // Common method for showing a notification
-  showNotification({
+  void showNotification({
     required BuildContext context,
     required String title,
     required String message,
@@ -41,10 +42,12 @@ class Notifications {
               child: liquidGlassLayer(
                 child: liquidGlass(
                   child: liquidGlassBackground(
-                    enabled: liquidGlassEnabled,
+                    enabled: context.readSettings.useLiquidGlass,
                     child: BackdropFilter(
                       filter: ImageFilter.blur(
-                          sigmaX: kIsApple ? 0 : 24, sigmaY: kIsApple ? 0 : 24),
+                        sigmaX: kIsApple ? 0 : 24,
+                        sigmaY: kIsApple ? 0 : 24,
+                      ),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: kIsApple
@@ -56,11 +59,7 @@ class Notifications {
                           padding: const EdgeInsets.all(16.0),
                           child: Row(
                             children: [
-                              Icon(
-                                icon,
-                                size: 25,
-                                color: iconColor,
-                              ),
+                              Icon(icon, size: 25, color: iconColor),
                               razw(10),
                               Flexible(
                                 child: Column(
@@ -113,8 +112,13 @@ class Notifications {
 
   // Show custom notification with title and icon
   void showSpecialNotification(
-      BuildContext context, String title, String message, IconData icon,
-      {Color iconColor = Colors.white, void Function()? onTap}) {
+    BuildContext context,
+    String title,
+    String message,
+    IconData icon, {
+    Color iconColor = Colors.white,
+    void Function()? onTap,
+  }) {
     showNotification(
       context: context,
       title: title,
@@ -129,23 +133,28 @@ class Notifications {
 
   // Show error notification
   void showErrorNotification(
-      BuildContext context, String title, String message) {
+    BuildContext context,
+    String title,
+    String message,
+  ) {
     showNotification(
-        context: context,
-        title: title,
-        message: message,
-        icon: AppIcons.warning);
+      context: context,
+      title: title,
+      message: message,
+      icon: AppIcons.warning,
+    );
   }
 
   // Show disabled notification
   void showDisabledNotification(BuildContext context) {
     showNotification(
-        context: context,
-        title: AppLocalizations.of(context).accountdisabled,
-        message: AppLocalizations.of(context)
-            .pleasecontactinordertoenableyouraccountandusetheapp,
-        icon: AppIcons.warning,
-        durationInSeconds: 20);
+      context: context,
+      title: AppLocalizations.of(context).accountdisabled,
+      message: AppLocalizations.of(context)
+          .pleasecontactinordertoenableyouraccountandusetheapp,
+      icon: AppIcons.warning,
+      durationInSeconds: 20,
+    );
   }
 
   // Shazam notification
@@ -159,17 +168,7 @@ class Notifications {
       InAppNotification.show(
         context: context,
         duration: const Duration(seconds: 10),
-        onTap: () {
-          if (currentSearchDataManager.value != null) {
-            currentTrackHeight.value = 0; // Close the details screen if up
-            navigationBarIndex.value = 0; // Send to search screen
-            // Search the name and song
-            currentSearchDataManager.value!.search(
-              "$title - $subtitle",
-            );
-            searchBarIsSearching.value = true; // Focus
-          }
-        },
+        onTap: () => context.shell.requestSearch('$title - $subtitle'),
         child: ConstrainedBox(
           constraints: const BoxConstraints(),
           child: Padding(
@@ -179,14 +178,17 @@ class Notifications {
               child: liquidGlassLayer(
                 child: liquidGlass(
                   child: liquidGlassBackground(
-                    enabled: liquidGlassEnabled,
+                    enabled: context.readSettings.useLiquidGlass,
                     child: BackdropFilter(
                       filter: ImageFilter.blur(
-                          sigmaX: kIsApple ? 0 : 24, sigmaY: kIsApple ? 0 : 24),
+                        sigmaX: kIsApple ? 0 : 24,
+                        sigmaY: kIsApple ? 0 : 24,
+                      ),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color:
-                              kIsApple ? Col.transp : Col.prim.withAlpha(100),
+                          color: kIsApple
+                              ? Col.transp
+                              : Col.prim.withAlpha(100),
                           borderRadius: BorderRadius.circular(16.0),
                         ),
                         child: Padding(
@@ -197,12 +199,13 @@ class Notifications {
                                 height: 55,
                                 width: 55,
                                 child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(5),
-                                    child: ImageCompatible(
-                                      image: image,
-                                      width: 55,
-                                      height: 55,
-                                    )),
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: ImageCompatible(
+                                    image: image,
+                                    width: 55,
+                                    height: 55,
+                                  ),
+                                ),
                               ),
                               razw(10),
                               Expanded(
@@ -220,8 +223,9 @@ class Notifications {
                                     Text(
                                       subtitle,
                                       style: TextStyle(
-                                          color: Colors.white.withAlpha(175),
-                                          fontSize: 15),
+                                        color: Colors.white.withAlpha(175),
+                                        fontSize: 15,
+                                      ),
                                       textAlign: TextAlign.left,
                                       maxLines: 2,
                                     ),
@@ -251,16 +255,9 @@ class Notifications {
         context: context,
         duration: const Duration(seconds: 10),
         onTap: () {
-          if (!fullscreenPlaying.value) {
-            if (currentSearchDataManager.value != null) {
-              currentTrackHeight.value = 0; // Close the details screen if up
-              navigationBarIndex.value = 0; // Send to search screen
-              // Search the name and song
-              currentSearchDataManager.value!.search(
-                "$title - $subtitle",
-              );
-              searchBarIsSearching.value = true; // Focus
-            }
+          final shell = context.shell;
+          if (!shell.fullscreenPlaying.value) {
+            shell.requestSearch('$title - $subtitle');
           }
         },
         width: 500,
@@ -273,10 +270,12 @@ class Notifications {
               child: liquidGlassLayer(
                 child: liquidGlass(
                   child: liquidGlassBackground(
-                    enabled: liquidGlassEnabled,
+                    enabled: context.readSettings.useLiquidGlass,
                     child: BackdropFilter(
                       filter: ImageFilter.blur(
-                          sigmaX: kIsApple ? 0 : 24, sigmaY: kIsApple ? 0 : 24),
+                        sigmaX: kIsApple ? 0 : 24,
+                        sigmaY: kIsApple ? 0 : 24,
+                      ),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: Col.prim.withAlpha(100),
@@ -293,12 +292,13 @@ class Notifications {
                                   height: 95,
                                   width: 95,
                                   child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: ImageCompatible(
-                                        image: image,
-                                        width: 95,
-                                        height: 95,
-                                      )),
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: ImageCompatible(
+                                      image: image,
+                                      width: 95,
+                                      height: 95,
+                                    ),
+                                  ),
                                 ),
                                 razw(10),
                                 Expanded(
@@ -318,8 +318,9 @@ class Notifications {
                                       Text(
                                         subtitle,
                                         style: TextStyle(
-                                            color: Colors.white.withAlpha(175),
-                                            fontSize: 17),
+                                          color: Colors.white.withAlpha(175),
+                                          fontSize: 17,
+                                        ),
                                         textAlign: TextAlign.left,
                                         maxLines: 2,
                                       ),

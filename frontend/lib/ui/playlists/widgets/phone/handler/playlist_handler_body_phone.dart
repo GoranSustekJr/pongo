@@ -3,28 +3,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/playlists/models/playlist_handler.dart';
-import 'package:pongo/features/playlists/presentation/phone/handler/playlist_handler_body_add_playlist_phone.dart';
-import 'package:pongo/features/playlists/presentation/phone/handler/playlist_handler_body_add_tracks_phone.dart';
-import 'package:pongo/features/playlists/presentation/phone/handler/selected_tracks_phone.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/buttons/text_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
+import '../../../../../domain/models/playlists/playlist_handler.dart';
+import '../../../../../domain/models/playlists/user_playlist.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../app/view_models/app_settings_view_model.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/ui/app_blur.dart';
+import '../../../../core/ui/buttons/text_button.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../../shell/view_models/shell_view_model.dart';
+import 'playlist_handler_body_add_playlist_phone.dart';
+import 'playlist_handler_body_add_tracks_phone.dart';
+import 'selected_tracks_phone.dart';
 
 class PlaylistHandlerBodyPhone extends StatefulWidget {
   final List<PlaylistHandlerTrack>? playlistHandlerTracks;
   final bool showCreatePlaylist;
   final bool onlyCreatePlaylist;
   final bool working;
-  final List currentPlaylists;
-  final List<MemoryImage?> currentPlaylistsCoverImages;
+  final List<UserPlaylist> currentPlaylists;
   final TextEditingController titleController;
-  final Map playlistTrackMap;
-  final dynamic newPlaylistCover;
+  final Map<int, Set<String>> playlistTrackMap;
+  final Object? newPlaylistCover;
   final List<int> selectedPlaylists;
   final Function() createPlaylistFunction;
   final Function() addTracksToPlaylists;
@@ -37,7 +38,6 @@ class PlaylistHandlerBodyPhone extends StatefulWidget {
     required this.playlistHandlerTracks,
     required this.showCreatePlaylist,
     required this.onlyCreatePlaylist,
-    required this.currentPlaylistsCoverImages,
     required this.createPlaylistFunction,
     required this.addTracksToPlaylists,
     required this.changeCreatePlaylist,
@@ -63,13 +63,14 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
 
     return Stack(
       children: [
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 350),
-          child: widget.showCreatePlaylist ||
+          child:
+              widget.showCreatePlaylist ||
                   widget.onlyCreatePlaylist ||
                   widget.playlistHandlerTracks == null
               ? PlaylistHandlerBodyAddPlaylistPhone(
@@ -82,8 +83,6 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
                 )
               : PlaylistHandlerBodyAddTracksPhone(
                   currentPlaylists: widget.currentPlaylists,
-                  currentPlaylistsCoverImages:
-                      widget.currentPlaylistsCoverImages,
                   playlistTrackMap: widget.playlistTrackMap,
                   selectedPlaylists: widget.selectedPlaylists,
                   playlistHandlerTracks: widget.playlistHandlerTracks,
@@ -100,9 +99,11 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
               borderRadius: BorderRadius.circular(60),
               child: liquidGlassBackground(
                 child: BackdropFilter(
-                  filter: nonAppleBlur(5),
+                  filter: nonAppleBlur(context, 5),
                   child: Container(
-                    color: Colors.black.withAlpha(useBlur.value ? 50 : 200),
+                    color: Colors.black.withAlpha(
+                      context.readSettings.useBlur ? 50 : 200,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -138,7 +139,7 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
                           AppLocalizations.of(context).cancel,
                           () {
                             if (!widget.working) {
-                              playlistHandler.value = null;
+                              context.shell.playlistHandler.value = null;
                             }
                           },
                           const TextStyle(color: Colors.white, fontSize: 20),
@@ -174,7 +175,8 @@ class _PlaylistHandlerBodyPhoneState extends State<PlaylistHandlerBodyPhone> {
         ),
         if (widget.playlistHandlerTracks != null)
           SelectedTracksPhone(
-            show: widget.showCreatePlaylist ||
+            show:
+                widget.showCreatePlaylist ||
                 widget.onlyCreatePlaylist ||
                 widget.playlistHandlerTracks == null,
             playlistHandlerTracks: widget.playlistHandlerTracks!,

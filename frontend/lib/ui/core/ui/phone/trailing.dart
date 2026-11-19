@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
+import '../../themes/colors.dart';
 
 class Trailing extends StatelessWidget {
   final bool show;
@@ -9,12 +9,13 @@ class Trailing extends StatelessWidget {
   final bool forceWhite;
   final Widget trailing;
 
-  const Trailing(
-      {super.key,
-      required this.show,
-      required this.showThis,
-      required this.trailing,
-      required this.forceWhite});
+  const Trailing({
+    super.key,
+    required this.show,
+    required this.showThis,
+    required this.trailing,
+    required this.forceWhite,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +29,10 @@ class Trailing extends StatelessWidget {
                     child: Center(
                       child: Icon(
                         CupertinoIcons.circle_filled,
-                        color: forceWhite ? Colors.white : Col.icon,
+                        color: forceWhite ? Colors.white : context.colors.icon,
                       ),
-                    ))
+                    ),
+                  )
                 : const SizedBox(),
           )
         : trailing;

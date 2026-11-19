@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_render.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../app/view_models/app_settings_view_model.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../shell/view_models/shell_view_model.dart';
 
 class SearchBarIOSPhone extends StatefulWidget {
   final Function(String) onFieldSubmitted;
@@ -27,121 +26,153 @@ class SearchBarIOSPhone extends StatefulWidget {
 }
 
 class _SearchBarIOSPhoneState extends State<SearchBarIOSPhone> {
-  // Is Searching
-  bool searching = false;
+  static const double height = 44;
 
-  // Search Text Controller
-  TextEditingController searchController = TextEditingController(text: '');
+  @override
+  void initState() {
+    super.initState();
+    widget.focusNode.addListener(onFocusChange);
+  }
 
-  // Query / Inserted Text
-  String? query;
+  @override
+  void dispose() {
+    widget.focusNode.removeListener(onFocusChange);
+    super.dispose();
+  }
 
-  // Constant Text Form Field Border
-  OutlineInputBorder border = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(10),
-    borderSide: const BorderSide(
-      color: Col.transp,
-    ),
-  );
+  void onFocusChange() {
+    final hasFocus = widget.focusNode.hasFocus;
+    widget.setShowSearchHistory(hasFocus);
+    if (hasFocus) context.shell.searchBarIsSearching.value = true;
+  }
+
+  // Leaves search and returns to the home screen
+  void cancel() {
+    context.shell.searchBarIsSearching.value = false;
+    widget.focusNode.unfocus();
+    widget.setShowSearchHistory(false);
+    widget.searchController.clear();
+    widget.onChanged('');
+    widget.onFieldSubmitted(''); // Set Empty Query In Parent Widget
+  }
+
+  // Glass dark enough that the field stays readable over artwork
+  LiquidGlassSettings get settings => context.readSettings.darkMode
+      ? LiquidGlassSettings.ios27Dark.copyWith(
+          glassColor: const Color(0x991C1C1E),
+        )
+      : LiquidGlassSettings.ios27Light.copyWith(
+          glassColor: const Color(0xB3F2F2F7),
+        );
+
+  Widget clearButton() {
+    return ValueListenableBuilder(
+      valueListenable: widget.searchController,
+      builder: (context, value, child) {
+        if (value.text.isEmpty) return const SizedBox.shrink();
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            widget.searchController.clear();
+            widget.onChanged('');
+            widget.focusNode.requestFocus();
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Icon(
+              CupertinoIcons.clear_circled_solid,
+              size: 18,
+              color: context.colors.text.withAlpha(150),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: Scaffold.of(context).appBarMaxHeight == null
-          ? MediaQuery.of(context).padding.top + AppBar().preferredSize.height
-          : Scaffold.of(context).appBarMaxHeight! + 20,
-      child: AppBar(
-        backgroundColor: Col.transp,
-        shadowColor: Col.transp,
-        surfaceTintColor: Col.transp,
-        title: liquidGlassLayer(
-          thickness: 15,
-          child: liquidGlass(
-            child: Row(
+    final glass = context.readSettings.useLiquidGlass;
+    return SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
+        child: ValueListenableBuilder(
+          valueListenable: context.shell.searchBarIsSearching,
+          builder: (context, searching, child) {
+            return Row(
               children: [
-                Flexible(
-                  child: AnimatedPadding(
-                    duration: Duration(milliseconds: animations ? 150 : 0),
-                    padding: EdgeInsets.only(
-                        right: searchBarIsSearching.value ? 5 : 0),
-                    child: Focus(
-                      onFocusChange: (hasFocus) {
-                        if (widget.focusNode.hasFocus) {
-                          widget.setShowSearchHistory(true);
-                        } else {
-                          widget.setShowSearchHistory(false);
-                        }
-                        setState(() {
-                          searching = hasFocus;
-                        });
-                      },
-                      child: liquidGlass(
-                        child: CupertinoSearchTextField(
-                          controller: widget.searchController,
-                          focusNode: widget.focusNode,
-                          onChanged: (value) {
-                            setState(() {
-                              query = value;
-                            });
-                            widget.onChanged(value);
-                          },
-                          onTap: () {
-                            setState(() {
-                              searching = true;
-                              searchBarIsSearching.value = true;
-                            });
-                          },
-                          onSubmitted: (qry) {
-                            widget.setShowSearchHistory(false);
-                            widget.onFieldSubmitted(qry); // Callback
-                            widget.focusNode.unfocus();
-                          },
-                          placeholder: AppLocalizations.of(context).search,
-                          placeholderStyle:
-                              TextStyle(color: Col.text.withAlpha(215)),
-                          /* backgroundColor: Col.primaryCard
-                              .withAlpha(useBlur.value ? 150 : 245), */
-                          style: TextStyle(color: Col.text),
-                          itemColor: Col.icon,
-                        ),
+                Expanded(
+                  // The whole capsule focuses the field, not only the text
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: widget.focusNode.requestFocus,
+                    child: GlassTextField.search(
+                      controller: widget.searchController,
+                      focusNode: widget.focusNode,
+                      height: height,
+                      shape: const LiquidRoundedRectangle(
+                        borderRadius: height / 2,
                       ),
+                      useOwnLayer: true,
+                      settings: glass ? settings : null,
+                      surfaceStyle: glass
+                          ? GlassSurfaceStyle.glass
+                          : GlassSurfaceStyle.solid,
+                      color: glass ? null : Col.searchBarBackground,
+                      placeholder: AppLocalizations.of(context).search,
+                      placeholderStyle: TextStyle(
+                        color: context.colors.text.withAlpha(150),
+                      ),
+                      textStyle: TextStyle(
+                        color: context.colors.text,
+                        fontSize: 17,
+                      ),
+                      prefixIcon: Icon(
+                        CupertinoIcons.search,
+                        size: 20,
+                        color: context.colors.text.withAlpha(150),
+                      ),
+                      suffixIcon: clearButton(),
+                      // Keep the keyboard while a history entry is tapped
+                      onTapOutside: (_) {},
+                      onChanged: widget.onChanged,
+                      onSubmitted: (qry) {
+                        widget.setShowSearchHistory(false);
+                        widget.onFieldSubmitted(qry); // Callback
+                        widget.focusNode.unfocus();
+                      },
                     ),
                   ),
                 ),
-                if (searchBarIsSearching.value || widget.focusNode.hasFocus)
-                  liquidGlass(
-                    child: CupertinoButton(
-                      sizeStyle: CupertinoButtonSize.medium,
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        if (searchBarIsSearching.value ||
-                            widget.focusNode.hasFocus) {
-                          setState(() {
-                            searching = false;
-                            searchBarIsSearching.value = false;
-                          });
-                          widget.focusNode.unfocus();
-                          searchController.clear();
-                          widget.onFieldSubmitted(
-                              ""); // Set Empty Query In Parent Widget
-                        }
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 5, left: 5),
-                        child: Text(
-                          AppLocalizations.of(context).cancel,
-                          style: TextStyle(
-                              color: Col.text.withAlpha(200), fontSize: 20),
-                        ),
-                      ),
-                    ),
+                AnimatedSize(
+                  duration: Duration(
+                    milliseconds: context.readSettings.useAnimations ? 250 : 0,
                   ),
+                  curve: Curves.easeInOutCubic,
+                  child: searching
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: GlassButton(
+                            onTap: cancel,
+                            label: AppLocalizations.of(context).cancel,
+                            width: height,
+                            height: height,
+                            useOwnLayer: true,
+                            settings: glass ? settings : null,
+                            icon: Icon(
+                              CupertinoIcons.xmark,
+                              size: 18,
+                              color: context.colors.text,
+                            ),
+                          ),
+                        )
+                      : const SizedBox(height: height),
+                ),
               ],
-            ),
-          ),
+            );
+          },
         ),
-        flexibleSpace:
-            !liquidGlassEnabled ? liquidGlassBackground() : const SizedBox(),
       ),
     );
   }

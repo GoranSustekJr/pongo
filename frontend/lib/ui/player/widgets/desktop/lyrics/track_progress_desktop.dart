@@ -1,11 +1,9 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_slider_path/interactive_slider.dart' as isf;
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/shared/widgets/marquee.dart';
+import '../../../../core/ui/marquee.dart';
+import '../../../view_models/player_view_model.dart';
 
 class DesktopTrackProgress extends StatefulWidget {
   final String album;
@@ -31,10 +29,12 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
 
   // Notifiers for progress and time
   final ValueNotifier<double> progressNotifier = ValueNotifier<double>(0.0);
-  final ValueNotifier<String> formattedTimeNotifier =
-      ValueNotifier<String>('0:00');
-  final ValueNotifier<String> remainingTimeNotifier =
-      ValueNotifier<String>('-0:00');
+  final ValueNotifier<String> formattedTimeNotifier = ValueNotifier<String>(
+    '0:00',
+  );
+  final ValueNotifier<String> remainingTimeNotifier = ValueNotifier<String>(
+    '-0:00',
+  );
 
   @override
   void initState() {
@@ -46,9 +46,12 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
     // Update progress values
     progressNotifier.value = progress;
     formattedTimeNotifier.value = formatTime(
-        Duration(seconds: (progress * widget.duration!.inSeconds).toInt()));
-    remainingTimeNotifier.value = formatTime(widget.duration! -
-        Duration(seconds: (progress * widget.duration!.inSeconds).toInt()));
+      Duration(seconds: (progress * widget.duration!.inSeconds).toInt()),
+    );
+    remainingTimeNotifier.value = formatTime(
+      widget.duration! -
+          Duration(seconds: (progress * widget.duration!.inSeconds).toInt()),
+    );
   }
 
   String formatTime(Duration duration) {
@@ -59,15 +62,14 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final Size size = MediaQuery.of(context).size;
+    final player = context.player;
     return StreamBuilder<Duration>(
-      stream: audioServiceHandler.audioPlayer.positionStream,
+      stream: player.positionStream,
       builder: (context, position) {
         // Update progress only if there's a change
         if (position.hasData && widget.duration != null) {
-          double progress =
+          final double progress =
               position.data!.inSeconds / widget.duration!.inSeconds;
           if (progress != progressNotifier.value) {
             progressController.value = progress;
@@ -94,10 +96,11 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
                   focusedHeight: 12,
                   onProgressUpdated: (position) async {
                     updateProgress(position);
-                    await audioServiceHandler.seek(
+                    await player.seek(
                       Duration(
-                          seconds:
-                              (position * widget.duration!.inSeconds).toInt()),
+                        seconds: (position * widget.duration!.inSeconds)
+                            .toInt(),
+                      ),
                     );
                   },
                 ),
@@ -118,7 +121,9 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
                         return Text(
                           formattedTimeNotifier.value,
                           style: TextStyle(
-                              color: Colors.white.withAlpha(200), fontSize: 14),
+                            color: Colors.white.withAlpha(200),
+                            fontSize: 14,
+                          ),
                         );
                       },
                     ),
@@ -127,14 +132,16 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
                         child: CupertinoButton(
                           padding: EdgeInsets.zero,
                           onPressed: () async {
-                            await widget
-                                .showAlbum(widget.album.split("..Ææ..")[0]);
+                            await widget.showAlbum(
+                              widget.album.split('..Ææ..')[0],
+                            );
                           },
                           child: marquee(
-                            widget.album.split("..Ææ..")[1],
+                            widget.album.split('..Ææ..')[1],
                             TextStyle(
-                                color: Colors.white.withAlpha(200),
-                                fontSize: 12),
+                              color: Colors.white.withAlpha(200),
+                              fontSize: 12,
+                            ),
                             null,
                             null,
                           ),
@@ -147,7 +154,9 @@ class _DesktopTrackProgressState extends State<DesktopTrackProgress> {
                         return Text(
                           remainingTime,
                           style: TextStyle(
-                              color: Colors.white.withAlpha(200), fontSize: 14),
+                            color: Colors.white.withAlpha(200),
+                            fontSize: 14,
+                          ),
                         );
                       },
                     ),

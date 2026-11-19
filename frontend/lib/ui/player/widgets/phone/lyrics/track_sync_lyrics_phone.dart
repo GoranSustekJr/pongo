@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/features/player/presentation/widgets/track_sync_lyrics.dart';
+import '../../../../../utils/platform.dart';
+import '../../widgets/track_sync_lyrics.dart';
 
 class TrackSyncLyricsPhone extends StatelessWidget {
   final bool lyricsOn;
-  final List<dynamic> lyrics;
+  final List<String> lyrics;
   final int syncTimeDelay;
   const TrackSyncLyricsPhone({
     super.key,

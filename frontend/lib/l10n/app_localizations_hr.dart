@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -791,7 +792,8 @@ class AppLocalizationsHr extends AppLocalizations {
   String get deleteyouraccount => 'Izbriši svoj račun';
 
   @override
-  String get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium =>
+  String
+  get bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium =>
       'Brisanjem računa bit ćeš odjavljen, a tvoji podaci bit će uklonjeni s poslužitelja.';
 
   @override
@@ -831,4 +833,28 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get lastadded => 'Posljednje dodano';
+
+  @override
+  String get goodmorning => 'Dobro jutro';
+
+  @override
+  String get goodafternoon => 'Dobar dan';
+
+  @override
+  String get goodevening => 'Dobra večer';
+
+  @override
+  String get toptracks => 'Najpopularnije pjesme';
+
+  @override
+  String get popularartists => 'Popularni izvođači';
+
+  @override
+  String get featuredplaylists => 'Istaknute playliste';
+
+  @override
+  String get newreleases => 'Nova izdanja';
+
+  @override
+  String get genres => 'Žanrovi';
 }

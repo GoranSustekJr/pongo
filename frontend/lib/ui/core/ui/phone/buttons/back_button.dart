@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_render.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../app/view_models/app_settings_view_model.dart';
+import '../../../../shell/view_models/shell_view_model.dart';
+import '../../../themes/colors.dart';
+import '../liquid_glass_background.dart';
+import '../liquid_glass_render.dart';
 
-backButton(context) {
-  Widget child = Container(
+Widget backButton(BuildContext context) {
+  final Widget child = Container(
     height: 50,
     width: 50,
     decoration: BoxDecoration(
@@ -34,12 +35,12 @@ backButton(context) {
           child: liquidGlass(
             radius: 360,
             child: liquidGlassBackground(
-              enabled: liquidGlassEnabled,
+              enabled: context.readSettings.useLiquidGlass,
               child: CupertinoButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  showBottomNavBar.value = true;
-                  showSearchBar.value = true;
+                  context.shell.showBottomNavBar.value = true;
+                  context.shell.showSearchBar.value = true;
                 },
                 padding: EdgeInsets.zero,
                 child: child,
@@ -54,8 +55,8 @@ backButton(context) {
             child: InkWell(
               onTap: () {
                 Navigator.of(context).pop();
-                showBottomNavBar.value = true;
-                showSearchBar.value = true;
+                context.shell.showBottomNavBar.value = true;
+                context.shell.showSearchBar.value = true;
               },
               child: child,
             ),

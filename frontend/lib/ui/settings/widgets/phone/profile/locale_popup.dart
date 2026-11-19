@@ -1,38 +1,41 @@
 import 'package:flutter/cupertino.dart';
 import 'package:kr_pull_down_button/pull_down_button.dart';
+import 'package:provider/provider.dart';
 
-import 'package:pongo/app/phone_app.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/storage/secure_storage.dart';
+import '../../../../app/view_models/app_settings_view_model.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
 
-appleLocalePopup(String locale, Function(String) function) {
+PullDownButton appleLocalePopup(String locale, Function(String) function) {
   return PullDownButton(
     itemBuilder: (context) => [
       PullDownMenuItem(
         title: 'English',
         onTap: () {
-          PhoneApp.setLocale(context, const Locale('en'));
-          Storage().writeLocale("en");
-          function("en");
+          context.read<AppSettingsViewModel>().update(
+            (s) => s.copyWith(locale: 'en'),
+          );
+          function('en');
         },
       ),
       const PullDownMenuDivider(),
       PullDownMenuItem(
         title: 'Deutsch',
         onTap: () {
-          PhoneApp.setLocale(context, const Locale('de'));
-          Storage().writeLocale("de");
-          function("de");
+          context.read<AppSettingsViewModel>().update(
+            (s) => s.copyWith(locale: 'de'),
+          );
+          function('de');
         },
       ),
       const PullDownMenuDivider(),
       PullDownMenuItem(
         title: 'Hrvatski',
         onTap: () {
-          PhoneApp.setLocale(context, const Locale('hr'));
-          Storage().writeLocale("hr");
-          function("hr");
+          context.read<AppSettingsViewModel>().update(
+            (s) => s.copyWith(locale: 'hr'),
+          );
+          function('hr');
         },
       ),
     ],
@@ -42,17 +45,11 @@ appleLocalePopup(String locale, Function(String) function) {
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          Icon(
-            AppIcons.world,
-            color: Col.icon,
-          ),
+          Icon(AppIcons.world, color: context.colors.icon),
           Text(
             locale,
-            style: TextStyle(
-              fontSize: 10,
-              color: Col.text,
-            ),
-          )
+            style: TextStyle(fontSize: 10, color: context.colors.text),
+          ),
         ],
       ),
     ),

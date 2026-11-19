@@ -2,19 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'package:pongo/app/navigation/navigation.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/features/onboarding/presentation/phone/introduction_phone.dart';
-import 'package:pongo/features/settings/presentation/phone/about/about_phone.dart';
-import 'package:pongo/features/settings/presentation/phone/preferences/preferences_phone.dart';
-import 'package:pongo/features/settings/presentation/phone/profile/profile_phone.dart';
-import 'package:pongo/features/settings/presentation/phone/widgets/settings_text.dart';
-import 'package:pongo/features/settings/presentation/phone/widgets/settings_tile.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../routing/navigation.dart';
+import '../../../../utils/platform.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/ui/space.dart';
+import '../../../onboarding/widgets/phone/introduction_phone.dart';
+import 'about/about_phone.dart';
+import 'preferences/preferences_phone.dart';
+import 'profile/profile_phone.dart';
+import 'widgets/settings_text.dart';
+import 'widgets/settings_tile.dart';
 
 class SettingsPhone extends StatefulWidget {
   const SettingsPhone({super.key});
@@ -29,12 +28,12 @@ class _SettingsPhoneState extends State<SettingsPhone> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: AppConstants().backgroundBoxDecoration,
+        decoration: context.colors.backgroundBoxDecoration,
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -53,7 +52,7 @@ class _SettingsPhoneState extends State<SettingsPhone> {
                   style: TextStyle(
                     fontSize: kIsApple ? 30 : 40,
                     fontWeight: kIsApple ? FontWeight.w700 : FontWeight.w800,
-                    color: Col.text,
+                    color: context.colors.text,
                   ),
                 ),
                 stretchModes: const [
@@ -65,72 +64,75 @@ class _SettingsPhoneState extends State<SettingsPhone> {
             ),
             // Other slivers for your Wi-Fi settings content
             SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return Column(
-                    children: [
-                      razh(kIsApple ? size.width / 5 : size.width / 4),
-                      settingsText(AppLocalizations.of(context).profile),
-                      settingsTile(
-                          context,
-                          true,
-                          false,
-                          AppIcons.profile,
-                          AppIcons.settings,
-                          AppLocalizations.of(context).profile,
-                          AppLocalizations.of(context).yourprofile, () {
+              delegate: SliverChildBuilderDelegate((
+                BuildContext context,
+                int index,
+              ) {
+                return Column(
+                  children: [
+                    razh(kIsApple ? size.width / 5 : size.width / 4),
+                    settingsText(AppLocalizations.of(context).profile),
+                    settingsTile(
+                      context,
+                      true,
+                      false,
+                      AppIcons.profile,
+                      AppIcons.settings,
+                      AppLocalizations.of(context).profile,
+                      AppLocalizations.of(context).yourprofile,
+                      () {
                         //Navigationss().nextScreen(context, '/profile', {});
                         Navigations().nextScreen(context, const ProfilePhone());
-                      }),
-                      settingsTile(
+                      },
+                    ),
+                    settingsTile(
+                      context,
+                      false,
+                      true,
+                      AppIcons.preferences,
+                      AppIcons.settings,
+                      AppLocalizations.of(context).preferences,
+                      AppLocalizations.of(context).yourpreferences,
+                      () {
+                        Navigations().nextScreen(
                           context,
-                          false,
-                          true,
-                          AppIcons.preferences,
-                          AppIcons.settings,
-                          AppLocalizations.of(context).preferences,
-                          AppLocalizations.of(context).yourpreferences, () {
-                        Navigations()
-                            .nextScreen(context, const PreferencesPhone());
-                      }),
-                      razh(20),
-                      settingsText(AppLocalizations.of(context).about),
-                      settingsTile(
-                        context,
-                        true,
-                        false,
-                        CupertinoIcons.info_circle,
-                        AppIcons.musicAlbums,
-                        AppLocalizations.of(context).about,
-                        AppLocalizations.of(context).aboutpongo,
-                        () {
-                          Navigations().nextScreen(
-                            context,
-                            const AboutPhone(),
-                          );
-                        },
-                      ),
-                      settingsTile(
-                        context,
-                        false,
-                        true,
-                        CupertinoIcons.chart_bar_fill,
-                        AppIcons.settings,
-                        "Tipps & tricks",
-                        "Pongo tipps & tricks",
-                        () {
-                          Navigations().nextScreen(
-                            context,
-                            const IntroductionPhone(),
-                          );
-                        },
-                        special: true,
-                      ),
-                    ],
-                  );
-                },
-                childCount: 1,
-              ),
+                          const PreferencesPhone(),
+                        );
+                      },
+                    ),
+                    razh(20),
+                    settingsText(AppLocalizations.of(context).about),
+                    settingsTile(
+                      context,
+                      true,
+                      false,
+                      CupertinoIcons.info_circle,
+                      AppIcons.musicAlbums,
+                      AppLocalizations.of(context).about,
+                      AppLocalizations.of(context).aboutpongo,
+                      () {
+                        Navigations().nextScreen(context, const AboutPhone());
+                      },
+                    ),
+                    settingsTile(
+                      context,
+                      false,
+                      true,
+                      CupertinoIcons.chart_bar_fill,
+                      AppIcons.settings,
+                      'Tipps & tricks',
+                      'Pongo tipps & tricks',
+                      () {
+                        Navigations().nextScreen(
+                          context,
+                          const IntroductionPhone(),
+                        );
+                      },
+                      special: true,
+                    ),
+                  ],
+                );
+              }, childCount: 1),
             ),
           ],
         ),

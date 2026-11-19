@@ -1,18 +1,18 @@
-// ignore_for_file: deprecated_member_use
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
+import 'colors.dart';
 
-class AppTheme {
-  final dark = ThemeData(
+/// The app's Material themes.
+abstract final class AppTheme {
+  static final _base = ThemeData(
     brightness: Brightness.dark,
     scaffoldBackgroundColor: Colors.transparent,
-    colorScheme: const ColorScheme.dark(), // Set brightness to dark
+    colorScheme: const ColorScheme.dark(),
     useMaterial3: true,
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-        textStyle: MaterialStateProperty.all(
+        textStyle: WidgetStateProperty.all(
           const TextStyle(color: Colors.white),
         ),
       ),
@@ -23,6 +23,7 @@ class AppTheme {
     ),
     primarySwatch: Colors.blue,
     primaryColor: Col.primary,
+    cupertinoOverrideTheme: const CupertinoThemeData(primaryColor: Col.primary),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       shadowColor: Colors.transparent,
@@ -33,6 +34,19 @@ class AppTheme {
     ),
     splashColor: Col.fadeIcon.withAlpha(0),
     highlightColor: Col.fadeIcon.withAlpha(0),
-    textSelectionTheme: TextSelectionThemeData(cursorColor: Col.onIcon),
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: AppColors.dark.onIcon,
+    ),
+  );
+
+  /// The dark theme.
+  static final dark = _base.copyWith(extensions: const [AppColors.dark]);
+
+  /// The light theme, which keeps the dark Material colors and only swaps
+  /// the app palette.
+  static final light = _base.copyWith(
+    brightness: Brightness.light,
+    platform: TargetPlatform.iOS,
+    extensions: const [AppColors.light],
   );
 }

@@ -28,17 +28,13 @@ class _PulsatingIconState extends State<PulsatingIcon>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    )..repeat(reverse: true);
+    _controller = AnimationController(duration: widget.duration, vsync: this)
+      ..repeat(reverse: true);
 
-    _animation = Tween<double>(begin: 0.8, end: 1.3).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _animation = Tween<double>(
+      begin: 0.8,
+      end: 1.3,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -54,11 +50,7 @@ class _PulsatingIconState extends State<PulsatingIcon>
       builder: (context, child) {
         return Transform.scale(
           scale: _animation.value,
-          child: Icon(
-            widget.icon,
-            size: widget.size,
-            color: widget.color,
-          ),
+          child: Icon(widget.icon, size: widget.size, color: widget.color),
         );
       },
     );

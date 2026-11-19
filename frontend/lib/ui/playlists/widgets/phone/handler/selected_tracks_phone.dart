@@ -2,14 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/playlists/models/playlist_handler.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/marquee.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../domain/models/playlists/playlist_handler.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../app/view_models/app_settings_view_model.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/app_blur.dart';
+import '../../../../core/ui/marquee.dart';
+import '../../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../../core/ui/space.dart';
 
 class SelectedTracksPhone extends StatelessWidget {
   final bool show;
@@ -28,7 +28,7 @@ class SelectedTracksPhone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return AnimatedPositioned(
       duration: const Duration(milliseconds: 350),
       curve: show ? Curves.easeIn : Curves.fastEaseInToSlowEaseOut,
@@ -41,13 +41,17 @@ class SelectedTracksPhone extends StatelessWidget {
           borderRadius: BorderRadius.circular(60),
           child: liquidGlassBackground(
             child: BackdropFilter(
-              filter: nonAppleBlur(10),
+              filter: nonAppleBlur(context, 10),
               child: Container(
-                color: Colors.black.withAlpha(useBlur.value ? 50 : 200),
+                color: Colors.black.withAlpha(
+                  context.readSettings.useBlur ? 50 : 200,
+                ),
                 child: playlistHandlerTracks.length == 1
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 7.5, vertical: 5),
+                          horizontal: 7.5,
+                          vertical: 5,
+                        ),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           height: 45,
@@ -63,25 +67,33 @@ class SelectedTracksPhone extends StatelessWidget {
                                   height: 45,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
-                                    color: Col.primaryCard.withAlpha(150),
+                                    color: context.colors.primaryCard.withAlpha(
+                                      150,
+                                    ),
                                   ),
                                   child: FadeInImage(
                                     placeholder: const AssetImage(
-                                        'assets/images/placeholder.png'),
-                                    fadeInDuration:
-                                        const Duration(milliseconds: 200),
-                                    fadeOutDuration:
-                                        const Duration(milliseconds: 200),
-                                    image: playlistHandlerTracks[0]
+                                      'assets/images/placeholder.png',
+                                    ),
+                                    fadeInDuration: const Duration(
+                                      milliseconds: 200,
+                                    ),
+                                    fadeOutDuration: const Duration(
+                                      milliseconds: 200,
+                                    ),
+                                    image:
+                                        playlistHandlerTracks[0]
                                                 .playlistHandlerCoverType ==
                                             PlaylistHandlerCoverType.url
                                         ? NetworkImage(
                                             playlistHandlerTracks[0].cover,
                                           )
                                         : FileImage(
-                                            File.fromUri(Uri.parse(
-                                                playlistHandlerTracks[0]
-                                                    .cover)),
+                                            File.fromUri(
+                                              Uri.parse(
+                                                playlistHandlerTracks[0].cover,
+                                              ),
+                                            ),
                                           ),
                                   ),
                                 ),
@@ -92,7 +104,7 @@ class SelectedTracksPhone extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     marquee(
-                                      "${playlistHandlerTracks[0].name}  ",
+                                      '${playlistHandlerTracks[0].name}  ',
                                       const TextStyle(
                                         color: Colors.white,
                                         fontSize: 17,
@@ -103,9 +115,8 @@ class SelectedTracksPhone extends StatelessWidget {
                                       height: 22,
                                     ),
                                     marquee(
-                                      playlistHandlerTracks[0]
-                                          .artist
-                                          .map((artist) => artist["name"])
+                                      playlistHandlerTracks[0].artist
+                                          .map((artist) => artist.name)
                                           .join(', '),
                                       const TextStyle(
                                         color: Colors.white,
@@ -118,7 +129,7 @@ class SelectedTracksPhone extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -127,133 +138,139 @@ class SelectedTracksPhone extends StatelessWidget {
                         onVerticalDragUpdate: onVerticalDragUpdate,
                         onVerticalDragEnd: onVerticalDragEnd,
                         child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 350),
-                            height: show ? 50 : 60 + height,
-                            curve: Curves.fastEaseInToSlowEaseOut,
-                            child: Column(
-                              children: [
-                                razh(5),
-                                Text(
-                                  "${playlistHandlerTracks.length} ${AppLocalizations.of(context).plustracks}",
-                                  style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
+                          duration: const Duration(milliseconds: 350),
+                          height: show ? 50 : 60 + height,
+                          curve: Curves.fastEaseInToSlowEaseOut,
+                          child: Column(
+                            children: [
+                              razh(5),
+                              Text(
+                                '${playlistHandlerTracks.length} ${AppLocalizations.of(context).plustracks}',
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
                                 ),
-                                AnimatedContainer(
-                                  duration: const Duration(milliseconds: 350),
-                                  curve: Curves.fastEaseInToSlowEaseOut,
-                                  height: show ? 0 : height,
-                                  width: size.width - 40,
-                                  child: ListView.builder(
-                                    itemCount: playlistHandlerTracks.length,
-                                    shrinkWrap: true,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 10),
-                                    itemBuilder: (context, index) {
-                                      final track =
-                                          playlistHandlerTracks[index];
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 2.5),
-                                        child: Row(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(7.5),
-                                              child: /* CachedNetworkImage(
+                              ),
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 350),
+                                curve: Curves.fastEaseInToSlowEaseOut,
+                                height: show ? 0 : height,
+                                width: size.width - 40,
+                                child: ListView.builder(
+                                  itemCount: playlistHandlerTracks.length,
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 10,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    final track = playlistHandlerTracks[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 2.5,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              7.5,
+                                            ),
+                                            child: /* CachedNetworkImage(
                                                 imageUrl: track.cover.toString(),
                                                 width: 55,
                                                 height: 55,
-                                              ), */
-                                                  FadeInImage(
-                                                width: 55,
-                                                height: 55,
-                                                placeholder: const AssetImage(
-                                                    'assets/images/placeholder.png'),
-                                                fadeInDuration: const Duration(
-                                                    milliseconds: 200),
-                                                fadeOutDuration: const Duration(
-                                                    milliseconds: 200),
-                                                image: playlistHandlerTracks[
-                                                                index]
-                                                            .playlistHandlerCoverType ==
-                                                        PlaylistHandlerCoverType
-                                                            .url
-                                                    ? NetworkImage(
-                                                        playlistHandlerTracks[
-                                                                index]
-                                                            .cover,
-                                                      )
-                                                    : FileImage(
-                                                        File.fromUri(Uri.parse(
-                                                            playlistHandlerTracks[
-                                                                    index]
-                                                                .cover)),
+                                              ), */ FadeInImage(
+                                              width: 55,
+                                              height: 55,
+                                              placeholder: const AssetImage(
+                                                'assets/images/placeholder.png',
+                                              ),
+                                              fadeInDuration: const Duration(
+                                                milliseconds: 200,
+                                              ),
+                                              fadeOutDuration: const Duration(
+                                                milliseconds: 200,
+                                              ),
+                                              image:
+                                                  playlistHandlerTracks[index]
+                                                          .playlistHandlerCoverType ==
+                                                      PlaylistHandlerCoverType
+                                                          .url
+                                                  ? NetworkImage(
+                                                      playlistHandlerTracks[index]
+                                                          .cover,
+                                                    )
+                                                  : FileImage(
+                                                      File.fromUri(
+                                                        Uri.parse(
+                                                          playlistHandlerTracks[index]
+                                                              .cover,
+                                                        ),
                                                       ),
-                                              ),
-                                            ),
-                                            razw(10),
-                                            Flexible(
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  marquee(
-                                                    "${track.name}  ",
-                                                    const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.w500,
                                                     ),
-                                                    1,
-                                                    null,
-                                                    height: 22,
-                                                  ),
-                                                  marquee(
-                                                    "${playlistHandlerTracks[index].artist.map((artist) => artist["name"]).join(', ')}  ",
-                                                    const TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                    1,
-                                                    null,
-                                                    height: 20,
-                                                  ),
-                                                ],
-                                              ),
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                          ),
+                                          razw(10),
+                                          Flexible(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.max,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                marquee(
+                                                  '${track.name}  ',
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                  1,
+                                                  null,
+                                                  height: 22,
+                                                ),
+                                                marquee(
+                                                  "${playlistHandlerTracks[index].artist.map((artist) => artist.name).join(', ')}  ",
+                                                  const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                  1,
+                                                  null,
+                                                  height: 20,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 ),
-                                Flexible(
-                                  child: Container(
-                                    height: 25,
-                                    width: size.width - 40,
-                                    color: Colors.transparent,
-                                    child: Center(
-                                      child: Container(
-                                        width: 50,
-                                        height: 5,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(360),
-                                          color: Colors.white,
+                              ),
+                              Flexible(
+                                child: Container(
+                                  height: 25,
+                                  width: size.width - 40,
+                                  color: Colors.transparent,
+                                  child: Center(
+                                    child: Container(
+                                      width: 50,
+                                      height: 5,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          360,
                                         ),
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ],
-                            )),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
               ),
             ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:pongo/features/player/presentation/phone/play_shuffle_halt_bar.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../player/widgets/phone/play_shuffle_halt_bar.dart';
 
 class PlayShuffleHaltLocals extends StatelessWidget {
   final List missingTracks;
@@ -37,10 +37,10 @@ class PlayShuffleHaltLocals extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlayShuffleHaltBar(
-      playingId: "library.locals",
+      playingId: 'library.locals',
       missingTracks: missingTracks,
       loadingShuffle: loadingShuffle,
-      color: Col.icon,
+      color: context.colors.icon,
       play: play,
       shuffle: shuffle,
       frontWidget: frontWidget,
@@ -49,32 +49,28 @@ class PlayShuffleHaltLocals extends StatelessWidget {
       editActions: [
         iconButton(
           allSelected ? AppIcons.checkmark : AppIcons.uncheckmark,
-          Col.icon,
+          context.colors.icon,
           selectAll,
           edgeInsets: EdgeInsets.zero,
         ),
         iconButton(
           AppIcons.musicAlbums,
-          Col.icon,
-          () {
-            addToPlaylist();
-          },
+          context.colors.icon,
+          addToPlaylist,
           edgeInsets: EdgeInsets.zero,
         ),
         iconButton(
           AppIcons.trash,
-          Col.icon,
-          () {
-            remove();
-          },
+          context.colors.icon,
+          remove,
           edgeInsets: EdgeInsets.zero,
         ),
         iconButton(
           AppIcons.cancel,
-          Col.icon,
+          context.colors.icon,
           stopEdit,
           edgeInsets: EdgeInsets.zero,
-        )
+        ),
       ],
     );
   }

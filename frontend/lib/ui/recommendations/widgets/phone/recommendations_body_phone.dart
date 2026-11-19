@@ -1,22 +1,21 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/features/recommendations/data/recommendations_data_manager.dart';
-import 'package:pongo/features/recommendations/presentation/phone/sections/recommendations_categories.dart';
-import 'package:pongo/features/recommendations/presentation/phone/sections/recommendations_history.dart';
-import 'package:pongo/l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../core/themes/colors.dart';
+import '../../../player/view_models/player_view_model.dart';
+import '../../view_models/recommendations_view_model.dart';
+import 'sections/recommendations_categories.dart';
+import 'sections/recommendations_charts.dart';
+import 'sections/recommendations_history.dart';
+import 'sections/recommendations_quick_picks.dart';
 
 class RecommendationsBodyPhone extends StatelessWidget {
-  final RecommendationsDataManager dataManager;
+  final RecommendationsViewModel dataManager;
   const RecommendationsBodyPhone({super.key, required this.dataManager});
 
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context, listen: true) as AudioServiceHandler;
+    final player = context.player;
     return SizedBox(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
@@ -25,34 +24,41 @@ class RecommendationsBodyPhone extends StatelessWidget {
               displacement: 25,
               edgeOffset: Scaffold.of(context).appBarMaxHeight == null
                   ? MediaQuery.of(context).padding.top +
-                      AppBar().preferredSize.height
+                        AppBar().preferredSize.height
                   : Scaffold.of(context).appBarMaxHeight!,
-              onRefresh: dataManager.init,
+              onRefresh: dataManager.load.execute,
               child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: Padding(
                   padding: EdgeInsets.only(
                     top: Scaffold.of(context).appBarMaxHeight == null
                         ? MediaQuery.of(context).padding.top +
-                            AppBar().preferredSize.height +
-                            20
+                              AppBar().preferredSize.height +
+                              20
                         : Scaffold.of(context).appBarMaxHeight! + 20,
-                    bottom: MediaQuery.of(context).padding.bottom + 10,
+                    bottom: MediaQuery.of(context).padding.bottom + 150,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      if (dataManager.history.isNotEmpty)
-                        RecommendationsHistory(
+                      RecommendationsQuickPicks(
+                        dataManager: dataManager,
+                        player: player,
+                      ),
+                      RecommendationsHistory(
+                        dataManager: dataManager,
+                        player: player,
+                        skip: RecommendationsQuickPicks.count,
+                      ),
+                      RecommendationsCategories(
+                        dataManager: dataManager,
+                        player: player,
+                        middle: RecommendationsCharts(
                           dataManager: dataManager,
-                          audioServiceHandler: audioServiceHandler,
+                          player: player,
                         ),
-                      if (dataManager.categories.isNotEmpty ||
-                          dataManager.newReleases.isNotEmpty)
-                        RecommendationsCategories(
-                          dataManager: dataManager,
-                          audioServiceHandler: audioServiceHandler,
-                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -64,9 +70,10 @@ class RecommendationsBodyPhone extends StatelessWidget {
                 child: Text(
                   AppLocalizations.of(context).recommendationsdisabled,
                   style: TextStyle(
-                      fontSize: 17.5,
-                      fontWeight: FontWeight.w600,
-                      color: Col.text),
+                    fontSize: 17.5,
+                    fontWeight: FontWeight.w600,
+                    color: context.colors.text,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),

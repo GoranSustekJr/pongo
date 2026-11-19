@@ -3,23 +3,19 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/core/state/globals.dart';
+import '../../../app/view_models/app_settings_view_model.dart';
 
 // ignore: must_be_immutable
 class ImageCompatible extends StatelessWidget {
   final String image;
   double? width;
   double? height;
-  ImageCompatible({
-    super.key,
-    required this.image,
-    this.width,
-    this.height,
-  });
+  ImageCompatible({super.key, required this.image, this.width, this.height});
 
   @override
   Widget build(BuildContext context) {
-    return cacheImages.value && !image.toString().contains('file://')
+    return context.readSettings.cacheImages &&
+            !image.toString().contains('file://')
         ? CachedNetworkImage(
             imageUrl: image,
             fit: BoxFit.cover,
@@ -35,10 +31,8 @@ class ImageCompatible extends StatelessWidget {
             height: height,
             image: image.runtimeType == String
                 ? !image.toString().contains('file://')
-                    ? NetworkImage(image)
-                    : FileImage(
-                        File.fromUri(Uri.parse(image)),
-                      )
+                      ? NetworkImage(image)
+                      : FileImage(File.fromUri(Uri.parse(image)))
                 : FileImage((image as File)),
           );
   }

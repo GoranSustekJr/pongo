@@ -1,10 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button_forward.dart';
+import '../../../../core/ui/phone/buttons/icon_button_forward.dart';
+import '../../../view_models/player_view_model.dart';
 
 class PlayControl extends StatefulWidget {
   final AsyncSnapshot<PlaybackState> playbackState;
@@ -26,8 +25,7 @@ class PlayControl extends StatefulWidget {
 class _PlayControlState extends State<PlayControl> {
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final player = context.player;
     bool playing = false;
     if (widget.playbackState.data != null) {
       playing = widget.playbackState.data!.playing;
@@ -36,21 +34,18 @@ class _PlayControlState extends State<PlayControl> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       mainAxisSize: MainAxisSize.max,
       children: [
-        iconButtonForward(
-          CupertinoIcons.backward_fill,
-          () async {
-            audioServiceHandler.skipToPrevious();
-          },
-        ),
+        iconButtonForward(CupertinoIcons.backward_fill, () async {
+          await player.skipToPrevious();
+        }),
         SizedBox(
           height: 60,
           child: CupertinoButton(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             onPressed: () async {
               if (playing) {
-                audioServiceHandler.pause();
+                await player.pause();
               } else {
-                audioServiceHandler.play();
+                await player.play();
               }
             },
             child: AnimatedSwitcher(
@@ -58,10 +53,7 @@ class _PlayControlState extends State<PlayControl> {
               transitionBuilder: (Widget child, Animation<double> animation) {
                 return FadeTransition(
                   opacity: animation,
-                  child: ScaleTransition(
-                    scale: animation,
-                    child: child,
-                  ),
+                  child: ScaleTransition(scale: animation, child: child),
                 );
               },
               child: Icon(
@@ -75,12 +67,9 @@ class _PlayControlState extends State<PlayControl> {
             ),
           ),
         ),
-        iconButtonForward(
-          CupertinoIcons.forward_fill,
-          () async {
-            audioServiceHandler.skipToNext();
-          },
-        ),
+        iconButtonForward(CupertinoIcons.forward_fill, () async {
+          await player.skipToNext();
+        }),
       ],
     );
   }

@@ -7,11 +7,12 @@ class SwipeToSnapBack extends StatefulWidget {
   final Function() swipeRight;
   final Widget child;
 
-  const SwipeToSnapBack(
-      {super.key,
-      required this.child,
-      required this.swipeLeft,
-      required this.swipeRight});
+  const SwipeToSnapBack({
+    super.key,
+    required this.child,
+    required this.swipeLeft,
+    required this.swipeRight,
+  });
 
   @override
   _SwipeToSnapBackState createState() => _SwipeToSnapBackState();
@@ -55,8 +56,11 @@ class _SwipeToSnapBackState extends State<SwipeToSnapBack> {
           onHorizontalDragEnd: onHorizontalDragEnd,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
-            transform:
-                Matrix4.translationValues(offsetX, 0, 0), // Move horizontally
+            transform: Matrix4.translationValues(
+              offsetX,
+              0,
+              0,
+            ), // Move horizontally
             curve: Curves.easeOut,
             child: widget.child,
           ),

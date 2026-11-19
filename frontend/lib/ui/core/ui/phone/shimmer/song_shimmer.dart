@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/shared/widgets/shimmer/shimmer_container.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../themes/colors.dart';
+import '../../shimmer/shimmer_container.dart';
+import '../../space.dart';
 
-songTileSchimmer(context, bool first, bool last) {
-  double radius = 7.5;
+Padding songTileSchimmer(BuildContext context, bool first, bool last) {
+  const double radius = 7.5;
 
   return Padding(
     padding: EdgeInsets.zero,
     child: Shimmer.fromColors(
-      baseColor: Col.onIcon,
+      baseColor: context.colors.onIcon,
       highlightColor: Col.background.withAlpha(50),
       child: SizedBox(
         height: 65,
@@ -25,7 +25,7 @@ songTileSchimmer(context, bool first, bool last) {
               Container(
                 height: 1,
                 width: MediaQuery.of(context).size.width - 100,
-                color: Col.onIcon.withAlpha(50),
+                color: context.colors.onIcon.withAlpha(50),
               ),
             Expanded(child: Container()),
             Row(
@@ -37,7 +37,7 @@ songTileSchimmer(context, bool first, bool last) {
                     height: 50,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(7.5),
-                      color: Col.realBackground.withAlpha(150),
+                      color: context.colors.realBackground.withAlpha(150),
                     ),
                     child: shimmContainer(50, 50, radius),
                   ),

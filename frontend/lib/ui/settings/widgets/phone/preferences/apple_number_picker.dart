@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/l10n/app_localizations.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/themes/colors.dart';
 
-appleNumberPicker(context, int number, Function(int) function) {
+void appleNumberPicker(
+  BuildContext context,
+  int number,
+  Function(int) function,
+) {
   showCupertinoModalPopup(
     context: context,
     builder: (context) => CupertinoActionSheet(
@@ -25,8 +29,9 @@ appleNumberPicker(context, int number, Function(int) function) {
             child: Text(
               index.toString(),
               style: TextStyle(
-                  color: number == index ? Colors.blue : Col.text,
-                  fontWeight: FontWeight.w400),
+                color: number == index ? Colors.blue : context.colors.text,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
         ),

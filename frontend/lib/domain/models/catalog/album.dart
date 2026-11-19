@@ -1,39 +1,55 @@
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Album {
-  final String id;
-  final String name;
-  final String type;
-  final List<dynamic> artists;
-  final String image;
+import '../../../utils/image_resolution.dart';
+import 'track.dart';
 
-  // Creata a Album from a Map
-  factory Album.fromMap(Map<String, dynamic> map) {
-    return Album(
-      id: map["id"],
-      type: map.keys.contains("album_group")
-          ? map["album_group"]
-          : map["album_type"],
-      name: map["name"],
-      artists: (map["artists"] as List<dynamic>)
-          .map((artist) => artist["name"])
-          .toList(),
-      image: calculateBestImage(map["images"]),
-    );
-  }
+part 'album.freezed.dart';
 
-  // Convert a List of Maps to a List of Album objects
-  static List<Album> fromMapList(List<dynamic> list) {
-    return list
-        .map((map) => Album.fromMap(map as Map<String, dynamic>))
-        .toList();
-  }
+/// An album, single or compilation in the catalog.
+@freezed
+abstract class Album with _$Album {
+  /// Creates an album.
+  const factory Album({
+    required String id,
+    required String name,
 
-  Album({
-    required this.id,
-    required this.name,
-    required this.type,
-    required this.artists,
-    required this.image,
-  });
+    /// The release type, such as `album` or `single`.
+    required String type,
+    required List<String> artists,
+
+    /// URL of the cover image.
+    required String image,
+  }) = _Album;
+
+  /// Creates an album from the API's JSON, using its largest cover.
+  factory Album.fromMap(Map<String, dynamic> map) => Album(
+    id: map['id'] as String,
+    type: (map['album_group'] ?? map['album_type']) as String,
+    name: map['name'] as String,
+    artists: _artistNames(map),
+    image: bestImageUrl(AlbumImagesTrack.fromMapList(map['images'] as List)),
+  );
+
+  /// Creates an album from the API's JSON, using a cover of about 300 pixels.
+  factory Album.fromMapWithThumbnail(Map<String, dynamic> map) => Album(
+    id: map['id'] as String,
+    type: map['album_type'] as String,
+    name: map['name'] as String,
+    artists: _artistNames(map),
+    image: imageUrlForSize(
+      AlbumImagesTrack.fromMapList(map['images'] as List),
+      300,
+      300,
+    ),
+  );
+
+  /// Creates albums from a JSON list.
+  static List<Album> fromMapList(List<dynamic> list) => [
+    for (final map in list) Album.fromMap(map as Map<String, dynamic>),
+  ];
 }
+
+List<String> _artistNames(Map<String, dynamic> map) => [
+  for (final artist in (map['artists'] as List).cast<Map<String, dynamic>>())
+    artist['name'] as String,
+];

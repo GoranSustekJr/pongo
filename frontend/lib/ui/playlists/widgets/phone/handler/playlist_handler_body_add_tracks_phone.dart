@@ -1,22 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/features/playlists/models/playlist_handler.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../domain/models/playlists/playlist_handler.dart';
+import '../../../../../domain/models/playlists/user_playlist.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/space.dart';
 
 class PlaylistHandlerBodyAddTracksPhone extends StatelessWidget {
-  final List currentPlaylists;
-  final List<MemoryImage?> currentPlaylistsCoverImages;
-  final Map playlistTrackMap;
+  final List<UserPlaylist> currentPlaylists;
+  final Map<int, Set<String>> playlistTrackMap;
   final List<int> selectedPlaylists;
   final List<PlaylistHandlerTrack>? playlistHandlerTracks;
   final Function(int) selectPlaylist;
   const PlaylistHandlerBodyAddTracksPhone({
     super.key,
     required this.currentPlaylists,
-    required this.currentPlaylistsCoverImages,
     required this.playlistTrackMap,
     required this.selectedPlaylists,
     required this.playlistHandlerTracks,
@@ -27,7 +26,9 @@ class PlaylistHandlerBodyAddTracksPhone extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.only(
-          top: kToolbarHeight * 2 + 10, bottom: kBottomNavigationBarHeight * 2),
+        top: kToolbarHeight * 2 + 10,
+        bottom: kBottomNavigationBarHeight * 2,
+      ),
       itemCount: currentPlaylists.length,
       itemBuilder: (context, index) {
         return Padding(
@@ -35,7 +36,7 @@ class PlaylistHandlerBodyAddTracksPhone extends StatelessWidget {
           child: CupertinoButton(
             padding: EdgeInsets.zero,
             onPressed: () {
-              selectPlaylist(currentPlaylists[index]["id"]);
+              selectPlaylist(currentPlaylists[index].id);
             },
             child: SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -48,10 +49,10 @@ class PlaylistHandlerBodyAddTracksPhone extends StatelessWidget {
                     height: 55,
                     width: 55,
                     decoration: BoxDecoration(
-                      color: Col.primaryCard.withAlpha(125),
+                      color: context.colors.primaryCard.withAlpha(125),
                       borderRadius: BorderRadius.circular(7.5),
                     ),
-                    child: currentPlaylistsCoverImages[index] != null
+                    child: currentPlaylists[index].cover != null
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(7.5),
                             child: FadeInImage(
@@ -59,12 +60,14 @@ class PlaylistHandlerBodyAddTracksPhone extends StatelessWidget {
                               fit: BoxFit.cover,
                               height: 250,
                               placeholder: const AssetImage(
-                                  'assets/images/placeholder.png'),
+                                'assets/images/placeholder.png',
+                              ),
                               fadeInDuration: const Duration(milliseconds: 200),
-                              fadeOutDuration:
-                                  const Duration(milliseconds: 200),
+                              fadeOutDuration: const Duration(
+                                milliseconds: 200,
+                              ),
                               image: MemoryImage(
-                                currentPlaylistsCoverImages[index]!.bytes,
+                                currentPlaylists[index].cover!,
                               ),
                             ),
                           )
@@ -81,7 +84,7 @@ class PlaylistHandlerBodyAddTracksPhone extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        currentPlaylists[index]["title"],
+                        currentPlaylists[index].title,
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.white,
@@ -100,17 +103,19 @@ class PlaylistHandlerBodyAddTracksPhone extends StatelessWidget {
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
                           child:
-                              (playlistTrackMap[currentPlaylists[index]['id']]
-                                          .map((entry) => entry["track_id"]))
-                                      .contains(playlistHandlerTracks != null
-                                          ? playlistHandlerTracks![0].id
-                                          : "")
-                                  ? const Icon(
-                                      key: ValueKey(true),
-                                      CupertinoIcons.bookmark_fill,
-                                      color: Colors.white,
-                                    )
-                                  : null,
+                              (playlistTrackMap[currentPlaylists[index].id] ??
+                                      const {})
+                                  .contains(
+                                    playlistHandlerTracks != null
+                                        ? playlistHandlerTracks![0].id
+                                        : '',
+                                  )
+                              ? const Icon(
+                                  key: ValueKey(true),
+                                  CupertinoIcons.bookmark_fill,
+                                  color: Colors.white,
+                                )
+                              : null,
                         ),
                       ),
                       razw(7.5),
@@ -118,8 +123,10 @@ class PlaylistHandlerBodyAddTracksPhone extends StatelessWidget {
                         width: 10,
                         child: AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
-                          child: selectedPlaylists
-                                  .contains(currentPlaylists[index]['id'])
+                          child:
+                              selectedPlaylists.contains(
+                                currentPlaylists[index].id,
+                              )
                               ? const Icon(
                                   key: ValueKey(true),
                                   CupertinoIcons.checkmark_circle,

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/features/library/presentation/phone/library_phone.dart';
+import '../../../core/themes/colors.dart';
+import 'library_phone.dart';
 
 class LibraryMainPhone extends StatefulWidget {
   final GlobalKey<NavigatorState> libraryHomeNavigatorKey;
@@ -14,22 +15,23 @@ class LibraryMainPhone extends StatefulWidget {
 class _LibraryMainPhoneState extends State<LibraryMainPhone> {
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        final canPop =
-            widget.libraryHomeNavigatorKey.currentState?.canPop() ?? false;
-        if (canPop) {
-          widget.libraryHomeNavigatorKey.currentState?.pop();
-          return false; // Prevent root navigator from popping (i.e. don't close the app)
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        final navigator = widget.libraryHomeNavigatorKey.currentState;
+        if (navigator?.canPop() ?? false) {
+          navigator!.pop();
+        } else {
+          SystemNavigator.pop(); // Nothing to pop, let the app close
         }
-        return true; // Nothing to pop, let the app close
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          decoration: AppConstants().backgroundBoxDecoration,
+          decoration: context.colors.backgroundBoxDecoration,
           child: Stack(
             children: [
               Navigator(

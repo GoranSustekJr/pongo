@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/features/settings/presentation/phone/widgets/settings_tile_frame.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/themes/colors.dart';
+import 'settings_tile_frame.dart';
 
-settingsTile(context, bool first, bool last, IconData icon,
-    IconData? trailingIcon, String title, String? subtitle, Function() function,
-    {bool special = false}) {
+Widget settingsTile(
+  BuildContext context,
+  bool first,
+  bool last,
+  IconData icon,
+  IconData? trailingIcon,
+  String title,
+  String? subtitle,
+  Function() function, {
+  bool special = false,
+}) {
   return settingsTileFrame(
     context,
     first: first,
@@ -14,7 +22,7 @@ settingsTile(context, bool first, bool last, IconData icon,
     leading: special
         ? Image.asset(
             'assets/images/pongo_logo_tranparent.png',
-            color: Col.text,
+            color: context.colors.text,
           )
         : settingsTileIcon(icon),
     title: title,
@@ -28,7 +36,11 @@ settingsTile(context, bool first, bool last, IconData icon,
         SizedBox(
           width: 28,
           height: 48,
-          child: Icon(trailingIcon, color: Col.onIcon.withAlpha(200), size: 20),
+          child: Icon(
+            trailingIcon,
+            color: context.colors.onIcon.withAlpha(200),
+            size: 20,
+          ),
         ),
       const SizedBox(width: 15),
     ],

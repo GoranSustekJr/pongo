@@ -2,56 +2,76 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pongo/domain/models/catalog/album.dart';
+import 'package:pongo/domain/models/catalog/artist.dart';
+import 'package:pongo/domain/models/catalog/category.dart';
+import 'package:pongo/domain/models/catalog/playlist.dart';
+import 'package:pongo/domain/models/catalog/track.dart';
+import 'package:pongo/utils/image_resolution.dart';
+import 'package:pongo/utils/json.dart';
 
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/shared/models/catalog/album.dart';
-import 'package:pongo/shared/models/catalog/artist.dart';
-import 'package:pongo/shared/models/catalog/category.dart';
-import 'package:pongo/shared/models/catalog/playlist.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-
-// The fixture is real API output: the models must keep parsing what the server sends.
+// The fixture is real API output: the models must keep parsing what the server
+// sends.
 void main() {
-  final catalog =
-      jsonDecode(File('test/fixtures/catalog.json').readAsStringSync());
+  final catalog = jsonDecode(
+    File('test/fixtures/catalog.json').readAsStringSync(),
+  ) as Map<String, dynamic>;
+
+  List<dynamic> listAt(List<String> path) => catalog.listAt(path)!;
 
   test('search results', () {
-    final search = catalog['search'];
-    final tracks = Track.fromMapList(search['tracks']['items']);
+    final tracks = Track.fromMapList(listAt(['search', 'tracks', 'items']));
     expect(tracks.first.id, isNotEmpty);
     expect(tracks.first.artists.first.name, isNotNull);
     expect(tracks.first.album!.images, isNotEmpty);
-    expect(Album.fromMapList(search['albums']['items']).first.image,
-        startsWith('http'));
-    expect(Artist.fromMapList(search['artists']['items']).first.image,
-        startsWith('http'));
-    expect(Playlist.fromMapList(search['playlists']['items']), isNotEmpty);
+    expect(
+      Album.fromMapList(listAt(['search', 'albums', 'items'])).first.image,
+      startsWith('http'),
+    );
+    expect(
+      Artist.fromMapList(listAt(['search', 'artists', 'items'])).first.image,
+      startsWith('http'),
+    );
+    expect(
+      Playlist.fromMapList(listAt(['search', 'playlists', 'items'])),
+      isNotEmpty,
+    );
   });
 
   test('artist page', () {
-    final artist = catalog['artist'];
-    expect(Album.fromMapList(artist['albums']).first.type, isNotEmpty);
-    expect(Track.fromMapList(artist['tracks']), isNotEmpty);
+    expect(
+      Album.fromMapList(listAt(['artist', 'albums'])).first.type,
+      isNotEmpty,
+    );
+    expect(Track.fromMapList(listAt(['artist', 'tracks'])), isNotEmpty);
   });
 
   test('album tracks arrive without an album', () {
-    final tracks = Track.fromMapList(catalog['album_tracks']);
+    final tracks = Track.fromMapList(listAt(['album_tracks']));
     expect(tracks.first.album, isNull);
   });
 
   test('home screen', () {
-    final categories =
-        SpCategory.fromMapList(catalog['genres']['categories']['items']);
+    final categories = SpCategory.fromMapList(
+      listAt(['genres', 'categories', 'items']),
+    );
     expect(categories.first.categoryIcons.first.url, startsWith('http'));
-    final album = catalog['releases']['albums']['items'][0];
-    expect(calculateWantedResolution(album['images'], 300, 300),
-        startsWith('http'));
+    final album =
+        listAt(['releases', 'albums', 'items']).first as Map<String, dynamic>;
+    expect(
+      imageUrlForSize(
+        AlbumImagesTrack.fromMapList(album['images'] as List),
+        300,
+        300,
+      ),
+      startsWith('http'),
+    );
     expect(album['album_type'], isNotNull);
   });
 
   test('mix tracks carry their own metadata', () {
-    final track = Track.fromMap(catalog['mix'][0]);
+    final track = Track.fromMap(listAt(['mix']).first as Map<String, dynamic>);
     expect(track.album, isNotNull);
-    expect(calculateBestImageForTrack(track.album!.images), startsWith('http'));
+    expect(bestImageUrl(track.album!.images), startsWith('http'));
   });
 }

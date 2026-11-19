@@ -27,8 +27,10 @@ class _FadingNetworkImageState extends State<FadingNetworkImage>
       duration: const Duration(milliseconds: 500),
     );
 
-    _fadeAnimation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_animationController);
   }
 
   @override
@@ -56,10 +58,7 @@ class _FadingNetworkImageState extends State<FadingNetworkImage>
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: _fadeAnimation,
-      child: Image.network(
-        widget.imageUrl,
-        fit: BoxFit.cover,
-      ),
+      child: Image.network(widget.imageUrl, fit: BoxFit.cover),
     );
   }
 }

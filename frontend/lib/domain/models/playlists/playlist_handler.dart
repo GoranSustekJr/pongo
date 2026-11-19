@@ -1,64 +1,65 @@
-import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class PlaylistHandler {
-  final PlaylistHandlerType type;
-  final PlaylistHandlerFunction function;
-  final List<PlaylistHandlerTrack>? track;
-  List<String> toDownload;
+import '../../../utils/image_resolution.dart';
+import '../catalog/track.dart';
 
-  PlaylistHandler({
-    required this.type,
-    required this.function,
-    required this.track,
-    this.toDownload = const [],
-  });
-}
+part 'playlist_handler.freezed.dart';
 
+/// Which kind of playlist the playlist handler works with.
 enum PlaylistHandlerType { online, offline }
 
+/// What the playlist handler was opened to do.
 enum PlaylistHandlerFunction { addToPlaylist, createPlaylist }
 
+/// Whether a track's cover is a URL or a file on the device.
 enum PlaylistHandlerCoverType { url, bytes }
 
-abstract class PlaylistHandlerTrack {
-  final String id;
-  final String name;
-  final List<Map<String, dynamic>> artist;
-  final String cover;
+/// A request to add tracks to a playlist, shown by the playlist handler.
+@freezed
+abstract class PlaylistHandler with _$PlaylistHandler {
+  /// Creates a request.
+  const factory PlaylistHandler({
+    required PlaylistHandlerType type,
+    required PlaylistHandlerFunction function,
+    required List<PlaylistHandlerTrack>? track,
 
-  final PlaylistHandlerCoverType playlistHandlerCoverType;
-
-  PlaylistHandlerTrack({
-    required this.name,
-    required this.artist,
-    required this.id,
-    required this.cover,
-    required this.playlistHandlerCoverType,
-  });
+    /// Track IDs that have to be downloaded before an offline playlist can
+    /// hold them.
+    @Default(<String>[]) List<String> toDownload,
+  }) = _PlaylistHandler;
 }
 
-class PlaylistHandlerOnlineTrack extends PlaylistHandlerTrack {
-  final AlbumTrack? albumTrack;
+/// A track offered to the playlist handler.
+@freezed
+sealed class PlaylistHandlerTrack with _$PlaylistHandlerTrack {
+  /// A catalog track.
+  const factory PlaylistHandlerTrack.online({
+    required String id,
+    required String name,
+    required List<ArtistTrack> artist,
+    required String cover,
+    required AlbumTrack? albumTrack,
+    required PlaylistHandlerCoverType playlistHandlerCoverType,
+  }) = PlaylistHandlerOnlineTrack;
 
-  PlaylistHandlerOnlineTrack({
-    required super.id,
-    required super.name,
-    required super.artist,
-    required super.cover,
-    required this.albumTrack,
-    required super.playlistHandlerCoverType,
-  });
+  /// A downloaded track.
+  const factory PlaylistHandlerTrack.offline({
+    required String id,
+    required String name,
+    required List<ArtistTrack> artist,
+    required String cover,
+    required PlaylistHandlerCoverType playlistHandlerCoverType,
+    required String filePath,
+  }) = PlaylistHandlerOfflineTrack;
 }
 
-class PlaylistHandlerOfflineTrack extends PlaylistHandlerTrack {
-  final String filePath;
-
-  PlaylistHandlerOfflineTrack({
-    required super.id,
-    required super.name,
-    required super.artist,
-    required super.cover,
-    required super.playlistHandlerCoverType,
-    required this.filePath,
-  });
-}
+/// The playlist editor entry for the catalog [track], with a 150 px cover.
+PlaylistHandlerOnlineTrack onlineHandlerTrack(Track track) =>
+    PlaylistHandlerOnlineTrack(
+      id: track.id,
+      name: track.name,
+      artist: track.artists,
+      cover: imageUrlForSize(track.album?.images ?? const [], 150, 150),
+      albumTrack: track.album,
+      playlistHandlerCoverType: PlaylistHandlerCoverType.url,
+    );

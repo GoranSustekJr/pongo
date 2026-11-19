@@ -1,15 +1,12 @@
-import 'dart:convert';
-
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/player/presentation/phone/queue/queue_body_phone.dart';
-import 'package:pongo/features/playlists/data/open_playlist.dart';
-import 'package:pongo/features/playlists/models/playlist_handler.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
+import '../../../../../data/repositories/player/media_items.dart';
+
+import '../../../../../domain/models/playlists/playlist_handler.dart';
+import '../../../../playlists/view_models/open_playlist.dart';
+import '../../../../shell/view_models/shell_view_model.dart';
+import '../../../view_models/player_view_model.dart';
+import 'queue_body_phone.dart';
 
 class QueuePhone extends StatefulWidget {
   final bool showQueue;
@@ -56,13 +53,14 @@ class _QueuePhoneState extends State<QueuePhone> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 10), () {
-      scrollController.jumpTo(queueScrollOffset);
+      if (!mounted) return;
+      scrollController.jumpTo(context.shell.queueScrollOffset);
       scrollController.addListener(offsetListener);
     });
   }
 
   void offsetListener() {
-    queueScrollOffset = scrollController.offset;
+    context.shell.queueScrollOffset = scrollController.offset;
   }
 
   @override
@@ -74,18 +72,16 @@ class _QueuePhoneState extends State<QueuePhone> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
 
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context, listen: false)
-            as AudioServiceHandler;
+    final player = context.player;
 
     return AnimatedPositioned(
       duration: Duration(
         milliseconds:
             widget.showQueue && !(widget.lyricsOn && widget.lyricsExist)
-                ? 0
-                : 750,
+            ? 0
+            : 750,
       ),
       top: widget.showQueue && !(widget.lyricsOn && widget.lyricsExist)
           ? 0
@@ -96,18 +92,18 @@ class _QueuePhoneState extends State<QueuePhone> {
             : 0,
         duration: const Duration(milliseconds: 150),
         child: StreamBuilder(
-          stream: audioServiceHandler.queue.stream,
+          stream: player.queueStream,
           builder: (context, snapshot) {
             final queue = snapshot.data;
             return StreamBuilder(
-              stream: audioServiceHandler.audioPlayer.shuffleIndicesStream,
+              stream: player.shuffleIndicesStream,
               builder: (context, snap) {
                 final shuffleIndices = snap.data;
                 return StreamBuilder(
-                  stream:
-                      audioServiceHandler.audioPlayer.shuffleModeEnabledStream,
+                  stream: player.shuffleEnabledStream,
                   builder: (context, snp) {
-                    final shuffleModeEnabled = (snp.data ?? false) &&
+                    final shuffleModeEnabled =
+                        (snp.data ?? false) &&
                         (shuffleIndices != null
                             ? shuffleIndices.isNotEmpty
                             : false);
@@ -136,18 +132,9 @@ class _QueuePhoneState extends State<QueuePhone> {
                             });
                           },
                           removeItemsFromQueue: () async {
-                            final selectedIndexes = selectedQueueIndexes;
-                            selectedIndexes.sort();
-                            for (int index in selectedIndexes.reversed) {
-                              if (audioServiceHandler
-                                      .audioPlayer.currentIndex !=
-                                  index) {
-                                audioServiceHandler.queue.value.removeAt(index);
-                                await audioServiceHandler.playlist
-                                    .removeAt(index);
-                              }
-                              changeTrackOnTap.value = false;
-                            }
+                            await player.removeFromQueue([
+                              ...selectedQueueIndexes,
+                            ]);
                             setState(() {
                               editQueue = false;
                               selectedQueueIndexes.clear();
@@ -162,40 +149,17 @@ class _QueuePhoneState extends State<QueuePhone> {
                                   type: PlaylistHandlerType.online,
                                   function:
                                       PlaylistHandlerFunction.createPlaylist,
-                                  track: queue.map((track) {
+                                  track: queue.map((item) {
+                                    final track = item.toTrack();
                                     return PlaylistHandlerOnlineTrack(
-                                      id: track.id.split('.')[2],
-                                      name: track.title,
-                                      artist: track.artist != null
-                                          ? (jsonDecode(
-                                                      track.extras!["artists"])
-                                                  as List)
-                                              .map((e) =>
-                                                  e as Map<String, dynamic>)
-                                              .toList()
-                                          : [],
-                                      cover: track.artUri.toString(),
-                                      albumTrack: track.album != null
-                                          ? AlbumTrack(
-                                              id: track.extras!["album"]
-                                                  .split("..Ææ..")[0],
-                                              name: track.album!,
-                                              releaseDate:
-                                                  track.extras!["released"],
-                                              images: track.artUri != null
-                                                  ? [
-                                                      AlbumImagesTrack(
-                                                          url: track.artUri!
-                                                              .toString(),
-                                                          height: null,
-                                                          width: null)
-                                                    ]
-                                                  : [],
-                                            )
-                                          : null,
-                                      playlistHandlerCoverType: track.artUri
-                                              .toString()
-                                              .contains("file:///")
+                                      id: track.id,
+                                      name: track.name,
+                                      artist: track.artists,
+                                      cover: (item.artUri?.toString() ?? ''),
+                                      albumTrack: track.album,
+                                      playlistHandlerCoverType:
+                                          (item.artUri?.toString() ?? '')
+                                              .contains('file:///')
                                           ? PlaylistHandlerCoverType.bytes
                                           : PlaylistHandlerCoverType.url,
                                     );

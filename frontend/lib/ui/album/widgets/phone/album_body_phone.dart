@@ -1,15 +1,12 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/playlists/presentation/phone/playlist_song_tile.dart';
-import 'package:pongo/shared/models/catalog/album.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/phone/trailing.dart';
+import '../../../../domain/models/catalog/album.dart';
+import '../../../../domain/models/catalog/track.dart';
+import '../../../../utils/platform.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/ui/phone/trailing.dart';
+import '../../../player/view_models/player_view_model.dart';
+import '../../../playlists/widgets/phone/playlist_song_tile.dart';
 
 class AlbumBodyPhone extends StatefulWidget {
   final Album album;
@@ -33,21 +30,17 @@ class AlbumBodyPhone extends StatefulWidget {
 class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final player = context.player;
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.only(
-          top: kIsDesktop ? 5 : 35,
-          left: 0,
-          right: 0,
-        ),
+        padding: EdgeInsets.only(top: kIsDesktop ? 5 : 35, left: 0, right: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ListView.builder(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom + 10),
+                bottom: MediaQuery.of(context).padding.bottom + 10,
+              ),
               itemCount: widget.tracks.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -56,34 +49,16 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
                   track: widget.tracks[index],
                   first: index == 0,
                   last: index == widget.tracks.length - 1,
-                  exists:
-                      !widget.missingTracks.contains(widget.tracks[index].id),
+                  exists: !widget.missingTracks.contains(
+                    widget.tracks[index].id,
+                  ),
                   function: () async {
-                    final playNew = audioServiceHandler.mediaItem.value != null
-                        ? "${audioServiceHandler.mediaItem.value!.id.split(".")[0]}.${audioServiceHandler.mediaItem.value!.id.split(".")[1]}" !=
-                            "online.album:${widget.album.id}"
-                        : true;
-
-                    final skipTo = audioServiceHandler.mediaItem.value != null
-                        ? audioServiceHandler.mediaItem.value!.id
-                                .split(".")[2] !=
-                            widget.tracks[index].id
-                        : false;
-
-                    if (playNew) {
-                      changeTrackOnTap.value = true;
-                      widget.play(index);
-                    } else if (skipTo &&
-                        (audioServiceHandler.playlist.length - 1) >= index &&
-                        changeTrackOnTap.value) {
-                      await audioServiceHandler.skipToQueueItem(index);
-                    } else {
-                      if (audioServiceHandler.audioPlayer.playing) {
-                        await audioServiceHandler.pause();
-                      } else {
-                        await audioServiceHandler.play();
-                      }
-                    }
+                    await context.player.playCollectionTrack(
+                      collectionId: 'online.album:${widget.album.id}',
+                      stid: widget.tracks[index].id,
+                      index: index,
+                      playCollection: () async => widget.play(index),
+                    );
                   },
                   trailing: Padding(
                     padding: const EdgeInsets.only(right: 15),
@@ -100,21 +75,21 @@ class _AlbumBodyPhoneState extends State<AlbumBodyPhone> {
                               )
                             : StreamBuilder(
                                 key: const ValueKey(false),
-                                stream: audioServiceHandler.mediaItem.stream,
+                                stream: player.currentItemStream,
                                 builder: (context, snapshot) {
                                   final String id = snapshot.data != null
                                       ? snapshot.data!.id
-                                      : "";
+                                      : '';
 
                                   return Trailing(
                                     forceWhite: true,
-                                    show: !widget.loading
-                                        .contains(widget.tracks[index].id),
-                                    showThis: id ==
-                                            "online.album:${widget.album.id}.${widget.tracks[index].id}" &&
-                                        audioServiceHandler
-                                                .audioPlayer.currentIndex ==
-                                            index,
+                                    show: !widget.loading.contains(
+                                      widget.tracks[index].id,
+                                    ),
+                                    showThis:
+                                        id ==
+                                            'online.album:${widget.album.id}.${widget.tracks[index].id}' &&
+                                        player.currentIndex == index,
                                     trailing: const Padding(
                                       padding: EdgeInsets.only(right: 10),
                                       child: Icon(

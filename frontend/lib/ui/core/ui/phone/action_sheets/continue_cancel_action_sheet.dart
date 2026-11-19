@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/buttons/text_button.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../utils/platform.dart';
+import '../../buttons/text_button.dart';
 
-continueCancelActionSheet(
-    context, String title, String message, Function() function) {
+void continueCancelActionSheet(
+  BuildContext context,
+  String title,
+  String message,
+  Function() function,
+) {
   kIsApple
       ? showCupertinoModalPopup(
           context: context,
@@ -47,24 +51,14 @@ continueCancelActionSheet(
               actions: <Widget>[
                 Row(
                   children: [
-                    textButton(
-                      AppLocalizations.of(context).cancel,
-                      () {
-                        Navigator.of(context).pop();
-                      },
-                      const TextStyle(color: Colors.red),
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    textButton(
-                      AppLocalizations.of(context).continuee,
-                      () {
-                        function();
-                        Navigator.of(context).pop();
-                      },
-                      const TextStyle(color: Colors.blue),
-                    ),
+                    textButton(AppLocalizations.of(context).cancel, () {
+                      Navigator.of(context).pop();
+                    }, const TextStyle(color: Colors.red)),
+                    Expanded(child: Container()),
+                    textButton(AppLocalizations.of(context).continuee, () {
+                      function();
+                      Navigator.of(context).pop();
+                    }, const TextStyle(color: Colors.blue)),
                   ],
                 ),
               ],

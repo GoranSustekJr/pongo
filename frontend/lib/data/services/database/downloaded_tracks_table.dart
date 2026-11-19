@@ -1,236 +1,108 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:path_provider/path_provider.dart' as syspaths;
 import 'package:sqflite/sqflite.dart';
 
-import 'package:pongo/core/storage/database/database_helper.dart';
+import 'database_service.dart';
 
-Future<void> insertDownloadedTrck(
-  DatabaseHelper dbHelper,
-  String stid,
-  String audio,
-  List<Map<String, dynamic>> artists,
-  String title,
-  int duration,
-  String? image,
-) async {
-  Database db = await dbHelper.database;
+/// The `downloaded_tracks` table.
+class DownloadedTracksTable {
+  /// Creates a table backed by [_db].
+  DownloadedTracksTable(this._db);
 
-  bool alreadyExists = await downloadedTrckAlreadyExists(dbHelper, stid);
+  final Database _db;
 
-  if (!alreadyExists) {
-    Map<String, dynamic> trackData = {
+  /// Inserts a downloaded track unless one with [stid] already exists.
+  Future<void> insert({
+    required String stid,
+    required String audioPath,
+    required List<Map<String, dynamic>> artists,
+    required String title,
+    required int durationMilliseconds,
+    required String? imagePath,
+  }) async {
+    if (await contains(stid)) return;
+    await _db.insert('downloaded_tracks', {
       'stid': stid,
-      'audio': audio,
+      'audio': audioPath,
       'artists': jsonEncode(artists),
       'title': title,
-      'duration': duration,
-      'image': image,
-    };
-
-    await db.insert('downloaded_tracks', trackData);
+      'duration': durationMilliseconds,
+      'image': imagePath,
+    });
   }
-}
 
-Future<List<Map<String, dynamic>>> queryAllDownloadedTrcks(
-    DatabaseHelper dbHelper) async {
-  Database db = await dbHelper.database;
-  return await db
-      .rawQuery('SELECT * FROM downloaded_tracks ORDER BY title ASC');
-}
+  /// All downloaded tracks, sorted by title.
+  Future<List<Map<String, dynamic>>> queryAll() =>
+      _db.rawQuery('SELECT * FROM downloaded_tracks ORDER BY title ASC');
 
-Future<int> queryAllDownloadedTrcksLength(DatabaseHelper dbHelper) async {
-  Database db = await dbHelper.database;
-  final result = await db.rawQuery('SELECT COUNT(*) FROM downloaded_tracks');
-  return Sqflite.firstIntValue(result) ?? 0;
-}
+  /// The number of downloaded tracks.
+  Future<int> count() async =>
+      Sqflite.firstIntValue(
+        await _db.rawQuery('SELECT COUNT(*) FROM downloaded_tracks'),
+      ) ??
+      0;
 
-Future<bool> downloadedTrckAlreadyExists(
-    DatabaseHelper dbHelper, String stid) async {
-  Database db = await dbHelper.database;
+  /// Whether the track with [stid] is downloaded.
+  Future<bool> contains(String stid) async {
+    final rows = await _db.query(
+      'downloaded_tracks',
+      columns: ['stid'],
+      where: 'stid = ?',
+      whereArgs: [stid],
+    );
+    return rows.isNotEmpty;
+  }
 
-  // Query the downloaded_tracks table to check for the given stid
-  final List<Map<String, dynamic>> result = await db.query(
-    'downloaded_tracks',
-    columns: ['stid'], // Only need the stid column for the check
-    where: 'stid = ?',
-    whereArgs: [stid],
-  );
+  /// The IDs in [stids] that aren't downloaded, in their original order.
+  Future<List<String>> queryMissing(List<String> stids) async {
+    final rows = await _db.rawQuery(
+      'SELECT stid FROM downloaded_tracks '
+      'WHERE stid IN (${placeholders(stids.length)})',
+      stids,
+    );
+    final existing = {for (final row in rows) row['stid'] as String};
+    return stids.where((stid) => !existing.contains(stid)).toList();
+  }
 
-  // If result is not empty, the track exists
-  return result.isNotEmpty;
-}
-
-Future<List<String>> queryMssingStids(
-    List<String> stids, DatabaseHelper dbHelper) async {
-  String placeholders = List.generate(stids.length, (_) => '?').join(', ');
-
-  Database db = await dbHelper.database;
-
-  List<Map<String, dynamic>> results = await db.rawQuery(
-    "SELECT stid FROM downloaded_tracks WHERE stid IN ($placeholders)",
-    stids,
-  );
-
-  List<String> exsitingStids =
-      results.map((row) => row['stid'] as String).toList();
-
-  List<String> missingStids =
-      stids.where((stid) => !exsitingStids.contains(stid)).toList();
-
-  return missingStids;
-}
-
-// Track
-Future<void> removeDownloadedTrck(
-    DatabaseHelper dbHelper, String stid, int id) async {
-  Database db = await dbHelper.database;
-
-  await db.delete(
-    'downloaded_tracks',
-    where: 'stid = ? AND id = ?',
-    whereArgs: [stid, id],
-  );
-
-  List<Map<String, dynamic>> playlists = await db.query(
-    'lpid_track_id',
-    columns: ['lpid', 'order_number'],
-    where: 'track_id = ?',
-    whereArgs: [stid],
-  );
-
-  // Prepare a map to store the results
-  Map<String, List<Map<String, dynamic>>> playlistTracksMap = {};
-
-  for (var playlist in playlists) {
-    String lpid = playlist['lpid'].toString();
-
-    // Query tracks in the current playlist ordered by order_number
-    List<Map<String, dynamic>> tracksInPlaylist = await db.query(
-      'lpid_track_id',
-      where: 'lpid = ?',
-      whereArgs: [lpid],
-      orderBy: 'order_number ASC',
+  /// Removes the tracks with [stids] and their local playlist entries,
+  /// renumbering the playlists that held them.
+  Future<void> removeAll(List<String> stids) async {
+    final inClause = placeholders(stids.length);
+    await _db.delete(
+      'downloaded_tracks',
+      where: 'stid IN ($inClause)',
+      whereArgs: stids,
     );
 
-    // Store the tracks in the map
-    playlistTracksMap[lpid] = tracksInPlaylist;
-  }
-/*   List<Map<String, dynamic>> playlists = await db.query(
-    'lpid_track_id',
-    columns: ['lpid', 'order_number'],
-    where: 'track_id = ?',
-    whereArgs: [stid],
-  );
- */
-
-  for (var entry in playlistTracksMap.entries) {
-    String lpid = entry.key;
-    List<Map<String, dynamic>> tracks = entry.value;
-
-    // Remove the track from the playlist
-    for (var track in tracks) {
-      if (track['track_id'] == stid) {
-        await db.delete(
-          'lpid_track_id',
-          where: 'lpid = ? AND track_id = ? AND order_number = ?',
-          whereArgs: [lpid, stid, track['order_number']],
-        );
-      }
-    }
-
-    // Step 2: Reorder remaining tracks
-    int order = 1;
-    for (var track in tracks) {
-      if (track['track_id'] != stid) {
-        await db.update(
-          'lpid_track_id',
-          {'order_number': order},
-          where: 'lpid = ? AND track_id = ? AND order_number = ?',
-          whereArgs: [lpid, track['track_id'], track['order_number']],
-        );
-        order++;
-      }
-    }
-  }
-}
-
-Future<void> removeDownloadedTrcks(
-    DatabaseHelper dbHelper, List<String> stids) async {
-  Database db = await dbHelper.database;
-
-  // Step 1: Delete tracks from 'downloaded_tracks' table
-  await db.delete(
-    'downloaded_tracks',
-    where: 'stid IN (${List.generate(stids.length, (_) => '?').join(', ')})',
-    whereArgs: stids,
-  );
-
-  // Step 2: Query playlists affected by the removed tracks
-  List<Map<String, dynamic>> playlists = await db.query(
-    'lpid_track_id',
-    columns: ['lpid', 'track_id'],
-    where:
-        'track_id IN (${List.generate(stids.length, (_) => '?').join(', ')})',
-    whereArgs: stids,
-  );
-
-  // Prepare a map to group playlists by lpid
-  Map<String, List<Map<String, dynamic>>> playlistTracksMap = {};
-
-  for (var playlist in playlists) {
-    String lpid = playlist['lpid'].toString();
-
-    // Query tracks in the current playlist
-    List<Map<String, dynamic>> tracksInPlaylist = await db.query(
+    final affected = await _db.query(
       'lpid_track_id',
-      where: 'lpid = ?',
-      whereArgs: [lpid],
-      orderBy: 'order_number ASC', // Ensure tracks are ordered by order_number
+      columns: ['lpid'],
+      distinct: true,
+      where: 'track_id IN ($inClause)',
+      whereArgs: stids,
     );
-
-    playlistTracksMap[lpid] = tracksInPlaylist;
-  }
-
-  final appDir = await syspaths.getApplicationDocumentsDirectory();
-
-  // Step 3: Remove tracks from each playlist and reorder remaining ones
-  for (var entry in playlistTracksMap.entries) {
-    String lpid = entry.key;
-    List<Map<String, dynamic>> tracks = entry.value;
-
-    // Remove the tracks by track_id
-    for (var track in tracks.toList()) {
-      if (stids.contains(track['track_id'])) {
-        await db.delete(
+    for (final row in affected) {
+      final lpid = row['lpid'];
+      await _db.delete(
+        'lpid_track_id',
+        where: 'lpid = ? AND track_id IN ($inClause)',
+        whereArgs: [lpid, ...stids],
+      );
+      final remaining = await _db.query(
+        'lpid_track_id',
+        where: 'lpid = ?',
+        whereArgs: [lpid],
+        orderBy: 'order_number ASC',
+      );
+      var order = 1;
+      for (final track in remaining) {
+        await _db.update(
           'lpid_track_id',
+          {'order_number': order++},
           where: 'lpid = ? AND track_id = ?',
           whereArgs: [lpid, track['track_id']],
         );
-
-        // Remove from app data folder
-        try {
-          final audioFile = File('${appDir.path}/${track['track_id']}.m4a');
-          await audioFile.delete();
-        } catch (e) {
-          //  print(e);
-        }
-        // Remove the track from the list to avoid reprocessing
-        tracks.remove(track);
       }
-    }
-
-    // Step 4: Reorder remaining tracks in the playlist
-    int order = 1;
-    for (var track in tracks) {
-      await db.update(
-        'lpid_track_id',
-        {'order_number': order},
-        where: 'lpid = ? AND track_id = ?',
-        whereArgs: [lpid, track['track_id']],
-      );
-      order++;
     }
   }
 }

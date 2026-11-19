@@ -257,7 +257,13 @@
     "downloading": "Wird heruntergeladen",
     "downloadhasstarted": "Download gestartet. SCHLIEßEN SIE DIE APP NICHT!",
     "firstadded": "Zuerst hinzugefügt",
-    "lastadded": "Zuletzt hinzugefügt"
-
-
+    "lastadded": "Zuletzt hinzugefügt",
+    "goodmorning": "Guten Morgen",
+    "goodafternoon": "Guten Tag",
+    "goodevening": "Guten Abend",
+    "toptracks": "Top-Titel",
+    "popularartists": "Beliebte Künstler",
+    "featuredplaylists": "Empfohlene Playlists",
+    "newreleases": "Neuerscheinungen",
+    "genres": "Genres"
 }

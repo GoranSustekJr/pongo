@@ -1,15 +1,14 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/features/player/presentation/phone/queue/queue_tile.dart';
-import 'package:pongo/shared/widgets/phone/trailing.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/app_blur.dart';
+import '../../../../core/ui/phone/trailing.dart';
+import '../../../../core/ui/space.dart';
+import '../../../view_models/player_view_model.dart';
+import '../../phone/queue/queue_tile.dart';
 
 class QueueBodyMacos extends StatelessWidget {
   final bool shuffleModeEnabled;
@@ -31,11 +30,9 @@ class QueueBodyMacos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
 
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context, listen: false)
-            as AudioServiceHandler;
+    final player = context.player;
     return SizedBox(
       height: size.height - 130,
       width: size.width - 20,
@@ -49,49 +46,56 @@ class QueueBodyMacos extends StatelessWidget {
                   children: [
                     StreamBuilder(
                       key: const ValueKey(false),
-                      stream: audioServiceHandler.mediaItem.stream,
+                      stream: player.currentItemStream,
                       builder: (context, snapshot) {
-                        final String id =
-                            snapshot.data != null ? snapshot.data!.id : "";
+                        final String id = snapshot.data != null
+                            ? snapshot.data!.id
+                            : '';
                         return Theme(
                           data: ThemeData(
-                              iconTheme:
-                                  const IconThemeData(color: Colors.white)),
+                            iconTheme: const IconThemeData(color: Colors.white),
+                          ),
                           child: ReorderableListView.builder(
-                            key: ValueKey("$shuffleModeEnabled"),
+                            key: ValueKey('$shuffleModeEnabled'),
                             padding: const EdgeInsets.only(
-                                // top: MediaQuery.of(context).padding.top + 50,
-                                bottom: 0),
+                              // top: MediaQuery.of(context).padding.top + 50,
+                              bottom: 0,
+                            ),
                             itemCount: queue!.length,
                             shrinkWrap: true,
-                            onReorder: (oldIndex, newIndex) {
-                              audioServiceHandler.reorderQueue(
-                                  audioServiceHandler, oldIndex, newIndex);
+                            onReorderItem: (oldIndex, newIndex) {
+                              // The handlers below expect the index from before
+                              // the item is removed
+                              if (newIndex > oldIndex) newIndex += 1;
+                              player.moveInQueue(oldIndex, newIndex);
                             },
                             proxyDecorator: (child, index, animation) =>
                                 Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Col.primaryCard.withAlpha(175),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: BackdropFilter(
-                                  filter: appBlur(10),
-                                  child: child,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: context.colors.primaryCard.withAlpha(
+                                      175,
+                                    ),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: BackdropFilter(
+                                      filter: appBlur(context, 10),
+                                      child: child,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
                             itemBuilder: (context, index) {
-                              int ind = shuffleModeEnabled
+                              final int ind = shuffleModeEnabled
                                   ? shuffleIndices[index]
                                   : index;
 
                               return QueueTile(
                                 key: ValueKey(ind),
                                 title: queue![ind].title,
-                                artist: queue![ind].artist ?? "",
-                                imageUrl: queue![ind].artUri.toString(),
+                                artist: queue![ind].artist ?? '',
+                                imageUrl:
+                                    (queue![ind].artUri?.toString() ?? ''),
                                 trailing: AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 250),
                                   child: !editQueue
@@ -99,43 +103,41 @@ class QueueBodyMacos extends StatelessWidget {
                                           key: const ValueKey(true),
                                           children: [
                                             SizedBox(
-                                                height: 40,
-                                                width: 20,
-                                                child: Trailing(
-                                                    show: true,
-                                                    forceWhite: false,
-                                                    showThis: id ==
-                                                            queue![ind].id &&
-                                                        audioServiceHandler
-                                                                .audioPlayer
-                                                                .currentIndex ==
-                                                            ind,
-                                                    trailing:
-                                                        const SizedBox())),
+                                              height: 40,
+                                              width: 20,
+                                              child: Trailing(
+                                                show: true,
+                                                forceWhite: false,
+                                                showThis:
+                                                    id == queue![ind].id &&
+                                                    player.currentIndex == ind,
+                                                trailing: const SizedBox(),
+                                              ),
+                                            ),
                                             razw(32.5),
                                           ],
                                         )
                                       : Row(
                                           children: [
                                             SizedBox(
-                                              key: const ValueKey(
-                                                false,
-                                              ),
+                                              key: const ValueKey(false),
                                               width: 30,
                                               height: 40,
                                               child: CupertinoButton(
-                                                  padding: EdgeInsets.zero,
-                                                  onPressed: () {
-                                                    selectQueueIndex(ind);
-                                                  },
-                                                  child: Icon(
-                                                    selectedQueueIndexes
-                                                            .contains(ind)
-                                                        ? AppIcons.checkmark
-                                                        : AppIcons.uncheckmark,
-                                                    size: 25,
-                                                    color: Colors.white,
-                                                  )),
+                                                padding: EdgeInsets.zero,
+                                                onPressed: () {
+                                                  selectQueueIndex(ind);
+                                                },
+                                                child: Icon(
+                                                  selectedQueueIndexes.contains(
+                                                        ind,
+                                                      )
+                                                      ? AppIcons.checkmark
+                                                      : AppIcons.uncheckmark,
+                                                  size: 25,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
                                             ),
                                             razw(27.5),
                                           ],
@@ -143,26 +145,20 @@ class QueueBodyMacos extends StatelessWidget {
                                 ),
                                 onTap: () async {
                                   if (!editQueue) {
-                                    bool thisPlaying =
-                                        audioServiceHandler.mediaItem.value !=
-                                                null
-                                            ? audioServiceHandler
-                                                        .mediaItem.value!.id ==
-                                                    queue![ind].id &&
-                                                audioServiceHandler.audioPlayer
-                                                        .currentIndex ==
-                                                    ind
-                                            : false;
+                                    final bool thisPlaying =
+                                        player.currentItem.value != null
+                                        ? player.currentItem.value!.id ==
+                                                  queue![ind].id &&
+                                              player.currentIndex == ind
+                                        : false;
                                     if (thisPlaying) {
-                                      if (audioServiceHandler
-                                          .audioPlayer.playing) {
-                                        await audioServiceHandler.pause();
+                                      if (player.isPlaying) {
+                                        await player.pause();
                                       } else {
-                                        await audioServiceHandler.play();
+                                        await player.play();
                                       }
                                     } else {
-                                      await audioServiceHandler
-                                          .skipToQueueItem(ind);
+                                      await player.skipToIndex(ind);
                                     }
                                   } else {
                                     selectQueueIndex(ind);
@@ -177,9 +173,7 @@ class QueueBodyMacos extends StatelessWidget {
                   ],
                 ),
               )
-            : const SizedBox(
-                key: ValueKey(false),
-              ),
+            : const SizedBox(key: ValueKey(false)),
       ),
     );
   }

@@ -2,31 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:kr_pull_down_button/pull_down_button.dart';
 import 'package:star_menu/star_menu.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/features/library/data/download_api.dart';
-import 'package:pongo/features/library/data/favourites_actions.dart';
-import 'package:pongo/features/library/models/favourite.dart';
-import 'package:pongo/features/player/data/add_to_queue.dart';
-import 'package:pongo/features/playlists/data/open_playlist.dart';
-import 'package:pongo/features/playlists/models/playlist_handler.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/phone/inkwell.dart';
+import '../../../../domain/models/catalog/track.dart';
+import '../../../../domain/models/playlists/playlist_handler.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/ui/phone/inkwell.dart';
+import '../../../core/view_models/track_actions_view_model.dart';
+import '../../../playlists/view_models/open_playlist.dart';
 
 List<PullDownMenuEntry> searchTrackPulldownMenuItemsApple(
   BuildContext context,
   Track track,
   String id,
   bool favourite,
-  Function(String) doesNotExist,
-  Function(String) doesNowExist,
 ) {
   return [
     PullDownMenuItem(
       onTap: () async {
-        await DownloadApi().single(track);
+        await context.trackActions.download(track);
       },
       title: AppLocalizations.of(context).download,
       icon: AppIcons.download,
@@ -35,97 +29,53 @@ List<PullDownMenuEntry> searchTrackPulldownMenuItemsApple(
     PullDownMenuItem(
       onTap: () {
         OpenPlaylist().show(
-            context,
-            PlaylistHandler(
-              type: PlaylistHandlerType.online,
-              function: PlaylistHandlerFunction.addToPlaylist,
-              track: [
-                PlaylistHandlerOnlineTrack(
-                  id: track.id,
-                  name: track.name,
-                  artist: track.artists
-                      .map((artist) => {"id": artist.id, "name": artist.name})
-                      .toList(),
-                  cover: calculateWantedResolutionForTrack(
-                      track.album != null
-                          ? track.album!.images
-                          : track.album!.images,
-                      150,
-                      150),
-                  albumTrack: track.album,
-                  playlistHandlerCoverType: PlaylistHandlerCoverType.url,
-                )
-              ],
-            ));
+          context,
+          PlaylistHandler(
+            type: PlaylistHandlerType.online,
+            function: PlaylistHandlerFunction.addToPlaylist,
+            track: [onlineHandlerTrack(track)],
+          ),
+        );
       },
       title: AppLocalizations.of(context).addtoplaylist,
       icon: AppIcons.musicAlbums,
       itemTheme: const PullDownMenuItemTheme(
-        textStyle: TextStyle(
-          overflow: TextOverflow.ellipsis,
-          height: 1,
-        ),
+        textStyle: TextStyle(overflow: TextOverflow.ellipsis, height: 1),
       ),
     ),
     const PullDownMenuDivider.large(),
     PullDownMenuItem(
       onTap: () async {
-        await AddToQueue()
-            .addTypeTrackFirst(context, track, id, doesNotExist, doesNowExist);
+        await context.trackActions.addNext(track, collectionId: id);
       },
       title: AppLocalizations.of(context).firsttoqueue,
       icon: AppIcons.firstToQueue,
       itemTheme: const PullDownMenuItemTheme(
-        textStyle: TextStyle(
-          overflow: TextOverflow.ellipsis,
-          height: 1,
-        ),
+        textStyle: TextStyle(overflow: TextOverflow.ellipsis, height: 1),
       ),
     ),
     const PullDownMenuDivider(),
     PullDownMenuItem(
       onTap: () async {
-        await AddToQueue()
-            .addTypeTrackLast(context, track, id, doesNotExist, doesNowExist);
+        await context.trackActions.addLast(track, collectionId: id);
       },
       title: AppLocalizations.of(context).lasttoqueue,
       icon: AppIcons.lastToQueue,
       itemTheme: const PullDownMenuItemTheme(
-        textStyle: TextStyle(
-          overflow: TextOverflow.ellipsis,
-          height: 1,
-        ),
+        textStyle: TextStyle(overflow: TextOverflow.ellipsis, height: 1),
       ),
     ),
     const PullDownMenuDivider.large(),
     PullDownMenuItem(
       onTap: () async {
-        await Favourites().add(
-            context,
-            Favourite(
-              id: -1,
-              stid: track.id,
-              title: track.name,
-              artistTrack: track.artists,
-              albumTrack: track.album,
-              image: track.album != null
-                  ? calculateBestImageForTrack(track.album!.images)
-                  : null,
-            ));
-        doesNotExist("");
-        doesNowExist("");
-
-        // The UI will not auto-refresh since there is no stateful management here
+        await context.trackActions.toggleFavourite(track);
       },
       title: favourite
           ? AppLocalizations.of(context).unlike
           : AppLocalizations.of(context).like,
       icon: favourite ? AppIcons.heartFill : AppIcons.heart,
       itemTheme: const PullDownMenuItemTheme(
-        textStyle: TextStyle(
-          overflow: TextOverflow.ellipsis,
-          height: 1,
-        ),
+        textStyle: TextStyle(overflow: TextOverflow.ellipsis, height: 1),
       ),
     ),
   ];
@@ -137,14 +87,13 @@ List<Widget> searchTrackPulldownMenuItemsAndroid(
   Track track,
   String id,
   bool favourite,
-  Function(String) doesNotExist,
-  Function(String) doesNowExist,
 ) {
-  TextStyle textStyle = TextStyle(
-      overflow: TextOverflow.ellipsis,
-      color: Col.text,
-      fontSize: 18,
-      fontWeight: FontWeight.w400);
+  final TextStyle textStyle = TextStyle(
+    overflow: TextOverflow.ellipsis,
+    color: context.colors.text,
+    fontSize: 18,
+    fontWeight: FontWeight.w400,
+  );
   return [
     //const PullDownMenuDivider.large(),
 
@@ -171,39 +120,20 @@ List<Widget> searchTrackPulldownMenuItemsAndroid(
               ),
               Icon(
                 favourite ? AppIcons.heartFill : AppIcons.heart,
-                color: Col.text,
+                color: context.colors.text,
                 size: 18,
-              )
+              ),
             ],
           ),
         ),
         () async {
-          await Favourites().add(
-              context,
-              Favourite(
-                id: -1,
-                stid: track.id,
-                title: track.name,
-                artistTrack: track.artists,
-                albumTrack: track.album,
-                image: track.album != null
-                    ? calculateBestImageForTrack(track.album!.images)
-                    : null,
-              ));
-          doesNotExist("");
-          doesNowExist("");
+          await context.trackActions.toggleFavourite(track);
           StarMenuOverlay.dispose();
-
-          // The UI will not auto-refresh since there is no stateful management here
         },
       ),
     ),
 
-    Container(
-      width: 200,
-      height: 5,
-      color: Col.onIcon,
-    ),
+    Container(width: 200, height: 5, color: context.colors.onIcon),
     inkWell(
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 7.5),
@@ -219,17 +149,12 @@ List<Widget> searchTrackPulldownMenuItemsAndroid(
                 maxLines: 1,
               ),
             ),
-            Icon(
-              AppIcons.lastToQueue,
-              color: Col.text,
-              size: 18,
-            )
+            Icon(AppIcons.lastToQueue, color: context.colors.text, size: 18),
           ],
         ),
       ),
       () async {
-        await AddToQueue()
-            .addTypeTrackLast(context, track, id, doesNotExist, doesNowExist);
+        await context.trackActions.addLast(track, collectionId: id);
         StarMenuOverlay.dispose();
       },
     ),
@@ -249,26 +174,17 @@ List<Widget> searchTrackPulldownMenuItemsAndroid(
                 maxLines: 1,
               ),
             ),
-            Icon(
-              AppIcons.firstToQueue,
-              color: Col.text,
-              size: 18,
-            )
+            Icon(AppIcons.firstToQueue, color: context.colors.text, size: 18),
           ],
         ),
       ),
       () async {
-        await AddToQueue()
-            .addTypeTrackFirst(context, track, id, doesNotExist, doesNowExist);
+        await context.trackActions.addNext(track, collectionId: id);
         StarMenuOverlay.dispose();
       },
     ),
 
-    Container(
-      width: 200,
-      height: 5,
-      color: Col.onIcon,
-    ),
+    Container(width: 200, height: 5, color: context.colors.onIcon),
     inkWell(
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 7.5),
@@ -284,38 +200,19 @@ List<Widget> searchTrackPulldownMenuItemsAndroid(
                 maxLines: 1,
               ),
             ),
-            Icon(
-              AppIcons.musicAlbums,
-              color: Col.text,
-              size: 18,
-            )
+            Icon(AppIcons.musicAlbums, color: context.colors.text, size: 18),
           ],
         ),
       ),
       () {
         OpenPlaylist().show(
-            context,
-            PlaylistHandler(
-              type: PlaylistHandlerType.online,
-              function: PlaylistHandlerFunction.addToPlaylist,
-              track: [
-                PlaylistHandlerOnlineTrack(
-                  id: track.id,
-                  name: track.name,
-                  artist: track.artists
-                      .map((artist) => {"id": artist.id, "name": artist.name})
-                      .toList(),
-                  cover: calculateWantedResolutionForTrack(
-                      track.album != null
-                          ? track.album!.images
-                          : track.album!.images,
-                      150,
-                      150),
-                  albumTrack: track.album,
-                  playlistHandlerCoverType: PlaylistHandlerCoverType.url,
-                )
-              ],
-            ));
+          context,
+          PlaylistHandler(
+            type: PlaylistHandlerType.online,
+            function: PlaylistHandlerFunction.addToPlaylist,
+            track: [onlineHandlerTrack(track)],
+          ),
+        );
         StarMenuOverlay.dispose();
       },
     ),
@@ -337,16 +234,12 @@ List<Widget> searchTrackPulldownMenuItemsAndroid(
                   maxLines: 1,
                 ),
               ),
-              Icon(
-                AppIcons.download,
-                color: Col.text,
-                size: 18,
-              )
+              Icon(AppIcons.download, color: context.colors.text, size: 18),
             ],
           ),
         ),
         () async {
-          await DownloadApi().single(track);
+          await context.trackActions.download(track);
           StarMenuOverlay.dispose();
         },
       ),

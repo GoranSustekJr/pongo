@@ -1,21 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
+import '../../../../utils/platform.dart';
+import '../../themes/colors.dart';
 
-textButton(String txt, Function() function, TextStyle style,
-    {EdgeInsets? edgeInsets, double borderRadius = 0}) {
+CupertinoButton textButton(
+  String txt,
+  Function() function,
+  TextStyle style, {
+  EdgeInsets? edgeInsets,
+  double borderRadius = 0,
+}) {
   return /* kIsApple
-      ? */
-      CupertinoButton(
+      ? */ CupertinoButton(
     onPressed: function,
     padding: edgeInsets,
-    child: Text(
-      txt,
-      style: style,
-      overflow: TextOverflow.ellipsis,
-    ),
+    child: Text(txt, style: style, overflow: TextOverflow.ellipsis),
   );
   /* : ClipRRect(
           borderRadius: BorderRadius.circular(borderRadius),
@@ -33,26 +33,21 @@ textButton(String txt, Function() function, TextStyle style,
         ); */
 }
 
-textButtonNoPadding(String txt, Function() function, TextStyle style) {
+Widget textButtonNoPadding(String txt, Function() function, TextStyle style) {
   return kIsApple
       ? CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: function,
-          child: Text(
-            txt,
-            style: style,
-            overflow: TextOverflow.ellipsis,
-          ),
+          child: Text(txt, style: style, overflow: TextOverflow.ellipsis),
         )
-      : TextButton(
-          onPressed: function,
-          style: TextButton.styleFrom(
+      : Builder(
+          builder: (context) => TextButton(
+            onPressed: function,
+            style: TextButton.styleFrom(
               splashFactory: InkRipple.splashFactory,
-              overlayColor: Col.text.withAlpha(50)),
-          child: Text(
-            txt,
-            style: style,
-            overflow: TextOverflow.ellipsis,
+              overlayColor: context.colors.text.withAlpha(50),
+            ),
+            child: Text(txt, style: style, overflow: TextOverflow.ellipsis),
           ),
         );
 }

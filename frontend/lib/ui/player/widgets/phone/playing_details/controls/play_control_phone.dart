@@ -1,10 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button_forward.dart';
+import '../../../../../core/ui/phone/buttons/icon_button_forward.dart';
+import '../../../../view_models/player_view_model.dart';
 
 class PlayControlPhone extends StatefulWidget {
   final AsyncSnapshot<PlaybackState> playbackState;
@@ -22,22 +21,18 @@ class PlayControlPhone extends StatefulWidget {
 class _PlayControlPhoneState extends State<PlayControlPhone> {
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final player = context.player;
     bool playing = false;
     if (widget.playbackState.data != null) {
       playing = widget.playbackState.data!.playing;
     }
 
-    Widget child = AnimatedSwitcher(
+    final Widget child = AnimatedSwitcher(
       duration: const Duration(milliseconds: 150),
       transitionBuilder: (Widget child, Animation<double> animation) {
         return FadeTransition(
           opacity: animation,
-          child: ScaleTransition(
-            scale: animation,
-            child: child,
-          ),
+          child: ScaleTransition(scale: animation, child: child),
         );
       },
       child: Icon(
@@ -54,31 +49,26 @@ class _PlayControlPhoneState extends State<PlayControlPhone> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
         children: [
-          iconButtonForward(
-            CupertinoIcons.backward_fill,
-            () async {
-              audioServiceHandler.skipToPrevious();
-            },
-          ),
+          iconButtonForward(CupertinoIcons.backward_fill, () async {
+            await player.skipToPrevious();
+          }),
           SizedBox(
             height: 60,
             child: CupertinoButton(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                onPressed: () async {
-                  if (playing) {
-                    audioServiceHandler.pause();
-                  } else {
-                    audioServiceHandler.play();
-                  }
-                },
-                child: child),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              onPressed: () async {
+                if (playing) {
+                  await player.pause();
+                } else {
+                  await player.play();
+                }
+              },
+              child: child,
+            ),
           ),
-          iconButtonForward(
-            CupertinoIcons.forward_fill,
-            () async {
-              audioServiceHandler.skipToNext();
-            },
-          ),
+          iconButtonForward(CupertinoIcons.forward_fill, () async {
+            await player.skipToNext();
+          }),
         ],
       ),
     );

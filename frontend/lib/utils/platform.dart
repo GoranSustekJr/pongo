@@ -6,7 +6,7 @@ final kIsDesktop = kIsLinux || kIsWindows || kIsMacOS;
 
 final kIsMobile = kIsAndroid || kIsIOS;
 
-final kIsFlatpak = kIsWeb ? false : Platform.environment["FLATPAK_ID"] != null;
+final kIsFlatpak = kIsWeb ? false : Platform.environment['FLATPAK_ID'] != null;
 
 final kIsMacOS = kIsWeb ? false : Platform.isMacOS;
 final kIsLinux = kIsWeb ? false : Platform.isLinux;
@@ -19,9 +19,9 @@ final kIsApple = Platform.isIOS || Platform.isMacOS;
 final kPlatform = Platform.isIOS
     ? 'ios'
     : Platform.isMacOS
-        ? 'maco0'
-        : Platform.isWindows
-            ? "windows"
-            : Platform.isAndroid
-                ? "android"
-                : "linux";
+    ? 'maco0'
+    : Platform.isWindows
+    ? 'windows'
+    : Platform.isAndroid
+    ? 'android'
+    : 'linux';

@@ -2,10 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/l10n/app_localizations.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../core/themes/colors.dart';
 
-appleLyricsTextAlignPicker(context, int initial, Function(int) onChanged) {
+void appleLyricsTextAlignPicker(
+  BuildContext context,
+  int initial,
+  Function(int) onChanged,
+) {
   showCupertinoModalPopup(
     context: context,
     builder: (context) {
@@ -15,7 +19,7 @@ appleLyricsTextAlignPicker(context, int initial, Function(int) onChanged) {
           child: Container(
             height: 300,
             width: MediaQuery.of(context).size.width,
-            color: Col.primaryCard.withAlpha(150),
+            color: context.colors.primaryCard.withAlpha(150),
             child: CupertinoPicker(
               itemExtent: 50,
               onSelectedItemChanged: onChanged,
@@ -25,9 +29,7 @@ appleLyricsTextAlignPicker(context, int initial, Function(int) onChanged) {
               children: [
                 Row(
                   children: [
-                    const SizedBox(
-                      width: 20,
-                    ),
+                    const SizedBox(width: 20),
                     Center(
                       child: Text(
                         AppLocalizations.of(context).leftalignment,
@@ -51,9 +53,7 @@ appleLyricsTextAlignPicker(context, int initial, Function(int) onChanged) {
                         textAlign: TextAlign.right,
                       ),
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
+                    const SizedBox(width: 20),
                   ],
                 ),
                 Row(

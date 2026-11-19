@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 LayoutBuilder marquee(
-    String text, TextStyle style, int? maxLines, TextOverflow? textOverflow,
-    {double height = 28}) {
+  String text,
+  TextStyle style,
+  int? maxLines,
+  TextOverflow? textOverflow, {
+  double height = 28,
+}) {
   return LayoutBuilder(
     builder: (context, constraints) {
       final textSpan = TextSpan(text: (text), style: style);
@@ -26,8 +30,7 @@ LayoutBuilder marquee(
                 velocity: 30,
               ),
             )
-          :  */
-          Text(
+          :  */ Text(
         (text),
         style: style,
         maxLines: 1,

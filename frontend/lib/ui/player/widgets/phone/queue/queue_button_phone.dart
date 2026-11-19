@@ -1,24 +1,23 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 import 'package:kr_pull_down_button/pull_down_button.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/player/presentation/phone/alerts/halt_alert.dart';
-import 'package:pongo/features/player/presentation/phone/queue/queue_edit_pull_down_menu_items.dart';
-import 'package:pongo/features/player/presentation/phone/queue/queue_more_pull_down_menu_items.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_render.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../app/view_models/app_settings_view_model.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/themes/dimens.dart';
+import '../../../../core/ui/app_blur.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../../core/ui/phone/liquid_glass_render.dart';
+import '../../../../shell/view_models/shell_view_model.dart';
+import '../../../view_models/player_view_model.dart';
+import '../alerts/halt_alert.dart';
+import 'queue_edit_pull_down_menu_items.dart';
+import 'queue_more_pull_down_menu_items.dart';
 
 class QueueButtonPhone extends StatelessWidget {
   final bool showQueue;
@@ -47,26 +46,26 @@ class QueueButtonPhone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final player = context.player;
     return Positioned(
       top: MediaQuery.of(context).padding.top + 12.5,
       child: Container(
         width: MediaQuery.of(context).size.width - 20,
         height: 40,
         decoration: BoxDecoration(
-            color: useBlur.value
-                ? Col.transp
-                : Col.realBackground.withAlpha(AppConstants().noBlur),
-            borderRadius: BorderRadius.circular(60)),
+          color: context.readSettings.useBlur
+              ? Col.transp
+              : context.colors.realBackground.withAlpha(Dimens.noBlur),
+          borderRadius: BorderRadius.circular(60),
+        ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(60),
           child: liquidGlassLayer(
             child: liquidGlass(
               child: liquidGlassBackground(
-                enabled: liquidGlassEnabled,
+                enabled: context.readSettings.useLiquidGlass,
                 child: BackdropFilter(
-                  filter: nonAppleBlur(10),
+                  filter: nonAppleBlur(context, 10),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -80,14 +79,19 @@ class QueueButtonPhone extends StatelessWidget {
                             borderRadius: BorderRadius.circular(60),
                             color: kIsDesktop
                                 ? const MacosColor.fromRGBO(
-                                    40, 40, 40, 0.8) // Add transparency here
+                                    40,
+                                    40,
+                                    40,
+                                    0.8,
+                                  ) // Add transparency here
                                 : Col.transp,
                           ),
                           child: iconButton(
-                              lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
-                              Colors.white.withAlpha(lyricsExist ? 255 : 175),
-                              changeLyricsOn,
-                              edgeInsets: EdgeInsets.zero),
+                            lyricsOn ? AppIcons.lyricsFill : AppIcons.lyrics,
+                            Colors.white.withAlpha(lyricsExist ? 255 : 175),
+                            changeLyricsOn,
+                            edgeInsets: EdgeInsets.zero,
+                          ),
                         ),
                       ),
                       ClipRRect(
@@ -99,86 +103,69 @@ class QueueButtonPhone extends StatelessWidget {
                             borderRadius: BorderRadius.circular(60),
                             color: kIsDesktop
                                 ? const MacosColor.fromRGBO(
-                                    40, 40, 40, 0.8) // Add transparency here
+                                    40,
+                                    40,
+                                    40,
+                                    0.8,
+                                  ) // Add transparency here
                                 : Col.transp,
                           ),
                           child: ValueListenableBuilder(
-                              valueListenable: queueAllowShuffle,
-                              builder: (context, _, __) {
-                                return kIsApple
-                                    ? CupertinoButton(
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () async {
-                                          if (queueAllowShuffle.value) {
-                                            if (audioServiceHandler.audioPlayer
-                                                .shuffleModeEnabled) {
-                                              await audioServiceHandler
-                                                  .setShuffleMode(
-                                                      AudioServiceShuffleMode
-                                                          .none);
-                                            } else {
-                                              await audioServiceHandler
-                                                  .setShuffleMode(
-                                                      AudioServiceShuffleMode
-                                                          .all);
-                                            }
-                                          }
+                            valueListenable: context.player.canShuffle,
+                            builder: (context, _, _) {
+                              return kIsApple
+                                  ? CupertinoButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () async {
+                                        if (context.player.canShuffle.value) {
+                                          await player.setShuffle(
+                                            enabled: !player.shuffleEnabled,
+                                          );
+                                        }
+                                      },
+                                      child: StreamBuilder(
+                                        stream: player.shuffleEnabledStream,
+                                        builder: (context, snapshot) {
+                                          final bool enabled =
+                                              snapshot.data ?? false;
+                                          return Icon(
+                                            AppIcons.shuffle,
+                                            color: enabled
+                                                ? Colors.white
+                                                : Colors.white.withAlpha(150),
+                                          );
                                         },
-                                        child: StreamBuilder(
-                                            stream: audioServiceHandler
-                                                .audioPlayer
-                                                .shuffleModeEnabledStream,
-                                            builder: (context, snapshot) {
-                                              bool enabled =
-                                                  snapshot.data ?? false;
-                                              return Icon(
-                                                AppIcons.shuffle,
-                                                color: enabled
-                                                    ? Colors.white
-                                                    : Colors.white
-                                                        .withAlpha(150),
-                                              );
-                                            }),
-                                      )
-                                    : IconButton(
-                                        style: IconButton.styleFrom(
-                                            splashFactory:
-                                                InkRipple.splashFactory,
-                                            overlayColor:
-                                                Col.text.withAlpha(50)),
-                                        onPressed: () async {
-                                          if (queueAllowShuffle.value) {
-                                            if (audioServiceHandler.audioPlayer
-                                                .shuffleModeEnabled) {
-                                              await audioServiceHandler
-                                                  .setShuffleMode(
-                                                      AudioServiceShuffleMode
-                                                          .none);
-                                            } else {
-                                              await audioServiceHandler
-                                                  .setShuffleMode(
-                                                      AudioServiceShuffleMode
-                                                          .all);
-                                            }
-                                          }
+                                      ),
+                                    )
+                                  : IconButton(
+                                      style: IconButton.styleFrom(
+                                        splashFactory: InkRipple.splashFactory,
+                                        overlayColor: context.colors.text
+                                            .withAlpha(50),
+                                      ),
+                                      onPressed: () async {
+                                        if (context.player.canShuffle.value) {
+                                          await player.setShuffle(
+                                            enabled: !player.shuffleEnabled,
+                                          );
+                                        }
+                                      },
+                                      icon: StreamBuilder(
+                                        stream: player.shuffleEnabledStream,
+                                        builder: (context, snapshot) {
+                                          final bool enabled =
+                                              snapshot.data ?? false;
+                                          return Icon(
+                                            AppIcons.shuffle,
+                                            color: enabled
+                                                ? Colors.white
+                                                : Colors.white.withAlpha(150),
+                                          );
                                         },
-                                        icon: StreamBuilder(
-                                            stream: audioServiceHandler
-                                                .audioPlayer
-                                                .shuffleModeEnabledStream,
-                                            builder: (context, snapshot) {
-                                              bool enabled =
-                                                  snapshot.data ?? false;
-                                              return Icon(
-                                                AppIcons.shuffle,
-                                                color: enabled
-                                                    ? Colors.white
-                                                    : Colors.white
-                                                        .withAlpha(150),
-                                              );
-                                            }),
-                                      );
-                              }),
+                                      ),
+                                    );
+                            },
+                          ),
                         ),
                       ),
                       ClipRRect(
@@ -190,7 +177,11 @@ class QueueButtonPhone extends StatelessWidget {
                             borderRadius: BorderRadius.circular(60),
                             color: kIsDesktop
                                 ? const MacosColor.fromRGBO(
-                                    40, 40, 40, 0.8) // Add transparency here
+                                    40,
+                                    40,
+                                    40,
+                                    0.8,
+                                  ) // Add transparency here
                                 : Col.transp,
                           ),
                           child: iconButton(
@@ -212,21 +203,28 @@ class QueueButtonPhone extends StatelessWidget {
                             borderRadius: BorderRadius.circular(60),
                             color: kIsDesktop
                                 ? const MacosColor.fromRGBO(
-                                    40, 40, 40, 0.8) // Add transparency here
+                                    40,
+                                    40,
+                                    40,
+                                    0.8,
+                                  ) // Add transparency here
                                 : Col.transp,
                           ),
-                          child:
-                              iconButton(AppIcons.halt, Colors.white, () async {
-                            CustomButton ok = await haltAlert(context);
-                            if (ok == CustomButton.positiveButton) {
-                              currentTrackHeight.value = 0;
-                              final audioServiceHandler =
-                                  Provider.of<AudioHandler>(context,
-                                      listen: false) as AudioServiceHandler;
+                          child: iconButton(
+                            AppIcons.halt,
+                            Colors.white,
+                            () async {
+                              final CustomButton ok = await haltAlert(context);
+                              if (ok == CustomButton.positiveButton &&
+                                  context.mounted) {
+                                context.shell.currentTrackHeight.value = 0;
+                                final player = context.player;
 
-                              await audioServiceHandler.halt();
-                            }
-                          }, edgeInsets: EdgeInsets.zero),
+                                await player.halt();
+                              }
+                            },
+                            edgeInsets: EdgeInsets.zero,
+                          ),
                         ),
                       ),
                       ClipRRect(
@@ -238,7 +236,11 @@ class QueueButtonPhone extends StatelessWidget {
                             borderRadius: BorderRadius.circular(60),
                             color: kIsDesktop
                                 ? const MacosColor.fromRGBO(
-                                    40, 40, 40, 0.8) // Add transparency here
+                                    40,
+                                    40,
+                                    40,
+                                    0.8,
+                                  ) // Add transparency here
                                 : Col.transp,
                           ),
                           child: PullDownButton(

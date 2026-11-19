@@ -1,41 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:liquid_glass/liquid_glass.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/shared/widgets/image/image_compatible.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/themes/dimens.dart';
+import '../../../../core/ui/image/image_compatible.dart';
+import '../../../../core/ui/phone/liquid_glass_background.dart';
 
-Widget profileImage(String image) {
-  Widget child = image != ""
+Widget profileImage(BuildContext context, String image) {
+  final Widget child = image != ''
       ? ClipRRect(
           borderRadius: BorderRadius.circular(360),
-          child: ImageCompatible(
-            image: image,
-            width: 160,
-            height: 160,
-          ),
+          child: ImageCompatible(image: image, width: 160, height: 160),
         )
       : Center(
-          child: Icon(
-            AppIcons.profile,
-            color: Col.icon,
-            size: 60,
-          ),
+          child: Icon(AppIcons.profile, color: context.colors.icon, size: 60),
         );
   return kIsApple
-      ? LiquidGlass(
-          blur: AppConstants().liquidGlassBlur,
-          tint: Col.text,
-          child: SizedBox(
-            width: 160,
-            height: 160,
-            child: child,
-          ))
+      ? GlassSurface(
+          blur: Dimens.liquidGlassBlur,
+          tint: context.colors.text,
+          child: SizedBox(width: 160, height: 160, child: child),
+        )
       : CircleAvatar(
           radius: 80,
-          backgroundColor: Col.primaryCard.withAlpha(150),
+          backgroundColor: context.colors.primaryCard.withAlpha(150),
           child: child,
         );
 }

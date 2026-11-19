@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 class PlayPauseMini extends StatefulWidget {
   final AsyncSnapshot<PlaybackState> playbackState;
   final Function() function;
-  const PlayPauseMini(
-      {super.key, required this.function, required this.playbackState});
+  const PlayPauseMini({
+    super.key,
+    required this.function,
+    required this.playbackState,
+  });
 
   @override
   State<PlayPauseMini> createState() => _PlayPauseMiniState();
@@ -27,10 +30,7 @@ class _PlayPauseMiniState extends State<PlayPauseMini> {
         transitionBuilder: (Widget child, Animation<double> animation) {
           return FadeTransition(
             opacity: animation,
-            child: ScaleTransition(
-              scale: animation,
-              child: child,
-            ),
+            child: ScaleTransition(scale: animation, child: child),
           );
         },
         child: playing

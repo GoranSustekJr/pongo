@@ -5,15 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/notifications/notifications.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/features/player/presentation/phone/playing_details/controls/track_info_button.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
+import '../../../../../../domain/models/catalog/track.dart';
+import '../../../../../core/app_icons.dart';
+import '../../../../../core/messages/app_message.dart';
+import '../../../../../core/messages/message_center.dart';
+import '../../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../../core/view_models/track_actions_view_model.dart';
+import '../../../../view_models/player_view_model.dart';
+import 'track_info_button.dart';
 
 class OtherControlsPhone extends StatefulWidget {
   final bool lyricsOn;
@@ -40,28 +39,13 @@ class OtherControlsPhone extends StatefulWidget {
 }
 
 class _OtherControlsPhoneState extends State<OtherControlsPhone> {
-  late Future<bool> favouriteStatusFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    favouriteStatusFuture = DatabaseHelper()
-        .favouriteTrackAlreadyExists(widget.track.id.split('.')[2]);
-  }
-
-  void refreshFavouriteStatus() {
-    setState(() {
-      favouriteStatusFuture = DatabaseHelper()
-          .favouriteTrackAlreadyExists(widget.track.id.split('.')[2]);
-    });
-  }
+  void refreshFavouriteStatus() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final player = context.player;
     return StreamBuilder(
-      stream: audioServiceHandler.loopModeStream,
+      stream: player.loopModeStream,
       builder: (context, loopMode) {
         return AnimatedOpacity(
           duration: const Duration(milliseconds: 450),
@@ -77,44 +61,39 @@ class _OtherControlsPhoneState extends State<OtherControlsPhone> {
                 widget.changeLyricsOn,
               ),
               iconButton(
-                audioServiceHandler.audioPlayer.loopMode.name == "one"
+                player.loopMode.name == 'one'
                     ? AppIcons.repeatOne
                     : AppIcons.repeat,
-                audioServiceHandler.audioPlayer.loopMode.name == "off"
+                player.loopMode.name == 'off'
                     ? Colors.white.withAlpha(150)
                     : Colors.white,
                 () {
-                  if (audioServiceHandler.activeSleepAlarm == -1) {
-                    if (audioServiceHandler.audioPlayer.loopMode.name ==
-                        "all") {
-                      audioServiceHandler
-                          .setRepeatMode(AudioServiceRepeatMode.none);
-                    } else if (audioServiceHandler.audioPlayer.loopMode.name ==
-                        "off") {
-                      audioServiceHandler
-                          .setRepeatMode(AudioServiceRepeatMode.one);
+                  if (player.activeSleepAlarm == -1) {
+                    if (player.loopMode.name == 'all') {
+                      player.setRepeatMode(AudioServiceRepeatMode.none);
+                    } else if (player.loopMode.name == 'off') {
+                      player.setRepeatMode(AudioServiceRepeatMode.one);
                     } else {
-                      audioServiceHandler
-                          .setRepeatMode(AudioServiceRepeatMode.all);
+                      player.setRepeatMode(AudioServiceRepeatMode.all);
                     }
                   } else {
-                    Notifications().showWarningNotification(
-                        notificationsContext.value!,
-                        AppLocalizations.of(notificationsContext.value!)
-                            .sleepalarmisenabled);
+                    context.read<MessageCenter>().show(
+                      WarningMessage((l10n) => l10n.sleepalarmisenabled),
+                    );
                   }
                 },
               ),
               FutureBuilder<bool>(
-                future: DatabaseHelper()
-                    .favouriteTrackAlreadyExists(widget.track.id.split('.')[2]),
+                future: context.watch<TrackActionsViewModel>().isFavourite(
+                  widget.track.id,
+                ),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return const Center(
                       child: Icon(CupertinoIcons.exclamationmark_circle),
                     );
                   } else {
-                    bool isFavourite = snapshot.data ?? false;
+                    final bool isFavourite = snapshot.data ?? false;
 
                     return trackInfoButton(
                       context,

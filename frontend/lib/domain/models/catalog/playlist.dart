@@ -1,40 +1,39 @@
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Playlist {
-  final String id;
-  final String name;
-  final String? description;
-  final String image;
+import '../../../utils/image_resolution.dart';
+import 'track.dart';
 
-  // Creata a Playlist from a Map
-  factory Playlist.fromMap(Map<String, dynamic> map) {
-    return Playlist(
-      id: map["id"],
-      name: map["name"],
-      image: map["images"].isNotEmpty
-          ? calculateWantedResolution(map["images"], 300, 300)
-          : "",
-      description: map["description"],
-    );
-  }
+part 'playlist.freezed.dart';
 
-  // Convert a List of Maps to a List of Playlist objects
-  static List<Playlist> fromMapList(List<dynamic> list) {
-    for (var item in list) {
-      if (item == null) {
-      } else if (item is! Map<String, dynamic>) {}
-    }
+/// A playlist in the catalog.
+@freezed
+abstract class Playlist with _$Playlist {
+  /// Creates a playlist.
+  const factory Playlist({
+    required String id,
+    required String name,
+    String? description,
 
-    return list
-        .where((item) => item != null && item is Map<String, dynamic>)
-        .map((map) => Playlist.fromMap(map as Map<String, dynamic>))
-        .toList();
-  }
+    /// URL of the cover image, or an empty string if there is none.
+    required String image,
+  }) = _Playlist;
 
-  Playlist({
-    required this.id,
-    required this.name,
-    this.description,
-    required this.image,
-  });
+  /// Creates a playlist from the API's JSON, using a cover of about 300
+  /// pixels.
+  factory Playlist.fromMap(Map<String, dynamic> map) => Playlist(
+    id: map['id'] as String,
+    name: map['name'] as String,
+    image: imageUrlForSize(
+      AlbumImagesTrack.fromMapList(map['images'] as List),
+      300,
+      300,
+    ),
+    description: map['description'] as String?,
+  );
+
+  /// Creates playlists from a JSON list, skipping entries that aren't maps.
+  static List<Playlist> fromMapList(List<dynamic> list) => [
+    for (final map in list.whereType<Map<String, dynamic>>())
+      Playlist.fromMap(map),
+  ];
 }

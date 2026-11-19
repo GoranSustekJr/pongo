@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/features/search/presentation/phone/search_result_text.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/shimmer/shimmer_container.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../search/widgets/phone/search_result_text.dart';
+import '../../../themes/colors.dart';
+import '../../shimmer/shimmer_container.dart';
+import '../../space.dart';
 
 class RecommendedShimmer extends StatelessWidget {
   final bool history;
   final bool categories;
-  const RecommendedShimmer(
-      {super.key, required this.history, required this.categories});
+  const RecommendedShimmer({
+    super.key,
+    required this.history,
+    required this.categories,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,29 +38,30 @@ class RecommendedShimmer extends StatelessWidget {
       );
     } else {
       return Shimmer.fromColors(
-        baseColor: Col.onIcon,
+        baseColor: context.colors.onIcon,
         highlightColor: Col.background.withAlpha(50),
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.only(
-                  top: Scaffold.of(context).appBarMaxHeight == null
-                      ? MediaQuery.of(context).padding.top +
+                top: Scaffold.of(context).appBarMaxHeight == null
+                    ? MediaQuery.of(context).padding.top +
                           AppBar().preferredSize.height +
                           20
-                      : Scaffold.of(context).appBarMaxHeight! + 20,
-                  bottom: MediaQuery.of(context).padding.bottom + 10
-                  // bottom: MediaQuery.of(context).padding.bottom,
-                  ),
+                    : Scaffold.of(context).appBarMaxHeight! + 20,
+                bottom: MediaQuery.of(context).padding.bottom + 10,
+                // bottom: MediaQuery.of(context).padding.bottom,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   if (history)
                     searchResultText(
-                        AppLocalizations.of(context).lastlistenedto,
-                        suggestionHeader),
+                      AppLocalizations.of(context).lastlistenedto,
+                      suggestionHeader,
+                    ),
                   if (history) razh(10),
                   if (history)
                     SizedBox(
@@ -69,16 +73,20 @@ class RecommendedShimmer extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 7.5),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7.5,
+                            ),
                             child: SizedBox(
                               height: kIsDesktop ? 200 : 160,
                               width: kIsDesktop ? 160 : 120,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  shimmContainer(kIsDesktop ? 160 : 120,
-                                      kIsDesktop ? 160 : 120, radius),
+                                  shimmContainer(
+                                    kIsDesktop ? 160 : 120,
+                                    kIsDesktop ? 160 : 120,
+                                    radius,
+                                  ),
                                   razh(7.5),
                                   shimmContainer(100, 8, radius),
                                   razh(5),
@@ -101,16 +109,20 @@ class RecommendedShimmer extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 7.5),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 7.5,
+                            ),
                             child: SizedBox(
                               height: kIsDesktop ? 200 : 160,
                               width: kIsDesktop ? 160 : 120,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  shimmContainer(kIsDesktop ? 160 : 120,
-                                      kIsDesktop ? 160 : 120, radius),
+                                  shimmContainer(
+                                    kIsDesktop ? 160 : 120,
+                                    kIsDesktop ? 160 : 120,
+                                    radius,
+                                  ),
                                   razh(7.5),
                                   shimmContainer(100, 8, radius),
                                   razh(5),
@@ -125,7 +137,9 @@ class RecommendedShimmer extends StatelessWidget {
                   if (history) razh(30),
                   if (categories)
                     searchResultText(
-                        AppLocalizations.of(context).explore, suggestionHeader),
+                      AppLocalizations.of(context).explore,
+                      suggestionHeader,
+                    ),
                   if (categories) razh(10),
                   if (categories)
                     Padding(
@@ -135,34 +149,32 @@ class RecommendedShimmer extends StatelessWidget {
                           maxWidth: MediaQuery.of(context).size.width - 20,
                         ),
                         child: GridView.builder(
-                          padding: const EdgeInsets.only(
-                            top: 0,
-                          ),
+                          padding: const EdgeInsets.only(top: 0),
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: kIsDesktop
-                                ? MediaQuery.of(context).size.width > 1200
-                                    ? 4
-                                    : 3
-                                : 2,
-                            childAspectRatio: 120 / 80,
-                            crossAxisSpacing: 15,
-                            mainAxisSpacing: 15,
-                          ),
+                                crossAxisCount: kIsDesktop
+                                    ? MediaQuery.of(context).size.width > 1200
+                                          ? 4
+                                          : 3
+                                    : 2,
+                                childAspectRatio: 120 / 80,
+                                crossAxisSpacing: 15,
+                                mainAxisSpacing: 15,
+                              ),
                           itemCount: 50,
                           itemBuilder: (context, index) {
                             return Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(7.5),
-                                color: Col.onIcon,
+                                color: context.colors.onIcon,
                               ),
                             );
                           },
                         ),
                       ),
-                    )
+                    ),
                 ],
               ),
             ),
@@ -222,7 +234,7 @@ class RecommendedShimmer extends StatelessWidget {
                 if (forYou) razh(10),
                 if (forYou)
                   Shimmer.fromColors(
-                    baseColor: Col.onIcon,
+                    baseColor: context.colors.onIcon,
                     highlightColor: Col.background.withAlpha(50),
                     child: SizedBox(
                       height: 160,
@@ -257,7 +269,7 @@ class RecommendedShimmer extends StatelessWidget {
                 if (forYou) razh(10),
                 if (forYou)
                   Shimmer.fromColors(
-                    baseColor: Col.onIcon,
+                    baseColor: context.colors.onIcon,
                     highlightColor: Col.background.withAlpha(50),
                     child: SizedBox(
                       height: 160,
@@ -292,7 +304,7 @@ class RecommendedShimmer extends StatelessWidget {
                 if (forYou) razh(30),
                 if (forYou)
                   Shimmer.fromColors(
-                    baseColor: Col.onIcon,
+                    baseColor: context.colors.onIcon,
                     highlightColor: Col.background.withAlpha(50),
                     child: SizedBox(
                       height: 160,
@@ -336,7 +348,7 @@ class RecommendedShimmer extends StatelessWidget {
                 if (pongo) razh(10),
                 if (pongo)
                   Shimmer.fromColors(
-                    baseColor: Col.onIcon,
+                    baseColor: context.colors.onIcon,
                     highlightColor: Col.background.withAlpha(50),
                     child: SizedBox(
                       height: 160,
@@ -371,7 +383,7 @@ class RecommendedShimmer extends StatelessWidget {
                 if (pongo) razh(10),
                 if (pongo)
                   Shimmer.fromColors(
-                    baseColor: Col.onIcon,
+                    baseColor: context.colors.onIcon,
                     highlightColor: Col.background.withAlpha(50),
                     child: SizedBox(
                       height: 160,
@@ -410,7 +422,7 @@ class RecommendedShimmer extends StatelessWidget {
                 if (pongo) razh(10),
                 if (pongo)
                   Shimmer.fromColors(
-                    baseColor: Col.onIcon,
+                    baseColor: context.colors.onIcon,
                     highlightColor: Col.background.withAlpha(50),
                     child: SizedBox(
                       height: 160,
@@ -454,7 +466,7 @@ class RecommendedShimmer extends StatelessWidget {
                 if (pongo) razh(10),
                 if (pongo)
                   Shimmer.fromColors(
-                    baseColor: Col.onIcon,
+                    baseColor: context.colors.onIcon,
                     highlightColor: Col.background.withAlpha(50),
                     child: SizedBox(
                       height: 160,
@@ -493,7 +505,7 @@ class RecommendedShimmer extends StatelessWidget {
                 if (pongo) razh(10),
                 if (pongo)
                   Shimmer.fromColors(
-                    baseColor: Col.onIcon,
+                    baseColor: context.colors.onIcon,
                     highlightColor: Col.background.withAlpha(50),
                     child: SizedBox(
                       height: 160,

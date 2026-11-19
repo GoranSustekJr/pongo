@@ -1294,7 +1294,37 @@
     "lastadded": "Last added",
     "@lastadded": {
         "description": "lastadded"
+    },
+    "goodmorning": "Good morning",
+    "@goodmorning": {
+        "description": "goodmorning"
+    },
+    "goodafternoon": "Good afternoon",
+    "@goodafternoon": {
+        "description": "goodafternoon"
+    },
+    "goodevening": "Good evening",
+    "@goodevening": {
+        "description": "goodevening"
+    },
+    "toptracks": "Top tracks",
+    "@toptracks": {
+        "description": "toptracks"
+    },
+    "popularartists": "Popular artists",
+    "@popularartists": {
+        "description": "popularartists"
+    },
+    "featuredplaylists": "Featured playlists",
+    "@featuredplaylists": {
+        "description": "featuredplaylists"
+    },
+    "newreleases": "New releases",
+    "@newreleases": {
+        "description": "newreleases"
+    },
+    "genres": "Genres",
+    "@genres": {
+        "description": "genres"
     }
-
 }
-

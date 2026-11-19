@@ -1,9 +1,7 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/features/player/presentation/desktop/queue/queue_body_macos.dart';
+import '../../../view_models/player_view_model.dart';
+import 'queue_body_macos.dart';
 
 class QueueMacos extends StatefulWidget {
   final bool editQueue;
@@ -23,21 +21,20 @@ class QueueMacos extends StatefulWidget {
 class _QueueMacosState extends State<QueueMacos> {
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context, listen: false)
-            as AudioServiceHandler;
+    final player = context.player;
     return StreamBuilder(
-      stream: audioServiceHandler.queue.stream,
+      stream: player.queueStream,
       builder: (context, snapshot) {
         final queue = snapshot.data;
         return StreamBuilder(
-          stream: audioServiceHandler.audioPlayer.shuffleIndicesStream,
+          stream: player.shuffleIndicesStream,
           builder: (context, snap) {
             final shuffleIndices = snap.data;
             return StreamBuilder(
-              stream: audioServiceHandler.audioPlayer.shuffleModeEnabledStream,
+              stream: player.shuffleEnabledStream,
               builder: (context, snp) {
-                final shuffleModeEnabled = (snp.data ?? false) &&
+                final shuffleModeEnabled =
+                    (snp.data ?? false) &&
                     (shuffleIndices != null
                         ? shuffleIndices.isNotEmpty
                         : false);

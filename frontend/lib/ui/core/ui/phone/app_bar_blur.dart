@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
+import '../app_blur.dart';
 
-appBarBlur() {
+Widget appBarBlur() {
   return ClipRRect(
-    child: BackdropFilter(
-      filter: appBlur(10),
-      child: Container(
-        color: Colors.transparent,
+    child: Builder(
+      builder: (context) => BackdropFilter(
+        filter: appBlur(context, 10),
+        child: Container(color: Colors.transparent),
       ),
     ),
   );

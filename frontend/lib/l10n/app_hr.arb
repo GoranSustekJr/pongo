@@ -259,7 +259,13 @@
     "downloading": "Preuzimanje",
     "downloadhasstarted": "Preuzimanje je započelo. NE ZATVARAJTE APLIKACIJU!",
     "firstadded": "Prvo dodano",
-    "lastadded": "Posljednje dodano"
-
-
+    "lastadded": "Posljednje dodano",
+    "goodmorning": "Dobro jutro",
+    "goodafternoon": "Dobar dan",
+    "goodevening": "Dobra večer",
+    "toptracks": "Najpopularnije pjesme",
+    "popularartists": "Popularni izvođači",
+    "featuredplaylists": "Istaknute playliste",
+    "newreleases": "Nova izdanja",
+    "genres": "Žanrovi"
 }

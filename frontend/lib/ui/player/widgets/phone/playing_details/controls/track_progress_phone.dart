@@ -1,11 +1,9 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_slider_path/interactive_slider.dart' as isf;
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/shared/widgets/marquee.dart';
+import '../../../../../core/ui/marquee.dart';
+import '../../../../view_models/player_view_model.dart';
 
 class TrackProgressPhone extends StatefulWidget {
   final String album;
@@ -32,10 +30,12 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
 
   // Notifiers for progress and time
   final ValueNotifier<double> progressNotifier = ValueNotifier<double>(0.0);
-  final ValueNotifier<String> formattedTimeNotifier =
-      ValueNotifier<String>('0:00');
-  final ValueNotifier<String> remainingTimeNotifier =
-      ValueNotifier<String>('-0:00');
+  final ValueNotifier<String> formattedTimeNotifier = ValueNotifier<String>(
+    '0:00',
+  );
+  final ValueNotifier<String> remainingTimeNotifier = ValueNotifier<String>(
+    '-0:00',
+  );
 
   @override
   void initState() {
@@ -47,9 +47,12 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
     // Update progress values
     progressNotifier.value = progress;
     formattedTimeNotifier.value = formatTime(
-        Duration(seconds: (progress * widget.duration!.inSeconds).toInt()));
-    remainingTimeNotifier.value = formatTime(widget.duration! -
-        Duration(seconds: (progress * widget.duration!.inSeconds).toInt()));
+      Duration(seconds: (progress * widget.duration!.inSeconds).toInt()),
+    );
+    remainingTimeNotifier.value = formatTime(
+      widget.duration! -
+          Duration(seconds: (progress * widget.duration!.inSeconds).toInt()),
+    );
   }
 
   String formatTime(Duration duration) {
@@ -60,16 +63,14 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
 
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context, listen: false)
-            as AudioServiceHandler;
+    final player = context.player;
 
     return StreamBuilder<Duration>(
-      stream: audioServiceHandler.audioPlayer.positionStream,
+      stream: player.positionStream,
       builder: (context, position) {
         // Update progress only if there's a change
         if (position.hasData && widget.duration != null) {
-          double progress =
+          final double progress =
               position.data!.inSeconds / widget.duration!.inSeconds;
           if (progress != progressNotifier.value) {
             progressController.value = progress;
@@ -95,10 +96,11 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                   backgroundColor: Colors.white.withAlpha(30),
                   onProgressUpdated: (position) async {
                     updateProgress(position);
-                    await audioServiceHandler.seek(
+                    await player.seek(
                       Duration(
-                          seconds:
-                              (position * widget.duration!.inSeconds).toInt()),
+                        seconds: (position * widget.duration!.inSeconds)
+                            .toInt(),
+                      ),
                     );
                   },
                 ),
@@ -117,7 +119,9 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                         return Text(
                           formattedTimeNotifier.value,
                           style: TextStyle(
-                              color: Colors.white.withAlpha(200), fontSize: 14),
+                            color: Colors.white.withAlpha(200),
+                            fontSize: 14,
+                          ),
                         );
                       },
                     ),
@@ -126,14 +130,17 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                       child: Center(
                         child: CupertinoButton(
                           padding: EdgeInsets.zero,
+                          // Downloaded tracks have no album to open.
                           onPressed: () async {
+                            if (widget.albumId.isEmpty) return;
                             await widget.showAlbum(widget.albumId);
                           },
                           child: marquee(
                             widget.album,
                             TextStyle(
-                                color: Colors.white.withAlpha(200),
-                                fontSize: 12),
+                              color: Colors.white.withAlpha(200),
+                              fontSize: 12,
+                            ),
                             null,
                             null,
                           ),
@@ -146,7 +153,9 @@ class _TrackProgressPhoneState extends State<TrackProgressPhone> {
                         return Text(
                           remainingTime,
                           style: TextStyle(
-                              color: Colors.white.withAlpha(200), fontSize: 14),
+                            color: Colors.white.withAlpha(200),
+                            fontSize: 14,
+                          ),
                         );
                       },
                     ),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/search/data/search_data_manager.dart';
-import 'package:pongo/features/search/presentation/desktop/searching_body_macos.dart';
+import '../../../../utils/platform.dart';
+import '../../../core/themes/colors.dart';
+import '../../../player/view_models/player_view_model.dart';
+import '../../../shell/view_models/shell_view_model.dart';
+import '../../view_models/search_view_model.dart';
+import 'searching_body_macos.dart';
 
 class SearchingMacos extends StatefulWidget {
   final String query;
@@ -16,13 +17,25 @@ class SearchingMacos extends StatefulWidget {
 }
 
 class _SearchingMacosState extends State<SearchingMacos> {
-  late SearchDataManager searchDataManager;
+  late final SearchViewModel searchDataManager;
+  final scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    searchDataManager = SearchDataManager(context);
-    currentSearchDataManager.value = searchDataManager;
+    searchDataManager = SearchViewModel(
+      catalog: context.read(),
+      settings: context.read(),
+      searchRequests: context.shell.searchRequests,
+    );
+    if (widget.query.isNotEmpty) searchDataManager.search(widget.query);
+  }
+
+  @override
+  void dispose() {
+    searchDataManager.dispose();
+    scrollController.dispose();
+    super.dispose();
   }
 
   // Listen For Query Parameter Change
@@ -37,11 +50,13 @@ class _SearchingMacosState extends State<SearchingMacos> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return ChangeNotifierProvider(
-      create: (_) => searchDataManager,
-      child:
-          Consumer<SearchDataManager>(builder: (context, dataManager, child) {
+    final Size size = MediaQuery.of(context).size;
+    return ListenableBuilder(
+      listenable: Listenable.merge([
+        searchDataManager,
+        context.player.fetchingTracks,
+      ]),
+      builder: (context, child) {
         return AnimatedSwitcher(
           duration: const Duration(milliseconds: 250),
           child: searchDataManager.tracks.isEmpty
@@ -62,38 +77,26 @@ class _SearchingMacosState extends State<SearchingMacos> {
                       artists: searchDataManager.artists,
                       albums: searchDataManager.albums,
                       playlists: searchDataManager.playlists,
-                      loading: searchDataManager.loading,
-                      scrollController: searchDataManager.scrollController,
+                      loading: context.player.fetchingTracks.value.toList(),
+                      scrollController: scrollController,
                       suggestionHeader: TextStyle(
                         fontSize: kIsDesktop
                             ? 24
                             : kIsApple
-                                ? 17
-                                : 19,
+                            ? 17
+                            : 19,
                         fontWeight: kIsDesktop
                             ? FontWeight.w800
                             : kIsApple
-                                ? FontWeight.w600
-                                : FontWeight.w700,
-                        color: Col.text,
+                            ? FontWeight.w600
+                            : FontWeight.w700,
+                        color: context.colors.text,
                       ),
-                      loadingAdd: (stid) {
-                        setState(() {
-                          if (!searchDataManager.loading.contains(stid)) {
-                            searchDataManager.loading.add(stid);
-                          }
-                        });
-                      },
-                      loadingRemove: (stid) {
-                        setState(() {
-                          searchDataManager.loading.remove(stid);
-                        });
-                      },
                     ),
                   ),
                 ),
         );
-      }),
+      },
     );
   }
 }

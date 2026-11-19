@@ -1,36 +1,44 @@
 import 'dart:convert';
 
-import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Favourite {
-  final int id;
-  final String stid;
-  final String title;
-  final List<ArtistTrack> artistTrack;
-  final AlbumTrack? albumTrack;
-  final String? image;
+import '../catalog/track.dart';
 
-  Favourite({
-    required this.id,
-    required this.stid,
-    required this.title,
-    required this.artistTrack,
-    required this.albumTrack,
-    required this.image,
-  });
+part 'favourite.freezed.dart';
 
-  factory Favourite.fromMap(Map<String, dynamic> map) {
-    return Favourite(
-      id: map['id'],
-      stid: map['stid'],
-      title: map['title'],
-      artistTrack: (jsonDecode(map['artists']) as List)
-          .map((artist) => ArtistTrack.fromMap(artist as Map<String, dynamic>))
-          .toList(),
-      albumTrack: map['album'] != null
-          ? AlbumTrack.fromMap(jsonDecode(map['album']) as Map<String, dynamic>)
-          : null,
-      image: map['image'],
-    );
-  }
+/// A track the user marked as a favourite.
+@freezed
+abstract class Favourite with _$Favourite {
+  /// Creates a favourite.
+  const factory Favourite({
+    required int id,
+    required String stid,
+    required String title,
+    required List<ArtistTrack> artistTrack,
+    required AlbumTrack? albumTrack,
+    required String? image,
+  }) = _Favourite;
+
+  const Favourite._();
+
+  /// Creates a favourite from a row of the favourites table.
+  factory Favourite.fromMap(Map<String, dynamic> map) => Favourite(
+    id: map['id'] as int,
+    stid: map['stid'] as String,
+    title: map['title'] as String,
+    artistTrack: [
+      for (final artist in jsonDecode(map['artists'] as String) as List)
+        ArtistTrack.fromMap(artist as Map<String, dynamic>),
+    ],
+    albumTrack: map['album'] != null
+        ? AlbumTrack.fromMap(
+            jsonDecode(map['album'] as String) as Map<String, dynamic>,
+          )
+        : null,
+    image: map['image'] as String?,
+  );
+
+  /// The favourite as a playable track.
+  Track toTrack() =>
+      Track(id: stid, name: title, artists: artistTrack, album: albumTrack);
 }

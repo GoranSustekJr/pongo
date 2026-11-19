@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:pongo/features/player/presentation/widgets/track_plain_lyrics.dart';
+import '../../widgets/track_plain_lyrics.dart';
 
 class TrackPlainLyricsDesktop extends StatelessWidget {
-  final List<dynamic> lyrics;
+  final List<String> lyrics;
   const TrackPlainLyricsDesktop({super.key, required this.lyrics});
 
   @override

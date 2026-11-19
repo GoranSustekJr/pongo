@@ -1,8 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 
-import 'package:pongo/l10n/app_localizations.dart';
+import '../../../../../l10n/app_localizations.dart';
 
-Future<CustomButton> deleteAccountAlert(context) async {
+Future<CustomButton> deleteAccountAlert(BuildContext context) async {
   final ok = await FlutterPlatformAlert.showCustomAlert(
     windowTitle: AppLocalizations.of(context).deleteyouraccount,
     text: AppLocalizations.of(context)
@@ -11,14 +12,11 @@ Future<CustomButton> deleteAccountAlert(context) async {
     positiveButtonTitle: AppLocalizations.of(context).okey,
     windowPosition: AlertWindowPosition.screenCenter,
   );
-  if (ok == CustomButton.positiveButton) {
-    return await areYouSureAlert(context);
-  } else {
-    return ok;
-  }
+  if (ok != CustomButton.positiveButton || !context.mounted) return ok;
+  return areYouSureAlert(context);
 }
 
-Future<CustomButton> areYouSureAlert(context) async {
+Future<CustomButton> areYouSureAlert(BuildContext context) async {
   final ok = await FlutterPlatformAlert.showCustomAlert(
     windowTitle: AppLocalizations.of(context).deleteaccount,
     text: AppLocalizations.of(context).areyousurezouwanttodeleteyouraccount,

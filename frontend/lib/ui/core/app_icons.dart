@@ -1,23 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/core/constants/platform.dart';
+import '../../utils/platform.dart';
 
 class AppIcons {
-  static final settings =
-      kIsApple ? CupertinoIcons.settings : CupertinoIcons.gear_alt_fill;
+  static final settings = kIsApple
+      ? CupertinoIcons.settings
+      : CupertinoIcons.gear_alt_fill;
 
   static const profile = CupertinoIcons.person_fill;
 
   static final mail = kIsApple ? CupertinoIcons.mail : Icons.mail;
 
-  static final playlist =
-      kIsApple ? CupertinoIcons.music_albums : Icons.queue_music_rounded;
+  static final playlist = kIsApple
+      ? CupertinoIcons.music_albums
+      : Icons.queue_music_rounded;
 
   static const search = CupertinoIcons.search;
+  static const home = CupertinoIcons.house;
+  static const homeFill = CupertinoIcons.house_fill;
 
-  static final library =
-      kIsApple ? CupertinoIcons.music_albums : Icons.my_library_music_rounded;
+  static final library = kIsApple
+      ? CupertinoIcons.music_albums
+      : Icons.my_library_music_rounded;
 
   static const libraryFill = CupertinoIcons.music_albums_fill;
 
@@ -54,13 +59,15 @@ class AppIcons {
 
   static const sleep = CupertinoIcons.moon_zzz;
 
-  static final blankArtist =
-      kIsApple ? CupertinoIcons.person : Icons.person_rounded;
+  static final blankArtist = kIsApple
+      ? CupertinoIcons.person
+      : Icons.person_rounded;
 
   static const blankAlbum = CupertinoIcons.music_albums;
 
-  static final blankTrack =
-      kIsApple ? CupertinoIcons.music_note : Icons.music_note_rounded;
+  static final blankTrack = kIsApple
+      ? CupertinoIcons.music_note
+      : Icons.music_note_rounded;
 
   static final trash = kIsApple ? CupertinoIcons.trash : Icons.delete;
 
@@ -68,8 +75,9 @@ class AppIcons {
 
   static const more = CupertinoIcons.ellipsis_vertical;
 
-  static final editImage =
-      kIsApple ? CupertinoIcons.photo_camera : Icons.photo_camera_rounded;
+  static final editImage = kIsApple
+      ? CupertinoIcons.photo_camera
+      : Icons.photo_camera_rounded;
 
   static const burger = CupertinoIcons.bars;
 
@@ -77,11 +85,13 @@ class AppIcons {
 
   static const uncheckmark = CupertinoIcons.circle;
 
-  static final preferences =
-      kIsApple ? CupertinoIcons.slider_horizontal_3 : Icons.tune_rounded;
+  static final preferences = kIsApple
+      ? CupertinoIcons.slider_horizontal_3
+      : Icons.tune_rounded;
 
-  static final cancel =
-      kIsApple ? CupertinoIcons.xmark_circle_fill : Icons.cancel;
+  static final cancel = kIsApple
+      ? CupertinoIcons.xmark_circle_fill
+      : Icons.cancel;
 
   static const x = CupertinoIcons.xmark;
 

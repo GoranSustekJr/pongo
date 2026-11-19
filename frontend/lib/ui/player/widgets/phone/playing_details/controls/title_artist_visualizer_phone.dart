@@ -4,8 +4,9 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/search/data/shazam_api.dart';
+import '../../../../../../data/repositories/player/media_items.dart';
+
+import '../../../../../shell/view_models/shell_view_model.dart';
 
 class TitleArtistVisualizerPhone extends StatelessWidget {
   final String name;
@@ -28,7 +29,8 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final artists = decodeArtistRefs(artistJson);
+    final Size size = MediaQuery.of(context).size;
     return SizedBox(
       width: size.width,
       child: Stack(
@@ -48,8 +50,8 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
                       child: AnimatedAlign(
                         alignment: playbackState.data != null && !smallImage
                             ? playbackState.data!.playing
-                                ? Alignment.center
-                                : Alignment.centerLeft
+                                  ? Alignment.center
+                                  : Alignment.centerLeft
                             : Alignment.centerLeft,
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.fastEaseInToSlowEaseOut,
@@ -76,15 +78,15 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
                       child: AnimatedAlign(
                         alignment: playbackState.data != null && !smallImage
                             ? playbackState.data!.playing
-                                ? Alignment.center
-                                : Alignment.centerLeft
+                                  ? Alignment.center
+                                  : Alignment.centerLeft
                             : Alignment.centerLeft,
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.fastEaseInToSlowEaseOut,
                         child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemCount: jsonDecode(artistJson).length,
+                          itemCount: artists.length,
                           itemBuilder: (context, index) {
                             return Row(
                               children: [
@@ -92,11 +94,11 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
                                   padding: EdgeInsets.zero,
                                   onPressed: () {
                                     showArtist(
-                                      jsonEncode(jsonDecode(artistJson)[index]),
+                                      jsonEncode(artists[index].toJson()),
                                     );
                                   },
                                   child: Text(
-                                    jsonDecode(artistJson)[index]["name"],
+                                    artists[index].name ?? '',
                                     style: const TextStyle(
                                       fontSize: 18.5,
                                       fontWeight: FontWeight.w400,
@@ -104,9 +106,9 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                if (index != jsonDecode(artistJson).length - 1)
+                                if (index != artists.length - 1)
                                   const Text(
-                                    ", ",
+                                    ', ',
                                     style: TextStyle(
                                       fontSize: 18.5,
                                       fontWeight: FontWeight.w400,
@@ -125,31 +127,33 @@ class TitleArtistVisualizerPhone extends StatelessWidget {
             ],
           ),
           Positioned(
-              right: 5,
-              bottom: 0,
-              child: Container(
-                  width: mix ? 30 : 0,
-                  height: mix ? 30 : 0,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(60),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withAlpha(200),
-                            spreadRadius: 3,
-                            blurRadius: 10),
-                      ]),
-                  child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () async {
-                      if (!shazaming) {
-                        await ShazamApi().shazamIt(context, stid);
-                      }
-                    },
-                    child: Image.asset(
-                      'assets/icons/shazam.png',
-                      color: Colors.white,
-                    ),
-                  )))
+            right: 5,
+            bottom: 0,
+            child: Container(
+              width: mix ? 30 : 0,
+              height: mix ? 30 : 0,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(60),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(200),
+                    spreadRadius: 3,
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: () async {
+                  await context.shell.shazam(stid);
+                },
+                child: Image.asset(
+                  'assets/icons/shazam.png',
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

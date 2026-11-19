@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/buttons/text_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/buttons/text_button.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../../core/ui/space.dart';
 
 class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
-  final dynamic cover;
+  final Object? cover;
   final TextEditingController titleController;
   final Function() pickImage;
   final Function() createPlaylistFunction;
@@ -27,7 +27,7 @@ class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -41,7 +41,9 @@ class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
                 height: 250,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  color: kIsApple ? Col.transp : Col.primaryCard.withAlpha(200),
+                  color: kIsApple
+                      ? Col.transp
+                      : context.colors.primaryCard.withAlpha(200),
                 ),
                 child: Stack(
                   children: [
@@ -52,31 +54,37 @@ class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
                           width: 250,
                           fit: BoxFit.cover,
                           height: 250,
-                          placeholder:
-                              const AssetImage('assets/images/placeholder.png'),
+                          placeholder: const AssetImage(
+                            'assets/images/placeholder.png',
+                          ),
                           fadeInDuration: const Duration(milliseconds: 200),
                           fadeOutDuration: const Duration(milliseconds: 200),
-                          image: cover.runtimeType == String
-                              ? !cover.toString().contains('file:///')
-                                  ? NetworkImage(cover!)
-                                  : FileImage(
-                                      File.fromUri(Uri.parse(cover!)),
-                                    )
-                              : FileImage((cover as File)),
+                          image: switch (cover) {
+                            final File file => FileImage(file),
+                            final String source
+                                when source.startsWith('file://') =>
+                              FileImage(File.fromUri(Uri.parse(source))),
+                            final String source
+                                when source.startsWith('http') =>
+                              NetworkImage(source),
+                            final source => FileImage(File(source.toString())),
+                          } as ImageProvider,
                         ),
                       ),
                     Center(
-                        child: Container(
-                      decoration: BoxDecoration(
+                      child: Container(
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(360),
-                          color: Col.primaryCard.withAlpha(200)),
-                      child: iconButton(
-                        Icons.camera_alt_rounded,
-                        Col.icon,
-                        size: 30,
-                        pickImage,
+                          color: context.colors.primaryCard.withAlpha(200),
+                        ),
+                        child: iconButton(
+                          Icons.camera_alt_rounded,
+                          context.colors.icon,
+                          size: 30,
+                          pickImage,
+                        ),
                       ),
-                    )),
+                    ),
                   ],
                 ),
               ),
@@ -91,19 +99,13 @@ class PlaylistHandlerBodyAddPlaylistPhone extends StatelessWidget {
                   onChanged: onChanged,
                   decoration: InputDecoration(
                     focusedBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                      ),
+                      borderSide: BorderSide(color: Colors.white),
                     ),
                     enabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                      ),
+                      borderSide: BorderSide(color: Colors.white),
                     ),
                     disabledBorder: const UnderlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                      ),
+                      borderSide: BorderSide(color: Colors.white),
                     ),
                     hintText: AppLocalizations.of(context).playlistname,
                   ),

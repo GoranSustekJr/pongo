@@ -3,14 +3,15 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
+import 'package:provider/provider.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/features/recommendations/presentation/desktop/recommendations_macos.dart';
-import 'package:pongo/features/search/presentation/desktop/searching_macos.dart';
-import 'package:pongo/l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
+import '../../../recommendations/widgets/desktop/recommendations_macos.dart';
+import '../../../shell/view_models/shell_view_model.dart';
+import '../../view_models/search_history_view_model.dart';
+import 'searching_macos.dart';
 
 class SearchMacos extends StatefulWidget {
   const SearchMacos({super.key});
@@ -25,51 +26,51 @@ class _SearchMacosState extends State<SearchMacos> {
 
   // Searching
   TextEditingController searchController = TextEditingController();
-  FocusNode focusNode = FocusNode();
-  List<SearchResultItem> searchHistory = [];
-  String qry = "";
+  late final FocusNode focusNode;
+  late final SearchHistoryViewModel history;
+  String qry = '';
   bool searching = false;
 
   @override
   void initState() {
     super.initState();
-    initSearchHistory();
-    focusNode.addListener(focusNodeListener);
-    searchFocusNode.value = focusNode;
+    history = SearchHistoryViewModel(history: context.read())
+      ..addListener(() => setState(() {}));
+    focusNode = context.shell.searchFocusNode..addListener(focusNodeListener);
   }
 
-  initSearchHistory() async {
-    final data = await DatabaseHelper().querySearchHistorySearch();
-    setState(() {
-      searchHistory = data
-          .map((item) => SearchResultItem(
-                item,
-                child: Row(
-                  children: [
-                    Text(item),
-                    Expanded(child: Container()),
-                    GestureDetector(
-                      onTap: () async {
-                        await DatabaseHelper().removeSearchHistoryEntry(item);
-                        initSearchHistory();
-                      },
-                      child: Icon(
-                        AppIcons.cancel,
-                        color: Colors.white.withAlpha(100),
-                        size: 15,
-                      ),
-                    ),
-                  ],
-                ),
-              ))
-          .toList();
-    });
+  @override
+  void dispose() {
+    focusNode.removeListener(focusNodeListener);
+    history.dispose();
+    searchController.dispose();
+    super.dispose();
   }
 
-  void onFieldSubmitted(String query) async {
-    if (query != "") {
-      await DatabaseHelper().insertSearchHistorySearch(query.trim());
-      await initSearchHistory();
+  List<SearchResultItem> get searchHistory => [
+    for (final item in history.searches)
+      SearchResultItem(
+        item,
+        child: Row(
+          children: [
+            Text(item),
+            Expanded(child: Container()),
+            GestureDetector(
+              onTap: () => history.remove(item),
+              child: Icon(
+                AppIcons.cancel,
+                color: Colors.white.withAlpha(100),
+                size: 15,
+              ),
+            ),
+          ],
+        ),
+      ),
+  ];
+
+  Future<void> onFieldSubmitted(String query) async {
+    if (query != '') {
+      await history.add(query.trim());
 
       setState(() {
         showSearching = true;
@@ -83,7 +84,7 @@ class _SearchMacosState extends State<SearchMacos> {
       onFieldSubmitted(searchController.text);
     } else if (focusNode.hasFocus &&
         !showSearching &&
-        searchController.text != "") {
+        searchController.text != '') {
       setState(() {
         showSearching = true;
       });
@@ -97,63 +98,69 @@ class _SearchMacosState extends State<SearchMacos> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return MacosScaffold(
       backgroundColor: Col.transp,
       children: [
         ContentArea(
           builder: (context, scrollController) {
             return ValueListenableBuilder(
-                valueListenable: searchBarIsSearching,
-                builder: (context, value, child) {
-                  return Container(
-                    height: size.height,
-                    width: size.width,
-                    color: Col.transp,
-                    child: Stack(
-                      children: [
-                        AnimatedOpacity(
-                          opacity: showSearching || searchBarIsSearching.value
-                              ? 1
-                              : 0,
+              valueListenable: context.shell.searchBarIsSearching,
+              builder: (context, value, child) {
+                return Container(
+                  height: size.height,
+                  width: size.width,
+                  color: Col.transp,
+                  child: Stack(
+                    children: [
+                      AnimatedOpacity(
+                        opacity:
+                            showSearching ||
+                                context.shell.searchBarIsSearching.value
+                            ? 1
+                            : 0,
+                        duration: const Duration(milliseconds: 500),
+                        child: SearchingMacos(query: qry),
+                      ),
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 500),
+                        bottom:
+                            showSearching ||
+                                context.shell.searchBarIsSearching.value
+                            ? size.height * 2
+                            : null,
+                        child: AnimatedOpacity(
+                          opacity:
+                              showSearching ||
+                                  context.shell.searchBarIsSearching.value
+                              ? 0
+                              : 1,
                           duration: const Duration(milliseconds: 500),
-                          child: SearchingMacos(
-                            query: qry,
-                          ),
+                          child: const RecommendationsMacos(),
                         ),
-                        AnimatedPositioned(
-                          duration: const Duration(milliseconds: 500),
-                          bottom: showSearching || searchBarIsSearching.value
-                              ? size.height * 2
-                              : null,
-                          child: AnimatedOpacity(
-                            opacity: showSearching || searchBarIsSearching.value
-                                ? 0
-                                : 1,
-                            duration: const Duration(milliseconds: 500),
-                            child: const RecommendationsMacos(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 50,
-                          child: ClipRRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: Row(
-                                  children: [
-                                    Flexible(
-                                        child: MacosSearchField(
+                      ),
+                      SizedBox(
+                        height: 50,
+                        child: ClipRRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                    child: MacosSearchField(
                                       maxLines: 1,
-                                      placeholder:
-                                          AppLocalizations.of(context).search,
+                                      placeholder: AppLocalizations.of(context)
+                                          .search,
                                       placeholderStyle: TextStyle(
-                                          color: Colors.white.withAlpha(150)),
+                                        color: Colors.white.withAlpha(150),
+                                      ),
                                       decoration: BoxDecoration(
-                                          color: Col.primaryCard.withAlpha(200),
-                                          borderRadius:
-                                              BorderRadius.circular(5)),
+                                        color: context.colors.primaryCard
+                                            .withAlpha(200),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
                                       focusNode: focusNode,
                                       results: searchHistory,
                                       controller: searchController,
@@ -161,57 +168,69 @@ class _SearchMacosState extends State<SearchMacos> {
                                       onTap: () {
                                         //TODO: SOmething
                                       },
-                                    )),
-                                    if (searchBarIsSearching.value ||
-                                        focusNode.hasFocus ||
-                                        showSearching)
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10),
-                                        child: CupertinoButton(
-                                          padding: EdgeInsets.zero,
-                                          onPressed: () {
-                                            if (searchBarIsSearching.value ||
-                                                focusNode.hasFocus ||
-                                                showSearching) {
-                                              setState(() {
-                                                searching = false;
-                                                searchBarIsSearching.value =
-                                                    false;
-                                                showSearching = false;
-                                              });
-                                              focusNode.unfocus();
-                                              searchController.clear();
-                                              onFieldSubmitted(
-                                                  ""); // Set Empty Query In Parent Widget
-                                            }
-                                          },
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 5),
-                                            child: Text(
-                                              AppLocalizations.of(context)
-                                                  .cancel,
-                                              style: TextStyle(
-                                                  color: Colors.white
-                                                      .withAlpha(200),
-                                                  fontSize: 20),
+                                    ),
+                                  ),
+                                  if (context
+                                          .shell
+                                          .searchBarIsSearching
+                                          .value ||
+                                      focusNode.hasFocus ||
+                                      showSearching)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          if (context
+                                                  .shell
+                                                  .searchBarIsSearching
+                                                  .value ||
+                                              focusNode.hasFocus ||
+                                              showSearching) {
+                                            setState(() {
+                                              searching = false;
+                                              context
+                                                      .shell
+                                                      .searchBarIsSearching
+                                                      .value =
+                                                  false;
+                                              showSearching = false;
+                                            });
+                                            focusNode.unfocus();
+                                            searchController.clear();
+                                            // Set Empty Query In Parent Widget
+                                            onFieldSubmitted('');
+                                          }
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 5,
+                                          ),
+                                          child: Text(
+                                            AppLocalizations.of(context).cancel,
+                                            style: TextStyle(
+                                              color: Colors.white.withAlpha(
+                                                200,
+                                              ),
+                                              fontSize: 20,
                                             ),
                                           ),
                                         ),
                                       ),
-                                  ],
-                                ),
+                                    ),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  );
-                });
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
           },
-        )
+        ),
       ],
     );
     /*   const SizedBox(); */

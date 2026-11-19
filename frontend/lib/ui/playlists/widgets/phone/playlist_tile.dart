@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
-import 'package:liquid_glass/liquid_glass.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/inkwell.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../utils/platform.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../core/ui/phone/inkwell.dart';
+import '../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../core/ui/space.dart';
 
 class PlaylistTile extends StatelessWidget {
   final bool first;
@@ -34,21 +34,23 @@ class PlaylistTile extends StatelessWidget {
   Widget build(BuildContext context) {
     const double radius = 15;
 
-    BorderRadius borderRadius = BorderRadius.only(
+    final BorderRadius borderRadius = BorderRadius.only(
       topLeft: first ? const Radius.circular(radius) : Radius.zero,
       topRight: first ? const Radius.circular(radius) : Radius.zero,
       bottomLeft: last ? const Radius.circular(radius) : Radius.zero,
       bottomRight: last ? const Radius.circular(radius) : Radius.zero,
     );
 
-    Widget child = SwipeActionCell(
+    final Widget child = SwipeActionCell(
       key: UniqueKey(),
       trailingActions: [
         SwipeAction(
-          content: iconButton(AppIcons.trash, Col.error.withAlpha(200), () {
-            removePlaylist();
-          }),
-          onTap: (CompletionHandler handler) async {},
+          content: iconButton(
+            AppIcons.trash,
+            Col.error.withAlpha(200),
+            removePlaylist,
+          ),
+          onTap: (CompletionHandler handler) {},
           color: Col.transp,
           backgroundRadius: radius,
         ),
@@ -58,7 +60,7 @@ class PlaylistTile extends StatelessWidget {
         width: MediaQuery.of(context).size.width - 20,
         decoration: BoxDecoration(
           borderRadius: borderRadius,
-          color: Col.primaryCard.withAlpha(150),
+          color: context.colors.primaryCard.withAlpha(150),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +70,7 @@ class PlaylistTile extends StatelessWidget {
               Container(
                 height: 1,
                 width: MediaQuery.of(context).size.width,
-                color: Col.icon.withAlpha(50),
+                color: context.colors.icon.withAlpha(50),
               ),
             Expanded(child: Container()),
             SizedBox(
@@ -81,18 +83,22 @@ class PlaylistTile extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 10, top: 2, bottom: 2),
+                            left: 10,
+                            top: 2,
+                            bottom: 2,
+                          ),
                           child: Container(
                             width: 45,
                             height: 45,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Col.realBackground),
+                              borderRadius: BorderRadius.circular(5),
+                              color: context.colors.realBackground,
+                            ),
                             child: cover == null
                                 ? Center(
                                     child: Icon(
                                       Icons.queue_music_rounded,
-                                      color: Col.onIcon,
+                                      color: context.colors.onIcon,
                                       size: 25,
                                     ),
                                   )
@@ -103,58 +109,61 @@ class PlaylistTile extends StatelessWidget {
                                       fit: BoxFit.cover,
                                       height: 250,
                                       placeholder: const AssetImage(
-                                          'assets/images/placeholder.png'),
-                                      fadeInDuration:
-                                          const Duration(milliseconds: 200),
-                                      fadeOutDuration:
-                                          const Duration(milliseconds: 200),
-                                      image: MemoryImage(
-                                        cover!,
+                                        'assets/images/placeholder.png',
                                       ),
+                                      fadeInDuration: const Duration(
+                                        milliseconds: 200,
+                                      ),
+                                      fadeOutDuration: const Duration(
+                                        milliseconds: 200,
+                                      ),
+                                      image: MemoryImage(cover!),
                                     ),
                                   ),
                           ),
                         ),
                         razw(12.5),
                         Expanded(
-                            child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(title,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                title,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Col.text,
-                                )),
-                            if (subtitle != null)
-                              Text(
-                                subtitle!,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 10.5,
-                                  color: Col.text,
+                                  color: context.colors.text,
                                 ),
                               ),
-                          ],
-                        )),
+                              if (subtitle != null)
+                                Text(
+                                  subtitle!,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 10.5,
+                                    color: context.colors.text,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Container(
                             height: 30,
                             width: 1,
-                            color: Col.onIcon,
+                            color: context.colors.onIcon,
                           ),
                         ),
                         SizedBox(
-                            width: 28,
-                            height: 49,
-                            child: Icon(
-                              CupertinoIcons.chevron_right,
-                              color: Col.onIcon,
-                            )),
-                        const SizedBox(
-                          width: 30,
-                        )
+                          width: 28,
+                          height: 49,
+                          child: Icon(
+                            CupertinoIcons.chevron_right,
+                            color: context.colors.onIcon,
+                          ),
+                        ),
+                        const SizedBox(width: 30),
                       ],
                     ),
                   ],
@@ -171,25 +180,19 @@ class PlaylistTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: ClipRRect(
         child: kIsApple
-            ? LiquidGlass(
+            ? GlassSurface(
                 blur: 0,
                 borderRadius: borderRadius,
-                tint: Col.text,
+                tint: context.colors.text,
                 child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    child: child,
-                    onPressed: () {
-                      function();
-                    }),
+                  padding: EdgeInsets.zero,
+                  onPressed: function,
+                  child: child,
+                ),
               )
             : ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: inkWell(
-                  child,
-                  () {
-                    function();
-                  },
-                ),
+                child: inkWell(child, function),
               ),
       ),
     );

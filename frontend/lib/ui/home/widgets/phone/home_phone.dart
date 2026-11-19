@@ -1,13 +1,17 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/features/recommendations/presentation/phone/recommendations_phone.dart';
-import 'package:pongo/features/search/presentation/phone/search_bar/search_bar_android_phone.dart';
-import 'package:pongo/features/search/presentation/phone/search_bar/search_bar_ios_phone.dart';
-import 'package:pongo/features/search/presentation/phone/search_history_phone.dart';
-import 'package:pongo/features/search/presentation/phone/search_phone.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../utils/platform.dart';
+import '../../../app/view_models/app_settings_view_model.dart';
+import '../../../recommendations/widgets/phone/recommendations_phone.dart';
+import '../../../search/view_models/search_history_view_model.dart';
+import '../../../search/widgets/phone/search_bar/search_bar_android_phone.dart';
+import '../../../search/widgets/phone/search_bar/search_bar_ios_phone.dart';
+import '../../../search/widgets/phone/search_history_phone.dart';
+import '../../../search/widgets/phone/search_phone.dart';
+import '../../../shell/view_models/shell_view_model.dart';
 
 class HomePhone extends StatefulWidget {
   const HomePhone({super.key});
@@ -18,41 +22,52 @@ class HomePhone extends StatefulWidget {
 
 class _HomePhoneState extends State<HomePhone> {
   // Search query
-  String query = "";
+  String query = '';
 
   // Search filter
-  String filter = "";
+  String filter = '';
 
   // Search controller
   TextEditingController searchController = TextEditingController(text: '');
 
-  // Keyboard Focus Node
-  FocusNode focusNode = FocusNode();
+  // Keyboard Focus Node, shared with the shell so other screens can focus
+  // the search field.
+  late final FocusNode focusNode = context.shell.searchFocusNode;
 
   // Show Search History
   bool showSearchHistory = false;
 
-  // Search history list
-  List<String> searchHistory = [];
-
   // Clear history list
   bool clear = false;
+
+  late final SearchHistoryViewModel searchHistoryViewModel;
 
   @override
   void initState() {
     super.initState();
-    initSearchHistory();
-    searchScreenContext.value = context;
-    searchFocusNode.value = focusNode;
+    searchHistoryViewModel = SearchHistoryViewModel(history: context.read());
+  }
+
+  @override
+  void dispose() {
+    searchHistoryViewModel.dispose();
+    searchController.dispose();
+    super.dispose();
   }
 
   // On Field Submitted Callback Function
-  void onFieldSubmitted(String qry) async {
-    if (qry != "") {
-      await DatabaseHelper().insertSearchHistorySearch(qry.trim());
-      await initSearchHistory();
+  Future<void> onFieldSubmitted(String qry) async {
+    if (qry != '') {
+      await searchHistoryViewModel.add(qry.trim());
       setState(() {
         query = qry.trim();
+      });
+    } else {
+      // Cancelled
+      setState(() {
+        query = '';
+        filter = '';
+        showSearchHistory = false;
       });
     }
   }
@@ -61,51 +76,51 @@ class _HomePhoneState extends State<HomePhone> {
     focusNode.unfocus();
   }
 
-  initSearchHistory() async {
-    final data = await DatabaseHelper().querySearchHistorySearch();
-    setState(() {
-      searchHistory = data;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: showSearchBar,
+      valueListenable: context.shell.showSearchBar,
       builder: (context, value, child) {
         return ValueListenableBuilder(
-          valueListenable: searchBarIsSearching,
+          valueListenable: context.shell.searchBarIsSearching,
           builder: (context, value, child) {
             return Stack(
               children: [
                 // 1. - home screen recomendations
                 AnimatedOpacity(
-                  opacity: (searchBarIsSearching.value || focusNode.hasFocus)
+                  opacity:
+                      (context.shell.searchBarIsSearching.value ||
+                          focusNode.hasFocus)
                       ? 1
                       : 0,
                   duration: Duration(
-                      milliseconds: !animations
-                          ? 0
-                          : searchBarIsSearching.value || focusNode.hasFocus
-                              ? 350
-                              : 250),
-                  child: SearchPhone(
-                    query: query,
+                    milliseconds: !context.readSettings.useAnimations
+                        ? 0
+                        : context.shell.searchBarIsSearching.value ||
+                              focusNode.hasFocus
+                        ? 350
+                        : 250,
                   ),
+                  child: SearchPhone(query: query),
                 ),
                 // 2. - search screen
                 AnimatedPositioned(
                   duration: const Duration(
-                      milliseconds: /* !animations
+                    milliseconds: /* !context.readSettings.useAnimations
                           ? 0
-                          : searchBarIsSearching.value || focusNode.hasFocus
+                          : context.shell.searchBarIsSearching.value || focusNode.hasFocus
                               ? 400
                               : 35 */
-                          0),
-                  curve: searchBarIsSearching.value || focusNode.hasFocus
+                        0,
+                  ),
+                  curve:
+                      context.shell.searchBarIsSearching.value ||
+                          focusNode.hasFocus
                       ? Curves.easeInOut
                       : Curves.fastEaseInToSlowEaseOut,
-                  top: (searchBarIsSearching.value || focusNode.hasFocus)
+                  top:
+                      (context.shell.searchBarIsSearching.value ||
+                          focusNode.hasFocus)
                       ? MediaQuery.of(context).size.height
                       : 0,
                   child: const RecommendationsPhone(),
@@ -115,45 +130,47 @@ class _HomePhoneState extends State<HomePhone> {
                   top: showSearchHistory
                       ? 0
                       : -MediaQuery.of(context).size.height,
-                  child: SearchHistoryPhone(
-                    showSearchHistory: showSearchHistory,
-                    clear: clear,
-                    searchHistory: searchHistory
-                        .map(
-                          (item) {
+                  child: ListenableBuilder(
+                    listenable: searchHistoryViewModel,
+                    builder: (context, _) => SearchHistoryPhone(
+                      showSearchHistory: showSearchHistory,
+                      clear: clear,
+                      searchHistory: searchHistoryViewModel.searches
+                          .map((item) {
                             if (item.trim().contains(filter.trim())) {
                               return item;
                             }
                             return null;
-                          },
-                        )
-                        .where((item) => item != null)
-                        .cast<String>()
-                        .toList(),
-                    removeItem: () async {
-                      initSearchHistory();
-                    },
-                    search: (qry) async {
-                      setState(() {
-                        searchBarIsSearching.value = true;
-                        searchController.value = TextEditingValue(text: qry);
-                        showSearchHistory = false;
-                      });
-                      onFieldSubmitted(qry);
-                      unfocus(focusNode);
-                    },
-                    changeClear: () {
-                      setState(() {
-                        clear = !clear;
-                      });
-                    },
+                          })
+                          .where((item) => item != null)
+                          .cast<String>()
+                          .toList(),
+                      removeItem: searchHistoryViewModel.remove,
+                      clearAll: searchHistoryViewModel.clear,
+                      search: (qry) {
+                        setState(() {
+                          context.shell.searchBarIsSearching.value = true;
+                          searchController.value = TextEditingValue(text: qry);
+                          showSearchHistory = false;
+                        });
+                        unawaited(onFieldSubmitted(qry));
+                        unfocus(focusNode);
+                      },
+                      changeClear: () {
+                        setState(() {
+                          clear = !clear;
+                        });
+                      },
+                    ),
                   ),
                 ),
                 // 4. - Search bar
                 AnimatedPositioned(
-                  top: showSearchBar.value ? 0 : -100,
+                  top: context.shell.showSearchBar.value ? 0 : -100,
                   width: MediaQuery.of(context).size.width,
-                  duration: Duration(milliseconds: animations ? 500 : 0),
+                  duration: Duration(
+                    milliseconds: context.readSettings.useAnimations ? 500 : 0,
+                  ),
                   curve: Curves.easeInOut,
                   child: kIsIOS
                       ? SearchBarIOSPhone(

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
+import '../../../core/themes/colors.dart';
 
-playPauseMini(bool playing, Function() function) {
+Theme playPauseMini(bool playing, Function() function) {
   return Theme(
     data: ThemeData(
       splashColor: Col.transp,
@@ -18,10 +18,7 @@ playPauseMini(bool playing, Function() function) {
         transitionBuilder: (Widget child, Animation<double> animation) {
           return FadeTransition(
             opacity: animation,
-            child: ScaleTransition(
-              scale: animation,
-              child: child,
-            ),
+            child: ScaleTransition(scale: animation, child: child),
           );
         },
         child: playing

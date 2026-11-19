@@ -1,15 +1,12 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/library/presentation/phone/favourites/favourites_tile.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/trailing.dart';
+import '../../../../../domain/models/catalog/track.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../core/ui/phone/trailing.dart';
+import '../../../../player/view_models/player_view_model.dart';
+import 'favourites_tile.dart';
 
 class FavouritesBodyPhone extends StatefulWidget {
   final List<Track> favourites;
@@ -53,126 +50,106 @@ class _FavouritesBodyPhoneState extends State<FavouritesBodyPhone> {
 
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final player = context.player;
     return Padding(
       padding: const EdgeInsets.only(left: 0),
       child: StreamBuilder(
-          key: const ValueKey(false),
-          stream: audioServiceHandler.mediaItem.stream,
-          builder: (context, snapshot) {
-            final String id = snapshot.data != null ? snapshot.data!.id : "";
-            return ListView.builder(
-              controller: controller,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.favourites.length + 1,
-              itemBuilder: (context, index) {
-                if (index == widget.favourites.length) {
-                  return widget.numberOfSTIDS != index
-                      ? const CircularProgressIndicator.adaptive()
-                      : const SizedBox();
-                }
-                return FavouritesTile(
-                  track: widget.favourites[index],
-                  first: index == 0,
-                  forceWhite: false,
-                  last: widget.favourites.length - 1 == index,
-                  exists: !widget.missingTracks
-                      .contains(widget.favourites[index].id),
-                  trailing: Padding(
-                    padding: const EdgeInsets.only(right: 0),
-                    child: SizedBox(
-                      child: Row(
-                        children: [
-                          SizedBox(
-                              height: 40,
-                              width: 25,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: Trailing(
-                                  forceWhite: false,
-                                  show: !widget.loading
-                                      .contains(widget.favourites[index].id),
-                                  showThis: id ==
-                                          "library.favourites.${widget.favourites[index].id}" &&
-                                      audioServiceHandler
-                                              .audioPlayer.currentIndex ==
-                                          index,
-                                  trailing:
-                                      const CircularProgressIndicator.adaptive(
+        key: const ValueKey(false),
+        stream: player.currentItemStream,
+        builder: (context, snapshot) {
+          final String id = snapshot.data != null ? snapshot.data!.id : '';
+          return ListView.builder(
+            controller: controller,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: widget.favourites.length + 1,
+            itemBuilder: (context, index) {
+              if (index == widget.favourites.length) {
+                return widget.numberOfSTIDS != index
+                    ? const CircularProgressIndicator.adaptive()
+                    : const SizedBox();
+              }
+              return FavouritesTile(
+                track: widget.favourites[index],
+                first: index == 0,
+                forceWhite: false,
+                last: widget.favourites.length - 1 == index,
+                exists: !widget.missingTracks.contains(
+                  widget.favourites[index].id,
+                ),
+                trailing: Padding(
+                  padding: const EdgeInsets.only(right: 0),
+                  child: SizedBox(
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 25,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: Trailing(
+                              forceWhite: false,
+                              show: !widget.loading.contains(
+                                widget.favourites[index].id,
+                              ),
+                              showThis:
+                                  id ==
+                                      'library.favourites.${widget.favourites[index].id}' &&
+                                  player.currentIndex == index,
+                              trailing:
+                                  const CircularProgressIndicator.adaptive(
                                     key: ValueKey(true),
                                   ),
-                                ),
-                              ) /* AnimatedSwitcher(
+                            ),
+                          ) /* AnimatedSwitcher(
                               duration: const Duration(milliseconds: 200),
                               child: widget.loading.contains(widget.favourites[index].id)
                                   ? const CircularProgressIndicator.adaptive(
                                       key: ValueKey(true),
                                     )
-                                  : const SizedBox()), */
-                              ),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            width: widget.edit ? 40 : 0,
-                            height: 40,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 0),
-                              child: iconButton(
-                                widget.selectedTracks
-                                        .contains(widget.favourites[index].id)
-                                    ? AppIcons.checkmark
-                                    : AppIcons.uncheckmark,
-                                Col.icon,
-                                () {
-                                  widget.select(widget.favourites[index].id);
-                                },
-                                edgeInsets: EdgeInsets.zero,
-                              ),
+                                  : const SizedBox()), */,
+                        ),
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          width: widget.edit ? 40 : 0,
+                          height: 40,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: iconButton(
+                              widget.selectedTracks.contains(
+                                    widget.favourites[index].id,
+                                  )
+                                  ? AppIcons.checkmark
+                                  : AppIcons.uncheckmark,
+                              context.colors.icon,
+                              () {
+                                widget.select(widget.favourites[index].id);
+                              },
+                              edgeInsets: EdgeInsets.zero,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  function: widget.edit
-                      ? () {
-                          widget.select(widget.favourites[index].id);
-                        }
-                      : () async {
-                          final playNew = audioServiceHandler.mediaItem.value !=
-                                  null
-                              ? "${audioServiceHandler.mediaItem.value!.id.split(".")[0]}.${audioServiceHandler.mediaItem.value!.id.split(".")[1]}" !=
-                                  "library.favourites"
-                              : true;
-
-                          final skipTo =
-                              audioServiceHandler.mediaItem.value != null
-                                  ? audioServiceHandler.mediaItem.value!.id
-                                          .split(".")[2] !=
-                                      widget.favourites[index].id
-                                  : false;
-
-                          if (playNew) {
-                            changeTrackOnTap.value = true;
-                            widget.play(index);
-                          } else if (skipTo &&
-                              (audioServiceHandler.playlist.length - 1) >=
-                                  index &&
-                              changeTrackOnTap.value) {
-                            await audioServiceHandler.skipToQueueItem(index);
-                          } else {
-                            if (audioServiceHandler.audioPlayer.playing) {
-                              await audioServiceHandler.pause();
-                            } else {
-                              await audioServiceHandler.play();
-                            }
-                          }
-                        },
-                );
-              },
-            );
-          }),
+                ),
+                function: widget.edit
+                    ? () {
+                        widget.select(widget.favourites[index].id);
+                      }
+                    : () async {
+                        await context.player.playCollectionTrack(
+                          collectionId: 'library.favourites',
+                          stid: widget.favourites[index].id,
+                          index: index,
+                          playCollection: () async => widget.play(index),
+                        );
+                      },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }

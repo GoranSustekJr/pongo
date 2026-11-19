@@ -1,21 +1,18 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/features/recommendations/data/recommendations_data_manager.dart';
-import 'package:pongo/features/recommendations/presentation/phone/sections/recommendations_categories.dart';
-import 'package:pongo/features/recommendations/presentation/phone/sections/recommendations_history.dart';
-import 'package:pongo/l10n/app_localizations.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../player/view_models/player_view_model.dart';
+import '../../view_models/recommendations_view_model.dart';
+import '../phone/sections/recommendations_categories.dart';
+import '../phone/sections/recommendations_history.dart';
 
 class RecommendationsBodyMacos extends StatelessWidget {
-  final RecommendationsDataManager dataManager;
+  final RecommendationsViewModel dataManager;
   const RecommendationsBodyMacos({super.key, required this.dataManager});
 
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context, listen: true) as AudioServiceHandler;
+    final player = context.player;
     return SizedBox(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
@@ -24,16 +21,16 @@ class RecommendationsBodyMacos extends StatelessWidget {
               displacement: 25,
               edgeOffset: Scaffold.of(context).appBarMaxHeight == null
                   ? MediaQuery.of(context).padding.top +
-                      AppBar().preferredSize.height
+                        AppBar().preferredSize.height
                   : Scaffold.of(context).appBarMaxHeight!,
-              onRefresh: dataManager.init,
+              onRefresh: dataManager.load.execute,
               child: SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.only(
                     top: Scaffold.of(context).appBarMaxHeight == null
                         ? MediaQuery.of(context).padding.top +
-                            AppBar().preferredSize.height +
-                            20
+                              AppBar().preferredSize.height +
+                              20
                         : Scaffold.of(context).appBarMaxHeight! + 20,
                     bottom: MediaQuery.of(context).padding.bottom + 10,
                   ),
@@ -43,13 +40,14 @@ class RecommendationsBodyMacos extends StatelessWidget {
                     children: [
                       if (dataManager.history.isNotEmpty)
                         RecommendationsHistory(
-                            dataManager: dataManager,
-                            audioServiceHandler: audioServiceHandler),
+                          dataManager: dataManager,
+                          player: player,
+                        ),
                       if (dataManager.categories.isNotEmpty ||
                           dataManager.newReleases.isNotEmpty)
                         RecommendationsCategories(
                           dataManager: dataManager,
-                          audioServiceHandler: audioServiceHandler,
+                          player: player,
                         ),
                     ],
                   ),
@@ -62,7 +60,9 @@ class RecommendationsBodyMacos extends StatelessWidget {
                 child: Text(
                   AppLocalizations.of(context).recommendationsdisabled,
                   style: const TextStyle(
-                      fontSize: 17.5, fontWeight: FontWeight.w600),
+                    fontSize: 17.5,
+                    fontWeight: FontWeight.w600,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),

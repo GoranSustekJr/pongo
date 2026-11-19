@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/ui/space.dart';
 
-newPlaylistTitle(context, int opid, Function(String) function) {
+/// Asks for a new playlist title and passes it to [rename].
+void newPlaylistTitle(
+  BuildContext context,
+  Future<void> Function(String title) rename,
+) {
   final TextEditingController titleController = TextEditingController();
   kIsApple
       ? showCupertinoDialog(
@@ -42,10 +45,8 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                 CupertinoButton(
                   onPressed: () async {
                     if (titleController.text.isNotEmpty) {
-                      await DatabaseHelper()
-                          .updateOnlinePlaylistName(opid, titleController.text);
-                      function(titleController.text);
-                      Navigator.of(context).pop();
+                      await rename(titleController.text);
+                      if (context.mounted) Navigator.of(context).pop();
                     }
                   },
                   child: Text(
@@ -110,29 +111,22 @@ newPlaylistTitle(context, int opid, Function(String) function) {
                         style: const TextStyle(color: Colors.blue),
                       ),
                     ),
-                    Expanded(
-                      child: Container(),
-                    ),
+                    Expanded(child: Container()),
                     TextButton(
                       onPressed: () async {
                         if (titleController.text.isNotEmpty) {
-                          await DatabaseHelper().updateOnlinePlaylistName(
-                              opid, titleController.text);
-                          function(titleController.text);
-
-                          Navigator.of(context).pop();
+                          await rename(titleController.text);
+                          if (context.mounted) Navigator.of(context).pop();
                         }
                       },
                       child: Text(
                         AppLocalizations.of(context).change,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.blue,
-                        ),
+                        style: const TextStyle(color: Colors.blue),
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             );
           },

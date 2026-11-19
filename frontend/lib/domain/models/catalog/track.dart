@@ -1,153 +1,158 @@
 import 'dart:convert';
 
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'track.freezed.dart';
+
+/// Where a track's audio comes from.
 enum TrackType { online, offline }
 
-class Track {
-  final String id;
-  final String name;
-  final List<ArtistTrack> artists;
-  final AlbumTrack? album;
-  final LocalImage? image;
-  final TrackType type;
-  String? audio;
-  Track({
-    required this.id,
-    required this.name,
-    required this.artists,
-    required this.album,
-    this.image,
-    this.type = TrackType.online,
-    this.audio,
-  });
+/// A song from the catalog or from the downloaded library.
+@freezed
+abstract class Track with _$Track {
+  /// Creates a track.
+  const factory Track({
+    required String id,
+    required String name,
+    required List<ArtistTrack> artists,
+    required AlbumTrack? album,
+    LocalImage? image,
+    @Default(TrackType.online) TrackType type,
 
-  /*  // Create a map of Artist
-  static List<Map<String, dynamic>> toJsonArtist(Track track) {
-    return track.artists.map((artist) => artist.toJson()).toList();
-  } */
+    /// Path of the downloaded audio file, for offline tracks.
+    String? audio,
+  }) = _Track;
 
-  // Creata a Track from a Map
-  factory Track.fromMap(Map<String, dynamic> map) {
-    return Track(
-      id: map["id"],
-      name: map["name"],
-      artists: (map["artists"] as List<dynamic>)
-          .map((artist) => ArtistTrack.fromMap(artist))
-          .toList(),
-      album: map["album"] != null
-          ? map["album"]["id"] != null
-              ? AlbumTrack.fromMap(map["album"])
-              : null
-          : null,
-    );
-  }
+  const Track._();
 
-  // Convert a List of Maps to a List of Track objects
-  static List<Track> fromMapList(List<dynamic> list) {
-    return list
-        .map((map) => Track.fromMap(map as Map<String, dynamic>))
-        .toList();
-  }
+  /// Creates a track from the API's JSON representation.
+  factory Track.fromMap(Map<String, dynamic> map) => Track(
+    id: map['id'] as String,
+    name: map['name'] as String,
+    artists: [
+      for (final artist in map['artists'] as List)
+        ArtistTrack.fromMap(artist as Map<String, dynamic>),
+    ],
+    album: switch (map['album']) {
+      final Map<String, dynamic> album when album['id'] != null =>
+        AlbumTrack.fromMap(album),
+      _ => null,
+    },
+  );
 
-  // Convert local track to a Track object
-  factory Track.fromMapLocal(Map<String, dynamic> map) {
-    return Track(
-      id: map["stid"],
-      name: map["title"],
-      artists: (jsonDecode(map["artists"]) as List<dynamic>)
-          .map((artist) => ArtistTrack.fromMap(artist))
-          .toList(),
-      album: null,
-      type: TrackType.offline,
-      image: map["image"] != null ? LocalImage(path: map["image"]) : null,
-      audio: map["audio"],
-    );
-  }
+  /// Creates a track from a row of the downloaded tracks table.
+  factory Track.fromLocalRow(Map<String, dynamic> row) => Track(
+    id: row['stid'] as String,
+    name: row['title'] as String,
+    artists: [
+      for (final artist in jsonDecode(row['artists'] as String) as List)
+        ArtistTrack.fromMap(artist as Map<String, dynamic>),
+    ],
+    album: null,
+    type: TrackType.offline,
+    image: row['image'] != null
+        ? LocalImage(path: row['image'] as String)
+        : null,
+    audio: row['audio'] as String?,
+  );
 
-  // Convert a list of local tracks to List of Track objects
-  static List<Track> fromMapListLocal(List<dynamic> list) {
-    return list
-        .map((map) => Track.fromMapLocal(map as Map<String, dynamic>))
-        .toList();
-  }
+  /// Creates tracks from a list of API maps.
+  static List<Track> fromMapList(List<dynamic> list) => [
+    for (final map in list) Track.fromMap(map as Map<String, dynamic>),
+  ];
+
+  /// Creates tracks from rows of the downloaded tracks table.
+  static List<Track> fromLocalRows(List<dynamic> rows) => [
+    for (final row in rows) Track.fromLocalRow(row as Map<String, dynamic>),
+  ];
+
+  /// The artist names joined for display.
+  String get artistNames => artists.map((artist) => artist.name).join(', ');
 }
 
-class ArtistTrack {
-  final String id;
-  final String? name;
+/// An artist credited on a track.
+@freezed
+abstract class ArtistTrack with _$ArtistTrack {
+  /// Creates a credited artist.
+  const factory ArtistTrack({required String id, required String? name}) =
+      _ArtistTrack;
 
-  ArtistTrack({
-    required this.id,
-    required this.name,
-  });
+  const ArtistTrack._();
 
-  // Create ArtistTrack from a Map
-  factory ArtistTrack.fromMap(Map<String, dynamic> map) {
-    return ArtistTrack(
-      id: map["id"],
-      name: map["name"],
-    );
-  }
+  /// Creates an artist from its JSON representation.
+  factory ArtistTrack.fromMap(Map<String, dynamic> map) =>
+      ArtistTrack(id: map['id'] as String, name: map['name'] as String?);
 
-  // To json
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-    };
-  }
+  /// The JSON representation stored with tracks.
+  Map<String, dynamic> toJson() => {'id': id, 'name': name};
 }
 
-class AlbumTrack {
-  final String id;
-  final String name;
-  final String? releaseDate;
-  final List<AlbumImagesTrack> images;
+/// The album a track belongs to.
+@freezed
+abstract class AlbumTrack with _$AlbumTrack {
+  /// Creates an album reference.
+  const factory AlbumTrack({
+    required String id,
+    required String name,
+    required List<AlbumImagesTrack> images,
+    required String? releaseDate,
+  }) = _AlbumTrack;
 
-  AlbumTrack({
-    required this.id,
-    required this.name,
-    required this.images,
-    required this.releaseDate,
-  });
+  const AlbumTrack._();
 
-  // Create AlbumTrack from a Map
-  factory AlbumTrack.fromMap(Map<String, dynamic> map) {
-    return AlbumTrack(
-      id: map["id"],
-      name: map["name"],
-      releaseDate: map["release_date"],
-      images: (map["images"] as List<dynamic>)
-          .map((image) => AlbumImagesTrack.fromMap(image))
-          .toList(),
-    );
-  }
+  /// Creates an album from its JSON representation.
+  factory AlbumTrack.fromMap(Map<String, dynamic> map) => AlbumTrack(
+    id: map['id'] as String,
+    name: map['name'] as String,
+    releaseDate: map['release_date'] as String?,
+    images: AlbumImagesTrack.fromMapList(map['images'] as List),
+  );
+
+  /// The JSON representation stored with favourites and playlists.
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'images': [for (final image in images) image.toJson()],
+  };
 }
 
-class AlbumImagesTrack {
-  final String url;
-  final int? height;
-  final int? width;
+/// One size of a cover image.
+@freezed
+abstract class AlbumImagesTrack with _$AlbumImagesTrack {
+  /// Creates an image reference.
+  const factory AlbumImagesTrack({
+    required String url,
+    required int? height,
+    required int? width,
+  }) = _AlbumImagesTrack;
 
-  AlbumImagesTrack({
-    required this.url,
-    required this.height,
-    required this.width,
-  });
+  const AlbumImagesTrack._();
 
-  // Create AlbumImagesTrack from a Map
-  factory AlbumImagesTrack.fromMap(Map<String, dynamic> map) {
-    return AlbumImagesTrack(
-      url: map["url"],
-      height: map["height"],
-      width: map["width"],
-    );
-  }
+  /// Creates an image from its JSON representation.
+  factory AlbumImagesTrack.fromMap(Map<String, dynamic> map) =>
+      AlbumImagesTrack(
+        url: map['url'] as String,
+        height: map['height'] as int?,
+        width: map['width'] as int?,
+      );
+
+  /// Creates images from a JSON list.
+  static List<AlbumImagesTrack> fromMapList(List<dynamic> list) => [
+    for (final map in list)
+      AlbumImagesTrack.fromMap(map as Map<String, dynamic>),
+  ];
+
+  /// The JSON representation.
+  Map<String, dynamic> toJson() => {
+    'url': url,
+    'height': height,
+    'width': width,
+  };
 }
 
-class LocalImage {
-  final String path;
-
-  LocalImage({
-    required this.path,
-  });
+/// A cover image stored on the device.
+@freezed
+abstract class LocalImage with _$LocalImage {
+  /// Creates a reference to the image at [path].
+  const factory LocalImage({required String path}) = _LocalImage;
 }

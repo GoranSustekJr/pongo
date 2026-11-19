@@ -1,30 +1,30 @@
-import 'dart:convert';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 import 'package:kr_pull_down_button/pull_down_button.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/features/library/data/favourites_actions.dart';
-import 'package:pongo/features/library/models/favourite.dart';
-import 'package:pongo/features/player/presentation/phone/alerts/halt_alert.dart';
-import 'package:pongo/features/playlists/data/open_playlist.dart';
-import 'package:pongo/features/playlists/models/playlist_handler.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
+import '../../../../../../data/repositories/player/media_items.dart';
+import '../../../../../../domain/models/catalog/track.dart';
+import '../../../../../../domain/models/playlists/playlist_handler.dart';
+import '../../../../../../l10n/app_localizations.dart';
+import '../../../../../core/app_icons.dart';
+import '../../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../../core/view_models/track_actions_view_model.dart';
+import '../../../../../playlists/view_models/open_playlist.dart';
+import '../../../../../shell/view_models/shell_view_model.dart';
+import '../../../../view_models/player_view_model.dart';
+import '../../alerts/halt_alert.dart';
 
-trackInfoButton(context, Track track, bool favourite, Function() download,
-    Function() refreshFavourite) {
+PullDownButton trackInfoButton(
+  BuildContext context,
+  Track track,
+  bool favourite,
+  Function() download,
+  Function() refreshFavourite,
+) {
   return /* kIsApple
-      ?  */
-      PullDownButton(
+      ?  */ PullDownButton(
     itemBuilder: (context) => [
       PullDownMenuItem(
         title: AppLocalizations.of(context).download,
@@ -38,10 +38,8 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
         title: AppLocalizations.of(context).addtoplaylist,
         icon: AppIcons.musicAlbums,
         onTap: () {
-          final audioServiceHandler =
-              Provider.of<AudioHandler>(context, listen: false)
-                  as AudioServiceHandler;
-          final MediaItem? mediaItem = audioServiceHandler.mediaItem.value;
+          final player = context.player;
+          final MediaItem? mediaItem = player.currentItem.value;
           if (mediaItem != null) {
             OpenPlaylist().show(
               context,
@@ -50,34 +48,18 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
                 function: PlaylistHandlerFunction.addToPlaylist,
                 track: [
                   PlaylistHandlerOnlineTrack(
-                    id: mediaItem.id.split('.')[2],
+                    id: mediaItem.stid,
                     name: mediaItem.title,
-                    artist: mediaItem.artist != null
-                        ? (jsonDecode(mediaItem.extras!["artists"]) as List)
-                            .map((e) => e as Map<String, dynamic>)
-                            .toList()
-                        : [],
-                    cover: mediaItem.artUri.toString(),
-                    albumTrack: mediaItem.album != null
-                        ? AlbumTrack(
-                            id: mediaItem.extras!["album"].split("..Ææ..")[0],
-                            name: mediaItem.album!,
-                            releaseDate: mediaItem.extras!["released"],
-                            images: mediaItem.artUri != null
-                                ? [
-                                    AlbumImagesTrack(
-                                        url: mediaItem.artUri!.toString(),
-                                        height: null,
-                                        width: null)
-                                  ]
-                                : [],
-                          )
-                        : null,
+                    artist: mediaItem.artistRefs,
+                    cover: (mediaItem.artUri?.toString() ?? ''),
+                    albumTrack: mediaItem.toTrack().album,
                     playlistHandlerCoverType:
-                        !mediaItem.artUri.toString().contains('file:///')
-                            ? PlaylistHandlerCoverType.url
-                            : PlaylistHandlerCoverType.bytes,
-                  )
+                        !(mediaItem.artUri?.toString() ?? '').contains(
+                          'file:///',
+                        )
+                        ? PlaylistHandlerCoverType.url
+                        : PlaylistHandlerCoverType.bytes,
+                  ),
                 ],
               ),
             );
@@ -91,41 +73,28 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
             : AppLocalizations.of(context).like,
         icon: favourite ? AppIcons.heartFill : AppIcons.heart,
         onTap: () async {
-          await Favourites().add(
-              context,
-              Favourite(
-                id: -1,
-                stid: track.id.split('.')[2],
-                title: track.name,
-                artistTrack: track.artists,
-                albumTrack: track.album,
-                image: track.album != null
-                    ? calculateBestImageForTrack(track.album!.images)
-                    : null,
-              ));
+          final item = context.player.currentItem.value;
+          if (item != null) {
+            await context.trackActions.toggleFavourite(item.toTrack());
+          }
           refreshFavourite();
         },
       ),
       const PullDownMenuDivider.large(),
       PullDownMenuItem(
         onTap: () async {
-          CustomButton ok = await haltAlert(context);
-          if (ok == CustomButton.positiveButton) {
-            currentTrackHeight.value = 0;
-            final audioServiceHandler =
-                Provider.of<AudioHandler>(context, listen: false)
-                    as AudioServiceHandler;
+          final CustomButton ok = await haltAlert(context);
+          if (ok == CustomButton.positiveButton && context.mounted) {
+            context.shell.currentTrackHeight.value = 0;
+            final player = context.player;
 
-            await audioServiceHandler.halt();
+            await player.halt();
           }
         },
         title: AppLocalizations.of(context).halt,
         icon: AppIcons.halt,
         itemTheme: const PullDownMenuItemTheme(
-          textStyle: TextStyle(
-            overflow: TextOverflow.ellipsis,
-            height: 1,
-          ),
+          textStyle: TextStyle(overflow: TextOverflow.ellipsis, height: 1),
         ),
       ),
     ],
@@ -149,7 +118,7 @@ trackInfoButton(context, Track track, bool favourite, Function() download,
                 context: context,
                 config: MenuConfig(
                   itemWidth: 150,
-                  backgroundColor: Col.primaryCard,
+                  backgroundColor: context.colors.primaryCard,
                   lineColor: Colors.greenAccent,
                   highlightColor: Colors.lightGreenAccent,
                   type: MenuType.list,

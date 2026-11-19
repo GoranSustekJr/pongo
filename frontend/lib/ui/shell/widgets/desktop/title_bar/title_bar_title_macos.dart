@@ -1,22 +1,19 @@
 // ignore_for_file: unrelated_type_equality_checks
 
-import 'dart:convert';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/features/artist/data/artist_api.dart';
-import 'package:pongo/features/artist/presentation/phone/artist_phone.dart';
-import 'package:pongo/shared/models/catalog/artist.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/image/image_compatible.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../data/repositories/player/media_items.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../../utils/result.dart';
+import '../../../../artist/widgets/phone/artist_phone.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/image/image_compatible.dart';
+import '../../../../core/ui/space.dart';
+import '../../../view_models/shell_view_model.dart';
 
 class TitleBarTitleMacos extends StatelessWidget {
   final MediaItem currentMediaItem;
@@ -24,8 +21,10 @@ class TitleBarTitleMacos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final artists = currentMediaItem.artistRefs;
     return SizedBox(
-      width: MediaQuery.of(context).size.width -
+      width:
+          MediaQuery.of(context).size.width -
           40 -
           15 -
           100 -
@@ -46,23 +45,25 @@ class TitleBarTitleMacos extends StatelessWidget {
               child: Container(
                 width: 50,
                 height: 50,
-                color: Col.primaryCard,
-                child: currentMediaItem.artUri != null &&
-                        currentMediaItem.artUri != "" &&
-                        currentMediaItem.artUri != "null"
+                color: context.colors.primaryCard,
+                child:
+                    currentMediaItem.artUri != null &&
+                        currentMediaItem.artUri != '' &&
+                        currentMediaItem.artUri != 'null'
                     ? SizedBox(
                         height: 50,
                         width: 50,
                         child: ImageCompatible(
-                          image: currentMediaItem.artUri.toString(),
+                          image: (currentMediaItem.artUri?.toString() ?? ''),
                         ),
                       )
                     : Container(
                         height: 50,
                         width: 50,
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Col.primaryCard.withAlpha(150)),
+                          borderRadius: BorderRadius.circular(15),
+                          color: context.colors.primaryCard.withAlpha(150),
+                        ),
                         child: Center(
                           child: Icon(
                             AppIcons.blankTrack,
@@ -95,68 +96,53 @@ class TitleBarTitleMacos extends StatelessWidget {
                 SizedBox(
                   height: 20,
                   child: SingleChildScrollView(
-                    scrollDirection: Axis
-                        .horizontal, // Ensures horizontal scrolling instead of wrapping
+                    // Ensures horizontal scrolling instead of wrapping
+                    scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: List.generate(
-                        jsonDecode(currentMediaItem.extras?["artists"]).length,
-                        (index) {
-                          var artist = jsonDecode(
-                              currentMediaItem.extras?["artists"])[index];
-                          return CupertinoButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () async {
-                              Map artistData = await ArtistApi()
-                                  .getImage(context, artist["id"]);
-                              showMacosSheet(
+                      children: List.generate(artists.length, (index) {
+                        final artist = artists[index];
+                        return CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () async {
+                            final result = await context.shell.artist(
+                              id: artist.id,
+                              name: artist.name ?? '',
+                            );
+                            if (result case Ok(:final value)
+                                when context.mounted) {
+                              await showMacosSheet(
                                 context: context,
                                 builder: (_) => ArtistPhone(
-                                  artist: Artist(
-                                    id: artist["id"],
-                                    name: artist["name"],
-                                    image: calculateBestImageForTrack(
-                                      (artistData["images"] as List<dynamic>)
-                                          .map((image) => AlbumImagesTrack(
-                                                url: image["url"],
-                                                height: image["height"],
-                                                width: image["width"],
-                                              ))
-                                          .toList(),
-                                    ),
-                                  ),
+                                  artist: value,
                                   context: context,
                                 ),
                               );
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
+                            }
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                artist.name ?? '',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.white.withAlpha(200),
+                                ),
+                              ),
+                              if (index != artists.length - 1)
                                 Text(
-                                  artist["name"],
+                                  ', ',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w300,
                                     color: Colors.white.withAlpha(200),
                                   ),
                                 ),
-                                if (index !=
-                                    jsonDecode(currentMediaItem
-                                                .extras?["artists"])
-                                            .length -
-                                        1)
-                                  Text(
-                                    ", ",
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w300,
-                                      color: Colors.white.withAlpha(200),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                            ],
+                          ),
+                        );
+                      }),
                     ),
                   ),
                 ),

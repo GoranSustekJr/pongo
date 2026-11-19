@@ -1,23 +1,18 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/app/navigation/navigation.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/album/presentation/phone/album_phone.dart';
-import 'package:pongo/features/artist/presentation/phone/artist_phone.dart';
-import 'package:pongo/features/player/data/mix_api.dart';
-import 'package:pongo/features/player/data/play.dart';
-import 'package:pongo/features/search/presentation/phone/search_result_text.dart';
-import 'package:pongo/features/search/presentation/phone/search_result_tile.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/models/catalog/album.dart';
-import 'package:pongo/shared/models/catalog/artist.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../domain/models/catalog/album.dart';
+import '../../../../domain/models/catalog/artist.dart';
+import '../../../../domain/models/catalog/track.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../routing/navigation.dart';
+import '../../../../utils/platform.dart';
+import '../../../album/widgets/phone/album_phone.dart';
+import '../../../core/ui/space.dart';
+import '../../../player/view_models/player_view_model.dart';
+import '../../../search/widgets/phone/search_result_text.dart';
+import '../../../search/widgets/phone/search_result_tile.dart';
+import 'artist_phone.dart';
 
 class ArtistBodyPhone extends StatefulWidget {
   final BuildContext context;
@@ -27,8 +22,6 @@ class ArtistBodyPhone extends StatefulWidget {
   final List<Album> otherAlbums;
   final List<Artist> artists;
   final List<String> loading;
-  final Function(String) loadingAdd;
-  final Function(String) loadingRemove;
   const ArtistBodyPhone({
     super.key,
     required this.artist,
@@ -36,8 +29,6 @@ class ArtistBodyPhone extends StatefulWidget {
     required this.albums,
     required this.artists,
     required this.loading,
-    required this.loadingAdd,
-    required this.loadingRemove,
     required this.context,
     required this.otherAlbums,
   });
@@ -52,20 +43,19 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
     fontSize: kIsDesktop
         ? 24
         : kIsApple
-            ? 17
-            : 19,
+        ? 17
+        : 19,
     fontWeight: kIsDesktop
         ? FontWeight.w800
         : kIsApple
-            ? FontWeight.w600
-            : FontWeight.w700,
+        ? FontWeight.w600
+        : FontWeight.w700,
     color: Colors.white,
   );
 
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final player = context.player;
     return SingleChildScrollView(
       child: Padding(
         padding: EdgeInsets.only(
@@ -76,18 +66,21 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
           children: [
             if (widget.albums.isNotEmpty)
               searchResultText(
-                  AppLocalizations.of(context).albums, suggestionHeader),
+                AppLocalizations.of(context).albums,
+                suggestionHeader,
+              ),
             if (widget.albums.isNotEmpty) razh(10),
             if (widget.albums.isNotEmpty)
               ListView.builder(
                 padding: EdgeInsets.zero,
-                itemCount:
-                    widget.albums.length > 15 ? 15 : widget.albums.length,
+                itemCount: widget.albums.length > 15
+                    ? 15
+                    : widget.albums.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return SearchResultTile(
-                    key: ValueKey("album.${widget.albums[index].id}"),
+                    key: ValueKey('album.${widget.albums[index].id}'),
                     pushWhite: true,
                     data: widget.albums[index],
                     type: TileType.album,
@@ -101,11 +94,12 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                           )); */
                       if (kIsMobile) {
                         Navigations().nextScreen(
-                            context,
-                            AlbumPhone(
-                              context: context,
-                              album: widget.albums[index],
-                            ));
+                          context,
+                          AlbumPhone(
+                            context: context,
+                            album: widget.albums[index],
+                          ),
+                        );
                       } else {
                         showMacosSheet(
                           context: context,
@@ -123,8 +117,9 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
             if (widget.albums.isNotEmpty) razh(50),
             if (widget.otherAlbums.isNotEmpty)
               searchResultText(
-                  AppLocalizations.of(context).singlesandcompilations,
-                  suggestionHeader),
+                AppLocalizations.of(context).singlesandcompilations,
+                suggestionHeader,
+              ),
             if (widget.otherAlbums.isNotEmpty) razh(10),
             if (widget.otherAlbums.isNotEmpty)
               ListView.builder(
@@ -136,7 +131,7 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return SearchResultTile(
-                    key: ValueKey("album.${widget.otherAlbums[index].id}"),
+                    key: ValueKey('album.${widget.otherAlbums[index].id}'),
                     pushWhite: true,
                     data: widget.otherAlbums[index],
                     type: TileType.album,
@@ -144,11 +139,12 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                       Navigator.pop(context);
                       if (kIsMobile) {
                         Navigations().nextScreen(
-                            context,
-                            AlbumPhone(
-                              context: context,
-                              album: widget.otherAlbums[index],
-                            ));
+                          context,
+                          AlbumPhone(
+                            context: context,
+                            album: widget.otherAlbums[index],
+                          ),
+                        );
                       } else {
                         showMacosSheet(
                           context: context,
@@ -167,18 +163,21 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
             if (widget.tracks.isNotEmpty) razh(15),
             if (widget.tracks.isNotEmpty)
               searchResultText(
-                  AppLocalizations.of(context).topten, suggestionHeader),
+                AppLocalizations.of(context).topten,
+                suggestionHeader,
+              ),
             if (widget.tracks.isNotEmpty) razh(10),
             if (widget.tracks.isNotEmpty)
               ListView.builder(
                 padding: EdgeInsets.zero,
-                itemCount:
-                    widget.tracks.length > 50 ? 50 : widget.tracks.length,
+                itemCount: widget.tracks.length > 50
+                    ? 50
+                    : widget.tracks.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return SearchResultTile(
-                    key: ValueKey("album.${widget.tracks[index].id}"),
+                    key: ValueKey('album.${widget.tracks[index].id}'),
                     pushWhite: true,
                     data: widget.tracks[index],
                     type: TileType.track,
@@ -193,16 +192,15 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                               )
                             : StreamBuilder(
                                 key: const ValueKey(false),
-                                stream: audioServiceHandler.mediaItem.stream,
+                                stream: player.currentItemStream,
                                 builder: (context, snapshot) {
                                   final String id = snapshot.data != null
-                                      ? snapshot.data!.id.split(".")[2]
-                                      : "";
+                                      ? snapshot.data!.id.split('.')[2]
+                                      : '';
 
                                   return id == widget.tracks[index].id
                                       ? StreamBuilder(
-                                          stream: audioServiceHandler
-                                              .audioPlayer.playingStream,
+                                          stream: player.playingStream,
                                           builder: (context, playingStream) {
                                             return const SizedBox(
                                               width: 20,
@@ -214,53 +212,50 @@ class _ArtistBodyPhoneState extends State<ArtistBodyPhone> {
                                                     playingStream.data ?? false,
                                               ), */
                                             );
-                                          })
+                                          },
+                                        )
                                       : const SizedBox();
                                 },
                               ),
                       ),
                     ),
-                    onTap: () async {
-                      PlaySingle().onlineTrack(
-                          context,
-                          audioServiceHandler,
-                          "search.single.",
-                          widget.tracks[index],
-                          widget.loadingAdd,
-                          widget.loadingRemove);
-                      if (useMix.value) {
-                        MixApi().getMix(context, widget.tracks[index]);
-                      }
-                    },
+                    onTap: () => player.playSingle(
+                      widget.tracks[index],
+                      collectionId: 'search.single',
+                    ),
                   );
                 },
               ),
             if (widget.artists.isNotEmpty) razh(50),
             if (widget.artists.isNotEmpty)
-              searchResultText(AppLocalizations.of(context).relatedartists,
-                  suggestionHeader),
+              searchResultText(
+                AppLocalizations.of(context).relatedartists,
+                suggestionHeader,
+              ),
             if (widget.artists.isNotEmpty) razh(10),
             if (widget.artists.isNotEmpty)
               ListView.builder(
                 padding: EdgeInsets.zero,
-                itemCount:
-                    widget.artists.length > 10 ? 10 : widget.artists.length,
+                itemCount: widget.artists.length > 10
+                    ? 10
+                    : widget.artists.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return SearchResultTile(
-                    key: ValueKey("album.${widget.artists[index].id}"),
+                    key: ValueKey('album.${widget.artists[index].id}'),
                     pushWhite: true,
                     data: widget.artists[index],
                     type: TileType.artist,
                     onTap: () {
                       Navigator.pop(context);
                       Navigations().nextScreen(
-                          widget.context,
-                          ArtistPhone(
-                            context: widget.context,
-                            artist: widget.artists[index],
-                          ));
+                        widget.context,
+                        ArtistPhone(
+                          context: widget.context,
+                          artist: widget.artists[index],
+                        ),
+                      );
                     },
                   );
                 },

@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/features/settings/presentation/phone/widgets/settings_tile_frame.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/themes/colors.dart';
+import 'settings_tile_frame.dart';
 
-settingsTileSwitcher(
-  context,
+Widget settingsTileSwitcher(
+  BuildContext context,
   bool first,
   bool last,
   IconData icon,
@@ -32,19 +32,21 @@ settingsTileSwitcher(
         child: kIsApple
             ? CupertinoSwitch(
                 value: boolean,
-                activeColor: Col.onIcon,
+                activeTrackColor: Col.primary,
                 onChanged: (value) {
                   function(value);
                 },
               )
             : Switch(
                 value: boolean,
-                activeColor: Col.onIcon,
-                inactiveTrackColor: Col.icon.withAlpha(75),
-                thumbColor: MaterialStateProperty.resolveWith<Color?>(
-                    (states) => Colors.white),
-                trackOutlineColor: MaterialStateProperty.resolveWith<Color?>(
-                    (states) => Col.realBackground),
+                activeThumbColor: context.colors.onIcon,
+                inactiveTrackColor: context.colors.icon.withAlpha(75),
+                thumbColor: WidgetStateProperty.resolveWith<Color?>(
+                  (states) => Colors.white,
+                ),
+                trackOutlineColor: WidgetStateProperty.resolveWith<Color?>(
+                  (states) => context.colors.realBackground,
+                ),
                 onChanged: (value) {
                   function(value);
                 },

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/features/auth/presentation/phone/google_logo.dart';
-import 'package:pongo/features/auth/presentation/phone/sign_in_button_phone.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/platform.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/ui/space.dart';
+import '../phone/google_logo.dart';
+import '../phone/sign_in_button_phone.dart';
 
 class SignInMacos extends StatefulWidget {
   const SignInMacos({super.key});
@@ -24,11 +23,11 @@ class _SignInMacosState extends State<SignInMacos> {
         children: [
           ContentArea(
             builder: (context, scrollController) {
-              Size size = MediaQuery.of(context).size;
+              final Size size = MediaQuery.of(context).size;
               return Container(
                 height: size.height,
                 width: size.width,
-                decoration: AppConstants().backgroundBoxDecoration,
+                decoration: context.colors.backgroundBoxDecoration,
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -37,28 +36,29 @@ class _SignInMacosState extends State<SignInMacos> {
                       AppLocalizations.of(context).signin,
                       style: TextStyle(
                         fontSize: kIsApple ? 30 : 40,
-                        fontWeight:
-                            kIsApple ? FontWeight.w700 : FontWeight.w800,
+                        fontWeight: kIsApple
+                            ? FontWeight.w700
+                            : FontWeight.w800,
                       ),
                     ),
                     Text(
                       AppLocalizations.of(context).klemen,
                       style: TextStyle(
                         fontSize: kIsApple ? 17 : 18,
-                        fontWeight:
-                            kIsApple ? FontWeight.w500 : FontWeight.w600,
+                        fontWeight: kIsApple
+                            ? FontWeight.w500
+                            : FontWeight.w600,
                       ),
                     ),
-                    Expanded(
-                      child: Container(),
-                    ),
+                    Expanded(child: Container()),
                     Material(
                       color: Col.transp,
                       child: signInButtonPhone(
-                          context,
-                          GoogleLogoPainter(),
-                          "${AppLocalizations.of(context).signinwith} Google",
-                          "Google"),
+                        context,
+                        GoogleLogoPainter(),
+                        '${AppLocalizations.of(context).signinwith} Google',
+                        'Google',
+                      ),
                     ),
                     Row(
                       children: [
@@ -87,14 +87,13 @@ class _SignInMacosState extends State<SignInMacos> {
                     Material(
                       color: Col.transp,
                       child: signInButtonPhone(
-                          context,
-                          GoogleLogoPainter(),
-                          "${AppLocalizations.of(context).signinwith} Apple",
-                          "Apple"),
+                        context,
+                        GoogleLogoPainter(),
+                        '${AppLocalizations.of(context).signinwith} Apple',
+                        'Apple',
+                      ),
                     ),
-                    Expanded(
-                      child: Container(),
-                    ),
+                    Expanded(child: Container()),
                     Padding(
                       padding: const EdgeInsets.only(
                         left: 15,
@@ -110,7 +109,7 @@ class _SignInMacosState extends State<SignInMacos> {
                 ),
               );
             },
-          )
+          ),
         ],
       ),
     );

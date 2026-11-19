@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/markets.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/l10n/app_localizations.dart';
+import '../../../../../config/markets.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/themes/colors.dart';
 
-appleMarketPopup(context, String market, Function(String) function) {
+void appleMarketPopup(
+  BuildContext context,
+  String market,
+  Function(String) function,
+) {
   showCupertinoModalPopup(
     context: context,
     builder: (context) => CupertinoActionSheet(
@@ -24,10 +28,13 @@ appleMarketPopup(context, String market, Function(String) function) {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              "${markets[index]} - ${marketsCountryNames[markets[index]]}",
+              '${markets[index]} - ${marketsCountryNames[markets[index]]}',
               style: TextStyle(
-                  color: market == markets[index] ? Colors.blue : Col.text,
-                  fontWeight: FontWeight.w400),
+                color: market == markets[index]
+                    ? Colors.blue
+                    : context.colors.text,
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
         ),

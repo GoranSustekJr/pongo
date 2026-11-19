@@ -1,22 +1,19 @@
-import 'dart:convert';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/features/player/presentation/phone/queue/queue_button_phone.dart';
-import 'package:pongo/features/player/presentation/phone/queue/queue_tile.dart';
-import 'package:pongo/features/playlists/data/open_playlist.dart';
-import 'package:pongo/features/playlists/models/playlist_handler.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/phone/trailing.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../data/repositories/player/media_items.dart';
+import '../../../../../domain/models/playlists/playlist_handler.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/app_blur.dart';
+import '../../../../core/ui/phone/trailing.dart';
+import '../../../../core/ui/space.dart';
+import '../../../../core/view_models/track_actions_view_model.dart';
+import '../../../../playlists/view_models/open_playlist.dart';
+import '../../../view_models/player_view_model.dart';
+import 'queue_button_phone.dart';
+import 'queue_tile.dart';
 
 class QueueBodyPhone extends StatelessWidget {
   final bool shuffleModeEnabled;
@@ -55,228 +52,207 @@ class QueueBodyPhone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
 
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context, listen: false)
-            as AudioServiceHandler;
+    final player = context.player;
     return SizedBox(
-        height: size.height,
-        width: size.width - 20,
-        child: queue != null
-            ? ConstrainedBox(
-                key: const ValueKey(true),
-                constraints: BoxConstraints(minHeight: size.height),
-                child: Stack(
-                  children: [
-                    StreamBuilder(
-                      key: const ValueKey(false),
-                      stream: audioServiceHandler.mediaItem.stream,
-                      builder: (context, snapshot) {
-                        final String id =
-                            snapshot.data != null ? snapshot.data!.id : "";
-                        return ReorderableListView.builder(
-                          //key: ValueKey("$shuffleModeEnabled"),
-                          scrollController: scrollController,
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).padding.top + 55,
-                              bottom: 300),
-                          itemCount: queue!.length,
-                          shrinkWrap: true,
-                          onReorder: (oldIndex, newIndex) {
-                            audioServiceHandler.reorderQueue(
-                                audioServiceHandler, oldIndex, newIndex);
-                          },
-                          proxyDecorator: (child, index, animation) =>
-                              Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Col.primaryCard.withAlpha(175),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: BackdropFilter(
-                                filter: appBlur(10),
-                                child: child,
-                              ),
+      height: size.height,
+      width: size.width - 20,
+      child: queue != null
+          ? ConstrainedBox(
+              key: const ValueKey(true),
+              constraints: BoxConstraints(minHeight: size.height),
+              child: Stack(
+                children: [
+                  StreamBuilder(
+                    key: const ValueKey(false),
+                    stream: player.currentItemStream,
+                    builder: (context, snapshot) {
+                      final String id = snapshot.data != null
+                          ? snapshot.data!.id
+                          : '';
+                      return ReorderableListView.builder(
+                        //key: ValueKey("$shuffleModeEnabled"),
+                        scrollController: scrollController,
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).padding.top + 55,
+                          bottom: 300,
+                        ),
+                        itemCount: queue!.length,
+                        shrinkWrap: true,
+                        onReorderItem: (oldIndex, newIndex) {
+                          // The handlers below expect the index from before the
+                          // item is removed
+                          if (newIndex > oldIndex) newIndex += 1;
+                          player.moveInQueue(oldIndex, newIndex);
+                        },
+                        proxyDecorator: (child, index, animation) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: context.colors.primaryCard.withAlpha(175),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: BackdropFilter(
+                              filter: appBlur(context, 10),
+                              child: child,
                             ),
                           ),
-                          itemBuilder: (context, index) {
-                            int ind = shuffleModeEnabled
-                                ? shuffleIndices[index]
-                                : index;
+                        ),
+                        itemBuilder: (context, index) {
+                          final int ind = shuffleModeEnabled
+                              ? shuffleIndices[index]
+                              : index;
 
-                            return QueueTile(
-                              key: ValueKey(ind),
-                              title: queue![ind].title,
-                              artist: queue![ind].artist ?? "",
-                              imageUrl: queue![ind].artUri.toString(),
-                              trailing: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 250),
-                                child: !editQueue
-                                    ? Row(
-                                        key: const ValueKey(true),
-                                        children: [
-                                          SizedBox(
-                                              height: 40,
-                                              width: 20,
-                                              child: Trailing(
-                                                  show: true,
-                                                  forceWhite: true,
-                                                  showThis: id ==
-                                                          queue![ind].id &&
-                                                      audioServiceHandler
-                                                              .audioPlayer
-                                                              .currentIndex ==
-                                                          ind,
-                                                  trailing: const SizedBox())),
-                                          razw(5),
-                                          const Icon(
-                                            AppIcons.burger,
-                                            color: Colors.white,
-                                            size: 22.5,
+                          return QueueTile(
+                            key: ValueKey(ind),
+                            title: queue![ind].title,
+                            artist: queue![ind].artist ?? '',
+                            imageUrl: (queue![ind].artUri?.toString() ?? ''),
+                            trailing: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 250),
+                              child: !editQueue
+                                  ? Row(
+                                      key: const ValueKey(true),
+                                      children: [
+                                        SizedBox(
+                                          height: 40,
+                                          width: 20,
+                                          child: Trailing(
+                                            show: true,
+                                            forceWhite: true,
+                                            showThis:
+                                                id == queue![ind].id &&
+                                                player.currentIndex == ind,
+                                            trailing: const SizedBox(),
                                           ),
-                                        ],
-                                      )
-                                    : SizedBox(
-                                        key: const ValueKey(
-                                          false,
                                         ),
-                                        width: 47.0,
-                                        height: 47.0,
-                                        child: CupertinoButton(
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {
-                                              selectQueueIndex(ind);
-                                            },
-                                            child: Icon(
-                                              selectedQueueIndexes.contains(ind)
-                                                  ? AppIcons.checkmark
-                                                  : AppIcons.uncheckmark,
-                                              size: 25,
-                                              color: Colors.white,
-                                            )),
+                                        razw(5),
+                                        const Icon(
+                                          AppIcons.burger,
+                                          color: Colors.white,
+                                          size: 22.5,
+                                        ),
+                                      ],
+                                    )
+                                  : SizedBox(
+                                      key: const ValueKey(false),
+                                      width: 47.0,
+                                      height: 47.0,
+                                      child: CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          selectQueueIndex(ind);
+                                        },
+                                        child: Icon(
+                                          selectedQueueIndexes.contains(ind)
+                                              ? AppIcons.checkmark
+                                              : AppIcons.uncheckmark,
+                                          size: 25,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                              ),
-                              onTap: () async {
-                                if (!editQueue) {
-                                  bool thisPlaying =
-                                      audioServiceHandler.mediaItem.value !=
-                                              null
-                                          ? audioServiceHandler
-                                                      .mediaItem.value!.id ==
-                                                  queue![ind].id &&
-                                              audioServiceHandler.audioPlayer
-                                                      .currentIndex ==
-                                                  ind
-                                          : false;
-                                  if (thisPlaying) {
-                                    if (audioServiceHandler
-                                        .audioPlayer.playing) {
-                                      await audioServiceHandler.pause();
-                                    } else {
-                                      await audioServiceHandler.play();
-                                    }
+                                    ),
+                            ),
+                            onTap: () async {
+                              if (!editQueue) {
+                                final bool thisPlaying =
+                                    player.currentItem.value != null
+                                    ? player.currentItem.value!.id ==
+                                              queue![ind].id &&
+                                          player.currentIndex == ind
+                                    : false;
+                                if (thisPlaying) {
+                                  if (player.isPlaying) {
+                                    await player.pause();
                                   } else {
-                                    await audioServiceHandler
-                                        .skipToQueueItem(ind);
+                                    await player.play();
                                   }
                                 } else {
-                                  selectQueueIndex(ind);
+                                  await player.skipToIndex(ind);
                                 }
-                              },
-                            );
-                          },
-                        );
-                      },
-                    ),
-                    QueueButtonPhone(
-                      showQueue: showQueue,
-                      lyricsOn: lyricsOn,
-                      editQueue: editQueue,
-                      lyricsExist: lyricsExist,
-                      changeShowQueue: changeShowQueue,
-                      changeEditQueue: changeEditQueue,
-                      removeItemsFromQueue: removeItemsFromQueue,
-                      changeLyricsOn: changeLyricsOn,
-                      saveAsPlaylist: saveAsPlaylist,
-                      download: () async {
-                        if (queue != null) {
-                          List<String> selectedStids = [];
-                          for (int i = 0; i < queue!.length; i++) {
-                            int ind =
-                                shuffleModeEnabled ? shuffleIndices[i] : i;
+                              } else {
+                                selectQueueIndex(ind);
+                              }
+                            },
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  QueueButtonPhone(
+                    showQueue: showQueue,
+                    lyricsOn: lyricsOn,
+                    editQueue: editQueue,
+                    lyricsExist: lyricsExist,
+                    changeShowQueue: changeShowQueue,
+                    changeEditQueue: changeEditQueue,
+                    removeItemsFromQueue: removeItemsFromQueue,
+                    changeLyricsOn: changeLyricsOn,
+                    saveAsPlaylist: saveAsPlaylist,
+                    download: () async {
+                      if (queue != null) {
+                        List<String> selectedStids = [];
+                        for (int i = 0; i < queue!.length; i++) {
+                          final int ind = shuffleModeEnabled
+                              ? shuffleIndices[i]
+                              : i;
 
-                            if (selectedQueueIndexes.contains(ind)) {
-                              selectedStids.add(queue![ind].id.split('.')[2]);
-                            }
+                          if (selectedQueueIndexes.contains(ind)) {
+                            selectedStids.add(queue![ind].id.split('.')[2]);
                           }
-                          if (selectedStids.isEmpty) {
-                            selectedStids = queue!
-                                .map((mediaItem) => mediaItem.id.split('.')[2])
-                                .toList();
-                          }
+                        }
+                        if (selectedStids.isEmpty) {
+                          selectedStids = queue!
+                              .map((mediaItem) => mediaItem.id.split('.')[2])
+                              .toList();
+                        }
 
-                          // Get the tracks that need to be downloaded
-                          List<String> toDownload = await DatabaseHelper()
-                              .queryMissingStids(selectedStids);
+                        // Get the tracks that need to be downloaded
+                        final List<String> toDownload = await context
+                            .trackActions
+                            .missingDownloads(selectedStids);
+                        if (!context.mounted) return;
 
-                          // Open playlist helper and add them to a playlist or create a new playlist
-                          OpenPlaylist().show(
-                            context,
-                            PlaylistHandler(
-                              toDownload: toDownload,
-                              type: PlaylistHandlerType.offline,
-                              function: PlaylistHandlerFunction.addToPlaylist,
-                              track: queue!.where((track) {
-                                return selectedStids
-                                    .contains(track.id.split('.')[2]);
-                              }).map(
-                                (track) {
+                        // Open playlist helper and add them to a playlist or
+                        // create a new playlist
+                        OpenPlaylist().show(
+                          context,
+                          PlaylistHandler(
+                            toDownload: toDownload,
+                            type: PlaylistHandlerType.offline,
+                            function: PlaylistHandlerFunction.addToPlaylist,
+                            track: queue!
+                                .where((track) {
+                                  return selectedStids.contains(
+                                    track.id.split('.')[2],
+                                  );
+                                })
+                                .map((item) {
+                                  final track = item.toTrack();
                                   return PlaylistHandlerOnlineTrack(
-                                    id: track.id.split('.')[2],
-                                    name: track.title,
-                                    artist: (jsonDecode(
-                                            track.extras!["artists"]) as List)
-                                        .map((e) => e as Map<String, dynamic>)
-                                        .toList(),
-                                    cover: track.artUri != null
-                                        ? track.artUri.toString()
-                                        : "",
-                                    albumTrack: track.album != null
-                                        ? AlbumTrack(
-                                            id: track.album!.split('..Ææ..')[0],
-                                            name:
-                                                track.album!.split('..Ææ..')[1],
-                                            releaseDate:
-                                                track.extras!["released"],
-                                            images: track.artUri != null
-                                                ? [
-                                                    AlbumImagesTrack(
-                                                        url: track.artUri!
-                                                            .toString(),
-                                                        height: null,
-                                                        width: null)
-                                                  ]
-                                                : [],
-                                          )
-                                        : null,
-                                    playlistHandlerCoverType: track.artUri
-                                            .toString()
+                                    id: track.id,
+                                    name: track.name,
+                                    artist: track.artists,
+                                    cover: item.artUri?.toString() ?? '',
+                                    albumTrack: track.album,
+                                    playlistHandlerCoverType:
+                                        (item.artUri?.toString() ?? '')
                                             .contains('file:///')
                                         ? PlaylistHandlerCoverType.bytes
                                         : PlaylistHandlerCoverType.url,
                                   );
-                                },
-                              ).toList(),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              )
-            : const SizedBox());
+                                })
+                                .toList(),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            )
+          : const SizedBox(),
+    );
   }
 }

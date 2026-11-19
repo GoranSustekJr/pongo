@@ -1,34 +1,42 @@
-class SleepAlarm {
-  final int id;
-  final bool sleep;
-  final int sleepDuration;
-  final bool sleepLinear;
-  final bool alarmClock;
-  final int wakeTime;
-  final int beforeEndTimeMin;
-  final bool alarmClockLinear;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  SleepAlarm({
-    required this.id,
-    this.sleep = true,
-    this.sleepDuration = 30,
-    this.sleepLinear = true,
-    this.alarmClock = false,
-    this.wakeTime = 450, // 7:30 am
-    this.beforeEndTimeMin = 30,
-    this.alarmClockLinear = true,
-  });
+part 'sleep_alarm.freezed.dart';
 
-  factory SleepAlarm.fromMap(Map<String, dynamic> map) {
-    return SleepAlarm(
-      id: map['id'],
-      sleep: map['sleep'] == 1,
-      sleepDuration: map['sleep_duration'],
-      sleepLinear: map['sleep_linear'] == 1,
-      alarmClock: map['alarm_clock'] == 1,
-      wakeTime: map['wake_time'],
-      beforeEndTimeMin: map['before_end_time_min'],
-      alarmClockLinear: map['alarm_clock_linear'] == 1,
-    );
-  }
+/// A sleep timer that fades the music out, optionally followed by an alarm
+/// that fades it back in.
+@freezed
+abstract class SleepAlarm with _$SleepAlarm {
+  /// Creates a sleep alarm.
+  const factory SleepAlarm({
+    required int id,
+
+    /// Whether the music fades out.
+    @Default(true) bool sleep,
+
+    /// Minutes the fade out takes.
+    @Default(30) int sleepDuration,
+    @Default(true) bool sleepLinear,
+
+    /// Whether the music fades back in at [wakeTime].
+    @Default(false) bool alarmClock,
+
+    /// Minutes after midnight the fade in ends. Defaults to 7:30 am.
+    @Default(450) int wakeTime,
+
+    /// Minutes the fade in takes.
+    @Default(30) int beforeEndTimeMin,
+    @Default(true) bool alarmClockLinear,
+  }) = _SleepAlarm;
+
+  /// Creates an alarm from a row of the sleep table.
+  factory SleepAlarm.fromMap(Map<String, dynamic> map) => SleepAlarm(
+    id: map['id'] as int,
+    sleep: map['sleep'] == 1,
+    sleepDuration: map['sleep_duration'] as int,
+    sleepLinear: map['sleep_linear'] == 1,
+    alarmClock: map['alarm_clock'] == 1,
+    wakeTime: map['wake_time'] as int,
+    beforeEndTimeMin: map['before_end_time_min'] as int,
+    alarmClockLinear: map['alarm_clock_linear'] == 1,
+  );
 }

@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 
-const _DEFAULT_SIZE = 32;
+const _defaultSize = 32;
 
 /// Display a Hash then load an Image
 class BlurHashh extends StatefulWidget {
@@ -15,15 +15,15 @@ class BlurHashh extends StatefulWidget {
     super.key,
     this.color = Colors.blueGrey,
     this.imageFit = BoxFit.fill,
-    this.decodingWidth = _DEFAULT_SIZE,
-    this.decodingHeight = _DEFAULT_SIZE,
+    this.decodingWidth = _defaultSize,
+    this.decodingHeight = _defaultSize,
     this.image,
     this.onReady,
     this.onStarted,
     this.httpHeaders = const {},
     this.errorBuilder,
-  })  : assert(decodingWidth > 0),
-        assert(decodingHeight != 0);
+  }) : assert(decodingWidth > 0),
+       assert(decodingHeight != 0);
 
   /// Callback when image is downloaded
   final VoidCallback? onReady;
@@ -95,13 +95,13 @@ class BlurHashhState extends State<BlurHashh> {
 
   @override
   Widget build(BuildContext context) => Stack(
-        fit: StackFit.expand,
-        alignment: Alignment.center,
-        children: [
-          buildBlurHashBackground(),
-          //   if (widget.image != null) prepareDisplayedImage(widget.image!),
-        ],
-      );
+    fit: StackFit.expand,
+    alignment: Alignment.center,
+    children: [
+      buildBlurHashBackground(),
+      //   if (widget.image != null) prepareDisplayedImage(widget.image!),
+    ],
+  );
 
   /*  Widget prepareDisplayedImage(String image) => Image.network(
         image,
@@ -125,13 +125,14 @@ class BlurHashhState extends State<BlurHashh> {
 
   /// Decode the blurhash and display the resulting image
   Widget buildBlurHashBackground() => FutureBuilder<ui.Image>(
-        future: _image,
-        builder: (ctx, snap) => snap.hasData
-            ? Image(image: UiImage(snap.data!), fit: widget.imageFit)
-            : Container(color: widget.color),
-      );
+    future: _image,
+    builder: (ctx, snap) => snap.hasData
+        ? Image(image: UiImage(snap.data!), fit: widget.imageFit)
+        : Container(color: widget.color),
+  );
 }
 
+@immutable
 class UiImage extends ImageProvider<UiImage> {
   final ui.Image image;
   final double scale;
@@ -152,16 +153,13 @@ class UiImage extends ImageProvider<UiImage> {
   }
 
   @override
-  bool operator ==(dynamic other) {
-    if (other.runtimeType != runtimeType) return false;
-    final UiImage typedOther = other;
-    return image == typedOther.image && scale == typedOther.scale;
-  }
+  bool operator ==(Object other) =>
+      other is UiImage && image == other.image && scale == other.scale;
 
   @override
   int get hashCode => Object.hash(image.hashCode, scale);
 
-/*   @override
+  /*   @override
   String toString() =>
       '$runtimeType(${describeIdentity(image)}, scale: $scale)'; */
 }
@@ -185,10 +183,7 @@ class Blurhash extends StatelessWidget {
     return ClipRRect(
       child: Container(
         color: const Color(0xFF141C3D),
-        child: BlurHash(
-          hash: blurhash,
-          imageFit: BoxFit.cover,
-        ),
+        child: BlurHash(hash: blurhash, imageFit: BoxFit.cover),
       ),
     );
   }

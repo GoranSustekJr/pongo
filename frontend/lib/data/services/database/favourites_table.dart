@@ -2,98 +2,64 @@ import 'dart:convert';
 
 import 'package:sqflite/sqflite.dart';
 
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/features/library/models/favourite.dart';
+import '../../../domain/models/library/favourite.dart';
+import 'database_service.dart';
 
-Future<void> insertFavouriteTrck(
-  DatabaseHelper dbHelper,
-  Favourite favourite,
-) async {
-  Database db = await dbHelper.database;
+/// The `favourites` table.
+class FavouritesTable {
+  /// Creates a table backed by [_db].
+  FavouritesTable(this._db);
 
-  bool alreadyExists =
-      await favouriteTrckAlreadyExists(dbHelper, favourite.stid);
+  final Database _db;
 
-  if (!alreadyExists) {
-    Map<String, dynamic> trackData = {
+  /// Inserts [favourite] unless its track is already a favourite.
+  Future<void> insert(Favourite favourite) async {
+    if (await contains(favourite.stid)) return;
+    await _db.insert('favourites', {
       'stid': favourite.stid,
       'title': favourite.title,
       'artists': jsonEncode(favourite.artistTrack),
       'image': favourite.image,
-      'album': favourite.albumTrack != null
-          ? jsonEncode({
-              "id": favourite.albumTrack!.id,
-              "name": favourite.albumTrack!.name,
-              "images": favourite.albumTrack!.images
-                  .map((albumImagesTrack) => {
-                        "url": albumImagesTrack.url,
-                        "height": albumImagesTrack.height,
-                        "width": albumImagesTrack.width,
-                      })
-                  .toList(),
-            })
-          : null,
-    };
-
-    await db.insert('favourites', trackData);
+      'album': favourite.albumTrack == null
+          ? null
+          : jsonEncode(favourite.albumTrack!.toJson()),
+    });
   }
-}
 
-Future<List<Favourite>> queryAllFavouriteTrcks(DatabaseHelper dbHelper) async {
-  Database db = await dbHelper.database;
-  List<Map<String, dynamic>> result =
-      await db.rawQuery('SELECT * FROM favourites ORDER BY id DESC');
-  return result.map((res) => Favourite.fromMap(res)).toList();
-}
+  /// All favourites, most recently added first.
+  Future<List<Favourite>> queryAll() async {
+    final rows = await _db.rawQuery(
+      'SELECT * FROM favourites ORDER BY id DESC',
+    );
+    return rows.map(Favourite.fromMap).toList();
+  }
 
-Future<int> queryAllFavouriteTrcksLength(DatabaseHelper dbHelper) async {
-  Database db = await dbHelper.database;
-  final result = await db.rawQuery('SELECT COUNT(*) FROM favourites');
-  return Sqflite.firstIntValue(result) ?? 0;
-}
+  /// The number of favourites.
+  Future<int> count() async =>
+      Sqflite.firstIntValue(
+        await _db.rawQuery('SELECT COUNT(*) FROM favourites'),
+      ) ??
+      0;
 
-// Query length
-Future<int> queryFvouritesLength(DatabaseHelper dbHelper) async {
-  Database db = await dbHelper.database;
-  final result = await db.rawQuery('SELECT COUNT(*) FROM favourites');
-  return Sqflite.firstIntValue(result) ?? 0;
-}
+  /// Whether the track with [stid] is a favourite.
+  Future<bool> contains(String stid) async {
+    final rows = await _db.query(
+      'favourites',
+      columns: ['stid'],
+      where: 'stid = ?',
+      whereArgs: [stid],
+    );
+    return rows.isNotEmpty;
+  }
 
-Future<bool> favouriteTrckAlreadyExists(
-    DatabaseHelper dbHelper, String stid) async {
-  Database db = await dbHelper.database;
+  /// Removes the track with [stid] from the favourites.
+  Future<void> remove(String stid) =>
+      _db.delete('favourites', where: 'stid = ?', whereArgs: [stid]);
 
-  // Query the favourites table to check for the given stid
-  final List<Map<String, dynamic>> result = await db.query(
+  /// Removes the tracks with [stids] from the favourites.
+  Future<void> removeAll(List<String> stids) => _db.delete(
     'favourites',
-    columns: ['stid'], // Only need the stid column for the check
-    where: 'stid = ?',
-    whereArgs: [stid],
-  );
-
-  // If result is not empty, the track exists
-  return result.isNotEmpty;
-}
-
-// Track
-Future<void> removeFavouriteTrck(
-    DatabaseHelper dbHelper, Favourite favourite) async {
-  Database db = await dbHelper.database;
-
-  await db.delete(
-    'favourites',
-    where: 'stid = ?',
-    whereArgs: [favourite.stid],
-  );
-}
-
-Future<void> removeFavouriteTrcks(
-    DatabaseHelper dbHelper, List<String> stids) async {
-  Database db = await dbHelper.database;
-
-  await db.delete(
-    'favourites',
-    where: 'stid IN (${List.filled(stids.length, '?').join(', ')})',
+    where: 'stid IN (${placeholders(stids.length)})',
     whereArgs: stids,
   );
 }

@@ -1,89 +1,91 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/search/data/search_data_manager.dart';
-import 'package:pongo/features/search/presentation/phone/search_body_phone.dart';
+import '../../../../utils/platform.dart';
+import '../../../app/view_models/app_settings_view_model.dart';
+import '../../../core/themes/colors.dart';
+import '../../../player/view_models/player_view_model.dart';
+import '../../../shell/view_models/shell_view_model.dart';
+import '../../view_models/search_view_model.dart';
+import 'search_body_phone.dart';
 
+/// The results of the search [query].
 class SearchPhone extends StatefulWidget {
-  final String query;
+  /// Creates the results screen.
   const SearchPhone({super.key, required this.query});
+
+  /// The submitted query.
+  final String query;
 
   @override
   State<SearchPhone> createState() => _SearchPhoneState();
 }
 
 class _SearchPhoneState extends State<SearchPhone> {
-  late SearchDataManager searchDataManager;
+  late final SearchViewModel viewModel;
+  final scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    searchDataManager = SearchDataManager(context);
-    currentSearchDataManager.value = searchDataManager;
+    viewModel = SearchViewModel(
+      catalog: context.read(),
+      settings: context.read(),
+      searchRequests: context.shell.searchRequests,
+    );
   }
 
-  // Listen For Query Parameter Change
   @override
   void didUpdateWidget(covariant SearchPhone oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.query != widget.query) {
-      // If Query Parameter Changed Do Search Function
-      searchDataManager.search(widget.query);
-    }
+    if (oldWidget.query != widget.query) viewModel.search(widget.query);
+  }
+
+  @override
+  void dispose() {
+    viewModel.dispose();
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => searchDataManager,
-      child:
-          Consumer<SearchDataManager>(builder: (context, dataManager, child) {
+    return ListenableBuilder(
+      listenable: Listenable.merge([viewModel, context.player.fetchingTracks]),
+      builder: (context, child) {
         return AnimatedSwitcher(
-          duration: Duration(milliseconds: animations ? 250 : 0),
-          child: searchDataManager.tracks.isEmpty
+          duration: Duration(
+            milliseconds: context.readSettings.useAnimations ? 250 : 0,
+          ),
+          child: viewModel.tracks.isEmpty
               ? SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   key: const ValueKey(true),
                 )
               : SearchBodyPhone(
-                  tracks: searchDataManager.tracks,
-                  artists: searchDataManager.artists,
-                  albums: searchDataManager.albums,
-                  playlists: searchDataManager.playlists,
-                  loading: searchDataManager.loading,
-                  scrollController: searchDataManager.scrollController,
+                  tracks: viewModel.tracks,
+                  artists: viewModel.artists,
+                  albums: viewModel.albums,
+                  playlists: viewModel.playlists,
+                  loading: context.player.fetchingTracks.value.toList(),
+                  scrollController: scrollController,
                   suggestionHeader: TextStyle(
                     fontSize: kIsDesktop
                         ? 24
                         : kIsApple
-                            ? 17
-                            : 19,
+                        ? 17
+                        : 19,
                     fontWeight: kIsDesktop
                         ? FontWeight.w800
                         : kIsApple
-                            ? FontWeight.w600
-                            : FontWeight.w700,
-                    color: Col.text,
+                        ? FontWeight.w600
+                        : FontWeight.w700,
+                    color: context.colors.text,
                   ),
-                  loadingAdd: (stid) {
-                    setState(() {
-                      if (!searchDataManager.loading.contains(stid)) {
-                        searchDataManager.loading.add(stid);
-                      }
-                    });
-                  },
-                  loadingRemove: (stid) {
-                    setState(() {
-                      searchDataManager.loading.remove(stid);
-                    });
-                  },
                 ),
         );
-      }),
+      },
     );
   }
 }

@@ -1,15 +1,29 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
+import '../../../../utils/platform.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
 
 Widget searchHistoryTile(
-    String txt, bool last, Function() function, Function() removeFunction) {
+  String txt,
+  bool last,
+  Function() function,
+
+  /// Called to forget `txt`.
+  Function() removeFunction,
+) => Builder(
+  builder: (context) =>
+      _searchHistoryTile(context, txt, last, function, removeFunction),
+);
+
+Widget _searchHistoryTile(
+  BuildContext context,
+  String txt,
+  bool last,
+  Function() function,
+  Function() removeFunction,
+) {
   return kIsApple
       ? CupertinoButton(
           padding: const EdgeInsets.all(2.5),
@@ -23,7 +37,7 @@ Widget searchHistoryTile(
                     child: Text(
                       txt,
                       style: TextStyle(
-                        color: Col.text,
+                        color: context.colors.text,
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                       ),
@@ -32,14 +46,10 @@ Widget searchHistoryTile(
                   ),
                   CupertinoButton(
                     padding: const EdgeInsets.all(2.5),
-                    onPressed: () async {
-                      await DatabaseHelper().removeSearchHistoryEntry(txt);
+                    onPressed: () {
                       removeFunction();
                     },
-                    child: Icon(
-                      AppIcons.cancel,
-                      color: Col.icon,
-                    ),
+                    child: Icon(AppIcons.cancel, color: context.colors.icon),
                   ),
                 ],
               ),
@@ -48,7 +58,7 @@ Widget searchHistoryTile(
         )
       : InkWell(
           splashFactory: InkRipple.splashFactory,
-          overlayColor: MaterialStateProperty.all<Color>(Colors.white),
+          overlayColor: WidgetStateProperty.all<Color>(Colors.white),
           onTap: function,
           child: Row(
             children: [
@@ -56,7 +66,7 @@ Widget searchHistoryTile(
                 child: Text(
                   txt,
                   style: TextStyle(
-                    color: Col.text,
+                    color: context.colors.text,
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),
@@ -64,14 +74,10 @@ Widget searchHistoryTile(
                 ),
               ),
               IconButton(
-                onPressed: () async {
-                  await DatabaseHelper().removeSearchHistoryEntry(txt);
+                onPressed: () {
                   removeFunction();
                 },
-                icon: Icon(
-                  AppIcons.cancel,
-                  color: Col.icon,
-                ),
+                icon: Icon(AppIcons.cancel, color: context.colors.icon),
               ),
             ],
           ),

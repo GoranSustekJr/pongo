@@ -1,48 +1,31 @@
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class Artist {
-  final String id;
-  final String name;
-  final String image;
+import '../../../utils/image_resolution.dart';
+import 'track.dart';
 
-  // Creata a Artist from a Map
-  factory Artist.fromMap(Map<String, dynamic> map) {
-    return Artist(
-      id: map["id"],
-      name: map["name"],
-      image: calculateBestImageForTrack((map["images"] as List<dynamic>)
-          .map((image) => AlbumImagesTrack(
-              url: image["url"],
-              height: image["height"],
-              width: image["width"]))
-          .toList()),
-    );
-  }
+part 'artist.freezed.dart';
 
-  // Convert a List of Maps to a List of Artist objects
-  static List<Artist> fromMapList(List<dynamic> list) {
-    return list
-        .map((map) => Artist.fromMap(map as Map<String, dynamic>))
-        .toList();
-  }
+/// An artist in the catalog.
+@freezed
+abstract class Artist with _$Artist {
+  /// Creates an artist.
+  const factory Artist({
+    required String id,
+    required String name,
 
-  Artist({
-    required this.id,
-    required this.name,
-    required this.image,
-  });
-}
+    /// URL of the profile image.
+    required String image,
+  }) = _Artist;
 
-class ArtistFull extends Artist {
-  final String genres;
-  final int followers;
+  /// Creates an artist from the API's JSON, using its largest image.
+  factory Artist.fromMap(Map<String, dynamic> map) => Artist(
+    id: map['id'] as String,
+    name: map['name'] as String,
+    image: bestImageUrl(AlbumImagesTrack.fromMapList(map['images'] as List)),
+  );
 
-  ArtistFull({
-    required super.id,
-    required super.name,
-    required super.image,
-    required this.genres,
-    required this.followers,
-  });
+  /// Creates artists from a JSON list.
+  static List<Artist> fromMapList(List<dynamic> list) => [
+    for (final map in list) Artist.fromMap(map as Map<String, dynamic>),
+  ];
 }

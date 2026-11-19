@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/shared/widgets/image/image_compatible.dart';
-import 'package:pongo/shared/widgets/phone/inkwell.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/image/image_compatible.dart';
+import '../../../../core/ui/phone/inkwell.dart';
+import '../../../../core/ui/space.dart';
 
 class QueueTile extends StatelessWidget {
   final String title;
@@ -25,24 +25,22 @@ class QueueTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = Row(
+    final Widget child = Row(
       children: [
         Container(
           width: 65,
           height: 65,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(7.5),
-            color: Col.realBackground.withAlpha(150),
+            color: context.colors.realBackground.withAlpha(150),
           ),
           child: ClipRRect(
-              borderRadius: BorderRadius.circular(7.5),
-              child: imageUrl == ""
-                  ? Center(
-                      child: Icon(AppIcons.blankTrack, color: Colors.white),
-                    )
-                  : ImageCompatible(
-                      image:
-                          imageUrl) /* imageUrl.toString().contains("file:///")
+            borderRadius: BorderRadius.circular(7.5),
+            child: imageUrl == ''
+                ? Center(child: Icon(AppIcons.blankTrack, color: Colors.white))
+                : ImageCompatible(
+                    image: imageUrl,
+                  ) /* imageUrl.toString().contains("file:///")
                                 ? Image.file(
                                     File.fromUri(Uri.parse(imageUrl)),
                                     fit: BoxFit.cover,
@@ -50,8 +48,8 @@ class QueueTile extends StatelessWidget {
                                 : CachedNetworkImage(
                                     imageUrl: imageUrl,
                                     fit: BoxFit.cover,
-                                  ), */
-              ),
+                                  ), */,
+          ),
         ),
         razw(12.5),
         Expanded(
@@ -84,9 +82,7 @@ class QueueTile extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(
-          child: trailing,
-        ),
+        SizedBox(child: trailing),
       ],
     );
 
@@ -95,16 +91,20 @@ class QueueTile extends StatelessWidget {
             height: 85,
             width: MediaQuery.of(context).size.width,
             child: CupertinoButton(
-                padding: EdgeInsets.only(left: kIsMobile ? 15 : 10),
-                onPressed: onTap,
-                child: child),
+              padding: EdgeInsets.only(left: kIsMobile ? 15 : 10),
+              onPressed: onTap,
+              child: child,
+            ),
           )
         : ClipRRect(
             borderRadius: BorderRadius.circular(7.5),
             child: inkWell(
               Padding(
                 padding: EdgeInsets.only(
-                    left: kIsMobile ? 15 : 10, top: 7.5, bottom: 7.5),
+                  left: kIsMobile ? 15 : 10,
+                  top: 7.5,
+                  bottom: 7.5,
+                ),
                 child: child,
               ),
               onTap,

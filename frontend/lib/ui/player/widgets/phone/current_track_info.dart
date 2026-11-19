@@ -1,20 +1,19 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/player/presentation/phone/alerts/halt_alert.dart';
-import 'package:pongo/features/player/presentation/phone/play_pause_mini.dart';
-import 'package:pongo/shared/widgets/image/image_compatible.dart';
-import 'package:pongo/shared/widgets/marquee.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_render.dart';
-import 'package:pongo/shared/widgets/space.dart';
-import 'package:pongo/shared/widgets/swipe_to_snap_back.dart';
+import '../../../app/view_models/app_settings_view_model.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/ui/image/image_compatible.dart';
+import '../../../core/ui/marquee.dart';
+import '../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../core/ui/phone/liquid_glass_render.dart';
+import '../../../core/ui/space.dart';
+import '../../../core/ui/swipe_to_snap_back.dart';
+import '../../../shell/view_models/shell_view_model.dart';
+import '../../view_models/player_view_model.dart';
+import 'alerts/halt_alert.dart';
+import 'play_pause_mini.dart';
 
 class TrackInfo extends StatefulWidget {
   const TrackInfo({super.key});
@@ -24,10 +23,6 @@ class TrackInfo extends StatefulWidget {
 }
 
 class _TrackInfoState extends State<TrackInfo> {
-  double horizontalPositionStart = 0;
-  double horizontalPositionEnd = 0;
-  double horizontalPositionCurrent = 0;
-
   // Text styles
   final TextStyle bottomTitle = const TextStyle(
     fontSize: 17,
@@ -40,23 +35,104 @@ class _TrackInfoState extends State<TrackInfo> {
     color: Colors.white.withAlpha(200),
   );
 
+  ValueNotifier<double> get _panelHeight => context.shell.currentTrackHeight;
+
+  Future<void> _halt() async {
+    final CustomButton ok = await haltAlert(context);
+    if (ok != CustomButton.positiveButton || !mounted) return;
+    _panelHeight.value = 0;
+    await context.player.halt();
+  }
+
+  // Moves the panel with the finger, keeping it on screen.
+  void _drag(DragUpdateDetails details, double maxHeight) {
+    _panelHeight.value = (_panelHeight.value - details.delta.dy).clamp(
+      0,
+      maxHeight,
+    );
+  }
+
+  // Opens or closes the panel depending on how fast and far it was dragged.
+  void _snap(DragEndDetails details, double maxHeight) {
+    // Flings faster than this open or close the panel outright.
+    const flingVelocity = 40;
+    final velocity = details.primaryVelocity ?? 0;
+    final open = velocity < -flingVelocity
+        ? true
+        : velocity > flingVelocity
+        ? false
+        : _panelHeight.value > 40;
+    setState(() => _panelHeight.value = open ? maxHeight : 0);
+  }
+
+  Widget _trackRow(
+    MediaItem currentMediaItem,
+    AsyncSnapshot<PlaybackState> playbackState,
+    Size size,
+  ) {
+    final player = context.player;
+    final playing = playbackState.data?.playing ?? false;
+    final artUri = currentMediaItem.artUri?.toString() ?? '';
+    return Row(
+      children: [
+        SizedBox(
+          width: 50,
+          height: 50,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(7.5),
+            child: artUri != ''
+                ? ImageCompatible(image: artUri, width: 40, height: 40)
+                : SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: Center(child: Icon(AppIcons.blankTrack)),
+                  ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        SizedBox(
+          width: size.width - 155,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              marquee(
+                '${currentMediaItem.title}  ',
+                bottomTitle,
+                1,
+                null,
+                height: 22,
+              ),
+              marquee(
+                '${currentMediaItem.artist}  ',
+                bottomArtist,
+                1,
+                null,
+                height: 20,
+              ),
+            ],
+          ),
+        ),
+        const Expanded(child: SizedBox()),
+        PlayPauseMini(
+          playbackState: playbackState,
+          function: () => playing ? player.pause() : player.play(),
+        ),
+        razw(10),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
-    Size size = MediaQuery.of(context).size;
+    final player = context.player;
+    final Size size = MediaQuery.of(context).size;
     return liquidGlassLayer(
-      glassColor: Col.text.withAlpha(30),
       child: SafeArea(
         child: StreamBuilder(
-          stream: audioServiceHandler.playbackState.stream,
+          stream: player.playbackState,
           builder: (context, playbackState) {
-            bool playing = false;
-            if (playbackState.data != null) {
-              playing = playbackState.data!.playing;
-            }
             return StreamBuilder(
-              stream: audioServiceHandler.mediaItem,
+              stream: player.currentItemStream,
               builder: (context, AsyncSnapshot<MediaItem?> mediaItem) {
                 // Get the current media item
                 final currentMediaItem = mediaItem.data;
@@ -77,10 +153,11 @@ class _TrackInfoState extends State<TrackInfo> {
                   child: liquidGlass(
                     radius: 24,
                     child: liquidGlassBackground(
-                      enabled: liquidGlassEnabled,
+                      enabled: context.readSettings.useLiquidGlass,
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
-                        child: currentMediaItem == null ||
+                        child:
+                            currentMediaItem == null ||
                                 playbackState.data == null
                             ? Container(key: const ValueKey(true))
                             : ClipRRect(
@@ -90,206 +167,51 @@ class _TrackInfoState extends State<TrackInfo> {
                                   children: [
                                     Positioned.fill(
                                       child: GestureDetector(
-                                        onLongPress: () async {
-                                          CustomButton ok =
-                                              await haltAlert(context);
-                                          if (ok ==
-                                              CustomButton.positiveButton) {
-                                            currentTrackHeight.value = 0;
-                                            final audioServiceHandler =
-                                                Provider.of<AudioHandler>(
-                                                        context,
-                                                        listen: false)
-                                                    as AudioServiceHandler;
-
-                                            await audioServiceHandler.halt();
-                                          }
-                                        },
-                                        onVerticalDragUpdate: (details) {
-                                          // Move the panel upwards/downwards
-                                          currentTrackHeight.value -=
-                                              details.delta.dy;
-
-                                          // Prevent it from going below 0 or above the screen height
-                                          if (currentTrackHeight.value < 0) {
-                                            currentTrackHeight.value = 0;
-                                          } else if (currentTrackHeight.value >
-                                              size.height) {
-                                            currentTrackHeight.value =
-                                                size.height;
-                                          }
-                                        },
-                                        onVerticalDragEnd: (details) {
-                                          // Set a threshold for the drag distance (e.g., 40 pixels)
-                                          const dragThreshold = 40;
-
-                                          setState(() {
-                                            // Check if the drag distance exceeds the threshold
-                                            if (details.primaryVelocity !=
-                                                    null &&
-                                                details.primaryVelocity! <
-                                                    -dragThreshold) {
-                                              // If dragged upwards (velocity is negative), snap to full height
-                                              currentTrackHeight.value =
-                                                  size.height;
-                                            } else if (details
-                                                        .primaryVelocity !=
-                                                    null &&
-                                                details.primaryVelocity! >
-                                                    dragThreshold) {
-                                              // If dragged downwards (velocity is positive), snap back to bottom
-                                              currentTrackHeight.value = 0;
-                                            } else {
-                                              // Check the current height to decide whether to snap to full or bottom
-                                              if (currentTrackHeight.value >
-                                                  40) {
-                                                currentTrackHeight.value = size
-                                                    .height; // Snap to full height
-                                              } else {
-                                                currentTrackHeight.value =
-                                                    0; // Snap back to bottom
-                                              }
-                                            }
-                                          });
-                                        },
-                                        onTap: () async {
-                                          currentTrackHeight.value =
-                                              size.height;
-                                        },
+                                        onLongPress: _halt,
+                                        onVerticalDragUpdate: (details) =>
+                                            _drag(details, size.height),
+                                        onVerticalDragEnd: (details) =>
+                                            _snap(details, size.height),
+                                        onTap: () =>
+                                            _panelHeight.value = size.height,
                                         child: SwipeToSnapBack(
                                           swipeLeft: () async {
-                                            await audioServiceHandler
-                                                .skipToNext();
+                                            await player.skipToNext();
                                           },
                                           swipeRight: () async {
-                                            await audioServiceHandler
-                                                .skipToPrevious();
+                                            await player.skipToPrevious();
                                           },
                                           child: Stack(
                                             children: [
                                               Positioned(
-                                                  left: horizontalPositionCurrent !=
-                                                          0
-                                                      ? horizontalPositionCurrent -
-                                                          horizontalPositionStart
-                                                      : 0,
-                                                  child: RepaintBoundary(
-                                                    child: Container(
-                                                      height: 70,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width -
-                                                              10,
-                                                      color: Colors.transparent,
-                                                      child: Column(
-                                                        children: [
-                                                          Container(
-                                                            height: 55,
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width -
-                                                                10,
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                              horizontal: 15,
-                                                              vertical: 5,
-                                                            ),
-                                                            child: Row(
-                                                              children: [
-                                                                SizedBox(
-                                                                  width: 50,
-                                                                  height: 50,
-                                                                  child:
-                                                                      ClipRRect(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            7.5),
-                                                                    child: currentMediaItem.artUri.toString() !=
-                                                                                "" &&
-                                                                            currentMediaItem.artUri !=
-                                                                                null
-                                                                        ? ImageCompatible(
-                                                                            image:
-                                                                                currentMediaItem.artUri.toString(),
-                                                                            width:
-                                                                                40,
-                                                                            height:
-                                                                                40,
-                                                                          )
-                                                                        : SizedBox(
-                                                                            height:
-                                                                                40,
-                                                                            width:
-                                                                                40,
-                                                                            child:
-                                                                                Center(
-                                                                              child: Icon(
-                                                                                AppIcons.blankTrack,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                  ),
-                                                                ),
-                                                                const SizedBox(
-                                                                    width: 10),
-                                                                SizedBox(
-                                                                  width:
-                                                                      size.width -
-                                                                          155,
-                                                                  child: Column(
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .max,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      marquee(
-                                                                        "${currentMediaItem.title}  ",
-                                                                        bottomTitle,
-                                                                        1,
-                                                                        null,
-                                                                        height:
-                                                                            22,
-                                                                      ),
-                                                                      marquee(
-                                                                        "${currentMediaItem.artist}  ",
-                                                                        bottomArtist,
-                                                                        1,
-                                                                        null,
-                                                                        height:
-                                                                            20,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                const Expanded(
-                                                                    child:
-                                                                        SizedBox()),
-                                                                PlayPauseMini(
-                                                                  playbackState:
-                                                                      playbackState,
-                                                                  function: () {
-                                                                    if (playing) {
-                                                                      audioServiceHandler
-                                                                          .pause();
-                                                                    } else {
-                                                                      audioServiceHandler
-                                                                          .play();
-                                                                    }
-                                                                  },
-                                                                ),
-                                                                razw(10)
-                                                              ],
-                                                            ),
+                                                left: 0,
+                                                child: RepaintBoundary(
+                                                  child: Container(
+                                                    height: 70,
+                                                    width: size.width - 10,
+                                                    color: Colors.transparent,
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          height: 55,
+                                                          width:
+                                                              size.width - 10,
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 15,
+                                                                vertical: 5,
+                                                              ),
+                                                          child: _trackRow(
+                                                            currentMediaItem,
+                                                            playbackState,
+                                                            size,
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  )),
+                                                  ),
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),

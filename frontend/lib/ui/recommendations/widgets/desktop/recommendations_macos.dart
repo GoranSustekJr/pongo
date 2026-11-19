@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/features/recommendations/data/recommendations_data_manager.dart';
-import 'package:pongo/features/recommendations/presentation/desktop/recommendations_body_macos.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/shimmer/recommended_shimmer.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../core/ui/phone/shimmer/recommended_shimmer.dart';
+import '../../view_models/recommendations_view_model.dart';
+import 'recommendations_body_macos.dart';
 
 class RecommendationsMacos extends StatelessWidget {
   const RecommendationsMacos({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return ChangeNotifierProvider(
-      create: (_) => RecommendationsDataManager(context),
-      child: Consumer<RecommendationsDataManager>(
+      create: (context) => RecommendationsViewModel(
+        catalog: context.read(),
+        history: context.read(),
+        settings: context.read(),
+      ),
+      child: Consumer<RecommendationsViewModel>(
         builder: (context, dataManager, child) {
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 250),
@@ -31,41 +35,42 @@ class RecommendationsMacos extends StatelessWidget {
                         children: [
                           Text(AppLocalizations.of(context).error),
                           iconButton(
-                              AppIcons.repeat, Colors.white, dataManager.init),
+                            AppIcons.repeat,
+                            Colors.white,
+                            dataManager.load.execute,
+                          ),
                         ],
                       ),
                     ),
                   )
                 : dataManager.showBody
-                    ? SizedBox(
-                        height: size.height, // Constrain height
-                        width: size.width,
-                        child: Scaffold(
-                          extendBody: true,
-                          extendBodyBehindAppBar: true,
-                          backgroundColor: Col.transp,
-                          body: RecommendationsBodyMacos(
-                              dataManager: dataManager),
-                        ),
-                      )
-                    : /*  const SizedBox(
+                ? SizedBox(
+                    height: size.height, // Constrain height
+                    width: size.width,
+                    child: Scaffold(
+                      extendBody: true,
+                      extendBodyBehindAppBar: true,
+                      backgroundColor: Col.transp,
+                      body: RecommendationsBodyMacos(dataManager: dataManager),
+                    ),
+                  )
+                : /*  const SizedBox(
                           child: Center(
                             child: Text("data"),
                           ),
-                        ) */
-                    SizedBox(
-                        height: size.height,
-                        width: size.width,
-                        child: Scaffold(
-                          extendBody: true,
-                          extendBodyBehindAppBar: true,
-                          backgroundColor: Col.transp,
-                          body: RecommendedShimmer(
-                            history: dataManager.historyEnabled,
-                            categories: dataManager.categoriesEnabled,
-                          ),
-                        ),
+                        ) */ SizedBox(
+                    height: size.height,
+                    width: size.width,
+                    child: Scaffold(
+                      extendBody: true,
+                      extendBodyBehindAppBar: true,
+                      backgroundColor: Col.transp,
+                      body: RecommendedShimmer(
+                        history: dataManager.historyEnabled,
+                        categories: dataManager.categoriesEnabled,
                       ),
+                    ),
+                  ),
           );
         },
       ),

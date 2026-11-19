@@ -1,16 +1,16 @@
-import 'package:audio_service/audio_service.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:provider/provider.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:window_manager/legacy.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/audio/media_item_manager.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/player/presentation/desktop/full_screen/full_screen_body_macos.dart';
-import 'package:pongo/shared/widgets/blurhash/blurhash.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/ui/blurhash/blurhash.dart';
+import '../../../../shell/view_models/shell_view_model.dart';
+import '../../../view_models/player_view_model.dart';
+import '../../now_playing_provider.dart';
+import 'full_screen_body_macos.dart';
 
 class FullScreenMacos extends StatefulWidget {
   const FullScreenMacos({super.key});
@@ -30,11 +30,10 @@ class _FullScreenMacosState extends State<FullScreenMacos> {
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    notificationsContext.value = context;
     //initFullScreen();
   }
 
-  void initFullScreen() async {
+  Future<void> initFullScreen() async {
     if (kIsDesktop && !kIsMacOS) {
       bool isFullScren = await windowManager.isFullScreen();
       setState(() {
@@ -42,16 +41,16 @@ class _FullScreenMacosState extends State<FullScreenMacos> {
       });
 
       if (!isFullScren) {
-        windowManager.setFullScreen(true);
+        unawaited(windowManager.setFullScreen(true));
       }
     } else {
-      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+      await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     }
   }
 
   @override
   void dispose() {
-    fullscreenPlaying.value = false;
+    context.shell.fullscreenPlaying.value = false;
     if (!isFullScreen && !kIsMacOS) {
       // If was not fullscreen => return back
       windowManager.setFullScreen(false);
@@ -61,106 +60,103 @@ class _FullScreenMacosState extends State<FullScreenMacos> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return MacosWindow(
-      child: ChangeNotifierProvider(
-        create: (_) => MediaItemManager(
-          Provider.of<AudioHandler>(context) as AudioServiceHandler,
-          context,
-        ),
-        child: Consumer<MediaItemManager>(
-          builder: (context, mediaItemManager, child) {
-            return mediaItemManager.currentMediaItem != null
-                ? MacosScaffold(
-                    children: [
-                      ContentArea(
-                        builder: (context, scrollController) {
-                          return SizedBox(
-                            height: size.height,
-                            width: size.width,
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 400),
-                              child: mediaItemManager.currentMediaItem != null
-                                  ? Stack(
-                                      key: const ValueKey(true),
-                                      children: [
-                                        AnimatedSwitcher(
-                                          duration:
-                                              const Duration(milliseconds: 500),
-                                          switchInCurve: Curves.fastOutSlowIn,
-                                          switchOutCurve:
-                                              Curves.fastEaseInToSlowEaseOut,
-                                          child: BlurHashh(
-                                            key: ValueKey(
-                                                "${mediaItemManager.blurhash}${mediaItemManager.currentMediaItemId}"),
-                                            hash: mediaItemManager.blurhash,
-                                          ),
+      child: NowPlayingProvider(
+        builder: (context, nowPlaying) {
+          return nowPlaying.currentMediaItem != null
+              ? MacosScaffold(
+                  children: [
+                    ContentArea(
+                      builder: (context, scrollController) {
+                        return SizedBox(
+                          height: size.height,
+                          width: size.width,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 400),
+                            child: nowPlaying.currentMediaItem != null
+                                ? Stack(
+                                    key: const ValueKey(true),
+                                    children: [
+                                      AnimatedSwitcher(
+                                        duration: const Duration(
+                                          milliseconds: 500,
                                         ),
-                                        AnimatedSwitcher(
-                                          duration:
-                                              const Duration(milliseconds: 500),
-                                          switchInCurve: Curves.fastOutSlowIn,
-                                          switchOutCurve:
-                                              Curves.fastEaseInToSlowEaseOut,
-                                          child: Container(
-                                            key: ValueKey(mediaItemManager
-                                                .currentMediaItem),
-                                            color: Colors.black.withAlpha(65),
-                                            child: AnimatedSwitcher(
-                                              duration: const Duration(
-                                                  milliseconds: 400),
-                                              child: Align(
-                                                  alignment: Alignment.topLeft,
-                                                  child: FullScreenBodyMacos(
-                                                    showLyrics: showLyrics,
-                                                    size: size,
-                                                    mix: mediaItemManager
-                                                                .currentMediaItem !=
-                                                            null
-                                                        ? mediaItemManager
+                                        switchInCurve: Curves.fastOutSlowIn,
+                                        switchOutCurve:
+                                            Curves.fastEaseInToSlowEaseOut,
+                                        child: BlurHashh(
+                                          key: ValueKey(
+                                            '${nowPlaying.blurhash}${nowPlaying.currentMediaItemId}',
+                                          ),
+                                          hash: nowPlaying.blurhash,
+                                        ),
+                                      ),
+                                      AnimatedSwitcher(
+                                        duration: const Duration(
+                                          milliseconds: 500,
+                                        ),
+                                        switchInCurve: Curves.fastOutSlowIn,
+                                        switchOutCurve:
+                                            Curves.fastEaseInToSlowEaseOut,
+                                        child: Container(
+                                          key: ValueKey(
+                                            nowPlaying.currentMediaItem,
+                                          ),
+                                          color: Colors.black.withAlpha(65),
+                                          child: AnimatedSwitcher(
+                                            duration: const Duration(
+                                              milliseconds: 400,
+                                            ),
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: FullScreenBodyMacos(
+                                                showLyrics: showLyrics,
+                                                size: size,
+                                                mix:
+                                                    nowPlaying
+                                                            .currentMediaItem !=
+                                                        null
+                                                    ? nowPlaying
+                                                              .currentMediaItem!
+                                                              .extras!['mix'] ??
+                                                          false ||
+                                                              RegExp(
+                                                                r'Mix #\d{1,2}',
+                                                              ).hasMatch(
+                                                                nowPlaying
                                                                     .currentMediaItem!
-                                                                    .extras![
-                                                                "mix"] ??
-                                                            false ||
-                                                                RegExp(r'Mix #\d{1,2}').hasMatch(
-                                                                    mediaItemManager
-                                                                        .currentMediaItem!
-                                                                        .title)
-                                                        : false,
-                                                    mediaItem: mediaItemManager
-                                                        .currentMediaItem!,
-                                                    audioServiceHandler:
-                                                        mediaItemManager
-                                                            .audioServiceHandler,
-                                                    artistJson: mediaItemManager
-                                                        .currentMediaItem!
-                                                        .extras!["artists"],
-                                                    mediaItemManager:
-                                                        mediaItemManager,
-                                                    changeShowLyrics: () {
-                                                      setState(() {
-                                                        showLyrics =
-                                                            !showLyrics;
-                                                      });
-                                                    },
-                                                  )),
+                                                                    .title,
+                                                              )
+                                                    : false,
+                                                mediaItem: nowPlaying
+                                                    .currentMediaItem!,
+                                                player: context.player,
+                                                artistJson: nowPlaying
+                                                    .currentMediaItem!
+                                                    .extras!['artists'],
+                                                nowPlaying: nowPlaying,
+                                                changeShowLyrics: () {
+                                                  setState(() {
+                                                    showLyrics = !showLyrics;
+                                                  });
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    )
-                                  : const SizedBox(
-                                      key: ValueKey(false),
-                                    ),
-                            ),
-                          );
-                        },
-                      )
-                    ],
-                  )
-                : const SizedBox();
-          },
-        ),
+                                      ),
+                                    ],
+                                  )
+                                : const SizedBox(key: ValueKey(false)),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                )
+              : const SizedBox();
+        },
       ),
     );
   }

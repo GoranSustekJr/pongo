@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/phone/inkwell.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../domain/models/catalog/track.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/phone/inkwell.dart';
+import '../../../../core/ui/space.dart';
 
 class LocalsTile extends StatelessWidget {
   final Track track;
@@ -29,12 +29,12 @@ class LocalsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double radius = 15;
-    BorderRadius borderRadius = BorderRadius.only(
-      topLeft: first ? Radius.circular(radius) : Radius.zero,
-      topRight: first ? Radius.circular(radius) : Radius.zero,
-      bottomLeft: last ? Radius.circular(radius) : Radius.zero,
-      bottomRight: last ? Radius.circular(radius) : Radius.zero,
+    const double radius = 15;
+    final BorderRadius borderRadius = BorderRadius.only(
+      topLeft: first ? const Radius.circular(radius) : Radius.zero,
+      topRight: first ? const Radius.circular(radius) : Radius.zero,
+      bottomLeft: last ? const Radius.circular(radius) : Radius.zero,
+      bottomRight: last ? const Radius.circular(radius) : Radius.zero,
     );
 
     final Widget child = Column(
@@ -45,11 +45,9 @@ class LocalsTile extends StatelessWidget {
           Container(
             height: 1,
             width: MediaQuery.of(context).size.width - 75,
-            color: Col.onIcon.withAlpha(50),
+            color: context.colors.onIcon.withAlpha(50),
           ),
-        Expanded(
-          child: Container(),
-        ),
+        Expanded(child: Container()),
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -60,26 +58,29 @@ class LocalsTile extends StatelessWidget {
                 height: 50,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(7.5),
-                  color: Col.realBackground.withAlpha(150),
+                  color: context.colors.realBackground.withAlpha(150),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7.5),
-                  child: track.image ==
+                  child:
+                      track.image ==
                           null //!track["track"].keys.contains("album")
                       ? Center(
-                          child: Icon(AppIcons.blankTrack, color: Col.icon),
+                          child: Icon(
+                            AppIcons.blankTrack,
+                            color: context.colors.icon,
+                          ),
                         )
                       : FadeInImage(
                           width: 250,
                           fit: BoxFit.cover,
                           height: 250,
-                          placeholder:
-                              const AssetImage('assets/images/placeholder.png'),
+                          placeholder: const AssetImage(
+                            'assets/images/placeholder.png',
+                          ),
                           fadeInDuration: const Duration(milliseconds: 200),
                           fadeOutDuration: const Duration(milliseconds: 200),
-                          image: FileImage(
-                            File(track.image!.path),
-                          ),
+                          image: FileImage(File(track.image!.path)),
                         ),
                 ),
               ),
@@ -98,7 +99,7 @@ class LocalsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.5,
                       fontWeight: FontWeight.w600,
-                      color: forceWhite ? Colors.white : Col.text,
+                      color: forceWhite ? Colors.white : context.colors.text,
                     ),
                   ),
                   razh(2.5),
@@ -109,21 +110,18 @@ class LocalsTile extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w400,
-                      color:
-                          forceWhite ? Colors.white : Col.text.withAlpha(200),
+                      color: forceWhite
+                          ? Colors.white
+                          : context.colors.text.withAlpha(200),
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(
-              child: trailing,
-            ),
+            SizedBox(child: trailing),
           ],
         ),
-        Expanded(
-          child: Container(),
-        ),
+        Expanded(child: Container()),
       ],
     );
 
@@ -143,9 +141,7 @@ class LocalsTile extends StatelessWidget {
                   ),
                   child: CupertinoButton(
                     padding: EdgeInsets.zero,
-                    onPressed: () {
-                      function();
-                    },
+                    onPressed: function,
                     child: child,
                   ),
                 )
@@ -161,9 +157,7 @@ class LocalsTile extends StatelessWidget {
                       ),
                       child: child,
                     ),
-                    () {
-                      function();
-                    },
+                    function,
                   ),
                 ),
         ),

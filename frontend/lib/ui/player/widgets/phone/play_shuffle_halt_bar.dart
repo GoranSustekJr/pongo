@@ -1,10 +1,8 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_text_button.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/ui/phone/buttons/icon_text_button.dart';
+import '../../view_models/player_view_model.dart';
 
 /// Play and shuffle buttons of a track list, or a halt button while that list
 /// is the one playing. Lists that support editing swap to [editActions].
@@ -37,8 +35,7 @@ class PlayShuffleHaltBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final player = context.player;
     final dimmed = color.withAlpha(125);
     final curve = editActions != null ? Curves.fastOutSlowIn : Curves.linear;
 
@@ -46,14 +43,16 @@ class PlayShuffleHaltBar extends StatelessWidget {
         TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: color);
 
     return StreamBuilder(
-      stream: audioServiceHandler.mediaItem.stream,
+      stream: player.currentItemStream,
       builder: (context, mediaItemStream) {
         final item = mediaItemStream.data;
-        final showPlay = item == null ||
+        final showPlay =
+            item == null ||
             playingId != '${item.id.split('.')[0]}.${item.id.split('.')[1]}';
         final playColor = loadingShuffle ? dimmed : color;
-        final shuffleColor =
-            missingTracks.isNotEmpty || loadingShuffle ? dimmed : color;
+        final shuffleColor = missingTracks.isNotEmpty || loadingShuffle
+            ? dimmed
+            : color;
 
         final Widget buttons = AnimatedSwitcher(
           key: const ValueKey(false),
@@ -66,14 +65,24 @@ class PlayShuffleHaltBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    if (frontWidget != null) frontWidget!,
-                    iconTextButton(AppIcons.play, "Play", style(playColor),
-                        play, playColor,
-                        padding: EdgeInsets.zero),
-                    iconTextButton(AppIcons.shuffle, " Shuffle",
-                        style(shuffleColor), shuffle, shuffleColor,
-                        padding: EdgeInsets.zero),
-                    if (endWidget != null) endWidget!,
+                    ?frontWidget,
+                    iconTextButton(
+                      AppIcons.play,
+                      'Play',
+                      style(playColor),
+                      play,
+                      playColor,
+                      padding: EdgeInsets.zero,
+                    ),
+                    iconTextButton(
+                      AppIcons.shuffle,
+                      ' Shuffle',
+                      style(shuffleColor),
+                      shuffle,
+                      shuffleColor,
+                      padding: EdgeInsets.zero,
+                    ),
+                    ?endWidget,
                   ],
                 )
               : Row(
@@ -81,12 +90,18 @@ class PlayShuffleHaltBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    if (frontWidget != null) frontWidget!,
-                    iconTextButton(AppIcons.halt, " Halt", style(color),
-                        () async {
-                      await audioServiceHandler.halt();
-                    }, color, padding: EdgeInsets.zero),
-                    if (endWidget != null) endWidget!,
+                    ?frontWidget,
+                    iconTextButton(
+                      AppIcons.halt,
+                      ' Halt',
+                      style(color),
+                      () async {
+                        await player.halt();
+                      },
+                      color,
+                      padding: EdgeInsets.zero,
+                    ),
+                    ?endWidget,
                   ],
                 ),
         );

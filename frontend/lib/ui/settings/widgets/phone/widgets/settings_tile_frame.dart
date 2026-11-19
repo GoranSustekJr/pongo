@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:liquid_glass/liquid_glass.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/shared/widgets/phone/inkwell.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/phone/inkwell.dart';
+import '../../../../core/ui/phone/liquid_glass_background.dart';
 
 /// Row layout and grouped card shared by every settings tile.
 Widget settingsTileFrame(
@@ -15,10 +15,10 @@ Widget settingsTileFrame(
   required String? subtitle,
   required List<Widget> trailing,
   required Function() onTap,
-  double titleSize = 13,
-  double subtitleSize = 9,
+  double titleSize = 15,
+  double subtitleSize = 11,
 }) {
-  const radius = Radius.circular(15);
+  const radius = Radius.circular(18);
   final borderRadius = BorderRadius.only(
     topLeft: first ? radius : Radius.zero,
     topRight: first ? radius : Radius.zero,
@@ -33,7 +33,7 @@ Widget settingsTileFrame(
         Container(
           height: 1,
           width: MediaQuery.of(context).size.width - 70,
-          color: Col.onIcon.withAlpha(50),
+          color: context.colors.onIcon.withAlpha(50),
         ),
       Row(
         children: [
@@ -45,7 +45,10 @@ Widget settingsTileFrame(
                 Text(
                   title,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: titleSize, color: Col.text),
+                  style: TextStyle(
+                    fontSize: titleSize,
+                    color: context.colors.text,
+                  ),
                 ),
                 if (subtitle != null)
                   Text(
@@ -53,7 +56,7 @@ Widget settingsTileFrame(
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: subtitleSize,
-                      color: Col.text.withAlpha(150),
+                      color: context.colors.text.withAlpha(150),
                     ),
                   ),
               ],
@@ -67,7 +70,7 @@ Widget settingsTileFrame(
 
   final decoration = BoxDecoration(
     borderRadius: borderRadius,
-    color: Col.primaryCard.withAlpha(150),
+    color: context.colors.primaryCard.withAlpha(150),
   );
   final width = MediaQuery.of(context).size.width - 20;
 
@@ -75,10 +78,10 @@ Widget settingsTileFrame(
     padding: const EdgeInsets.symmetric(horizontal: 10),
     child: ClipRRect(
       child: kIsApple
-          ? LiquidGlass(
+          ? GlassSurface(
               blur: 0,
               borderRadius: borderRadius,
-              tint: Col.text,
+              tint: context.colors.text,
               child: Container(
                 height: 50,
                 width: width,
@@ -107,14 +110,18 @@ Widget settingsTileFrame(
 Widget settingsTileDivider() {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 15),
-    child: Container(
-      height: 25,
-      width: 1,
-      color: Col.onIcon.withAlpha(200),
+    child: Builder(
+      builder: (context) => Container(
+        height: 25,
+        width: 1,
+        color: context.colors.onIcon.withAlpha(200),
+      ),
     ),
   );
 }
 
 Widget settingsTileIcon(IconData icon) {
-  return Icon(icon, color: Col.onIcon, size: 27.5);
+  return Builder(
+    builder: (context) => Icon(icon, color: context.colors.onIcon, size: 27.5),
+  );
 }

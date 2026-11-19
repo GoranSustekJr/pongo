@@ -2,22 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/navigation/navigation.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/core/utils/calculate_image_resolution.dart';
-import 'package:pongo/features/album/data/album_api.dart';
-import 'package:pongo/features/album/presentation/phone/album_phone.dart';
-import 'package:pongo/features/artist/data/artist_api.dart';
-import 'package:pongo/features/artist/presentation/phone/artist_phone.dart';
-import 'package:pongo/features/home/presentation/phone/home_main_phone.dart';
-import 'package:pongo/features/library/presentation/phone/library_main_phone.dart';
-import 'package:pongo/features/player/presentation/phone/playing_details/playing_details_phone.dart';
-import 'package:pongo/features/playlists/presentation/phone/handler/playlist_handler_phone.dart';
-import 'package:pongo/features/settings/presentation/phone/settings_main_phone.dart';
-import 'package:pongo/features/shell/presentation/phone/bottom_navigation_bar.dart';
-import 'package:pongo/shared/models/catalog/album.dart';
-import 'package:pongo/shared/models/catalog/artist.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
+import '../../../../routing/navigation.dart';
+import '../../../../utils/result.dart';
+import '../../../album/widgets/phone/album_phone.dart';
+import '../../../app/view_models/app_settings_view_model.dart';
+import '../../../artist/widgets/phone/artist_phone.dart';
+import '../../../home/widgets/phone/home_main_phone.dart';
+import '../../../library/widgets/phone/library_main_phone.dart';
+import '../../../player/widgets/phone/playing_details/playing_details_phone.dart';
+import '../../../playlists/widgets/phone/handler/playlist_handler_phone.dart';
+import '../../../settings/widgets/phone/settings_main_phone.dart';
+import '../../view_models/shell_view_model.dart';
+import 'bottom_navigation_bar.dart';
 
 class BottomNavigationScreenPhone extends StatefulWidget {
   const BottomNavigationScreenPhone({super.key});
@@ -33,7 +29,6 @@ class _BottomNavigationScreenPhoneState
   @override
   bool get wantKeepAlive => true;
 
-  final homeNavigatorKey = GlobalKey<NavigatorState>();
   final libraryHomeNavigatorKey = GlobalKey<NavigatorState>();
   final settingsNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -42,10 +37,8 @@ class _BottomNavigationScreenPhoneState
   @override
   void initState() {
     super.initState();
-    notificationsContext.value = context;
-
     pages = [
-      HomeMainPhone(homeNavigatorKey: homeNavigatorKey),
+      HomeMainPhone(homeNavigatorKey: context.shell.homeNavigatorKey),
       LibraryMainPhone(libraryHomeNavigatorKey: libraryHomeNavigatorKey),
       SettingsMainPhone(settingsHomeNavigatorKey: settingsNavigatorKey),
     ];
@@ -54,26 +47,26 @@ class _BottomNavigationScreenPhoneState
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: true,
       extendBodyBehindAppBar: true,
       bottomNavigationBar: const Bottom(),
       body: ValueListenableBuilder(
-        valueListenable: navigationBarIndex,
+        valueListenable: context.shell.navigationBarIndex,
         builder: (context, index, child) {
           return Stack(
             children: [
               // The views
               IndexedStack(
-                index: navigationBarIndex.value,
+                index: context.shell.navigationBarIndex.value,
                 children: pages,
               ),
 
               // Playing details view
               ValueListenableBuilder(
-                valueListenable: currentTrackHeight,
+                valueListenable: context.shell.currentTrackHeight,
                 builder: (context, index, child) {
                   return Positioned(
                     left: 0,
@@ -84,11 +77,15 @@ class _BottomNavigationScreenPhoneState
                       onVerticalDragUpdate: (details) {
                         // Update the panel height when dragging
                         setState(() {
-                          currentTrackHeight.value -= details.delta.dy;
-                          if (currentTrackHeight.value > size.height) {
-                            currentTrackHeight.value = size.height;
-                          } else if (currentTrackHeight.value < 0) {
-                            currentTrackHeight.value = 0;
+                          context.shell.currentTrackHeight.value -=
+                              details.delta.dy;
+                          if (context.shell.currentTrackHeight.value >
+                              size.height) {
+                            context.shell.currentTrackHeight.value =
+                                size.height;
+                          } else if (context.shell.currentTrackHeight.value <
+                              0) {
+                            context.shell.currentTrackHeight.value = 0;
                           }
                         });
                       },
@@ -101,18 +98,22 @@ class _BottomNavigationScreenPhoneState
                           if (details.primaryVelocity != null &&
                               details.primaryVelocity! < -dragThreshold) {
                             // If dragged up, snap to full height
-                            currentTrackHeight.value = size.height;
+                            context.shell.currentTrackHeight.value =
+                                size.height;
                           } else if (details.primaryVelocity != null &&
                               details.primaryVelocity! > dragThreshold) {
                             // If dragged down, snap back to bottom
-                            currentTrackHeight.value = 0;
+                            context.shell.currentTrackHeight.value = 0;
                           } else {
-                            // If not enough velocity, check current height to decide snap
-                            if (currentTrackHeight.value > size.height - 50) {
-                              currentTrackHeight.value =
+                            // If not enough velocity, check current height to
+                            // decide snap
+                            if (context.shell.currentTrackHeight.value >
+                                size.height - 50) {
+                              context.shell.currentTrackHeight.value =
                                   size.height; // Snap to full height
                             } else {
-                              currentTrackHeight.value = 0; // Snap to bottom
+                              context.shell.currentTrackHeight.value =
+                                  0; // Snap to bottom
                             }
                           }
                         });
@@ -120,55 +121,40 @@ class _BottomNavigationScreenPhoneState
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 350),
                         curve: Curves.fastEaseInToSlowEaseOut,
-                        height: currentTrackHeight.value,
+                        height: context.shell.currentTrackHeight.value,
                         child: RepaintBoundary(
                           child: PlayingDetailsPhone(
                             showArtist: (aid) async {
-                              currentTrackHeight.value = 0;
-                              navigationBarIndex.value = 0;
-                              Map artist = await ArtistApi()
-                                  .getImage(context, jsonDecode(aid)["id"]);
-
-                              Navigations().nextScreen(
-                                  searchScreenContext.value,
-                                  ArtistPhone(
-                                      artist: Artist(
-                                          id: jsonDecode(aid)["id"],
-                                          name: jsonDecode(aid)["name"],
-                                          image: calculateBestImageForTrack(
-                                              (artist["images"]
-                                                      as List<dynamic>)
-                                                  .map((image) =>
-                                                      AlbumImagesTrack(
-                                                          url: image["url"],
-                                                          height:
-                                                              image["height"],
-                                                          width:
-                                                              image["width"]))
-                                                  .toList())),
-                                      context: context));
+                              final shell = context.shell;
+                              shell.showHomeTab();
+                              final artist = jsonDecode(aid) as Map;
+                              final result = await shell.artist(
+                                id: artist['id'] as String,
+                                name: artist['name'] as String,
+                              );
+                              final navigator =
+                                  shell.homeNavigatorKey.currentState;
+                              if (result case Ok(:final value)
+                                  when navigator != null && context.mounted) {
+                                Navigations().push(
+                                  navigator,
+                                  ArtistPhone(artist: value, context: context),
+                                );
+                              }
                             },
                             showAlbum: (salid) async {
-                              currentTrackHeight.value = 0;
-                              navigationBarIndex.value = 0;
-                              Map album =
-                                  await AlbumApi().getData(context, salid);
-                              Navigations().nextScreen(
-                                searchScreenContext.value,
-                                AlbumPhone(
-                                  album: Album(
-                                      id: album["id"],
-                                      name: album["name"],
-                                      type: album["album_type"],
-                                      artists: album["artists"].map((artist) {
-                                        return artist[
-                                            "name"]; //{artist["id"]: artist["name"]};
-                                      }).toList(),
-                                      image: calculateWantedResolution(
-                                          album["images"], 300, 300)),
-                                  context: context,
-                                ),
-                              );
+                              final shell = context.shell;
+                              shell.showHomeTab();
+                              final result = await shell.album(salid);
+                              final navigator =
+                                  shell.homeNavigatorKey.currentState;
+                              if (result case Ok(:final value)
+                                  when navigator != null && context.mounted) {
+                                Navigations().push(
+                                  navigator,
+                                  AlbumPhone(album: value, context: context),
+                                );
+                              }
                             },
                           ),
                         ),
@@ -180,36 +166,45 @@ class _BottomNavigationScreenPhoneState
 
               // Playlist handler view
               ValueListenableBuilder(
-                valueListenable: playlistHandler,
+                valueListenable: context.shell.playlistHandler,
                 builder: (context, value, child) {
                   return AnimatedPositioned(
                     duration: Duration(
-                        milliseconds: animations
-                            ? playlistHandler.value != null
+                      milliseconds: context.readSettings.useAnimations
+                          ? context.shell.playlistHandler.value != null
                                 ? 0
                                 : 300
-                            : 0),
-                    top: playlistHandler.value != null ? 0 : size.height,
+                          : 0,
+                    ),
+                    top: context.shell.playlistHandler.value != null
+                        ? 0
+                        : size.height,
                     curve: Curves.easeIn,
                     child: AnimatedOpacity(
                       duration: Duration(
-                          milliseconds: animations
-                              ? playlistHandler.value != null
+                        milliseconds: context.readSettings.useAnimations
+                            ? context.shell.playlistHandler.value != null
                                   ? 500
                                   : 300
-                              : 0),
+                            : 0,
+                      ),
                       curve: Curves.fastEaseInToSlowEaseOut,
-                      opacity: playlistHandler.value != null ? 1 : 0,
+                      opacity: context.shell.playlistHandler.value != null
+                          ? 1
+                          : 0,
                       child: AnimatedSwitcher(
-                        duration: Duration(milliseconds: animations ? 350 : 0),
-                        child: playlistHandler.value != null
+                        duration: Duration(
+                          milliseconds: context.readSettings.useAnimations
+                              ? 350
+                              : 0,
+                        ),
+                        child: context.shell.playlistHandler.value != null
                             ? PlaylistHandlerPhone(
                                 key: const ValueKey(true),
-                                playlistHandler: playlistHandler.value!,
+                                playlistHandler:
+                                    context.shell.playlistHandler.value!,
                               )
-                            : const SizedBox(
-                                key: ValueKey(false),
-                              ),
+                            : const SizedBox(key: ValueKey(false)),
                       ),
                     ),
                   );

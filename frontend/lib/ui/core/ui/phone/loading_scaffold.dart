@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
+import '../../../../utils/platform.dart';
+import 'buttons/back_button.dart';
 
-loadingScaffold(context, ValueKey key) {
-  Size size = MediaQuery.of(context).size;
+SizedBox loadingScaffold(BuildContext context, ValueKey key) {
+  final Size size = MediaQuery.of(context).size;
   return SizedBox(
     width: kIsDesktop ? 800 : size.width,
     height: kIsDesktop ? 500 : size.height,
@@ -19,9 +19,7 @@ loadingScaffold(context, ValueKey key) {
           title: Row(
             children: [
               backButton(context),
-              Expanded(
-                child: Container(),
-              ),
+              Expanded(child: Container()),
             ],
           ),
         ),

@@ -1,12 +1,12 @@
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../app/view_models/app_settings_view_model.dart';
+import '../../../core/ui/space.dart';
 
 class TrackPlainLyrics extends StatelessWidget {
-  final List<dynamic> lyrics;
+  final List<String> lyrics;
   final double Function(Size size) height;
   final double Function(Size size) width;
   final double Function(Size size) lineWidth;
@@ -23,7 +23,7 @@ class TrackPlainLyrics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
 
     return Padding(
       padding: const EdgeInsets.only(left: 10),
@@ -37,27 +37,33 @@ class TrackPlainLyrics extends StatelessWidget {
             child: SingleChildScrollView(
               controller: scrollController,
               physics: const ScrollPhysics(),
-              child: lyrics[0] == ""
+              child: lyrics[0] == ''
                   ? Column(
                       children: [
                         Text(
                           AppLocalizations.of(context).noplainlyrics,
                           style: const TextStyle(
-                              fontWeight: FontWeight.w700, fontSize: 29),
+                            fontWeight: FontWeight.w700,
+                            fontSize: 29,
+                          ),
                         ),
                         Text(
                           AppLocalizations.of(context).wanttohelpoutlyrics,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 15),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
                         ),
                       ],
                     )
                   : Column(
                       children: [
-                        razh(size.height / 2 -
-                            AppBar().preferredSize.height -
-                            MediaQuery.of(context).padding.top),
+                        razh(
+                          size.height / 2 -
+                              AppBar().preferredSize.height -
+                              MediaQuery.of(context).padding.top,
+                        ),
                         ListView.builder(
                           shrinkWrap: true,
                           physics: const BouncingScrollPhysics(),
@@ -75,24 +81,24 @@ class TrackPlainLyrics extends StatelessWidget {
                                         child: SizedBox(
                                           width: lineWidth(size),
                                           child: Text(
-                                            "${lyrics[index]}",
+                                            lyrics[index],
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w700,
-                                              fontSize: lyrics[index] == " \n"
+                                              fontSize: lyrics[index] == ' \n'
                                                   ? 15
                                                   : 35,
                                             ),
                                             maxLines: null,
                                             softWrap: true,
-                                            textAlign:
-                                                currentLyricsTextAlignment
-                                                    .value,
+                                            textAlign: context
+                                                .readSettings
+                                                .lyricsTextAlign,
                                           ),
                                         ),
-                                      )
+                                      ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                             );

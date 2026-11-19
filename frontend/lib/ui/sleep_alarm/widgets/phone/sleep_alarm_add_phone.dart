@@ -3,20 +3,22 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/notifications/notifications.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/features/sleep_alarm/models/sleep_alarm.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/buttons/text_button.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../domain/models/sleep_alarm/sleep_alarm.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../core/notifications.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/ui/buttons/text_button.dart';
+import '../../../core/ui/space.dart';
 
 class SleepAlarmAddPhone extends StatefulWidget {
   final SleepAlarm? sleepAlarm;
-  final Function(SleepAlarm) insertSleepAlarm;
+  final Future<void> Function(SleepAlarm) insertSleepAlarm;
 
-  const SleepAlarmAddPhone(
-      {super.key, required this.sleepAlarm, required this.insertSleepAlarm});
+  const SleepAlarmAddPhone({
+    super.key,
+    required this.sleepAlarm,
+    required this.insertSleepAlarm,
+  });
 
   @override
   State<SleepAlarmAddPhone> createState() => _SleepAlarmAddPhoneState();
@@ -64,7 +66,8 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final l10n = AppLocalizations.of(context);
+    final Size size = MediaQuery.of(context).size;
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(25)),
       child: BackdropFilter(
@@ -81,37 +84,32 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
             children: [
               Row(
                 children: [
-                  textButton(AppLocalizations.of(context).cancel, () {
-                    Navigator.of(context).pop();
-                  },
-                      const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w700)),
-                  Expanded(
-                      child: textButton(AppLocalizations.of(context).sleep,
-                          () {}, const TextStyle(color: Colors.white),
-                          edgeInsets: EdgeInsets.zero)),
                   textButton(
-                      update
-                          ? AppLocalizations.of(context).change
-                          : AppLocalizations.of(context).create, () async {
-                    if (update) {
-                      SleepAlarm sleepAlarm = SleepAlarm(
-                        id: widget.sleepAlarm!.id,
-                        sleep: sleep,
-                        sleepDuration: sleepDuration,
-                        sleepLinear: sleepLinear,
-                        alarmClock: alarmClock,
-                        wakeTime: wakeTimeHour * 60 + wakeTimeMin,
-                        beforeEndTimeMin: beforeEndTimeMin,
-                        alarmClockLinear: alarmClockLinear,
-                      );
-                      await DatabaseHelper().updateSleepAlarm(sleepAlarm);
-                      widget.insertSleepAlarm(sleepAlarm);
+                    AppLocalizations.of(context).cancel,
+                    () {
                       Navigator.of(context).pop();
-                    } else {
-                      if (sleep || alarmClock) {
-                        SleepAlarm sleepAlarm = SleepAlarm(
-                          id: -1,
+                    },
+                    const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Expanded(
+                    child: textButton(
+                      AppLocalizations.of(context).sleep,
+                      () {},
+                      const TextStyle(color: Colors.white),
+                      edgeInsets: EdgeInsets.zero,
+                    ),
+                  ),
+                  textButton(
+                    update
+                        ? AppLocalizations.of(context).change
+                        : AppLocalizations.of(context).create,
+                    () async {
+                      if (update) {
+                        final SleepAlarm sleepAlarm = SleepAlarm(
+                          id: widget.sleepAlarm!.id,
                           sleep: sleep,
                           sleepDuration: sleepDuration,
                           sleepLinear: sleepLinear,
@@ -120,48 +118,60 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                           beforeEndTimeMin: beforeEndTimeMin,
                           alarmClockLinear: alarmClockLinear,
                         );
-                        int id =
-                            await DatabaseHelper().insertSleepAlarm(sleepAlarm);
-                        widget.insertSleepAlarm(SleepAlarm(
-                          id: id,
-                          sleep: sleep,
-                          sleepDuration: sleepDuration,
-                          sleepLinear: sleepLinear,
-                          alarmClock: alarmClock,
-                          wakeTime: wakeTimeHour * 60 + wakeTimeMin,
-                          beforeEndTimeMin: beforeEndTimeMin,
-                          alarmClockLinear: alarmClockLinear,
-                        ));
-                        Navigator.of(context).pop();
+                        await widget.insertSleepAlarm(sleepAlarm);
+                        if (context.mounted) Navigator.of(context).pop();
                       } else {
-                        Notifications().showWarningNotification(
+                        if (sleep || alarmClock) {
+                          final SleepAlarm sleepAlarm = SleepAlarm(
+                            id: -1,
+                            sleep: sleep,
+                            sleepDuration: sleepDuration,
+                            sleepLinear: sleepLinear,
+                            alarmClock: alarmClock,
+                            wakeTime: wakeTimeHour * 60 + wakeTimeMin,
+                            beforeEndTimeMin: beforeEndTimeMin,
+                            alarmClockLinear: alarmClockLinear,
+                          );
+                          await widget.insertSleepAlarm(sleepAlarm);
+                          if (context.mounted) Navigator.of(context).pop();
+                        } else {
+                          Notifications().showWarningNotification(
                             context,
                             AppLocalizations.of(context)
-                                .cannotcreateasleepalarmwithoutthe);
+                                .cannotcreateasleepalarmwithoutthe,
+                          );
+                        }
                       }
-                    }
-                  },
-                      const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w700)),
+                    },
+                    const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ],
               ),
               razh(20),
               Row(
                 children: [
-                  textButton(AppLocalizations.of(context).sleepin, () {
-                    setState(() {
-                      sleep = !sleep;
-                    });
-                  }, const TextStyle(color: Colors.white),
-                      edgeInsets: const EdgeInsets.only(left: 15, right: 5)),
+                  textButton(
+                    AppLocalizations.of(context).sleepin,
+                    () {
+                      setState(() {
+                        sleep = !sleep;
+                      });
+                    },
+                    const TextStyle(color: Colors.white),
+                    edgeInsets: const EdgeInsets.only(left: 15, right: 5),
+                  ),
                   CupertinoSwitch(
-                      value: sleep,
-                      activeColor: Col.onIcon,
-                      onChanged: (val) {
-                        setState(() {
-                          sleep = val;
-                        });
-                      }),
+                    value: sleep,
+                    activeTrackColor: Col.primary,
+                    onChanged: (val) {
+                      setState(() {
+                        sleep = val;
+                      });
+                    },
+                  ),
                 ],
               ),
               AnimatedContainer(
@@ -178,7 +188,8 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                         height: 120,
                         child: CupertinoPicker(
                           scrollController: FixedExtentScrollController(
-                              initialItem: sleepDuration - 1),
+                            initialItem: sleepDuration - 1,
+                          ),
                           itemExtent: 40, // Height of each item
                           onSelectedItemChanged: (int index) {
                             setState(() {
@@ -187,16 +198,22 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                           },
                           children: List.generate(60, (index) {
                             return Center(
-                                child: Text('${index + 1}',
-                                    style: const TextStyle(
-                                        fontSize: 20, color: Colors.white)));
+                              child: Text(
+                                '${index + 1}',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            );
                           }),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 15),
                         child: Text(
-                          "${AppLocalizations.of(context).pongowillgraduallylowerthevolumefor} $sleepDuration min",
+                          '${l10n.pongowillgraduallylowerthevolumefor} '
+                          '$sleepDuration min',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -214,20 +231,25 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
               razh(20),
               Row(
                 children: [
-                  textButton(AppLocalizations.of(context).alarm, () {
-                    setState(() {
-                      alarmClock = !alarmClock;
-                    });
-                  }, const TextStyle(color: Colors.white),
-                      edgeInsets: const EdgeInsets.only(left: 15, right: 5)),
+                  textButton(
+                    AppLocalizations.of(context).alarm,
+                    () {
+                      setState(() {
+                        alarmClock = !alarmClock;
+                      });
+                    },
+                    const TextStyle(color: Colors.white),
+                    edgeInsets: const EdgeInsets.only(left: 15, right: 5),
+                  ),
                   CupertinoSwitch(
-                      value: alarmClock,
-                      activeColor: Col.onIcon,
-                      onChanged: (val) {
-                        setState(() {
-                          alarmClock = val;
-                        });
-                      }),
+                    value: alarmClock,
+                    activeTrackColor: Col.primary,
+                    onChanged: (val) {
+                      setState(() {
+                        alarmClock = val;
+                      });
+                    },
+                  ),
                 ],
               ),
               AnimatedContainer(
@@ -249,7 +271,8 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                             Expanded(
                               child: CupertinoPicker(
                                 scrollController: FixedExtentScrollController(
-                                    initialItem: wakeTimeHour),
+                                  initialItem: wakeTimeHour,
+                                ),
                                 itemExtent: 40,
                                 onSelectedItemChanged: (index) {
                                   setState(() {
@@ -258,10 +281,14 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                                 },
                                 children: List.generate(24, (index) {
                                   return Center(
-                                      child: Text('$index h',
-                                          style: const TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.white)));
+                                    child: Text(
+                                      '$index h',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  );
                                 }),
                               ),
                             ),
@@ -270,7 +297,8 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                             Expanded(
                               child: CupertinoPicker(
                                 scrollController: FixedExtentScrollController(
-                                    initialItem: wakeTimeMin),
+                                  initialItem: wakeTimeMin,
+                                ),
                                 itemExtent: 40,
                                 onSelectedItemChanged: (index) {
                                   setState(() {
@@ -279,10 +307,14 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                                 },
                                 children: List.generate(60, (index) {
                                   return Center(
-                                      child: Text('$index min',
-                                          style: const TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.white)));
+                                    child: Text(
+                                      '$index min',
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  );
                                 }),
                               ),
                             ),
@@ -292,13 +324,14 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                       Container(
                         height: 1,
                         width: size.width,
-                        color: Col.onIcon.withAlpha(150),
+                        color: context.colors.onIcon.withAlpha(150),
                       ),
                       SizedBox(
                         height: 120,
                         child: CupertinoPicker(
                           scrollController: FixedExtentScrollController(
-                              initialItem: beforeEndTimeMin - 1),
+                            initialItem: beforeEndTimeMin - 1,
+                          ),
                           itemExtent: 40, // Height of each item
                           onSelectedItemChanged: (int index) {
                             setState(() {
@@ -307,16 +340,24 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
                           },
                           children: List.generate(60, (index) {
                             return Center(
-                                child: Text('${index + 1}',
-                                    style: const TextStyle(
-                                        fontSize: 20, color: Colors.white)));
+                              child: Text(
+                                '${index + 1}',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            );
                           }),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 15),
                         child: Text(
-                          "${AppLocalizations.of(context).pongowillgraduallyincreasethevolume} $beforeEndTimeMin min ${AppLocalizations.of(context).beforeyouneedtowakeupat} $wakeTimeHour:${(wakeTimeMin).toString().padLeft(2, '0')}",
+                          '${l10n.pongowillgraduallyincreasethevolume} '
+                          '$beforeEndTimeMin min '
+                          '${l10n.beforeyouneedtowakeupat} '
+                          '$wakeTimeHour:${wakeTimeMin.toString().padLeft(2, '0')}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -339,26 +380,3 @@ class _SleepAlarmAddPhoneState extends State<SleepAlarmAddPhone> {
     );
   }
 }
-
-/*
-  "donotterminatetheapp": "Do NOT terminate the app",
-  "cannotstartalarm": "Can't start the alarm",
-  "thequeuemustnotbeemptyinordertostartthealarm": "The queue must not be empty in order to start the alarm",
-  "maximumvolumeofthealarm": "Maximum volume of the alarm",
-  "createnewsleepalarm": "Create new sleep alarm",
-  "off": "Off",
-  "sleepin": "Sleep in",
-  "alarm": "Alarm",
-  "cannotcreateasleepalarmwithoutthe": "Cannot create a sleep alarm without the 'sleep in' or 'alarm'",
-  "pongowillgraduallylowerthevolumefor": "Pongo will gradually lower the volume for",
-  "pongowillgraduallyincreasethevolume": "Pongo will gradually increase the valume",
-  "beforeyouneedtowakeupat": "before you need to wake up at",
-  "about": "About",
-  "aboutpongo": "About Pongo",
-  "contactusviamail": "Contact us via mail",
-  "termsandconditions": "Terms & Conditions",
-  "ourtermsandconditions": "Our Terms & Conditions",
-  "privacypolicy": "Privacy Policy",
-  "ourprivacypolicy": "Our Privacy Policy",
-
- */

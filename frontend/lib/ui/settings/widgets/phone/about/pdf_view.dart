@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
 
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/phone/buttons/back_button.dart';
 
 class PDFView extends StatefulWidget {
   const PDFView({super.key});
@@ -13,17 +13,18 @@ class PDFView extends StatefulWidget {
 
 class _PDFViewState extends State<PDFView> {
   final pdfPinchController = PdfControllerPinch(
-    document:
-        PdfDocument.openAsset('assets/pdf/Terms_and_conditions_Pongo.pdf'),
+    document: PdfDocument.openAsset(
+      'assets/pdf/Terms_and_conditions_Pongo.pdf',
+    ),
   );
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return Container(
       key: const ValueKey(true),
       width: size.width,
       height: size.height,
-      decoration: AppConstants().backgroundBoxDecoration,
+      decoration: context.colors.backgroundBoxDecoration,
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
@@ -31,9 +32,7 @@ class _PDFViewState extends State<PDFView> {
           title: Row(
             children: [
               backButton(context),
-              Expanded(
-                child: Container(),
-              ),
+              Expanded(child: Container()),
             ],
           ),
         ),

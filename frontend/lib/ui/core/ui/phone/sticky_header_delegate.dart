@@ -21,7 +21,10 @@ class StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Padding(
       padding: padding, // Apply the padding here
       child: SizedBox.expand(child: child),

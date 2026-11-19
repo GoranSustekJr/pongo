@@ -1,8 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 
-import 'package:pongo/l10n/app_localizations.dart';
+import '../../../../../l10n/app_localizations.dart';
 
-Future<CustomButton> removeFavouriteAlert(context) async {
+Future<CustomButton> removeFavouriteAlert(BuildContext context) async {
   final ok = await FlutterPlatformAlert.showCustomAlert(
     windowTitle: AppLocalizations.of(context).removefromfavourites,
     text: AppLocalizations.of(context).removefromfavouritesbody,

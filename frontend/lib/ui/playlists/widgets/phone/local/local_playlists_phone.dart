@@ -1,27 +1,29 @@
-import 'package:blurhash_ffi/blurhash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/navigation/navigation.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/core/storage/database/database_helper.dart';
-import 'package:pongo/features/playlists/data/open_playlist.dart';
-import 'package:pongo/features/playlists/models/playlist_handler.dart';
-import 'package:pongo/features/playlists/presentation/phone/local/local_playlist_phone.dart';
-import 'package:pongo/features/playlists/presentation/phone/playlist_tile.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/buttons/text_button.dart';
-import 'package:pongo/shared/widgets/phone/action_sheets/continue_cancel_action_sheet.dart';
-import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/back_like_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/loading_scaffold.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../data/services/media/blurhash_service.dart';
+import '../../../../../domain/models/playlists/playlist_handler.dart';
+import '../../../../../domain/models/playlists/user_playlist.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../routing/navigation.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../app/view_models/app_settings_view_model.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/themes/dimens.dart';
+import '../../../../core/ui/app_blur.dart';
+import '../../../../core/ui/buttons/text_button.dart';
+import '../../../../core/ui/phone/action_sheets/continue_cancel_action_sheet.dart';
+import '../../../../core/ui/phone/buttons/back_button.dart';
+import '../../../../core/ui/phone/buttons/back_like_button.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../core/ui/phone/loading_scaffold.dart';
+import '../../../../core/ui/space.dart';
+import '../../../view_models/open_playlist.dart';
+import '../../../view_models/user_playlists_view_model.dart';
+import '../playlist_tile.dart';
+import 'local_playlist_phone.dart';
 
 class LocalPlaylistsPhone extends StatefulWidget {
   const LocalPlaylistsPhone({super.key});
@@ -31,61 +33,41 @@ class LocalPlaylistsPhone extends StatefulWidget {
 }
 
 class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
-  // Playlists
-  List<Map<String, dynamic>> playlists = [];
+  late final UserPlaylistsViewModel viewModel;
 
-  // Playlists length
-  int playlistsLength = 0;
-
-  // Show body
-  bool showBody = false;
-
-  // Memory images
-  List<MemoryImage?> coverImages = [];
+  bool get showBody => viewModel.showBody;
+  int get playlistsLength => viewModel.playlistsLength;
+  List<UserPlaylist> get playlists => viewModel.playlists;
 
   @override
   void initState() {
     super.initState();
-    initPlaylists();
+    viewModel = UserPlaylistsViewModel(
+      type: PlaylistHandlerType.offline,
+      playlists: context.read(),
+    );
+    viewModel.addListener(_onViewModelChanged);
   }
 
-  initPlaylists() async {
-    // First get length
-    int length = await DatabaseHelper().queryLocalPlaylistsLength();
-    setState(() {
-      playlistsLength = length;
-    });
+  void _onViewModelChanged() => setState(() {});
 
-    // Then get all playlists
-    List<Map<String, dynamic>> temp =
-        await DatabaseHelper().queryAllLocalPlaylists();
-
-    List<MemoryImage?> coverImges = [];
-    for (Map playlist in temp) {
-      if (playlist["cover"] != null) {
-        coverImges.add(MemoryImage(playlist["cover"]));
-      } else {
-        coverImges.add(null);
-      }
-    }
-
-    setState(() {
-      playlists = temp.toList();
-      coverImages = coverImges;
-      showBody = true;
-    });
+  @override
+  void dispose() {
+    viewModel.removeListener(_onViewModelChanged);
+    viewModel.dispose();
+    super.dispose();
   }
 
-  removePlaylist(int index) {
-    setState(() {
-      playlists.removeAt(index);
-    });
+  Future<String> _blurhashOf(UserPlaylist playlist) async {
+    final cover = playlist.cover;
+    if (cover == null) return context.colors.defaultBlurhash;
+    return context.read<BlurhashService>().encodeBytes(cover, detailed: false);
   }
 
   void newPlaylist() {
     OpenPlaylist().show(
       context,
-      PlaylistHandler(
+      const PlaylistHandler(
         type: PlaylistHandlerType.offline,
         function: PlaylistHandlerFunction.createPlaylist,
         track: null,
@@ -95,7 +77,7 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 400),
       child: showBody
@@ -103,7 +85,7 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
               key: const ValueKey(true),
               width: size.width,
               height: size.height,
-              decoration: AppConstants().backgroundBoxDecoration,
+              decoration: context.colors.backgroundBoxDecoration,
               child: Scaffold(
                 extendBodyBehindAppBar: true,
                 extendBody: true,
@@ -114,18 +96,19 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                       //floating: true,
                       pinned: true,
                       stretch: true,
-                      backgroundColor: useBlur.value
+                      backgroundColor: context.readSettings.useBlur
                           ? Col.transp
-                          : Col.realBackground.withAlpha(AppConstants().noBlur),
+                          : context.colors.realBackground.withAlpha(
+                              Dimens.noBlur,
+                            ),
                       automaticallyImplyLeading: false,
-                      expandedHeight:
-                          kIsApple ? size.height / 5 : size.height / 4,
+                      expandedHeight: kIsApple
+                          ? size.height / 5
+                          : size.height / 4,
                       title: Row(
                         children: [
                           backButton(context),
-                          Expanded(
-                            child: Container(),
-                          ),
+                          Expanded(child: Container()),
                           backLikeButton(
                             context,
                             CupertinoIcons.add,
@@ -135,17 +118,18 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                       ),
                       flexibleSpace: ClipRRect(
                         child: BackdropFilter(
-                          filter: appBlur(10),
+                          filter: appBlur(context, 10),
                           child: FlexibleSpaceBar(
                             centerTitle: true,
                             title: Text(
                               AppLocalizations.of(context).offlineplaylists,
                               style: TextStyle(
-                                  fontSize: kIsApple ? 25 : 30,
-                                  fontWeight: kIsApple
-                                      ? FontWeight.w700
-                                      : FontWeight.w800,
-                                  color: Col.text),
+                                fontSize: kIsApple ? 25 : 30,
+                                fontWeight: kIsApple
+                                    ? FontWeight.w700
+                                    : FontWeight.w800,
+                                color: context.colors.text,
+                              ),
                               textAlign: TextAlign.center,
                               maxLines: 1,
                             ),
@@ -171,78 +155,60 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                                       padding: EdgeInsets.only(
                                         top: index == 0
                                             ? AppBar().preferredSize.height *
-                                                1.5
+                                                  1.5
                                             : 0,
                                         bottom: index == playlists.length - 1
                                             ? MediaQuery.of(context)
-                                                    .padding
-                                                    .bottom +
-                                                10
+                                                      .padding
+                                                      .bottom +
+                                                  10
                                             : 0,
                                       ),
                                       child: PlaylistTile(
                                         first: index == 0,
                                         last: index == playlists.length - 1,
-                                        cover: coverImages[index]?.bytes,
-                                        title: playlists[index]["title"],
+                                        cover: playlists[index].cover,
+                                        title: playlists[index].title,
                                         subtitle: AppLocalizations.of(context)
                                             .offlineplaylist,
                                         function: () async {
                                           final String blurHash =
-                                              coverImages[index] != null
-                                                  ? await BlurhashFFI.encode(
-                                                      coverImages[index]!,
-                                                      componentX: 2,
-                                                      componentY: 2,
-                                                    )
-                                                  : AppConstants().BLURHASH;
+                                              await _blurhashOf(
+                                                playlists[index],
+                                              );
+                                          if (!context.mounted) return;
 
                                           Navigations().nextScreen(
-                                              context,
-                                              LocalPlaylistPhone(
-                                                lpid: playlists[index]["lpid"],
-                                                title: playlists[index]
-                                                    ["title"],
-                                                cover: coverImages[index],
-                                                blurhash: blurHash,
-                                                updateCover:
-                                                    (playlistCover) async {
-                                                  await DatabaseHelper()
-                                                      .updateLocalPlaylistCover(
-                                                          playlists[index]
-                                                              ["lpid"],
-                                                          playlistCover.bytes);
-                                                  setState(() {
-                                                    coverImages[index] =
-                                                        playlistCover;
-                                                  });
-                                                },
-                                                updateTitle: (newTitle) async {
-                                                  await DatabaseHelper()
-                                                      .updateLocalPlaylistName(
-                                                          playlists[index]
-                                                              ["lpid"],
-                                                          newTitle);
-                                                  initPlaylists();
-                                                },
-                                              ));
+                                            context,
+                                            LocalPlaylistPhone(
+                                              lpid: playlists[index].id,
+                                              title: playlists[index].title,
+                                              cover:
+                                                  playlists[index].cover == null
+                                                  ? null
+                                                  : MemoryImage(
+                                                      playlists[index].cover!,
+                                                    ),
+                                              blurhash: blurHash,
+                                              updateCover: (playlistCover) =>
+                                                  viewModel.updateCover(
+                                                    index,
+                                                    playlistCover.bytes,
+                                                  ),
+                                              updateTitle: (newTitle) =>
+                                                  viewModel.load(),
+                                            ),
+                                          );
                                         },
                                         removePlaylist: () {
                                           continueCancelActionSheet(
-                                              context,
-                                              AppLocalizations.of(context)
-                                                  .areyousure,
-                                              AppLocalizations.of(context)
-                                                  .removeplaylist, () async {
-                                            await DatabaseHelper()
-                                                .removeLocalPlaylist(
-                                                    playlists[index]["lpid"]);
-                                            setState(() {
-                                              playlistsLength--;
-                                              playlists.removeAt(index);
-                                              coverImages.removeAt(index);
-                                            });
-                                          });
+                                            context,
+                                            AppLocalizations.of(context)
+                                                .areyousure,
+                                            AppLocalizations.of(context)
+                                                .removeplaylist,
+                                            () => viewModel.remove(index),
+                                          );
                                         },
                                       ),
                                     );
@@ -253,17 +219,22 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
                           : Column(
                               children: [
                                 razh(100),
-                                iconButton(AppIcons.add, Col.icon, newPlaylist,
-                                    size: 60),
+                                iconButton(
+                                  AppIcons.add,
+                                  context.colors.icon,
+                                  newPlaylist,
+                                  size: 60,
+                                ),
                                 textButton(
-                                    AppLocalizations.of(context)
-                                        .createnewplaylistnow,
-                                    newPlaylist,
-                                    TextStyle(color: Col.text),
-                                    edgeInsets: EdgeInsets.zero)
+                                  AppLocalizations.of(context)
+                                      .createnewplaylistnow,
+                                  newPlaylist,
+                                  TextStyle(color: context.colors.text),
+                                  edgeInsets: EdgeInsets.zero,
+                                ),
                               ],
                             ),
-                    )
+                    ),
                   ],
                 ),
               ),

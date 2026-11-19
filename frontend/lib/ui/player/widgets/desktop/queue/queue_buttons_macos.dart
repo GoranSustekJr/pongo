@@ -1,19 +1,17 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 import 'package:macos_ui/macos_ui.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/player/presentation/phone/alerts/halt_alert.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/themes/colors.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../core/ui/space.dart';
+import '../../../../shell/view_models/shell_view_model.dart';
+import '../../../view_models/player_view_model.dart';
+import '../../phone/alerts/halt_alert.dart';
 
 class QueueButtonsMacos extends StatelessWidget {
   final bool edit;
@@ -21,18 +19,18 @@ class QueueButtonsMacos extends StatelessWidget {
   final Function() removeItemsFromQueue;
   final Function() clearSelectedQueueIndexes;
   final Function() closeQueue;
-  const QueueButtonsMacos(
-      {super.key,
-      required this.edit,
-      required this.changeEditQueue,
-      required this.removeItemsFromQueue,
-      required this.clearSelectedQueueIndexes,
-      required this.closeQueue});
+  const QueueButtonsMacos({
+    super.key,
+    required this.edit,
+    required this.changeEditQueue,
+    required this.removeItemsFromQueue,
+    required this.clearSelectedQueueIndexes,
+    required this.closeQueue,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final player = context.player;
     return SizedBox(
       height: 40,
       child: Row(
@@ -48,40 +46,42 @@ class QueueButtonsMacos extends StatelessWidget {
                 borderRadius: BorderRadius.circular(60),
                 color: kIsDesktop && !kIsMacOS
                     ? const MacosColor.fromRGBO(
-                        40, 40, 40, 0.8) // Add transparency here
+                        40,
+                        40,
+                        40,
+                        0.8,
+                      ) // Add transparency here
                     : Col.transp,
               ),
               child: ValueListenableBuilder(
-                  valueListenable: queueAllowShuffle,
-                  builder: (context, _, __) {
-                    return CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () async {
-                        if (queueAllowShuffle.value) {
-                          if (audioServiceHandler
-                              .audioPlayer.shuffleModeEnabled) {
-                            await audioServiceHandler
-                                .setShuffleMode(AudioServiceShuffleMode.none);
-                          } else {
-                            await audioServiceHandler
-                                .setShuffleMode(AudioServiceShuffleMode.all);
-                          }
+                valueListenable: context.player.canShuffle,
+                builder: (context, _, _) {
+                  return CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: () async {
+                      if (context.player.canShuffle.value) {
+                        if (player.shuffleEnabled) {
+                          await player.setShuffle(enabled: false);
+                        } else {
+                          await player.setShuffle(enabled: true);
                         }
+                      }
+                    },
+                    child: StreamBuilder(
+                      stream: player.shuffleEnabledStream,
+                      builder: (context, snapshot) {
+                        final bool enabled = snapshot.data ?? false;
+                        return Icon(
+                          AppIcons.shuffle,
+                          color: enabled
+                              ? Colors.white
+                              : Colors.white.withAlpha(150),
+                        );
                       },
-                      child: StreamBuilder(
-                          stream: audioServiceHandler
-                              .audioPlayer.shuffleModeEnabledStream,
-                          builder: (context, snapshot) {
-                            bool enabled = snapshot.data ?? false;
-                            return Icon(
-                              AppIcons.shuffle,
-                              color: enabled
-                                  ? Colors.white
-                                  : Colors.white.withAlpha(150),
-                            );
-                          }),
-                    );
-                  }),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
           dividerVertical(30, 1, 7.5),
@@ -96,7 +96,11 @@ class QueueButtonsMacos extends StatelessWidget {
                 borderRadius: BorderRadius.circular(60),
                 color: kIsDesktop && !kIsMacOS
                     ? const MacosColor.fromRGBO(
-                        40, 40, 40, 0.8) // Add transparency here
+                        40,
+                        40,
+                        40,
+                        0.8,
+                      ) // Add transparency here
                     : Col.transp,
               ),
               child: AnimatedSwitcher(
@@ -124,16 +128,23 @@ class QueueButtonsMacos extends StatelessWidget {
                 borderRadius: BorderRadius.circular(60),
                 color: kIsDesktop && !kIsMacOS
                     ? const MacosColor.fromRGBO(
-                        40, 40, 40, 0.8) // Add transparency here
+                        40,
+                        40,
+                        40,
+                        0.8,
+                      ) // Add transparency here
                     : Col.transp,
               ),
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 400),
                 child: edit
-                    ? iconButton(AppIcons.trash, Colors.white, () {
-                        removeItemsFromQueue();
-                      }, edgeInsets: EdgeInsets.zero)
-                    : iconButton(AppIcons.musicAlbums, Colors.white, () async {
+                    ? iconButton(
+                        AppIcons.trash,
+                        Colors.white,
+                        removeItemsFromQueue,
+                        edgeInsets: EdgeInsets.zero,
+                      )
+                    : iconButton(AppIcons.musicAlbums, Colors.white, () {
                         // TODO: Add to playlist
                       }, edgeInsets: EdgeInsets.zero),
               ),
@@ -149,10 +160,14 @@ class QueueButtonsMacos extends StatelessWidget {
                 borderRadius: BorderRadius.circular(60),
                 color: kIsDesktop && !kIsMacOS
                     ? const MacosColor.fromRGBO(
-                        40, 40, 40, 0.8) // Add transparency here
+                        40,
+                        40,
+                        40,
+                        0.8,
+                      ) // Add transparency here
                     : Col.transp,
               ),
-              child: iconButton(AppIcons.download, Colors.white, () async {
+              child: iconButton(AppIcons.download, Colors.white, () {
                 // TODO: Download
               }, edgeInsets: EdgeInsets.zero),
             ),
@@ -167,21 +182,23 @@ class QueueButtonsMacos extends StatelessWidget {
                 borderRadius: BorderRadius.circular(60),
                 color: kIsDesktop && !kIsMacOS
                     ? const MacosColor.fromRGBO(
-                        40, 40, 40, 0.8) // Add transparency here
+                        40,
+                        40,
+                        40,
+                        0.8,
+                      ) // Add transparency here
                     : Col.transp,
               ),
               child: iconButton(AppIcons.halt, Colors.white, () async {
-                CustomButton ok = await haltAlert(context);
+                final CustomButton ok = await haltAlert(context);
 
-                if (ok == CustomButton.positiveButton) {
-                  currentTrackHeight.value = 0;
-                  final audioServiceHandler =
-                      Provider.of<AudioHandler>(context, listen: false)
-                          as AudioServiceHandler;
+                if (ok == CustomButton.positiveButton && context.mounted) {
+                  context.shell.currentTrackHeight.value = 0;
+                  final player = context.player;
 
                   closeQueue();
 
-                  await audioServiceHandler.halt();
+                  await player.halt();
                 }
               }, edgeInsets: EdgeInsets.zero),
             ),

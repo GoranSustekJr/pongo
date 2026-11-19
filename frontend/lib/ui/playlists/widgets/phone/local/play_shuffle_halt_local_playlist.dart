@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kr_pull_down_button/pull_down_button.dart';
 
-import 'package:pongo/features/player/presentation/phone/play_shuffle_halt_bar.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../../player/widgets/phone/play_shuffle_halt_bar.dart';
 
 class PlayShuffleHaltLocalPlaylist extends StatelessWidget {
   final int lpid;
@@ -46,7 +46,7 @@ class PlayShuffleHaltLocalPlaylist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlayShuffleHaltBar(
-      playingId: "local.playlist:$lpid",
+      playingId: 'local.playlist:$lpid',
       missingTracks: missingTracks,
       loadingShuffle: loadingShuffle,
       color: Colors.white,
@@ -65,9 +65,7 @@ class PlayShuffleHaltLocalPlaylist extends StatelessWidget {
         iconButton(
           AppIcons.musicAlbums,
           Colors.white,
-          () {
-            addToPlaylist();
-          },
+          addToPlaylist,
           edgeInsets: EdgeInsets.zero,
         ),
         if (kIsApple)
@@ -91,18 +89,13 @@ class PlayShuffleHaltLocalPlaylist extends StatelessWidget {
             buttonBuilder: (context, showMenu) => CupertinoButton(
               onPressed: showMenu,
               padding: EdgeInsets.zero,
-              child: const Icon(
-                AppIcons.hide,
-                color: Colors.white,
-              ),
+              child: const Icon(AppIcons.hide, color: Colors.white),
             ),
           ),
         iconButton(
           AppIcons.trash,
           Colors.white,
-          () {
-            remove();
-          },
+          remove,
           edgeInsets: EdgeInsets.zero,
         ),
         iconButton(
@@ -110,7 +103,7 @@ class PlayShuffleHaltLocalPlaylist extends StatelessWidget {
           Colors.white,
           stopEdit,
           edgeInsets: EdgeInsets.zero,
-        )
+        ),
       ],
     );
   }

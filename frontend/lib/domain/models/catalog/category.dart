@@ -1,38 +1,43 @@
-class SpCategory {
-  final String id;
-  final String name;
-  final List<SpCategoryIcon> categoryIcons;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  // Create a category from a Map
+part 'category.freezed.dart';
+
+/// A browse category, such as a genre or mood.
+@freezed
+abstract class SpCategory with _$SpCategory {
+  /// Creates a category.
+  const factory SpCategory({
+    required String id,
+    required String name,
+    required List<SpCategoryIcon> categoryIcons,
+  }) = _SpCategory;
+
+  /// Creates a category from the API's JSON, keeping its first icon.
   factory SpCategory.fromMap(Map<String, dynamic> map) {
+    final icon = (map['icons'] as List).first as Map<String, dynamic>;
     return SpCategory(
-      id: map["id"],
-      name: map["name"],
+      id: map['id'] as String,
+      name: map['name'] as String,
       categoryIcons: [
         SpCategoryIcon(
-          url: map["icons"][0]["url"],
-          width: map["icons"][0]["width"],
-          height: map["icons"][0]["height"],
-        )
+          url: icon['url'] as String,
+          width: icon['width'] as int?,
+          height: icon['height'] as int?,
+        ),
       ],
     );
   }
 
-  // Convert a List of Maps to a List of Artist objects
-  static List<SpCategory> fromMapList(List<dynamic> list) {
-    return list
-        .map((map) => SpCategory.fromMap(map as Map<String, dynamic>))
-        .toList();
-  }
-
-  SpCategory(
-      {required this.id, required this.name, required this.categoryIcons});
+  /// Creates categories from a JSON list.
+  static List<SpCategory> fromMapList(List<dynamic> list) => [
+    for (final map in list) SpCategory.fromMap(map as Map<String, dynamic>),
+  ];
 }
 
-class SpCategoryIcon {
-  final String url;
-  final int? width;
-  final int? height;
-
-  SpCategoryIcon({required this.url, this.width, this.height});
+/// The icon image of a [SpCategory].
+@freezed
+abstract class SpCategoryIcon with _$SpCategoryIcon {
+  /// Creates a category icon.
+  const factory SpCategoryIcon({required String url, int? width, int? height}) =
+      _SpCategoryIcon;
 }

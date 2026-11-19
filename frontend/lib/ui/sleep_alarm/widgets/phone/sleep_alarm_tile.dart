@@ -1,36 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
-import 'package:liquid_glass/liquid_glass.dart';
 
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/features/sleep_alarm/models/sleep_alarm.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/inkwell.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../domain/models/sleep_alarm/sleep_alarm.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/platform.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/themes/dimens.dart';
+import '../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../core/ui/phone/inkwell.dart';
+import '../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../core/ui/space.dart';
 
-sleepAlarmTile(
-    context,
-    bool first,
-    bool last,
-    SleepAlarm sleepAlarm,
-    Function() function,
-    bool active,
-    Function(bool) changeActive,
-    Function() removeSleepAlarm,
-    {bool special = false}) {
-  double radius = 15;
-  BorderRadius borderRadius = BorderRadius.only(
-    topLeft: first ? Radius.circular(radius) : Radius.zero,
-    topRight: first ? Radius.circular(radius) : Radius.zero,
-    bottomLeft: last ? Radius.circular(radius) : Radius.zero,
-    bottomRight: last ? Radius.circular(radius) : Radius.zero,
+Padding sleepAlarmTile(
+  BuildContext context,
+  bool first,
+  bool last,
+  SleepAlarm sleepAlarm,
+  Function() function,
+  bool active,
+  Function(bool) changeActive,
+  Function() removeSleepAlarm, {
+  bool special = false,
+}) {
+  const double radius = 15;
+  final BorderRadius borderRadius = BorderRadius.only(
+    topLeft: first ? const Radius.circular(radius) : Radius.zero,
+    topRight: first ? const Radius.circular(radius) : Radius.zero,
+    bottomLeft: last ? const Radius.circular(radius) : Radius.zero,
+    bottomRight: last ? const Radius.circular(radius) : Radius.zero,
   );
 
-  Widget child = Row(
+  final Widget child = Row(
     children: [
       Expanded(
         child: Column(
@@ -40,7 +41,7 @@ sleepAlarmTile(
               Container(
                 height: 1,
                 width: MediaQuery.of(context).size.width - 70,
-                color: Col.onIcon.withAlpha(50),
+                color: context.colors.onIcon.withAlpha(50),
               ),
             Row(
               children: [
@@ -51,11 +52,14 @@ sleepAlarmTile(
                   child: Center(
                     child: Text(
                       sleepAlarm.sleep
-                          ? "${sleepAlarm.sleepDuration} min"
+                          ? '${sleepAlarm.sleepDuration} min'
                           : AppLocalizations.of(context).off,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Col.text, fontSize: 20),
+                      style: TextStyle(
+                        color: context.colors.text,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),
@@ -64,16 +68,13 @@ sleepAlarmTile(
                   child: Container(
                     height: 25,
                     width: 1,
-                    color: Col.onIcon.withAlpha(200),
+                    color: context.colors.onIcon.withAlpha(200),
                   ),
                 ),
                 Text(
                   AppLocalizations.of(context).sleepin,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Col.text,
-                  ),
+                  style: TextStyle(fontSize: 13, color: context.colors.text),
                 ),
               ],
             ),
@@ -90,7 +91,10 @@ sleepAlarmTile(
                           : AppLocalizations.of(context).off,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Col.text, fontSize: 20),
+                      style: TextStyle(
+                        color: context.colors.text,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),
@@ -99,20 +103,17 @@ sleepAlarmTile(
                   child: Container(
                     height: 25,
                     width: 1,
-                    color: Col.onIcon.withAlpha(200),
+                    color: context.colors.onIcon.withAlpha(200),
                   ),
                 ),
-                Text(AppLocalizations.of(context).alarm,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Col.text,
-                    )),
+                Text(
+                  AppLocalizations.of(context).alarm,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 13, color: context.colors.text),
+                ),
               ],
             ),
-            const SizedBox(
-              width: 15,
-            )
+            const SizedBox(width: 15),
           ],
         ),
       ),
@@ -132,8 +133,11 @@ sleepAlarmTile(
       trailingActions: [
         SwipeAction(
           content: iconButton(
-              AppIcons.trash, Col.error.withAlpha(200), removeSleepAlarm),
-          onTap: (CompletionHandler handler) async {},
+            AppIcons.trash,
+            Col.error.withAlpha(200),
+            removeSleepAlarm,
+          ),
+          onTap: (CompletionHandler handler) {},
           color: Col.transp,
           backgroundRadius: radius,
         ),
@@ -144,13 +148,13 @@ sleepAlarmTile(
           width: MediaQuery.of(context).size.width - 20,
           decoration: BoxDecoration(
             borderRadius: borderRadius,
-            color: Col.primaryCard.withAlpha(150),
+            color: context.colors.primaryCard.withAlpha(150),
           ),
           child: kIsApple
-              ? LiquidGlass(
-                  blur: AppConstants().liquidGlassBlur,
+              ? GlassSurface(
+                  blur: Dimens.liquidGlassBlur,
                   borderRadius: borderRadius,
-                  tint: Col.text,
+                  tint: context.colors.text,
                   child: CupertinoButton(
                     padding: EdgeInsets.zero,
                     onPressed: function,
@@ -158,7 +162,9 @@ sleepAlarmTile(
                   ),
                 )
               : ClipRRect(
-                  borderRadius: borderRadius, child: inkWell(child, function)),
+                  borderRadius: borderRadius,
+                  child: inkWell(child, function),
+                ),
         ),
       ),
     ),

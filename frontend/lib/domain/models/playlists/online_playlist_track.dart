@@ -1,42 +1,49 @@
 import 'dart:convert';
 
-import 'package:pongo/shared/models/catalog/track.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class OnlinePlaylistTrack {
-  final int opid;
-  final String stid;
-  final String title;
-  final List<ArtistTrack> artistTrack;
-  final AlbumTrack? albumTrack;
-  final String? image;
-  final int orderNumber;
-  final bool hidden;
+import '../catalog/track.dart';
 
-  OnlinePlaylistTrack({
-    required this.opid,
-    required this.stid,
-    required this.title,
-    required this.artistTrack,
-    required this.albumTrack,
-    required this.image,
-    required this.orderNumber,
-    required this.hidden,
-  });
+part 'online_playlist_track.freezed.dart';
 
-  factory OnlinePlaylistTrack.fromMap(Map<String, dynamic> map) {
-    return OnlinePlaylistTrack(
-      opid: map['opid'],
-      stid: map['stid'],
-      title: map['title'],
-      artistTrack: (jsonDecode(map['artists']) as List)
-          .map((artist) => ArtistTrack.fromMap(artist as Map<String, dynamic>))
-          .toList(),
-      albumTrack: map['album'] != null
-          ? AlbumTrack.fromMap(jsonDecode(map['album']) as Map<String, dynamic>)
-          : null,
-      image: map['image'],
-      orderNumber: map['order_number'],
-      hidden: map['hidden'] == 1,
-    );
-  }
+/// A catalog track saved in one of the user's online playlists.
+@freezed
+abstract class OnlinePlaylistTrack with _$OnlinePlaylistTrack {
+  /// Creates a playlist entry.
+  const factory OnlinePlaylistTrack({
+    required int opid,
+    required String stid,
+    required String title,
+    required List<ArtistTrack> artistTrack,
+    required AlbumTrack? albumTrack,
+    required String? image,
+    required int orderNumber,
+    required bool hidden,
+  }) = _OnlinePlaylistTrack;
+
+  const OnlinePlaylistTrack._();
+
+  /// Creates an entry from a row of the playlist tracks table.
+  factory OnlinePlaylistTrack.fromMap(Map<String, dynamic> map) =>
+      OnlinePlaylistTrack(
+        opid: map['opid'] as int,
+        stid: map['stid'] as String,
+        title: map['title'] as String,
+        artistTrack: [
+          for (final artist in jsonDecode(map['artists'] as String) as List)
+            ArtistTrack.fromMap(artist as Map<String, dynamic>),
+        ],
+        albumTrack: map['album'] != null
+            ? AlbumTrack.fromMap(
+                jsonDecode(map['album'] as String) as Map<String, dynamic>,
+              )
+            : null,
+        image: map['image'] as String?,
+        orderNumber: map['order_number'] as int,
+        hidden: map['hidden'] == 1,
+      );
+
+  /// The entry as a playable track.
+  Track toTrack() =>
+      Track(id: stid, name: title, artists: artistTrack, album: albumTrack);
 }

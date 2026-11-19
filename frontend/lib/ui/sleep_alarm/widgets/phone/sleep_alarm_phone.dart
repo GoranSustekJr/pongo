@@ -3,79 +3,138 @@ import 'package:flutter/material.dart';
 import 'package:interactive_slider/interactive_slider.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pongo/shared/widgets/app_blur.dart';
-import 'package:pongo/app/theme/colors.dart';
-import 'package:pongo/core/constants/app_constants.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/sleep_alarm/data/sleep_alarm_data_manager.dart';
-import 'package:pongo/features/sleep_alarm/presentation/phone/sleep_alarm_tile.dart';
-import 'package:pongo/l10n/app_localizations.dart';
-import 'package:pongo/shared/widgets/phone/buttons/back_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/back_like_button.dart';
-import 'package:pongo/shared/widgets/phone/buttons/icon_button.dart';
-import 'package:pongo/shared/widgets/phone/liquid_glass_background.dart';
-import 'package:pongo/shared/widgets/phone/sticky_header_delegate.dart';
+import '../../../../domain/models/sleep_alarm/sleep_alarm.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../utils/platform.dart';
+import '../../../app/view_models/app_settings_view_model.dart';
+import '../../../core/app_icons.dart';
+import '../../../core/themes/colors.dart';
+import '../../../core/themes/dimens.dart';
+import '../../../core/ui/app_blur.dart';
+import '../../../core/ui/phone/buttons/back_button.dart';
+import '../../../core/ui/phone/buttons/back_like_button.dart';
+import '../../../core/ui/phone/buttons/icon_button.dart';
+import '../../../core/ui/phone/liquid_glass_background.dart';
+import '../../../core/ui/phone/sticky_header_delegate.dart';
+import '../../view_models/sleep_alarm_view_model.dart';
+import 'sleep_alarm_add_phone.dart';
+import 'sleep_alarm_tile.dart';
 
-class SleepAlarmPhone extends StatelessWidget {
+class SleepAlarmPhone extends StatefulWidget {
   const SleepAlarmPhone({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return ChangeNotifierProvider(
-      create: (_) => SleepAlarmDataManager(
-        context,
+  State<SleepAlarmPhone> createState() => _SleepAlarmPhoneState();
+}
+
+class _SleepAlarmPhoneState extends State<SleepAlarmPhone> {
+  late final SleepAlarmViewModel viewModel;
+  final scrollController = ScrollController();
+  double scrollControllerOffset = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      setState(() {
+        scrollControllerOffset = scrollController.offset < 0
+            ? 0
+            : scrollController.offset;
+      });
+    });
+    viewModel = SleepAlarmViewModel(
+      alarms: context.read(),
+      player: context.read(),
+      settings: context.read(),
+      messages: context.read(),
+    );
+  }
+
+  @override
+  void dispose() {
+    viewModel.dispose();
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  void createNewSleepAlarm() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) =>
+          SleepAlarmAddPhone(sleepAlarm: null, insertSleepAlarm: viewModel.add),
+    );
+  }
+
+  void updateSleepAlarm(SleepAlarm sleepAlarm) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) => SleepAlarmAddPhone(
+        sleepAlarm: sleepAlarm,
+        insertSleepAlarm: viewModel.update,
       ),
-      child: Consumer<SleepAlarmDataManager>(
-          builder: (context, sleepAlarmDataManager, child) {
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return ListenableBuilder(
+      listenable: viewModel,
+      builder: (context, child) {
+        final sleepAlarmDataManager = viewModel;
         return Container(
           key: const ValueKey(true),
           width: size.width,
           height: size.height,
-          decoration: AppConstants().backgroundBoxDecoration,
+          decoration: context.colors.backgroundBoxDecoration,
           child: Scaffold(
             extendBodyBehindAppBar: true,
             extendBody: true,
             body: Scrollbar(
-              controller: sleepAlarmDataManager.scrollController,
+              controller: scrollController,
               child: CustomScrollView(
-                controller: sleepAlarmDataManager.scrollController,
+                controller: scrollController,
                 slivers: [
                   SliverAppBar(
                     //snap: true,
                     //floating: true,
                     pinned: true,
                     stretch: true,
-                    backgroundColor: useBlur.value
+                    backgroundColor: context.readSettings.useBlur
                         ? Col.transp
-                        : Col.realBackground.withAlpha(AppConstants().noBlur),
+                        : context.colors.realBackground.withAlpha(
+                            Dimens.noBlur,
+                          ),
                     automaticallyImplyLeading: false,
-                    expandedHeight:
-                        kIsApple ? size.height / 5 : size.height / 4,
+                    expandedHeight: kIsApple
+                        ? size.height / 5
+                        : size.height / 4,
                     title: Row(
                       children: [
                         backButton(context),
-                        Expanded(
-                          child: Container(),
+                        Expanded(child: Container()),
+                        backLikeButton(
+                          context,
+                          AppIcons.add,
+                          createNewSleepAlarm,
                         ),
-                        backLikeButton(context, AppIcons.add,
-                            sleepAlarmDataManager.createNewSleepAlarm),
                       ],
                     ),
                     flexibleSpace: ClipRRect(
                       child: Stack(
                         children: [
                           Opacity(
-                            opacity: MediaQuery.of(context).size.height / 3 <=
-                                    sleepAlarmDataManager.scrollControllerOffset
+                            opacity:
+                                MediaQuery.of(context).size.height / 3 <=
+                                    scrollControllerOffset
                                 ? 1
-                                : sleepAlarmDataManager.scrollControllerOffset /
-                                    (MediaQuery.of(context).size.height / 3),
+                                : scrollControllerOffset /
+                                      (MediaQuery.of(context).size.height / 3),
                             child: liquidGlassBackground(
                               child: BackdropFilter(
-                                  filter: nonAppleBlur(10), child: Container()),
+                                filter: nonAppleBlur(context, 10),
+                                child: Container(),
+                              ),
                             ),
                           ),
                           FlexibleSpaceBar(
@@ -83,11 +142,12 @@ class SleepAlarmPhone extends StatelessWidget {
                             title: Text(
                               AppLocalizations.of(context).sleep,
                               style: TextStyle(
-                                  fontSize: kIsApple ? 25 : 30,
-                                  fontWeight: kIsApple
-                                      ? FontWeight.w700
-                                      : FontWeight.w800,
-                                  color: Col.text),
+                                fontSize: kIsApple ? 25 : 30,
+                                fontWeight: kIsApple
+                                    ? FontWeight.w700
+                                    : FontWeight.w800,
+                                color: context.colors.text,
+                              ),
                               textAlign: TextAlign.center,
                               maxLines: 1,
                             ),
@@ -110,50 +170,53 @@ class SleepAlarmPhone extends StatelessWidget {
                       child: ClipRRect(
                         child: liquidGlassBackground(
                           child: BackdropFilter(
-                            filter: nonAppleBlur(10),
+                            filter: nonAppleBlur(context, 10),
                             child: Container(
                               width: MediaQuery.of(context).size.width,
                               height: 75,
-                              color: useBlur.value
+                              color: context.readSettings.useBlur
                                   ? Col.transp
-                                  : Col.realBackground.withAlpha(
-                                      AppConstants().noBlur,
+                                  : context.colors.realBackground.withAlpha(
+                                      Dimens.noBlur,
                                     ),
                               child: Column(
                                 children: [
-                                  StreamBuilder<double>(
-                                      stream:
-                                          sleepAlarmDataManager.volumeStream,
-                                      initialData: sleepAlarmDevVolume,
-                                      builder: (context, snapshot) {
-                                        double volume = snapshot.data ?? 0.0;
+                                  Builder(
+                                    builder: (context) {
+                                      final double volume =
+                                          sleepAlarmDataManager.deviceVolume;
 
-                                        return InteractiveSlider(
-                                          padding: const EdgeInsets.only(
-                                              top: 20, left: 10, right: 10),
-                                          initialProgress: volume,
-                                          iconColor: Col.icon,
-                                          foregroundColor: Col.icon,
-                                          backgroundColor:
-                                              Col.icon.withAlpha(30),
-                                          focusedHeight: 10,
-                                          startIcon: const Icon(
-                                              CupertinoIcons.speaker_1_fill),
-                                          endIcon: const Icon(
-                                              CupertinoIcons.speaker_3_fill),
-                                          onChanged: (value) {
-                                            sleepAlarmDataManager
-                                                .updateSleepAlarmDeviceVolume(
-                                                    value);
-                                          },
-                                        );
-                                      }),
+                                      return InteractiveSlider(
+                                        padding: const EdgeInsets.only(
+                                          top: 20,
+                                          left: 10,
+                                          right: 10,
+                                        ),
+                                        initialProgress: volume,
+                                        iconColor: context.colors.icon,
+                                        foregroundColor: context.colors.icon,
+                                        backgroundColor: context.colors.icon
+                                            .withAlpha(30),
+                                        focusedHeight: 10,
+                                        startIcon: const Icon(
+                                          CupertinoIcons.speaker_1_fill,
+                                        ),
+                                        endIcon: const Icon(
+                                          CupertinoIcons.speaker_3_fill,
+                                        ),
+                                        onChanged: sleepAlarmDataManager
+                                            .updateSleepAlarmDeviceVolume,
+                                      );
+                                    },
+                                  ),
                                   Text(
                                     AppLocalizations.of(context)
                                         .maximumvolumeofthealarm,
                                     style: TextStyle(
-                                        color: Col.text, fontSize: 10),
-                                  )
+                                      color: context.colors.text,
+                                      fontSize: 10,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -165,77 +228,83 @@ class SleepAlarmPhone extends StatelessWidget {
                   SliverToBoxAdapter(
                     child: sleepAlarmDataManager.showBody
                         ? sleepAlarmDataManager.sleepAlarms.isNotEmpty
-                            ? ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                padding: EdgeInsets.only(
-                                  top: 35,
-                                  bottom:
-                                      MediaQuery.of(context).padding.bottom +
-                                          15,
-                                ),
-                                itemCount:
-                                    sleepAlarmDataManager.sleepAlarms.length,
-                                itemBuilder: (context, index) {
-                                  return sleepAlarmTile(
-                                    context,
-                                    index == 0,
-                                    index ==
-                                        sleepAlarmDataManager
-                                                .sleepAlarms.length -
-                                            1,
-                                    sleepAlarmDataManager.sleepAlarms[index],
-                                    () {
-                                      sleepAlarmDataManager.updateSleepAlarm(
+                              ? ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.only(
+                                    top: 35,
+                                    bottom:
+                                        MediaQuery.of(context).padding.bottom +
+                                        15,
+                                  ),
+                                  itemCount:
+                                      sleepAlarmDataManager.sleepAlarms.length,
+                                  itemBuilder: (context, index) {
+                                    return sleepAlarmTile(
+                                      context,
+                                      index == 0,
+                                      index ==
                                           sleepAlarmDataManager
-                                              .sleepAlarms[index]);
-                                    },
-                                    sleepAlarmDataManager.activeAlarm ==
-                                        sleepAlarmDataManager
-                                            .sleepAlarms[index].id,
-                                    (val) {
-                                      if (val) {
-                                        sleepAlarmDataManager
-                                            .changeActiveSleepAlarm(index);
-                                      } else {
-                                        sleepAlarmDataManager
-                                            .changeActiveSleepAlarm(-1);
-                                      }
-                                    },
-                                    () {
-                                      sleepAlarmDataManager
-                                          .removeSleepAlarm(index);
-                                    },
-                                  );
-                                },
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: Column(
-                                  children: [
-                                    iconButton(
-                                      AppIcons.add,
-                                      Col.icon,
-                                      sleepAlarmDataManager.createNewSleepAlarm,
-                                      size: 50,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)
-                                          .createnewsleepalarm,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: Col.text),
-                                    ),
-                                  ],
-                                ),
-                              )
+                                                  .sleepAlarms
+                                                  .length -
+                                              1,
+                                      sleepAlarmDataManager.sleepAlarms[index],
+                                      () {
+                                        updateSleepAlarm(
+                                          sleepAlarmDataManager
+                                              .sleepAlarms[index],
+                                        );
+                                      },
+                                      sleepAlarmDataManager.activeAlarm ==
+                                          sleepAlarmDataManager
+                                              .sleepAlarms[index]
+                                              .id,
+                                      (val) {
+                                        if (val) {
+                                          sleepAlarmDataManager
+                                              .changeActiveSleepAlarm(index);
+                                        } else {
+                                          sleepAlarmDataManager
+                                              .changeActiveSleepAlarm(-1);
+                                        }
+                                      },
+                                      () {
+                                        sleepAlarmDataManager.removeSleepAlarm(
+                                          index,
+                                        );
+                                      },
+                                    );
+                                  },
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    children: [
+                                      iconButton(
+                                        AppIcons.add,
+                                        context.colors.icon,
+                                        createNewSleepAlarm,
+                                        size: 50,
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)
+                                            .createnewsleepalarm,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: context.colors.text,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
                         : const SizedBox(),
-                  )
+                  ),
                 ],
               ),
             ),
           ),
         );
-      }),
+      },
     );
   }
 }

@@ -1,16 +1,14 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:pongo/core/audio/audio_service_handler.dart';
-import 'package:pongo/core/constants/app_icons.dart';
-import 'package:pongo/core/constants/platform.dart';
-import 'package:pongo/core/state/globals.dart';
-import 'package:pongo/features/playlists/presentation/phone/playlist_song_tile.dart';
-import 'package:pongo/shared/models/catalog/playlist.dart';
-import 'package:pongo/shared/models/catalog/track.dart';
-import 'package:pongo/shared/widgets/phone/trailing.dart';
-import 'package:pongo/shared/widgets/space.dart';
+import '../../../../../domain/models/catalog/playlist.dart';
+import '../../../../../domain/models/catalog/track.dart';
+import '../../../../../utils/platform.dart';
+import '../../../../core/app_icons.dart';
+import '../../../../core/ui/phone/trailing.dart';
+import '../../../../core/ui/space.dart';
+import '../../../../player/view_models/player_view_model.dart';
+import '../playlist_song_tile.dart';
 
 class PlaylistBodyPhone extends StatelessWidget {
   final Playlist playlist;
@@ -31,22 +29,18 @@ class PlaylistBodyPhone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String id = mediaItem != null ? mediaItem!.id : "";
-    final audioServiceHandler =
-        Provider.of<AudioHandler>(context) as AudioServiceHandler;
+    final String id = mediaItem != null ? mediaItem!.id : '';
+    final player = context.player;
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.only(
-          top: kIsDesktop ? 5 : 35,
-          left: 0,
-          right: 0,
-        ),
+        padding: EdgeInsets.only(top: kIsDesktop ? 5 : 35, left: 0, right: 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ListView.builder(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
+                bottom: MediaQuery.of(context).padding.bottom,
+              ),
               itemCount: tracks.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -57,29 +51,12 @@ class PlaylistBodyPhone extends StatelessWidget {
                   last: index == tracks.length - 1,
                   exists: !missingTracks.contains(tracks[index].id),
                   function: () async {
-                    final playNew = mediaItem != null
-                        ? "${mediaItem!.id.split(".")[0]}.${mediaItem!.id.split(".")[1]}" !=
-                            "online.playlist:${playlist.id}"
-                        : true;
-
-                    final skipTo = mediaItem != null
-                        ? mediaItem!.id.split(".")[2] != tracks[index].id
-                        : false;
-
-                    if (playNew) {
-                      changeTrackOnTap.value = true;
-                      play(index);
-                    } else if (skipTo &&
-                        (audioServiceHandler.playlist.length - 1) >= index &&
-                        changeTrackOnTap.value) {
-                      await audioServiceHandler.skipToQueueItem(index);
-                    } else {
-                      if (audioServiceHandler.audioPlayer.playing) {
-                        await audioServiceHandler.pause();
-                      } else {
-                        await audioServiceHandler.play();
-                      }
-                    }
+                    await context.player.playCollectionTrack(
+                      collectionId: 'online.playlist:${playlist.id}',
+                      stid: tracks[index].id,
+                      index: index,
+                      playCollection: () async => play(index),
+                    );
                   },
                   trailing: Padding(
                     padding: const EdgeInsets.only(right: 15),
@@ -97,11 +74,10 @@ class PlaylistBodyPhone extends StatelessWidget {
                             : Trailing(
                                 forceWhite: true,
                                 show: !loading.contains(tracks[index].id),
-                                showThis: id ==
-                                        "online.playlist:${playlist.id}.${tracks[index].id}" &&
-                                    audioServiceHandler
-                                            .audioPlayer.currentIndex ==
-                                        index,
+                                showThis:
+                                    id ==
+                                        'online.playlist:${playlist.id}.${tracks[index].id}' &&
+                                    player.currentIndex == index,
                                 trailing: const Icon(
                                   key: ValueKey(true),
                                   AppIcons.loading,
