@@ -8,8 +8,14 @@ import '../../../domain/models/playlists/user_playlist.dart';
 
 /// The user's online or local playlists.
 class UserPlaylistsViewModel extends ChangeNotifier {
-  /// Creates a view model for the playlists of [type] and loads them.
-  UserPlaylistsViewModel({required this.type, required this._playlists}) {
+  /// Creates a view model for the playlists of [type] and loads them, and
+  /// loads them again whenever `libraryChanges` notifies.
+  UserPlaylistsViewModel({
+    required this.type,
+    required this._playlists,
+    this._libraryChanges,
+  }) {
+    _libraryChanges?.addListener(_reload);
     unawaited(load());
   }
 
@@ -17,6 +23,7 @@ class UserPlaylistsViewModel extends ChangeNotifier {
   final PlaylistHandlerType type;
 
   final PlaylistRepository _playlists;
+  final Listenable? _libraryChanges;
 
   bool _showBody = false;
   int _playlistsLength = 0;
@@ -62,5 +69,13 @@ class UserPlaylistsViewModel extends ChangeNotifier {
     _items = [..._items];
     _items[index] = _items[index].copyWith(cover: cover);
     notifyListeners();
+  }
+
+  void _reload() => unawaited(load());
+
+  @override
+  void dispose() {
+    _libraryChanges?.removeListener(_reload);
+    super.dispose();
   }
 }

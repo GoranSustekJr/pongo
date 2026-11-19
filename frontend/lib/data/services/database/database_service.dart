@@ -9,6 +9,7 @@ import 'online_playlists_table.dart';
 import 'play_history_table.dart';
 import 'search_history_table.dart';
 import 'sleep_alarms_table.dart';
+import 'sync_table.dart';
 import 'track_gains_table.dart';
 
 /// The app's SQLite database and its tables.
@@ -21,7 +22,7 @@ class DatabaseService {
   /// The database file name inside the platform's databases directory.
   final String fileName;
 
-  static const _version = 40;
+  static const _version = 41;
 
   late final Database _database;
 
@@ -59,6 +60,9 @@ class DatabaseService {
 
   /// Loudness gains per track.
   late final TrackGainsTable trackGains = TrackGainsTable(_database);
+
+  /// The library as it's synced with the server.
+  late final SyncTable sync = SyncTable(_database);
 
   /// Opens the database, creating or migrating it as needed.
   Future<void> open() async {
@@ -165,6 +169,7 @@ class DatabaseService {
       )
     ''');
     await TrackGainsTable.create(db);
+    await SyncTable.create(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -174,6 +179,7 @@ class DatabaseService {
       await db.execute('DELETE FROM lfh_tracks WHERE LENGTH(stid) < 21');
     }
     if (oldVersion < 40) await TrackGainsTable.create(db);
+    if (oldVersion < 41) await SyncTable.create(db);
   }
 }
 

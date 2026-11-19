@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,6 +16,7 @@ import '../data/repositories/library/downloads_repository.dart';
 import '../data/repositories/library/downloads_repository_local.dart';
 import '../data/repositories/library/favourites_repository.dart';
 import '../data/repositories/library/favourites_repository_local.dart';
+import '../data/repositories/library/library_sync.dart';
 import '../data/repositories/lyrics/lyrics_repository.dart';
 import '../data/repositories/lyrics/lyrics_repository_remote.dart';
 import '../data/repositories/player/player_repository.dart';
@@ -23,6 +26,7 @@ import '../data/repositories/playlists/playlist_repository.dart';
 import '../data/repositories/playlists/playlist_repository_local.dart';
 import '../data/repositories/settings/settings_repository.dart';
 import '../data/repositories/settings/settings_repository_local.dart';
+import '../data/repositories/settings/settings_sync_source.dart';
 import '../data/repositories/sleep_alarm/sleep_alarm_repository.dart';
 import '../data/repositories/sleep_alarm/sleep_alarm_repository_local.dart';
 import '../data/services/api/api_client.dart';
@@ -124,6 +128,26 @@ Future<List<SingleChildWidget>> createProviders(AppConfig config) async {
   );
   await player.restoreState();
 
+  final librarySync = LibrarySync(
+    apiClient: apiClient,
+    store: database.sync,
+    sources: [database.sync, SettingsSyncSource(settings)],
+  );
+  // Syncs while signed in; signing out forgets what was synced, so another
+  // account starts afresh
+  var wasSignedIn = false;
+  void followSession() {
+    if (auth.isSignedIn) {
+      unawaited(librarySync.start());
+    } else if (wasSignedIn) {
+      unawaited(librarySync.reset());
+    }
+    wasSignedIn = auth.isSignedIn;
+  }
+
+  auth.addListener(followSession);
+  followSession();
+
   return [
     Provider.value(value: connectivity),
     Provider.value(value: volume),
@@ -131,6 +155,7 @@ Future<List<SingleChildWidget>> createProviders(AppConfig config) async {
     Provider.value(value: ImageBytesService()),
     ChangeNotifierProvider<AuthRepository>.value(value: auth),
     ChangeNotifierProvider<SettingsRepository>.value(value: settings),
+    ChangeNotifierProvider.value(value: librarySync),
     Provider<PlayerRepository>.value(value: player),
     Provider<CatalogRepository>.value(
       value: CatalogRepositoryRemote(apiClient: apiClient),

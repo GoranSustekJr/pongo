@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:in_app_notification/in_app_notification.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/repositories/library/library_sync.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/l10n.dart';
 import '../auth/widgets/phone/auth_redirect_screen_phone.dart';
@@ -31,7 +32,12 @@ class _PhoneAppState extends State<PhoneApp> {
     super.initState();
     // The queue is saved whenever the app may be about to close.
     _lifecycle = AppLifecycleListener(
-      onInactive: () => unawaited(context.read<PlayerViewModel>().saveState()),
+      onInactive: () {
+        unawaited(context.read<PlayerViewModel>().saveState());
+        // Sends the latest changes before the app may close
+        unawaited(context.read<LibrarySync>().sync());
+      },
+      onResume: () => unawaited(context.read<LibrarySync>().sync()),
     );
   }
 

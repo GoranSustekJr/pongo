@@ -6,6 +6,7 @@ import 'package:in_app_notification_desktop/in_app_notification.dart' as iand;
 import 'package:macos_ui/macos_ui.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/repositories/library/library_sync.dart';
 import '../../l10n/app_localizations.dart';
 import '../../l10n/l10n.dart';
 import '../../utils/platform.dart';
@@ -36,7 +37,12 @@ class _DesktopAppState extends State<DesktopApp> {
   void initState() {
     super.initState();
     _lifecycle = AppLifecycleListener(
-      onInactive: () => unawaited(context.read<PlayerViewModel>().saveState()),
+      onInactive: () {
+        unawaited(context.read<PlayerViewModel>().saveState());
+        // Sends the latest changes before the app may close
+        unawaited(context.read<LibrarySync>().sync());
+      },
+      onResume: () => unawaited(context.read<LibrarySync>().sync()),
     );
   }
 

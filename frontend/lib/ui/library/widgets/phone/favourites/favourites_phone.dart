@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../data/repositories/library/library_sync.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/platform.dart';
 import '../../../../app/view_models/app_settings_view_model.dart';
@@ -45,6 +46,7 @@ class _FavouritesPhoneState extends State<FavouritesPhone> {
       downloads: context.read(),
       catalog: context.read(),
       player: context.read(),
+      libraryChanges: context.read<LibrarySync>(),
     );
     scrollController.addListener(() {
       setState(() {

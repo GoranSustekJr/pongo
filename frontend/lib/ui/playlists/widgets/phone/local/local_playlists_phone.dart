@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../data/repositories/library/library_sync.dart';
 import '../../../../../data/services/media/blurhash_service.dart';
 import '../../../../../domain/models/playlists/playlist_handler.dart';
 import '../../../../../domain/models/playlists/user_playlist.dart';
@@ -45,6 +46,7 @@ class _LocalPlaylistsPhoneState extends State<LocalPlaylistsPhone> {
     viewModel = UserPlaylistsViewModel(
       type: PlaylistHandlerType.offline,
       playlists: context.read(),
+      libraryChanges: context.read<LibrarySync>(),
     );
     viewModel.addListener(_onViewModelChanged);
   }

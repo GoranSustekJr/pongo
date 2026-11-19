@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../data/repositories/library/library_sync.dart';
 import '../../../../utils/platform.dart';
 import '../../../app/view_models/app_settings_view_model.dart';
 import '../../../recommendations/widgets/phone/recommendations_phone.dart';
@@ -45,7 +46,10 @@ class _HomePhoneState extends State<HomePhone> {
   @override
   void initState() {
     super.initState();
-    searchHistoryViewModel = SearchHistoryViewModel(history: context.read());
+    searchHistoryViewModel = SearchHistoryViewModel(
+      history: context.read(),
+      libraryChanges: context.read<LibrarySync>(),
+    );
   }
 
   @override

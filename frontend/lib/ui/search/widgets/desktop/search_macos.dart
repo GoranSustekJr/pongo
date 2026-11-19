@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../data/repositories/library/library_sync.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/app_icons.dart';
 import '../../../core/themes/colors.dart';
@@ -34,7 +35,10 @@ class _SearchMacosState extends State<SearchMacos> {
   @override
   void initState() {
     super.initState();
-    history = SearchHistoryViewModel(history: context.read())
+    history = SearchHistoryViewModel(
+      history: context.read(),
+      libraryChanges: context.read<LibrarySync>(),
+    )
       ..addListener(() => setState(() {}));
     focusNode = context.shell.searchFocusNode..addListener(focusNodeListener);
   }

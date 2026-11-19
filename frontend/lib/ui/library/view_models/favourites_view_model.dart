@@ -13,14 +13,17 @@ import '../../../utils/result.dart';
 
 /// The user's favourite tracks.
 class FavouritesViewModel extends ChangeNotifier {
-  /// Creates a view model and loads the favourites.
+  /// Creates a view model and loads the favourites, and loads them again
+  /// whenever `libraryChanges` notifies.
   FavouritesViewModel({
     required this._favourites,
     required this._downloads,
     required this._catalog,
     required this._player,
+    this._libraryChanges,
   }) {
     _player.fetchingTracks.addListener(notifyListeners);
+    _libraryChanges?.addListener(_reload);
     _fetched = _player.onTrackFetched.listen(_onTrackFetched);
     unawaited(load());
   }
@@ -32,6 +35,7 @@ class FavouritesViewModel extends ChangeNotifier {
   final DownloadsRepository _downloads;
   final CatalogRepository _catalog;
   final PlayerRepository _player;
+  final Listenable? _libraryChanges;
   late final StreamSubscription<FetchedTrack> _fetched;
 
   bool _showBody = false;
@@ -193,9 +197,12 @@ class FavouritesViewModel extends ChangeNotifier {
     await load();
   }
 
+  void _reload() => unawaited(load());
+
   @override
   void dispose() {
     _player.fetchingTracks.removeListener(notifyListeners);
+    _libraryChanges?.removeListener(_reload);
     unawaited(_fetched.cancel());
     super.dispose();
   }

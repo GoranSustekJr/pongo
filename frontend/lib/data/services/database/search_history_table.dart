@@ -1,6 +1,9 @@
 import 'package:sqflite/sqflite.dart';
 
 /// The `search_history` table, capped at the 500 latest queries.
+///
+/// `played_at` is when the query was last searched, in milliseconds since the
+/// epoch.
 class SearchHistoryTable {
   /// Creates a table backed by [_db].
   SearchHistoryTable(this._db);
@@ -11,10 +14,14 @@ class SearchHistoryTable {
   Future<void> insert(String query) async {
     await remove(query);
     await _db.transaction((txn) async {
-      await txn.insert('search_history', {'query': query});
+      await txn.insert('search_history', {
+        'query': query,
+        'played_at': DateTime.now().millisecondsSinceEpoch,
+      });
       await txn.rawDelete('''
         DELETE FROM search_history WHERE id NOT IN (
-          SELECT id FROM search_history ORDER BY id DESC LIMIT 500
+          SELECT id FROM search_history ORDER BY played_at DESC, id DESC
+          LIMIT 500
         )
       ''');
     });
@@ -25,7 +32,7 @@ class SearchHistoryTable {
     final rows = await _db.query(
       'search_history',
       columns: ['query'],
-      orderBy: 'id DESC',
+      orderBy: 'played_at DESC, id DESC',
     );
     return [for (final row in rows) row['query'] as String];
   }

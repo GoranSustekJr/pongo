@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../data/repositories/library/library_sync.dart';
 import '../../../../../data/services/media/blurhash_service.dart';
 import '../../../../../domain/models/playlists/playlist_handler.dart';
 import '../../../../../domain/models/playlists/user_playlist.dart';
@@ -51,6 +52,7 @@ class _OnlinePlaylistsPhoneState extends State<OnlinePlaylistsPhone> {
     viewModel = UserPlaylistsViewModel(
       type: PlaylistHandlerType.online,
       playlists: context.read(),
+      libraryChanges: context.read<LibrarySync>(),
     );
     viewModel.addListener(_onViewModelChanged);
     scrollController.addListener(scrollControllerListener);

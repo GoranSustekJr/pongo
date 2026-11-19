@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 
 from library import config, db, limits, migrations
 from library.metadata import deezer
-from library.routes import account, catalog, playback
+from library.routes import account, catalog, playback, sync
 from library.track import loudness
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -30,6 +30,7 @@ app = FastAPI(title="Pongo", lifespan=lifespan, docs_url=None, redoc_url=None)
 app.include_router(account.router)
 app.include_router(catalog.router)
 app.include_router(playback.router)
+app.include_router(sync.router)
 
 
 @app.middleware("http")

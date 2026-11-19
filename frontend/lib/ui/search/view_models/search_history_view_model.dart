@@ -1,15 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../../../data/repositories/history/history_repository.dart';
 
 /// The user's past searches.
 class SearchHistoryViewModel extends ChangeNotifier {
-  /// Creates a view model and loads the history.
-  SearchHistoryViewModel({required this._history}) {
+  /// Creates a view model and loads the history, and loads it again
+  /// whenever `libraryChanges` notifies.
+  SearchHistoryViewModel({required this._history, this._libraryChanges}) {
+    _libraryChanges?.addListener(_reload);
     load();
   }
 
   final HistoryRepository _history;
+  final Listenable? _libraryChanges;
 
   List<String> _searches = const [];
 
@@ -38,5 +43,13 @@ class SearchHistoryViewModel extends ChangeNotifier {
   Future<void> clear() async {
     await _history.clearSearches();
     await load();
+  }
+
+  void _reload() => unawaited(load());
+
+  @override
+  void dispose() {
+    _libraryChanges?.removeListener(_reload);
+    super.dispose();
   }
 }
