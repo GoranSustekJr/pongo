@@ -187,12 +187,20 @@
         #endif
 
         /// Jumps into the song as `-PongoDemoPosition` asks, so a line is
-        /// being sung.
+        /// being sung; with `-PongoDemoStep` it then moves on 3 seconds every
+        /// 2, so the lyrics follow along without audio.
         private static func seekToPosition(_ model: AppModel) {
             guard let seconds = arguments(after: "-PongoDemoPosition").flatMap(Double.init) else { return }
             Task {
                 try? await Task.sleep(for: .seconds(2))
                 model.player.seek(to: seconds)
+                guard ProcessInfo.processInfo.arguments.contains("-PongoDemoStep") else { return }
+                var position = seconds
+                while true {
+                    try? await Task.sleep(for: .seconds(2))
+                    position += 3
+                    model.player.seek(to: position)
+                }
             }
         }
 

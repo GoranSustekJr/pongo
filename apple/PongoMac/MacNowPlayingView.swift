@@ -9,15 +9,25 @@ struct InspectorView: View {
     var body: some View {
         let router = model.router
         let item = model.player.current
+        // Hidden behind the full player, which shows the same, it draws nothing
+        if router.showsPlayer {
+            Color.clear
+        } else {
+            panel(router: router, item: item)
+        }
+    }
+
+    private func panel(router: Router, item: QueueItem?) -> some View {
         ZStack {
-            ArtworkBackground(url: item?.track.coverURL(size: 300), dim: 0.35, isMoving: model.player.isPlaying)
+            // Still, so the lyrics glide over it without the window redrawing it each frame
+            ArtworkBackground(url: item?.track.coverURL(size: 300), dim: 0.35)
             if item == nil {
                 LyricsMessage(title: L10n.nothingplaying)
             } else if router.inspector == .queue {
                 QueuePanel(bottomInset: 0)
             } else {
                 LyricsPanel(bottomInset: 0)
-                    .environment(\.lyricsTextSize, 25)
+                    .environment(\.lyricsTextSize, 30)
                     .environment(\.closeLyrics) { model.router.inspector = nil }
             }
         }
@@ -56,21 +66,24 @@ struct MacNowPlayingView: View {
                 .padding(.bottom, 40)
                 .animation(.spring(duration: 0.5, bounce: 0.12), value: mode)
             }
-            .overlay(alignment: .topLeading) {
+            .overlay(alignment: .topTrailing) {
+                // At the top right, clear of the window's buttons on the left
                 Button {
                     model.router.showsPlayer = false
                 } label: {
                     Image(systemName: "chevron.down")
                         .font(.system(size: 15, weight: .bold))
-                        .frame(width: 34, height: 34)
+                        .frame(width: 36, height: 36)
+                        .contentShape(.circle)
                 }
                 .buttonStyle(.plain)
                 .pongoGlass(in: .circle, interactive: true)
                 .keyboardShortcut(.cancelAction)
                 .help(L10n.closeplayer)
-                .padding(.leading, 84)
-                .padding(.top, 12)
+                .padding(.trailing, 18)
+                .padding(.top, 14)
             }
+            .onExitCommand { model.router.showsPlayer = false }
             .environment(\.colorScheme, .dark)
             .foregroundStyle(.white)
             .tint(state.accent)
@@ -136,7 +149,6 @@ private struct PlayerColumn: View {
                         .contentTransition(.symbolEffect(.replace.downUp))
                         .frame(width: 56)
                 }
-                .keyboardShortcut(.space, modifiers: [])
                 Button(action: player.skipToNext) {
                     Image(systemName: "forward.fill").font(.system(size: 30))
                 }

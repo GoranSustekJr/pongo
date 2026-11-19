@@ -101,6 +101,9 @@ struct SyncedLyricsView: View {
     @State private var active: Int?
     @State private var userScrolling = false
     @State private var resume: Task<Void, Never>?
+    #if os(macOS)
+        @State private var scroller = LyricsScroller()
+    #endif
 
     /// Where the current line sits, from the top of the screen.
     private let anchor = UnitPoint(x: 0.5, y: 0.4)
@@ -116,6 +119,11 @@ struct SyncedLyricsView: View {
                         ForEach(lines) { line in
                             lineView(line, alignment: alignment)
                                 .id(line.id)
+                                #if os(macOS)
+                                    .onGeometryChange(for: CGRect.self) {
+                                        $0.frame(in: .named(LyricsScroller.space))
+                                    } action: { scroller.frames[line.id] = $0 }
+                                #endif
                                 .onTapGesture {
                                     model.player.seek(to: max(line.time - Double(model.nowPlaying.delay) / 1000, 0))
                                     resumeFollowing(proxy, after: .zero)
@@ -130,6 +138,10 @@ struct SyncedLyricsView: View {
                     .padding(.horizontal, 22)
                     .padding(.top, geometry.size.height * anchor.y)
                     .padding(.bottom, geometry.size.height * (1 - anchor.y) + bottomInset)
+                    #if os(macOS)
+                        .coordinateSpace(.named(LyricsScroller.space))
+                        .background { ScrollViewFinder(scroller: scroller) }
+                    #endif
                 }
                 .scrollIndicators(.hidden)
                 .onScrollPhaseChange { _, phase in
@@ -142,7 +154,7 @@ struct SyncedLyricsView: View {
                 }
                 .onChange(of: active) { _, index in
                     guard !userScrolling else { return }
-                    withAnimation(.spring(duration: 0.5, bounce: 0.1)) { scroll(proxy, to: index) }
+                    glide(proxy, to: index)
                 }
                 .task {
                     // Once laid out: a Mac's scroll view doesn't exist yet when this appears,
@@ -175,12 +187,15 @@ struct SyncedLyricsView: View {
             }
         // Before the first line is sung, it stays sharp as the one coming up
         let upcoming = active == nil && line.id == lines.first?.id
+        // Only the lines around the current one are blurred; blurring the rest, which are
+        // dim and mostly off screen, costs every frame they scroll
         let blur: CGFloat =
             switch distance {
             case 0: 0
             case 1: upcoming ? 0 : 2.25
             case -1: 2.75
-            default: 3.5
+            case -3...3: 3.5
+            default: 0
             }
         return LyricsLineView(
             line: line, translation: model.nowPlaying.translations[line.text], alignment: alignment,
@@ -193,7 +208,20 @@ struct SyncedLyricsView: View {
     }
 
     private func scroll(_ proxy: ScrollViewProxy, to index: Int?) {
-        proxy.scrollTo(index ?? lines.first?.id ?? 0, anchor: anchor)
+        let id = index ?? lines.first?.id ?? 0
+        #if os(macOS)
+            if scroller.scroll(to: id, anchor: anchor.y, animated: false) { return }
+        #endif
+        proxy.scrollTo(id, anchor: anchor)
+    }
+
+    /// Moves to the line at [index] smoothly. A Mac's scroll view jumps when
+    /// SwiftUI animates it, so there the scroll view glides itself.
+    private func glide(_ proxy: ScrollViewProxy, to index: Int?) {
+        #if os(macOS)
+            if scroller.scroll(to: index ?? lines.first?.id ?? 0, anchor: anchor.y, animated: true) { return }
+        #endif
+        withAnimation(.spring(duration: 0.5, bounce: 0.1)) { scroll(proxy, to: index) }
     }
 
     private func resumeFollowing(_ proxy: ScrollViewProxy, after delay: Duration) {
@@ -201,13 +229,61 @@ struct SyncedLyricsView: View {
         resume = Task {
             try? await Task.sleep(for: delay)
             guard !Task.isCancelled else { return }
-            withAnimation(.spring(duration: 0.6, bounce: 0.1)) {
-                userScrolling = false
-                scroll(proxy, to: active)
-            }
+            withAnimation(.spring(duration: 0.6, bounce: 0.1)) { userScrolling = false }
+            glide(proxy, to: active)
         }
     }
 }
+
+#if os(macOS)
+    /// Scrolls the lyrics' AppKit scroll view itself, which glides where a
+    /// SwiftUI animation makes it jump. Where each line lies is measured once
+    /// per layout and kept here, so scrolling redraws nothing.
+    @MainActor
+    final class LyricsScroller {
+        static let space = "lyrics"
+        weak var scrollView: NSScrollView?
+        var frames: [Int: CGRect] = [:]
+
+        /// Puts the line [id] at [anchor] of the scroll view's height.
+        /// Returns whether it could, which it can't before the first layout.
+        func scroll(to id: Int, anchor: CGFloat, animated: Bool) -> Bool {
+            guard let scrollView, let frame = frames[id], let document = scrollView.documentView else { return false }
+            let clip = scrollView.contentView
+            let height = clip.bounds.height
+            let top = -clip.contentInsets.top
+            let bottom = max(document.frame.height - height + clip.contentInsets.bottom, top)
+            // The anchor is in the part not under the toolbar
+            let visible = height - clip.contentInsets.top - clip.contentInsets.bottom
+            let y = min(max(frame.minY + frame.height * anchor - (clip.contentInsets.top + visible * anchor), top), bottom)
+            let origin = NSPoint(x: clip.bounds.origin.x, y: y)
+            if animated {
+                NSAnimationContext.runAnimationGroup { context in
+                    context.duration = 0.55
+                    context.timingFunction = CAMediaTimingFunction(controlPoints: 0.25, 0.8, 0.3, 1)
+                    context.allowsImplicitAnimation = true
+                    clip.animator().setBoundsOrigin(origin)
+                }
+            } else {
+                clip.setBoundsOrigin(origin)
+            }
+            scrollView.reflectScrolledClipView(clip)
+            return true
+        }
+    }
+
+    /// Finds the scroll view the lyrics are in.
+    private struct ScrollViewFinder: NSViewRepresentable {
+        let scroller: LyricsScroller
+
+        func makeNSView(context: Context) -> NSView { NSView() }
+
+        func updateNSView(_ view: NSView, context: Context) {
+            guard scroller.scrollView == nil else { return }
+            Task { @MainActor in scroller.scrollView = view.enclosingScrollView }
+        }
+    }
+#endif
 
 /// One line of synced lyrics.
 private struct LyricsLineView: View {

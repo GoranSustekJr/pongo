@@ -24,7 +24,7 @@ struct MainWindow: View {
                 .tint(.primary)
                 .inspector(isPresented: inspectorShown) {
                     InspectorView()
-                        .inspectorColumnWidth(min: 300, ideal: 360, max: 480)
+                        .inspectorColumnWidth(min: 340, ideal: 420, max: 560)
                 }
             }
             .searchable(text: $query, placement: .sidebar, prompt: L10n.searchsongsartistsalbums)
@@ -37,7 +37,10 @@ struct MainWindow: View {
             .toolbar { PlayerToolbar() }
             // The sidebar shows where the user is; the toolbar holds the player
             .toolbar(removing: .title)
+            // The full player has its own controls, and nothing under it may take clicks
+            .toolbarVisibility(router.showsPlayer ? .hidden : .automatic, for: .windowToolbar)
             .opacity(router.showsPlayer ? 0 : 1)
+            .allowsHitTesting(!router.showsPlayer)
 
             if router.showsPlayer, model.player.current != nil {
                 MacNowPlayingView()
@@ -110,6 +113,7 @@ private struct Sidebar: View {
             playlistSection(L10n.offlineplaylists, kind: .offline, playlists: offline)
         }
         .listStyle(.sidebar)
+        .safeAreaInset(edge: .bottom) { AccountButton() }
         .task(id: model.libraryRevision) {
             online = await model.playlists(.online)
             offline = await model.playlists(.offline)
@@ -129,6 +133,63 @@ private struct Sidebar: View {
                 .tag(SidebarSection.playlist(kind, playlist))
             }
         }
+    }
+}
+
+/// The user at the bottom of the sidebar, which opens their account in the
+/// Settings window, and a button for the preferences.
+private struct AccountButton: View {
+    @Environment(AppModel.self) private var model
+    @Environment(\.openSettings) private var openSettings
+    @AppStorage(MacSettingsView.tabKey) private var settingsTab = MacSettingsView.Pane.general
+    @State private var profile: UserProfile?
+    @State private var hovering = false
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Button {
+                open(.profile)
+            } label: {
+                HStack(spacing: 10) {
+                    CoverImage(profile?.picture, placeholder: "person.fill")
+                        .frame(width: 30, height: 30)
+                        .clipShape(.circle)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(profile?.name ?? L10n.profile)
+                            .font(.system(size: 13, weight: .semibold))
+                        Text(profile?.email ?? L10n.yourprofile)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                    }
+                    .lineLimit(1)
+                    Spacer(minLength: 0)
+                }
+                .contentShape(.rect)
+            }
+            .buttonStyle(.plain)
+            .help(L10n.profile)
+            Button {
+                open(.general)
+            } label: {
+                Image(systemName: "gearshape").font(.system(size: 15)).frame(width: 26, height: 26)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.secondary)
+            .help(L10n.preferences)
+        }
+        .padding(8)
+        .background(.primary.opacity(hovering ? 0.08 : 0), in: .rect(cornerRadius: 10))
+        .onHover { hovering = $0 }
+        .padding(.horizontal, 10)
+        .padding(.bottom, 10)
+        .task(id: model.auth.isSignedIn) {
+            profile = model.auth.isSignedIn ? try? await model.auth.fetchProfile() : nil
+        }
+    }
+
+    private func open(_ pane: MacSettingsView.Pane) {
+        settingsTab = pane
+        openSettings()
     }
 }
 

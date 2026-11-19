@@ -34,6 +34,8 @@ struct PlayerToolbar: ToolbarContent {
         ToolbarItem(placement: .principal) {
             NowPlayingCapsule()
         }
+        // The capsule draws its own glass, sized to what's in it
+        .sharedBackgroundVisibility(.hidden)
         ToolbarItemGroup(placement: .primaryAction) {
             VolumeControl()
             RoutePicker().frame(width: 28, height: 28)
@@ -47,56 +49,100 @@ struct PlayerToolbar: ToolbarContent {
 }
 
 /// The song playing, like the display in the middle of Mac music apps: its
-/// cover, which opens the full player, its title and artists, and where in
-/// it the player is.
+/// cover, which opens the full player, its title and artists, and a thin
+/// bar along its bottom of where in it the player is. It draws its own
+/// glass, at a height that fits the toolbar, and keeps everything inside.
 private struct NowPlayingCapsule: View {
     @Environment(AppModel.self) private var model
     @State private var hovering = false
 
+    private let height: CGFloat = 38
+
     var body: some View {
         let player = model.player
-        HStack(spacing: 10) {
+        HStack(spacing: 9) {
             if let item = player.current {
                 Button {
                     model.router.showsPlayer = true
                 } label: {
                     CoverImage(url: item.track.coverURL(size: 150))
-                        .frame(width: 34, height: 34)
-                        .coverShape(6)
+                        .frame(width: height - 8, height: height - 8)
+                        .coverShape(5)
                         .overlay {
                             if hovering {
                                 Image(systemName: "arrow.up.left.and.arrow.down.right")
-                                    .font(.system(size: 12, weight: .bold))
+                                    .font(.system(size: 11, weight: .bold))
                                     .foregroundStyle(.white)
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .background(.black.opacity(0.35))
-                                    .coverShape(6)
+                                    .background(.black.opacity(0.4))
+                                    .coverShape(5)
                             }
                         }
                 }
                 .buttonStyle(.plain)
                 .help(L10n.openplayer)
-                VStack(spacing: 1) {
+                VStack(spacing: 0) {
                     Marquee(text: item.track.name, alignment: .center)
                         .font(.system(size: 12, weight: .semibold))
-                    Marquee(text: item.track.artistNames, alignment: .center)
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
-                    Scrubber(item: item, showsTimes: hovering)
+                    if hovering {
+                        Scrubber(item: item, showsTimes: true, height: 3)
+                            .frame(height: 14)
+                            .transition(.opacity)
+                    } else {
+                        Marquee(text: item.track.artistNames, alignment: .center)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                            .transition(.opacity)
+                    }
                 }
                 .frame(maxWidth: .infinity)
             } else {
-                Image("Logo").resizable().scaledToFit().frame(width: 22, height: 22).opacity(0.6)
-                Text(L10n.nothingplaying).font(.system(size: 12)).foregroundStyle(.secondary)
+                Image(systemName: "music.note")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
+                    .frame(width: height - 8, height: height - 8)
+                    .background(.primary.opacity(0.08), in: .rect(cornerRadius: 5))
+                Text(L10n.nothingplaying)
+                    .font(.system(size: 12))
+                    .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity)
             }
         }
         .padding(.leading, 4)
-        .padding(.trailing, 12)
-        .frame(minWidth: 260, idealWidth: 420, maxWidth: 440, minHeight: 42, maxHeight: 42)
-        .contentShape(.rect)
+        .padding(.trailing, 14)
+        .frame(minWidth: 260, idealWidth: 420, maxWidth: 440)
+        .frame(height: height)
+        .overlay(alignment: .bottom) {
+            // How far the song has played, while the times aren't shown
+            if let item = player.current, !hovering {
+                ProgressLine(item: item).padding(.horizontal, 14)
+            }
+        }
+        .clipShape(.capsule)
+        .glassEffect(.regular, in: .capsule)
+        .contentShape(.capsule)
         .onHover { hovering = $0 }
         .animation(.easeOut(duration: 0.15), value: hovering)
+    }
+}
+
+/// A hairline of how far the track has played, along a capsule's bottom.
+private struct ProgressLine: View {
+    @Environment(AppModel.self) private var model
+    let item: QueueItem
+
+    var body: some View {
+        let player = model.player
+        let duration = player.duration > 0 ? player.duration : item.duration
+        let fraction = duration > 0 ? min(max(player.progress.position / duration, 0), 1) : 0
+        GeometryReader { geometry in
+            Capsule()
+                .fill(Color.pongoTeal)
+                .frame(width: geometry.size.width * fraction, height: 2)
+                .frame(maxHeight: .infinity, alignment: .bottom)
+        }
+        .frame(height: 2)
+        .padding(.bottom, 1)
     }
 }
 

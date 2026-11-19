@@ -54,7 +54,15 @@ struct QueuePanel: View {
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .scrollIndicators(.hidden)
-            .contentMargins(.top, 60, for: .scrollContent)
+            .contentMargins(.top, 84, for: .scrollContent)
+            // Entries fade out before they reach the buttons on top, so none show behind them
+            .mask {
+                VStack(spacing: 0) {
+                    Color.clear.frame(height: 62)
+                    LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom).frame(height: 16)
+                    Color.black
+                }
+            }
             .contentMargins(.bottom, bottomInset + 20, for: .scrollContent)
             .ignoresSafeArea(edges: .bottom)
             .onAppear {
