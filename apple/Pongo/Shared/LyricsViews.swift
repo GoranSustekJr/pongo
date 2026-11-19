@@ -187,15 +187,12 @@ struct SyncedLyricsView: View {
             }
         // Before the first line is sung, it stays sharp as the one coming up
         let upcoming = active == nil && line.id == lines.first?.id
-        // Only the lines around the current one are blurred; blurring the rest, which are
-        // dim and mostly off screen, costs every frame they scroll
         let blur: CGFloat =
             switch distance {
             case 0: 0
             case 1: upcoming ? 0 : 2.25
             case -1: 2.75
-            case -3...3: 3.5
-            default: 0
+            default: 3.5
             }
         return LyricsLineView(
             line: line, translation: model.nowPlaying.translations[line.text], alignment: alignment,

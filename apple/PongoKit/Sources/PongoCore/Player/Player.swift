@@ -89,6 +89,18 @@ public final class Player {
     @ObservationIgnored public var setDeviceVolume: ((Double) -> Void)?
     /// Writes a line to the sleep alarm log.
     @ObservationIgnored public var log: ((String) -> Void)?
+    /// Takes what the user does to the queue while they listen along with
+    /// someone else, returning whether it did; what it doesn't take plays
+    /// here alone, such as pausing for a moment.
+    @ObservationIgnored public var remote: ((PlayerRequest) -> Bool)?
+    /// Called when playback starts, stops, seeks or moves to another entry,
+    /// for listeners following this player.
+    @ObservationIgnored public var onPlaybackChanged: (() -> Void)?
+    /// Who entries the user adds are marked as added by, while listening
+    /// together.
+    @ObservationIgnored public var addingAs: String?
+    // Loads the entry again after a guest's track failed, until it plays
+    @ObservationIgnored private var followRetry: Task<Void, Never>?
 
     @ObservationIgnored private let client: APIClient
     @ObservationIgnored private let socket: TrackSocket
@@ -239,6 +251,9 @@ public final class Player {
         _ collectionID: String, _ tracks: [Track], durations: [String: Double], index: Int? = nil,
         shuffle: Bool = false
     ) async {
+        if let remote, remote(.replace(collectionID: collectionID, tracks: tracks, index: index, shuffle: shuffle)) {
+            return
+        }
         let generation = startNewQueue()
         let known = durations.merging(fetchedDurations) { first, _ in first }
         let missing = tracks.map(\.id).filter { known[$0] == nil }
@@ -298,6 +313,9 @@ public final class Player {
         _ collectionID: String, _ tracks: [Track], durations: [String: Int], index: Int? = nil,
         shuffle: Bool = false
     ) {
+        if let remote, remote(.replace(collectionID: collectionID, tracks: tracks, index: index, shuffle: shuffle)) {
+            return
+        }
         _ = startNewQueue()
         startQueue(
             tracks.map {
@@ -310,6 +328,9 @@ public final class Player {
     public func playSingle(_ track: Track, collectionID: String) async {
         if current?.stid == track.id {
             togglePlayback()
+            return
+        }
+        if let remote, remote(.replace(collectionID: collectionID, tracks: [track], index: 0, shuffle: false)) {
             return
         }
         let generation = startNewQueue()
@@ -336,7 +357,7 @@ public final class Player {
     /// [collectionID] into it, marked as suggestions.
     public func addSuggestions(to collectionID: String, count: Int) async {
         let generation = self.generation
-        guard queue.shuffleEnabled, current?.collectionID == collectionID else { return }
+        guard remote == nil, queue.shuffleEnabled, current?.collectionID == collectionID else { return }
         let stids = queue.items.map(\.stid)
         let seeds = Array(stids.shuffled().prefix(MixRefill.seedCount))
         var added: [String] = []
@@ -369,6 +390,7 @@ public final class Player {
     public func playMix(
         _ collectionID: String, seeds: [Track], durations: [String: Double] = [:], mood: Mood? = nil
     ) async {
+        if let remote, remote(.mix(collectionID: collectionID, seeds: seeds, mood: mood)) { return }
         await playOnline(collectionID, seeds, durations: durations)
         // Another queue may have started while the seeds were fetched
         guard current?.collectionID == collectionID, !mix.isActive else { return }
@@ -433,6 +455,11 @@ public final class Player {
     /// be reached, or else to the next track.
     private func itemFailed(_ playerItem: AVPlayerItem) {
         guard let loaded = loadedCurrent, loaded.item === playerItem, let item = current else { return }
+        // Following someone, the entry stays: the server may still be fetching it for them
+        if remote != nil {
+            retryFollowing(item.id)
+            return
+        }
         if streamed.contains(item.stid) {
             streamFailed(playerItem)
             return
@@ -491,7 +518,7 @@ public final class Player {
     private func playCurrentFromLibrary() {
         let position = progress.position
         loadCurrent(autoplay: true)
-        seek(to: position)
+        seekEngine(to: position)
     }
 
     /// Handles a tap on the track at [index] of a collection: starts the
@@ -529,9 +556,11 @@ public final class Player {
     }
 
     /// Inserts [track] after the current entry and those queued before it.
-    public func addNext(_ track: Track, collectionID: String) async {
+    public func addNext(_ track: Track, collectionID: String, by user: String? = nil) async {
+        if let remote, remote(.add(track: track, next: true)) { return }
         guard var item = await queueEntry(for: track, collectionID: collectionID) else { return }
         item.isQueued = true
+        item.addedBy = user ?? addingAs
         queueMatchesCollection = false
         let wasEmpty = queue.isEmpty
         queue.insertNext(item)
@@ -539,8 +568,10 @@ public final class Player {
     }
 
     /// Appends [track] to the queue.
-    public func addLast(_ track: Track, collectionID: String) async {
-        guard let item = await queueEntry(for: track, collectionID: collectionID) else { return }
+    public func addLast(_ track: Track, collectionID: String, by user: String? = nil) async {
+        if let remote, remote(.add(track: track, next: false)) { return }
+        guard var item = await queueEntry(for: track, collectionID: collectionID) else { return }
+        item.addedBy = user ?? addingAs
         queueMatchesCollection = false
         append(item)
     }
@@ -555,6 +586,9 @@ public final class Player {
 
     /// Removes the entries at [indexes] of the queue, except the one playing.
     public func remove(at indexes: [Int]) {
+        if let remote, remote(.remove(indexes.filter(queue.items.indices.contains).map { queue.items[$0].id })) {
+            return
+        }
         for index in indexes.sorted(by: >) { queue.remove(at: index) }
         queueMatchesCollection = false
         reindexLoaded()
@@ -566,6 +600,7 @@ public final class Player {
 
     /// Moves the entry at [index] to play next.
     public func playNext(at index: Int) {
+        if let remote, queue.items.indices.contains(index), remote(.playNext(queue.items[index].id)) { return }
         queue.moveNext(index)
         queueMatchesCollection = false
         reindexLoaded()
@@ -576,6 +611,7 @@ public final class Player {
     /// Removes everything after the current entry, and stops a mix adding
     /// more.
     public func clearUpcoming() {
+        if let remote, remote(.clearUpcoming) { return }
         mix.stop()
         mixMood = nil
         queue.removeUpcoming()
@@ -588,6 +624,7 @@ public final class Player {
 
     /// Moves entries in play order, as a list's move gives them.
     public func move(fromOffsets offsets: IndexSet, toOffset destination: Int) {
+        if let remote, remote(.move(from: Array(offsets), to: destination)) { return }
         queue.move(fromOffsets: offsets, toOffset: destination)
         queueMatchesCollection = false
         reindexLoaded()
@@ -607,6 +644,11 @@ public final class Player {
     // MARK: - Transport
 
     public func play() {
+        if let remote, remote(.play) { return }
+        resume()
+    }
+
+    private func resume() {
         guard !blockPlayback else {
             onMessage?(.sleepAlarmEnabled)
             return
@@ -619,6 +661,7 @@ public final class Player {
     }
 
     public func pause() {
+        if let remote, remote(.pause) { return }
         guard !blockPlayback else {
             onMessage?(.sleepAlarmEnabled)
             return
@@ -641,6 +684,12 @@ public final class Player {
     }
 
     public func seek(to seconds: Double) {
+        if let remote, remote(.seek(seconds)) { return }
+        seekEngine(to: seconds)
+        onPlaybackChanged?()
+    }
+
+    private func seekEngine(to seconds: Double) {
         progress.position = seconds
         engine.seek(to: CMTime(seconds: seconds, preferredTimescale: 1000), toleranceBefore: .zero, toleranceAfter: .zero) {
             [weak self] _ in
@@ -652,17 +701,20 @@ public final class Player {
     /// Plays the entry at [index] of the queue.
     public func skip(to index: Int) {
         guard queue.items.indices.contains(index) else { return }
+        if let remote, remote(.skip(queue.items[index].id)) { return }
         queue.select(index)
         loadCurrent(autoplay: true)
     }
 
     public func skipToNext() {
+        if let remote, remote(.next) { return }
         guard let next = queue.nextIndex(userSkipped: true) else { return }
         skip(to: next)
     }
 
     /// Restarts the track, or plays the previous entry near its start.
     public func skipToPrevious() {
+        if let remote, remote(.previous) { return }
         if progress.position < 5, let previous = queue.previousIndex() {
             skip(to: previous)
         } else {
@@ -671,6 +723,7 @@ public final class Player {
     }
 
     public func setRepeatMode(_ mode: RepeatMode, announce: Bool = true) {
+        if let remote, remote(.repeatMode(mode)) { return }
         queue.repeatMode = mode
         refreshNext()
         if announce { onMessage?(.repeatChanged(mode)) }
@@ -680,6 +733,7 @@ public final class Player {
     public func cycleRepeatMode() { setRepeatMode(queue.repeatMode.next) }
 
     public func setShuffle(_ enabled: Bool) {
+        if let remote, remote(.shuffle(enabled)) { return }
         guard canShuffle || !enabled else { return }
         if !enabled {
             // Suggestions belong to the shuffle; unshuffled, the playlist plays as it is
@@ -704,6 +758,7 @@ public final class Player {
     /// Returns whether the player stopped.
     @discardableResult
     public func halt() -> Bool {
+        if let remote, remote(.halt) { return true }
         guard activeSleepAlarm == -1 else {
             onMessage?(.cannotHaltDuringSleepAlarm)
             return false
@@ -838,6 +893,7 @@ public final class Player {
         loadArtwork(for: item)
         reportQueueToMix()
         onTrackStarted?(item)
+        onPlaybackChanged?()
         scheduleCrossfade()
         Task { await gains.prefetch(queue.upcoming.prefix(5).map(\.stid)) }
         cacheIfWanted(item)
@@ -852,7 +908,9 @@ public final class Player {
                 let status = player.timeControlStatus
                 Task { @MainActor in
                     guard let self else { return }
+                    let wasPlaying = self.isPlaying
                     self.isPlaying = status != .paused
+                    if wasPlaying != self.isPlaying { self.onPlaybackChanged?() }
                     self.isBuffering = status == .waitingToPlayAtSpecifiedRate
                     self.updateNowPlaying()
                 }
@@ -1302,6 +1360,73 @@ public final class Player {
         }
     #endif
 
+    // MARK: - Listening together
+
+    /// Exactly how far into the current track the engine is.
+    public var exactPosition: Double {
+        let seconds = engine.currentTime().seconds
+        return seconds.isFinite ? seconds : 0
+    }
+
+    /// Takes on the queue someone else plays, keeping the entry that plays
+    /// here if it's still current in it.
+    public func follow(_ snapshot: PlaybackQueue.Snapshot) {
+        _ = startNewQueue()
+        var snapshot = snapshot
+        // Their downloads are on their device; here the tracks play from the server
+        snapshot.items = snapshot.items.map { item in
+            var item = item
+            item.track.audioPath = nil
+            item.track.localImagePath = nil
+            return item
+        }
+        queue.restore(snapshot)
+        canShuffle = true
+        queueMatchesCollection = false
+        if let uid = loadedCurrent?.uid, uid == current?.id {
+            reindexLoaded()
+            refreshNext()
+        } else {
+            loadCurrent(autoplay: false)
+        }
+        saveState()
+    }
+
+    /// Plays the entry with [entry] from [position], or pauses it, as
+    /// someone else's player does; small differences in position stay.
+    public func follow(entry: UUID, position: Double, playing: Bool, tolerance: Double = 0.25) {
+        guard let index = queue.items.firstIndex(where: { $0.id == entry }) else { return }
+        if loadedCurrent?.uid != entry || queue.currentIndex != index {
+            followRetry?.cancel()
+            queue.select(index)
+            loadCurrent(autoplay: false)
+            seekEngine(to: position)
+            if playing { resume() }
+            return
+        }
+        if abs(exactPosition - position) > tolerance { seekEngine(to: position) }
+        if playing && !isPlaying {
+            resume()
+        } else if !playing && isPlaying {
+            engine.pause()
+        }
+    }
+
+    /// Pauses here only, while following someone.
+    public func pauseHere() {
+        engine.pause()
+    }
+
+    private func retryFollowing(_ entry: UUID) {
+        followRetry?.cancel()
+        followRetry = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(2))
+            guard !Task.isCancelled, let self, self.remote != nil, self.current?.id == entry else { return }
+            self.loadCurrent(autoplay: self.isPlaying)
+            self.onPlaybackChanged?()
+        }
+    }
+
     // MARK: - Saving the queue
 
     /// Saves the queue, position and modes so the next launch can resume.
@@ -1330,7 +1455,7 @@ public final class Player {
         let ids = Set(queue.items.map(\.id))
         suggestedIDs = Set(snapshot.suggested ?? []).intersection(ids)
         loadCurrent(autoplay: false)
-        seek(to: snapshot.position)
+        seekEngine(to: snapshot.position)
         // A mix goes on where it was, keeping to its mood
         if snapshot.mixActive == true {
             mixMood = snapshot.mixMood

@@ -33,6 +33,9 @@ struct PlayerCommands: Commands {
                 Text(L10n.repeatthissong).tag(RepeatMode.one)
             }
             Divider()
+            Button(L10n.listentogether + "…") { model.showsListenTogether = true }
+                .keyboardShortcut("l", modifiers: [.command, .option])
+            Divider()
             Button(L10n.halt) { router.confirmsHalt = true }
                 .disabled(!hasTrack)
         }

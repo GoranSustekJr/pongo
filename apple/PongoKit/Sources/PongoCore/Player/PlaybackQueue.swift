@@ -13,6 +13,8 @@ public struct QueueItem: Sendable, Hashable, Identifiable, Codable {
     public var isMix = false
     /// Whether the user asked for this entry to play next.
     public var isQueued = false
+    /// Who added the entry while listening together, by their user ID.
+    public var addedBy: String?
 
     public init(track: Track, collectionID: String, duration: Double, isMix: Bool = false) {
         self.track = track
@@ -21,7 +23,7 @@ public struct QueueItem: Sendable, Hashable, Identifiable, Codable {
         self.isMix = isMix
     }
 
-    private enum CodingKeys: String, CodingKey { case id, collectionID, track, duration, isMix, isQueued }
+    private enum CodingKeys: String, CodingKey { case id, collectionID, track, duration, isMix, isQueued, addedBy }
 
     // Queues saved by earlier versions lack the newer flags
     public init(from decoder: any Decoder) throws {
@@ -32,6 +34,7 @@ public struct QueueItem: Sendable, Hashable, Identifiable, Codable {
         duration = try container.decode(Double.self, forKey: .duration)
         isMix = try container.decodeIfPresent(Bool.self, forKey: .isMix) ?? false
         isQueued = try container.decodeIfPresent(Bool.self, forKey: .isQueued) ?? false
+        addedBy = try container.decodeIfPresent(String.self, forKey: .addedBy)
     }
 
     public var stid: String { track.id }

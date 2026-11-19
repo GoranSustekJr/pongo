@@ -233,3 +233,34 @@ private func item(_ stid: String) -> QueueItem {
         #expect(appended == ["new"])
     }
 }
+
+@Suite struct ListenTogetherTests {
+    /// The server reads a request's kind from its only key.
+    @Test func requestsEncodeAsTheirKind() throws {
+        let requests: [(PlayerRequest, String)] = [
+            (.pause, "pause"), (.seek(12), "seek"), (.skip(UUID()), "skip"),
+            (.add(track: item("1").track, next: true), "add"), (.move(from: [2], to: 0), "move"),
+            (.repeatMode(.one), "repeatMode"),
+            (.replace(collectionID: "c", tracks: [], index: nil, shuffle: false), "replace"),
+        ]
+        for (request, kind) in requests {
+            let object = try JSONSerialization.jsonObject(with: JSONEncoder().encode(request)) as? [String: Any]
+            #expect(object.map { Array($0.keys) } == [kind])
+            #expect(try JSONDecoder().decode(PlayerRequest.self, from: JSONEncoder().encode(request)) == request)
+        }
+    }
+
+    @Test func presetsMatchTheirRights() {
+        #expect(ListenPreset.matching([]) == .listenAlong)
+        #expect(ListenPreset.matching([.add]) == .party)
+        #expect(ListenPreset.matching(Set(ListenRight.allCases)) == .coPilot)
+        #expect(ListenPreset.matching([.add, .playback]) == nil)
+    }
+
+    @Test func entriesKeepWhoAddedThem() throws {
+        var entry = item("1")
+        entry.addedBy = "friend"
+        let decoded = try JSONDecoder().decode(QueueItem.self, from: JSONEncoder().encode(entry))
+        #expect(decoded.addedBy == "friend")
+    }
+}

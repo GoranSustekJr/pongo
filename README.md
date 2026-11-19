@@ -56,6 +56,7 @@ The iOS app comes first; macOS and Android follow later.
 | Liquid glass UI                  | Frosted, fluid visual design                                                                                    |
 | Queue management                 | Reorder or remove songs in the queue                                                                            |
 | Repeat and shuffle               | Toggle repeat and shuffle modes                                                                                 |
+| Listen together                  | Friends follow your queue live on their own phones and accounts (iOS and macOS apps)                            |
 | Animations                       | Smooth transitions and effects                                                                                  |
 
 
@@ -134,6 +135,10 @@ Search, albums, artists, playlists, genres and new releases come from the public
 ### Playback
 
 The native player requests `/play_song/{id}?st=<stream token>`, which serves the file with HTTP range support. The stream token is per device, expires after 7 days, and stops working when the device is removed or the user is disabled. Behind Caddy the API only checks the request and names the file, and Caddy sends it.
+
+### Listening together
+
+In the iOS and macOS apps, the queue's people button starts a session and shows a six-letter code that friends with an account on the same server join with. The host's app publishes its queue and playback position over the `/listen` WebSocket; guests' players follow it, correcting drift against the server's clock. What guests do to their player goes to the host as a request, which the server passes on only if the host allowed it: adding songs, playback, removing and reordering, shuffle and repeat, or playing something else, set by a preset (Listen along, Party, Co-pilot) or one by one, for everyone or per guest. The host can pass the session to a guest, and it passes to the guest who joined first when the host leaves or stays disconnected for 30 seconds. Sessions live in the server's memory only.
 
 ### Mix Mode
 

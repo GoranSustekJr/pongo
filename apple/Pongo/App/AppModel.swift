@@ -32,6 +32,7 @@ final class AppModel {
     let downloads: DownloadsRepository
     let lyrics: LyricsClient
     let player: Player
+    let listening: ListeningSession
     let sync: LibrarySync
     let router = Router()
     let messages = MessageCenter()
@@ -45,6 +46,8 @@ final class AppModel {
     #endif
 
     var playlistRequest: PlaylistRequest?
+    /// Whether the screen of listening together shows.
+    var showsListenTogether = false
     private(set) var favouriteIDs: Set<String> = []
     private(set) var downloadedIDs: Set<String> = []
     private var localRevision = 0
@@ -83,6 +86,7 @@ final class AppModel {
                 // The token is in the path, so the audio the playlist points to carries it too
                 URL(string: "\(config.serverURL)stream/\(auth.streamToken)/\(stid)/index.m3u8")
             })
+        listening = ListeningSession(client: client, player: player)
         sync = LibrarySync(
             client: client, store: database, sources: [database, SettingsSyncSource(settings: settings)])
         L10n.selectedLanguage = settings.settings.locale
@@ -101,6 +105,7 @@ final class AppModel {
     private func configurePlayer() {
         applyPreferences()
         player.onMessage = { [weak self] message in self?.show(message) }
+        listening.onNotice = { [weak self] notice in self?.show(notice) }
         player.onTrackStarted = { [weak self] item in
             guard let self, !item.isMix, Int(item.stid) != nil else { return }
             Task { try? await self.database.addPlayedTrack(item.stid) }
@@ -135,6 +140,8 @@ final class AppModel {
         if auth.isSignedIn {
             await sync.start()
         } else {
+            // A session is someone's own; another account starts without it
+            if listening.isActive { listening.leave() }
             #if DEBUG
                 if DemoMode.isOn { return }
             #endif
@@ -259,6 +266,17 @@ final class AppModel {
         case .trackUnavailable: messages.show(L10n.trackunavailable, systemImage: "exclamationmark.triangle", isError: true)
         case .serverUnreachable:
             messages.show(L10n.serverunreachable, detail: L10n.downloadsstillplay, systemImage: "wifi.slash", isError: true)
+        }
+    }
+
+    private func show(_ notice: ListenNotice) {
+        switch notice {
+        case .notAllowed: messages.show(L10n.notallowedinsession, systemImage: "hand.raised", isError: true)
+        case .notFound: messages.show(L10n.sessionnotfound, systemImage: "person.2.slash", isError: true)
+        case .full: messages.show(L10n.sessionfull, systemImage: "person.2.slash", isError: true)
+        case .connectionLost: messages.show(L10n.sessionconnectionlost, systemImage: "wifi.slash", isError: true)
+        case .nowHosting: messages.show(L10n.nowhosting, systemImage: "crown")
+        case .hostChanged(let name): messages.show("\(L10n.hostisnow) \(name)", systemImage: "crown")
         }
     }
 }

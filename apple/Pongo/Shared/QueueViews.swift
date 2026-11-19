@@ -27,6 +27,13 @@ struct QueuePanel: View {
         let rest = Array(entries.dropFirst(position + 1 + queued.count))
         ScrollViewReader { proxy in
             List {
+                if model.listening.isActive {
+                    ListeningBanner { model.showsListenTogether = true }
+                        .listRowInsets(EdgeInsets(top: 0, leading: 15, bottom: 6, trailing: 15))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .moveDisabled(true)
+                }
                 if !played.isEmpty {
                     playedToggle(count: played.count)
                     if showsPlayed { rows(played, base: 0, dimmed: true) }
@@ -70,6 +77,11 @@ struct QueuePanel: View {
             }
         }
         .overlay(alignment: .top) { bar }
+        #if os(iOS)
+            .sheet(isPresented: Binding { model.showsListenTogether } set: { model.showsListenTogether = $0 }) {
+                ListenTogetherView()
+            }
+        #endif
         .alert(L10n.haltmusicplayer, isPresented: $confirmHalt) {
             Button(L10n.cancel, role: .cancel) {}
             Button(L10n.halt, role: .destructive) { model.player.halt() }
@@ -236,6 +248,10 @@ struct QueuePanel: View {
                 withAnimation(.spring(duration: 0.55, bounce: 0.12)) { state.toggleQueue() }
             }
             Spacer()
+            GlassIconButton(systemImage: "person.2.wave.2", isOn: model.listening.isActive) {
+                model.showsListenTogether = true
+            }
+            Spacer()
             GlassIconButton(systemImage: "stop.fill") { confirmHalt = true }
             Spacer()
             Menu {
@@ -264,6 +280,7 @@ struct QueuePanel: View {
             Button(L10n.download, systemImage: "icloud.and.arrow.down") { download(selectedOnly: true) }
         } else {
             Button(L10n.edit, systemImage: "pencil") { editing = true }
+            Button(L10n.listentogether, systemImage: "person.2.wave.2") { model.showsListenTogether = true }
             Divider()
             Button(L10n.saveasplaylist, systemImage: "music.note.list") {
                 Task { await model.addToPlaylist(queueTracks(), creating: true) }
@@ -348,6 +365,12 @@ private struct QueueRow: View {
                     }
                 } else if item.isMix {
                     Image(systemName: "sparkles").font(.caption).opacity(0.6)
+                }
+                if let adder = model.listening.listener(item.addedBy), !editing {
+                    // Who added it, while listening together
+                    ListenerAvatar(listener: adder, size: 22)
+                        .help("\(L10n.addedby) \(adder.name)")
+                        .accessibilityLabel("\(L10n.addedby) \(adder.name)")
                 }
                 if editing {
                     Image(systemName: selected ? "checkmark.circle.fill" : "circle")

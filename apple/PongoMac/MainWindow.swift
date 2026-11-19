@@ -75,6 +75,9 @@ struct MainWindow: View {
             PlaylistPicker(request: request)
                 .frame(minWidth: 420, minHeight: 480)
         }
+        .sheet(isPresented: Binding { model.showsListenTogether } set: { model.showsListenTogether = $0 }) {
+            ListenTogetherView()
+        }
         .alert(L10n.haltmusicplayer, isPresented: $router.confirmsHalt) {
             Button(L10n.cancel, role: .cancel) {}
             Button(L10n.halt, role: .destructive) { model.player.halt() }

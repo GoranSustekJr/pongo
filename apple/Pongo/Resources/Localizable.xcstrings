@@ -71,6 +71,29 @@
         }
       }
     },
+    "addedby": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added by"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hinzugefügt von"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodao/la"
+          }
+        }
+      }
+    },
     "addedtoplaylist": {
       "extractionState": "manual",
       "localizations": {
@@ -504,6 +527,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Audio player predmemorija"
+          }
+        }
+      }
+    },
+    "away": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Away"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abwesend"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odsutan/na"
           }
         }
       }
@@ -1221,6 +1267,29 @@
         }
       }
     },
+    "connecting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecting…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbinden…"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Povezivanje…"
+          }
+        }
+      }
+    },
     "contactusviamail": {
       "extractionState": "manual",
       "localizations": {
@@ -1286,6 +1355,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kontrole"
+          }
+        }
+      }
+    },
+    "copycode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy code"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code kopieren"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiraj kod"
           }
         }
       }
@@ -2141,6 +2233,29 @@
         }
       }
     },
+    "endsession": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End session"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sitzung beenden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Završi sesiju"
+          }
+        }
+      }
+    },
     "error": {
       "extractionState": "manual",
       "localizations": {
@@ -2578,6 +2693,29 @@
         }
       }
     },
+    "guestscan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guests can"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gäste können"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gosti mogu"
+          }
+        }
+      }
+    },
     "halt": {
       "extractionState": "manual",
       "localizations": {
@@ -2716,6 +2854,52 @@
         }
       }
     },
+    "host": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Host"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gastgeber"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Domaćin"
+          }
+        }
+      }
+    },
+    "hostisnow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The host is now"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gastgeber ist jetzt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Domaćin je sada"
+          }
+        }
+      }
+    },
     "howmanyalbumsshownwhensearching": {
       "extractionState": "manual",
       "localizations": {
@@ -2850,6 +3034,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Slike"
+          }
+        }
+      }
+    },
+    "join": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beitreten"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pridruži se"
+          }
+        }
+      }
+    },
+    "joinsession": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Join a session"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sitzung beitreten"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pridruži se sesiji"
           }
         }
       }
@@ -3011,6 +3241,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zadnji u red čekanja"
+          }
+        }
+      }
+    },
+    "leavesession": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leave session"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sitzung verlassen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Napusti sesiju"
           }
         }
       }
@@ -3285,6 +3538,98 @@
         }
       }
     },
+    "listeners": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listeners"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuhörer"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slušatelji"
+          }
+        }
+      }
+    },
+    "listeningwith": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listening with"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hörst mit"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slušaš s"
+          }
+        }
+      }
+    },
+    "listentogether": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listen together"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemeinsam hören"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slušajte zajedno"
+          }
+        }
+      }
+    },
+    "listentogetherbody": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play your queue on your friends' phones at the same time, each on their own account and headphones."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spiel deine Warteschlange gleichzeitig auf den Handys deiner Freunde ab, jeder mit seinem eigenen Konto und Kopfhörern."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reproducirajte svoj red na mobitelima prijatelja u isto vrijeme, svatko na svom računu i slušalicama."
+          }
+        }
+      }
+    },
     "livelyrics": {
       "extractionState": "manual",
       "localizations": {
@@ -3419,6 +3764,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Napravljeno za tebe"
+          }
+        }
+      }
+    },
+    "makehost": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Make host"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zum Gastgeber machen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Postavi za domaćina"
           }
         }
       }
@@ -3906,6 +4274,29 @@
         }
       }
     },
+    "notallowedinsession": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The host didn't let guests do that"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Gastgeber hat das Gästen nicht erlaubt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Domaćin to nije dopustio gostima"
+          }
+        }
+      }
+    },
     "nothingplaying": {
       "extractionState": "manual",
       "localizations": {
@@ -3971,6 +4362,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nema pjesama"
+          }
+        }
+      }
+    },
+    "nowhosting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're the host now"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist jetzt der Gastgeber"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sada si domaćin"
           }
         }
       }
@@ -4228,6 +4642,29 @@
         }
       }
     },
+    "onlylisten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only listen along"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur mithören"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Samo slušati"
+          }
+        }
+      }
+    },
     "openplayer": {
       "extractionState": "manual",
       "localizations": {
@@ -4339,6 +4776,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pauza"
+          }
+        }
+      }
+    },
+    "pausedhere": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused just for you. Play to catch up."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur für dich pausiert. Spiel ab, um aufzuholen."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pauzirano samo za tebe. Pokreni za nastavak."
           }
         }
       }
@@ -4941,6 +5401,167 @@
         }
       }
     },
+    "presetcopilot": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Co-pilot"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Co-Pilot"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopilot"
+          }
+        }
+      }
+    },
+    "presetcopilotbody": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everyone controls everything"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle steuern alles"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svi upravljaju svime"
+          }
+        }
+      }
+    },
+    "presetcustom": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Custom"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eigene"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prilagođeno"
+          }
+        }
+      }
+    },
+    "presetlistenalong": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listen along"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mithören"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slušanje"
+          }
+        }
+      }
+    },
+    "presetlistenalongbody": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only you control the music"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur du steuerst die Musik"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Samo ti upravljaš glazbom"
+          }
+        }
+      }
+    },
+    "presetparty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Party"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Party"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zabava"
+          }
+        }
+      }
+    },
+    "presetpartybody": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everyone adds songs"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle fügen Songs hinzu"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svi dodaju pjesme"
+          }
+        }
+      }
+    },
     "previous": {
       "extractionState": "manual",
       "localizations": {
@@ -5098,6 +5719,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Preporuke su onemogućene. Možete ih omogućiti u 'Postavke > Preferencije > Preporuke'. Potom ponovno pokrenite aplikaciju."
+          }
+        }
+      }
+    },
+    "reconnecting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reconnecting…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erneut verbinden…"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponovno povezivanje…"
           }
         }
       }
@@ -5493,6 +6137,29 @@
         }
       }
     },
+    "rightadd": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add songs"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Songs hinzufügen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodavati pjesme"
+          }
+        }
+      }
+    },
     "rightalignment": {
       "extractionState": "manual",
       "localizations": {
@@ -5516,6 +6183,98 @@
         }
       }
     },
+    "rightmanage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove and reorder songs"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Songs entfernen und umsortieren"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uklanjati i premještati pjesme"
+          }
+        }
+      }
+    },
+    "rightmodes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shuffle and repeat"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zufällig und Wiederholen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasumično i ponavljanje"
+          }
+        }
+      }
+    },
+    "rightplayback": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play, pause and skip"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abspielen, pausieren und überspringen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reproducirati, pauzirati i preskakati"
+          }
+        }
+      }
+    },
+    "righttakeover": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play something else"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Etwas anderes abspielen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pustiti nešto drugo"
+          }
+        }
+      }
+    },
     "righttextalign": {
       "extractionState": "manual",
       "localizations": {
@@ -5535,6 +6294,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Desno poravnanje teksta"
+          }
+        }
+      }
+    },
+    "sameaseveryone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same as everyone"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie alle anderen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kao i ostali"
           }
         }
       }
@@ -5815,6 +6597,98 @@
         }
       }
     },
+    "sessioncode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Session code"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sitzungscode"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kod sesije"
+          }
+        }
+      }
+    },
+    "sessionconnectionlost": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lost the connection to the session"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbindung zur Sitzung verloren"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veza sa sesijom je izgubljena"
+          }
+        }
+      }
+    },
+    "sessionfull": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That session is full"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Sitzung ist voll"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta sesija je puna"
+          }
+        }
+      }
+    },
+    "sessionnotfound": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No session with that code"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Sitzung mit diesem Code"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nema sesije s tim kodom"
+          }
+        }
+      }
+    },
     "settings": {
       "extractionState": "manual",
       "localizations": {
@@ -5857,6 +6731,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Podijeli tekst"
+          }
+        }
+      }
+    },
+    "sharesessioncode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friends join with this code"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Freunde treten mit diesem Code bei"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prijatelji se pridružuju ovim kodom"
           }
         }
       }
@@ -6528,6 +7425,29 @@
         }
       }
     },
+    "startsession": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start a session"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sitzung starten"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokreni sesiju"
+          }
+        }
+      }
+    },
     "streamwhiledownloading": {
       "extractionState": "manual",
       "localizations": {
@@ -6777,6 +7697,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uvjeti i odredbe"
+          }
+        }
+      }
+    },
+    "theirownrights": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Own permissions"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eigene Rechte"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vlastita dopuštenja"
           }
         }
       }
@@ -7467,6 +8410,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Upozorenje"
+          }
+        }
+      }
+    },
+    "you": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ti"
+          }
+        }
+      }
+    },
+    "youcan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du kannst"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Možeš"
           }
         }
       }
