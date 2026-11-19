@@ -129,26 +129,36 @@ async def concatenating_tracks(websocket: WebSocket):
         pass
 
 
-# Mix mode: stream tracks similar to the one just played, as each becomes ready
-@router.websocket("/cfc14e13ca191618a06bd94dd5976fccae585e36b3f651b467947288afb51ea8")
-async def mix(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        data = json.loads(await websocket.receive_text())
-        if await _ws_session(websocket, data) is None:
-            return
-        mix_tracks = await deezer.get_mix(str(data["stid"]))
-        by_stid = {str(track["id"]): track for track in mix_tracks}
-        async with contextlib.aclosing(ensure_tracks(queue_of(list(by_stid)))) as durations:
-            async for stid, duration in durations:
-                track = by_stid[stid]
-                if duration is None:
-                    continue
-                # A closed socket raises here, which stops downloading the rest of the mix
-                await websocket.send_json({"duration": duration, "track": track})
-        await websocket.close()
-    except WebSocketDisconnect:
-        pass
-    except deezer.DeezerError as error:
-        log.warning("Mix failed: %s", error)
-        await websocket.close()
+MIX_SEEDS = 5
+MIX_MAX_COUNT = 5
+MIX_MAX_EXCLUDE = 1000
+
+
+def _catalog_ids(values, limit: int) -> list[str]:
+    return [str(v) for v in (values or [])[:limit] if str(v).isdigit()]
+
+
+# Mix mode: the app asks for a few more similar tracks whenever its queue is nearly done
+@router.post("/next_mix_tracks", dependencies=[Depends(current_session)])
+async def next_mix_tracks(request: Request):
+    data = await request.json()
+    seeds = _catalog_ids(data.get("seeds"), MIX_SEEDS)
+    exclude = set(_catalog_ids(data.get("exclude"), MIX_MAX_EXCLUDE))
+    count = data.get("count")
+    count = min(max(count, 1), MIX_MAX_COUNT) if isinstance(count, int) else 3
+    if not seeds:
+        raise HTTPException(status_code=422, detail="No seed tracks")
+
+    candidates = await deezer.mix_candidates(seeds, exclude)
+    by_stid = {track["id"]: track for track in candidates}
+    result = []
+    # Only as many downloads at once as tracks wanted; a failed one is replaced by the next candidate
+    async with contextlib.aclosing(
+        ensure_tracks(queue_of(list(by_stid)[: count * 3]), ahead=count)
+    ) as durations:
+        async for stid, duration in durations:
+            if duration is not None:
+                result.append({"track": by_stid[stid], "duration": duration})
+            if len(result) == count:
+                break
+    return {"tracks": result}

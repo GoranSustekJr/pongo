@@ -199,25 +199,31 @@ async def get_charts(limit: int = 25) -> dict:
     }
 
 
-async def get_mix(stid: str, size: int = 20) -> list[dict]:
-    """Tracks similar to this one: the radios of its artist and of related artists."""
-    track = await full_track(stid)
-    artist_id = track["artist"]["id"]
-    related = await _get(f"/artist/{artist_id}/related", limit=3)
+async def mix_candidates(seeds: list[str], exclude: set[str]) -> list[dict]:
+    """Tracks similar to the seeds, most recent seed first, from the radios of their artists.
+
+    The most recent seed's artist and related artists come first, older seeds' artists
+    later, so the mix follows where the listener is now. Excluded ids are left out.
+    """
+    tracks = await asyncio.gather(*(full_track(s) for s in seeds), return_exceptions=True)
+    artist_ids = list(dict.fromkeys(
+        t["artist"]["id"] for t in tracks if not isinstance(t, Exception)
+    ))
+    if not artist_ids:
+        return []
+    related = await _get(f"/artist/{artist_ids[0]}/related", limit=3)
+    sources = [artist_ids[0], *(r["id"] for r in related["data"]), *artist_ids[1:3]]
     radios = await asyncio.gather(
-        *(
-            _get(f"/artist/{a}/radio", limit=size)
-            for a in [artist_id, *(r["id"] for r in related["data"])]
-        ),
+        *(_get(f"/artist/{a}/radio", limit=50) for a in dict.fromkeys(sources)),
         return_exceptions=True,
     )
 
     # Round robin across the radios so one artist doesn't dominate
     lists = [r["data"] for r in radios if not isinstance(r, Exception)]
-    seen, mix = {track["id"]}, []
-    for position in range(size):
+    seen, mix = {str(s) for s in [*seeds, *exclude]}, []
+    for position in range(max(map(len, lists), default=0)):
         for items in lists:
-            if position < len(items) and items[position]["id"] not in seen:
-                seen.add(items[position]["id"])
+            if position < len(items) and str(items[position]["id"]) not in seen:
+                seen.add(str(items[position]["id"]))
                 mix.append(track_shape(items[position]))
-    return mix[:size]
+    return mix

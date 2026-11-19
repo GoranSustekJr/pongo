@@ -8,6 +8,8 @@ from collections import deque
 from collections.abc import AsyncIterator
 from pathlib import Path
 
+from cachetools import TTLCache
+
 from library import config, db
 from library.metadata import deezer
 from library.track import matcher
@@ -15,6 +17,10 @@ from library.track import matcher
 log = logging.getLogger(__name__)
 
 _tasks: dict[str, asyncio.Task] = {}
+_waiters: dict[str, int] = {}
+_downloading: set[str] = set()
+# Tracks with no YouTube match, so mixes and retries don't search for them again right away
+_no_match: TTLCache = TTLCache(maxsize=5000, ttl=3600)
 _slots = asyncio.Semaphore(config.MAX_CONCURRENT_DOWNLOADS)
 
 
@@ -92,6 +98,7 @@ async def _fetch(stid: str) -> float:
     }
     match = await asyncio.to_thread(matcher.find_video, track)
     if match is None:
+        _no_match[stid] = True
         raise TrackUnavailable(f"No YouTube match for {track}")
     video_id, match_score = match
     log.info("Matched %s (%s - %s) to %s, score %.2f",
@@ -128,7 +135,16 @@ async def _fetch(stid: str) -> float:
 
 async def _fetch_with_slot(stid: str) -> float:
     async with _slots:
-        return await _fetch(stid)
+        _downloading.add(stid)
+        try:
+            return await _fetch(stid)
+        finally:
+            _downloading.discard(stid)
+
+
+def _forget(stid: str, task: asyncio.Task) -> None:
+    if _tasks.get(stid) is task:
+        del _tasks[stid]
 
 
 async def ensure_track(stid: str) -> float:
@@ -136,13 +152,16 @@ async def ensure_track(stid: str) -> float:
     duration = await db.track_duration(stid)
     if duration is not None:
         return duration
+    if stid in _no_match:
+        raise TrackUnavailable(f"No YouTube match for {stid}, checked within the last hour")
 
     task = _tasks.get(stid)
     if task is None:
-        # Runs independently of the caller, so a client hanging up doesn't waste the work
+        # Runs independently of the caller, so a client hanging up mid-download doesn't waste the work
         task = asyncio.create_task(_fetch_with_slot(stid))
         _tasks[stid] = task
-        task.add_done_callback(lambda _: _tasks.pop(stid, None))
+        task.add_done_callback(lambda done: _forget(stid, done))
+    _waiters[stid] = _waiters.get(stid, 0) + 1
     try:
         return await asyncio.shield(task)
     except TrackUnavailable:
@@ -154,6 +173,14 @@ async def ensure_track(stid: str) -> float:
     except Exception as error:
         log.exception("Failed to fetch track %s", stid)
         raise TrackUnavailable(str(error)) from error
+    finally:
+        _waiters[stid] -= 1
+        if not _waiters[stid]:
+            del _waiters[stid]
+            # Nobody wants it any more, so drop it unless its download already started
+            if not task.done() and stid not in _downloading:
+                _forget(stid, task)
+                task.cancel()
 
 
 async def _duration_or_none(stid: str) -> float | None:
@@ -164,17 +191,20 @@ async def _duration_or_none(stid: str) -> float | None:
         return None
 
 
-async def ensure_tracks(stids: asyncio.Queue[str | None]) -> AsyncIterator[tuple[str, float | None]]:
+async def ensure_tracks(
+    stids: asyncio.Queue[str | None], ahead: int | None = None
+) -> AsyncIterator[tuple[str, float | None]]:
     """Yields (stid, duration or None if unavailable) for each queued stid, in order, until a None.
 
-    Fetches up to MAX_CONCURRENT_DOWNLOADS tracks ahead of the one being waited on, but
-    only from stids already queued, so a caller can still send them one at a time.
+    Fetches up to `ahead` (default MAX_CONCURRENT_DOWNLOADS) tracks ahead of the one being
+    waited on, but only from stids already queued, so a caller can still send them one at a time.
     """
+    ahead = ahead or config.MAX_CONCURRENT_DOWNLOADS
     pending: deque[tuple[str, asyncio.Task]] = deque()
     ended = False
     try:
         while not ended or pending:
-            while not ended and len(pending) < config.MAX_CONCURRENT_DOWNLOADS and (
+            while not ended and len(pending) < ahead and (
                 not pending or not stids.empty()
             ):
                 stid = await stids.get()
@@ -186,7 +216,7 @@ async def ensure_tracks(stids: asyncio.Queue[str | None]) -> AsyncIterator[tuple
                 stid, task = pending.popleft()
                 yield stid, await task
     finally:
-        # Downloads already started still finish and are stored; only the waiting stops
+        # Downloads already started still finish and are stored; the rest are dropped
         for _, task in pending:
             task.cancel()
 

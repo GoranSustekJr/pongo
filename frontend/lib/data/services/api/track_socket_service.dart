@@ -31,9 +31,6 @@ final class TrackUnavailable extends TrackAvailability {
   const TrackUnavailable();
 }
 
-/// A track the server added to a mix, with its length.
-typedef MixEntry = ({Map<String, dynamic> track, double durationSeconds});
-
 /// WebSocket endpoints that make tracks available on the server.
 class TrackSocketService {
   /// Creates a service for the server in [_config].
@@ -108,30 +105,6 @@ class TrackSocketService {
       channel.sink.add(jsonEncode({'stid': stid}));
     }
     return TrackBatchSession._(channel);
-  }
-
-  /// Streams tracks similar to the one with [stid] as the server fetches them.
-  Stream<MixEntry> watchMix(String stid) async* {
-    final channel = _connect(
-      'cfc14e13ca191618a06bd94dd5976fccae585e36b3f651b467947288afb51ea8',
-    );
-    channel.sink.add(
-      jsonEncode({'stid': stid, 'at+JWT': accessTokenProvider?.call()}),
-    );
-    try {
-      await for (final message in channel.stream) {
-        final response = _decode(message);
-        final duration = response['duration'];
-        if (duration is num) {
-          yield (
-            track: response['track'] as Map<String, dynamic>,
-            durationSeconds: duration.toDouble(),
-          );
-        }
-      }
-    } finally {
-      await channel.sink.close();
-    }
   }
 }
 

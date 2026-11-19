@@ -122,7 +122,7 @@ The native player requests `/play_song/{id}?st=<stream token>`, which serves the
 
 ### Mix Mode
 
-After a single track finishes, the app opens the mix WebSocket. The server builds up to 20 similar tracks from the Deezer radios of the track's artist and related artists, and sends each with its metadata as soon as its audio is ready. Hanging up stops further downloads.
+When a single track is played with mix on, the app keeps the queue going: whenever two or fewer tracks are left, it posts the last five tracks played and everything already queued to `/next_mix_tracks`. The server picks similar tracks from the Deezer radios of those tracks' artists and the latest artist's related artists, downloads three of them, and returns them with their lengths; it keeps no mix state between calls. The app makes one such request at a time, drops answers for a queue it has since left, and after a failure tries again with growing delays.
 
 ## App Preview
 

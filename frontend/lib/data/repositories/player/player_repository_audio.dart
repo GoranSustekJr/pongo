@@ -13,6 +13,7 @@ import '../../services/api/track_socket_service.dart';
 import '../../services/audio/pongo_audio_handler.dart';
 import '../../services/local/secure_storage_service.dart';
 import 'media_items.dart';
+import 'mix_refill.dart';
 import 'player_repository.dart';
 
 /// A [PlayerRepository] that plays through [PongoAudioHandler].
@@ -24,8 +25,14 @@ class PlayerRepositoryAudio implements PlayerRepository {
     required this._socketService,
     required this._storage,
   }) {
-    _handler.mediaItem.listen((item) => _currentItem.value = item);
-    _handler.queue.listen((items) => _queue.value = items);
+    _handler.mediaItem.listen((item) {
+      _currentItem.value = item;
+      _reportQueueToMix();
+    });
+    _handler.queue.listen((items) {
+      _queue.value = items;
+      _reportQueueToMix();
+    });
   }
 
   final PongoAudioHandler _handler;
@@ -42,7 +49,7 @@ class PlayerRepositoryAudio implements PlayerRepository {
 
   // Incremented whenever a new queue starts, so older fills stop.
   int _generation = 0;
-  StreamSubscription<MixEntry>? _mixSubscription;
+  late final _mix = MixRefill(fetch: _fetchMix, append: _appendMix);
 
   AudioPlayer get _player => _handler.player;
 
@@ -122,8 +129,7 @@ class PlayerRepositoryAudio implements PlayerRepository {
   int get activeSleepAlarm => _handler.activeSleepAlarm;
 
   int _startNewQueue() {
-    unawaited(_mixSubscription?.cancel());
-    _mixSubscription = null;
+    _mix.stop();
     return ++_generation;
   }
 
@@ -287,20 +293,73 @@ class PlayerRepositoryAudio implements PlayerRepository {
 
   Future<void> _startMix(Track track) async {
     await setShuffle(enabled: false);
-    _mixSubscription = _socketService.watchMix(track.id).listen((entry) async {
-      final items = _queue.value;
-      if (items.isEmpty || items.first.title != track.name) return;
-      final mixTrack = Track.fromMap(entry.track);
-      _queueMatchesCollection.value = false;
+    _mix.start();
+    _reportQueueToMix();
+  }
+
+  /// Tells the mix where playback is, in play order.
+  void _reportQueueToMix() {
+    if (!_mix.isActive) return;
+    final items = _queue.value;
+    final shuffled = _player.shuffleModeEnabled;
+    final order = shuffled && _player.shuffleIndices.length == items.length
+        ? _player.shuffleIndices
+        : [for (var i = 0; i < items.length; i++) i];
+    final index = _player.currentIndex;
+    final position = index == null ? -1 : order.indexOf(index);
+    _mix.update([
+      for (final i in order) items[i].stid,
+    ], position < 0 ? null : position);
+  }
+
+  Future<Result<List<MixEntry>>> _fetchMix({
+    required List<String> seeds,
+    required List<String> exclude,
+    required int count,
+  }) async {
+    final result = await _apiClient
+        .post('next_mix_tracks', {
+          'seeds': seeds,
+          'exclude': exclude,
+          'count': count,
+        })
+        .timeout(
+          const Duration(seconds: 90),
+          onTimeout: () =>
+              Result.error(TimeoutException('No mix tracks in time')),
+        );
+    switch (result) {
+      case Error(:final error):
+        debugPrint('Mix failed: $error');
+        return Result.error(error);
+      case Ok(:final value):
+        final tracks = value['tracks'];
+        if (tracks is! List) {
+          return const Result.error(FormatException('Expected mix tracks'));
+        }
+        return Result.ok([
+          for (final entry in tracks)
+            if (entry case {
+              'track': final Map<String, dynamic> track,
+              'duration': final num duration,
+            })
+              (track: track, durationSeconds: duration.toDouble()),
+        ]);
+    }
+  }
+
+  Future<void> _appendMix(List<MixEntry> entries) async {
+    _queueMatchesCollection.value = false;
+    for (final entry in entries) {
       await _handler.appendToQueue(
         mediaItemFor(
-          mixTrack,
+          Track.fromMap(entry.track),
           collectionId: 'online.mix',
           duration: _seconds(entry.durationSeconds),
           mix: true,
         ),
       );
-    }, onError: (Object e) => debugPrint('Mix failed: $e'));
+    }
   }
 
   @override
