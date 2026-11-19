@@ -6,8 +6,9 @@ services:
     ports: !override
       - "127.0.0.1:${API_PORT:-8081}:8081"
     environment:
-      # Trust Caddy's X-Forwarded-For so logs show the real client address
+      # Trust Caddy's X-Forwarded-For so logs and rate limits see the real client address
       FORWARDED_ALLOW_IPS: "*"
+      SERVE_AUDIO_VIA_PROXY: "true"
 
   caddy:
     image: caddy:2.10-alpine
@@ -25,6 +26,8 @@ services:
       # Certificates, so a restart doesn't request new ones
       - caddy_data:/data
       - caddy_config:/config
+      # The audio files, which Caddy sends for the API
+      - pongo_audio:/srv/pongo:ro
     read_only: true
     tmpfs:
       - /tmp

@@ -28,6 +28,10 @@ DATA_DIR = Path(os.getenv("DATA_DIR", "/data"))
 AUDIO_DIR = DATA_DIR / "audio"
 TEMP_DIR = DATA_DIR / "tmp"
 
+# Behind Caddy (docker-compose.public.yml), Caddy sends the audio files and the API
+# only checks the request and names the file in the X-Pongo-Audio header
+SERVE_AUDIO_VIA_PROXY = os.getenv("SERVE_AUDIO_VIA_PROXY", "false").lower() == "true"
+
 MAX_CONCURRENT_DOWNLOADS = int(os.getenv("MAX_CONCURRENT_DOWNLOADS", "4"))
 # YouTube clients yt-dlp tries in order, the last one also on failure; "default" lets yt-dlp choose
 YTDLP_PLAYER_CLIENTS = [

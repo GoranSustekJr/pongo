@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 
 from library import config, db, limits
 from library.auth import tokens
@@ -19,10 +19,12 @@ log = logging.getLogger(__name__)
 router = APIRouter()
 
 
-async def _audio_file(stid: str) -> FileResponse:
+async def _audio_file(stid: str) -> Response:
     path = await db.track_audio_path(stid)
     if path is None or not Path(path).is_file():
         raise HTTPException(status_code=404, detail="Audio file not found")
+    if config.SERVE_AUDIO_VIA_PROXY:
+        return Response(headers={"X-Pongo-Audio": str(Path(path).relative_to(config.DATA_DIR))})
     # FileResponse handles the Range requests AVPlayer depends on
     return FileResponse(path, media_type="audio/mp4")
 

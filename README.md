@@ -132,7 +132,7 @@ Search, albums, artists, playlists, genres and new releases come from the public
 
 ### Playback
 
-The native player requests `/play_song/{id}?st=<stream token>`, which serves the file with HTTP range support. The stream token is per device and stops working when the device is removed or the user is disabled.
+The native player requests `/play_song/{id}?st=<stream token>`, which serves the file with HTTP range support. The stream token is per device, expires after 7 days, and stops working when the device is removed or the user is disabled. Behind Caddy the API only checks the request and names the file, and Caddy sends it.
 
 ### Mix Mode
 

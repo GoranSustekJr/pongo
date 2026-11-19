@@ -9,6 +9,15 @@
 		Strict-Transport-Security "max-age=31536000"
 		-Server
 	}
-	# WebSockets and the Range requests the player makes pass straight through
-	reverse_proxy api:8081
+	# WebSockets pass straight through. For audio the API checks the request and
+	# names the file, and Caddy sends it, Range requests included.
+	reverse_proxy api:8081 {
+		@audio header X-Pongo-Audio *
+		handle_response @audio {
+			root * /srv/pongo
+			rewrite * /{rp.header.X-Pongo-Audio}
+			header Content-Type audio/mp4
+			file_server
+		}
+	}
 }
