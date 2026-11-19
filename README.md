@@ -102,8 +102,8 @@ Search, albums, artists, playlists, genres and new releases come from the public
 
 1. The app opens a WebSocket to `/test` with the track id. The server answers `exists: true` if it already has the audio, otherwise `exists: false`.
 2. For a new track, the server takes its title, artist and length from Deezer and searches YouTube Music, scoring results on title, artist and length and rejecting other recordings such as karaoke or live versions (`library/track/matcher.py`).
-3. `yt-dlp` downloads the best match as m4a, the file is hashed, and it is stored on the audio volume under its SHA-256 so identical audio is kept once.
-4. The server sends the duration, or `exists: failed` if no good match exists. Concurrent requests for one track share a single download.
+3. `yt-dlp` downloads the best match as m4a, first with its `visionos` YouTube client, which skips the roughly 5 second wait the default clients need, and with the default clients if that fails (`YTDLP_PLAYER_CLIENTS`). The file is hashed, and it is stored on the audio volume under its SHA-256 so identical audio is kept once.
+4. The server sends the duration, or `exists: failed` if no good match exists. Concurrent requests for one track share a single download. For queues, playlists and mixes the server fetches up to `MAX_CONCURRENT_DOWNLOADS` (4) tracks ahead of the one being waited on.
 
 ### Playback
 

@@ -28,5 +28,9 @@ DATA_DIR = Path(os.getenv("DATA_DIR", "/data"))
 AUDIO_DIR = DATA_DIR / "audio"
 TEMP_DIR = DATA_DIR / "tmp"
 
-MAX_CONCURRENT_DOWNLOADS = int(os.getenv("MAX_CONCURRENT_DOWNLOADS", "2"))
+MAX_CONCURRENT_DOWNLOADS = int(os.getenv("MAX_CONCURRENT_DOWNLOADS", "4"))
+# YouTube clients yt-dlp tries in order, the last one also on failure; "default" lets yt-dlp choose
+YTDLP_PLAYER_CLIENTS = [
+    v.strip() for v in os.getenv("YTDLP_PLAYER_CLIENTS", "visionos,default").split(",") if v.strip()
+]
 YTDLP_COOKIES_FILE = os.getenv("YTDLP_COOKIES_FILE", "")

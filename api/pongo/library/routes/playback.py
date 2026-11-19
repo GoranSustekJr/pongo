@@ -1,5 +1,6 @@
 import asyncio
 import base64
+import contextlib
 import json
 import logging
 from pathlib import Path
@@ -11,7 +12,7 @@ from library import db
 from library.auth import tokens
 from library.auth.tokens import current_session
 from library.metadata import deezer
-from library.track.downloads import TrackUnavailable, ensure_track
+from library.track.downloads import TrackUnavailable, ensure_track, ensure_tracks, queue_of
 
 log = logging.getLogger(__name__)
 
@@ -46,17 +47,15 @@ def _encode_file(path: str) -> str:
 
 @router.post("/download_a_playlist", dependencies=[Depends(current_session)])
 async def download_a_playlist(request: Request):
-    data = await request.json()
+    stids = (await request.json())["stids"]
     result = {}
-    # One at a time keeps at most one file's base64 in memory beyond the response so far
-    for stid in data["stids"]:
-        try:
-            duration = await ensure_track(stid)
-        except TrackUnavailable as error:
-            log.warning("Skipping %s: %s", stid, error)
-            continue
-        path = await db.track_audio_path(stid)
-        result[stid] = (duration, await asyncio.to_thread(_encode_file, path))
+    # Encoding one file at a time keeps at most one file's base64 in memory beyond the response so far
+    async with contextlib.aclosing(ensure_tracks(queue_of(stids))) as tracks:
+        async for stid, duration in tracks:
+            if duration is None:
+                continue
+            path = await db.track_audio_path(stid)
+            result[stid] = (duration, await asyncio.to_thread(_encode_file, path))
     return result
 
 
@@ -105,13 +104,26 @@ async def concatenating_tracks(websocket: WebSocket):
         data = json.loads(await websocket.receive_text())
         if await _ws_session(websocket, data) is None:
             return
-        for _ in range(data["stids"]):
-            stid = str(json.loads(await websocket.receive_text())["stid"])
+        stids: asyncio.Queue[str | None] = asyncio.Queue()
+
+        async def read_stids():
             try:
-                await websocket.send_json({"duration": await ensure_track(stid)})
-            except TrackUnavailable as error:
-                log.warning("Track %s unavailable: %s", stid, error)
-                await websocket.send_json({"duration": None})
+                for _ in range(data["stids"]):
+                    stids.put_nowait(str(json.loads(await websocket.receive_text())["stid"]))
+            except WebSocketDisconnect:
+                pass
+            finally:
+                # Also when the app hangs up, so the tracks below stop waiting for more
+                stids.put_nowait(None)
+
+        # The app may send every stid up front, so the next tracks download while it waits
+        reader = asyncio.create_task(read_stids())
+        try:
+            async with contextlib.aclosing(ensure_tracks(stids)) as tracks:
+                async for _, duration in tracks:
+                    await websocket.send_json({"duration": duration})
+        finally:
+            reader.cancel()
         await websocket.close()
     except WebSocketDisconnect:
         pass
@@ -125,14 +137,15 @@ async def mix(websocket: WebSocket):
         data = json.loads(await websocket.receive_text())
         if await _ws_session(websocket, data) is None:
             return
-        for track in await deezer.get_mix(str(data["stid"])):
-            try:
-                duration = await ensure_track(track["id"])
-            except TrackUnavailable as error:
-                log.warning("Skipping mix track %s: %s", track["id"], error)
-                continue
-            # A closed socket raises here, which stops downloading the rest of the mix
-            await websocket.send_json({"duration": duration, "track": track})
+        mix_tracks = await deezer.get_mix(str(data["stid"]))
+        by_stid = {str(track["id"]): track for track in mix_tracks}
+        async with contextlib.aclosing(ensure_tracks(queue_of(list(by_stid)))) as durations:
+            async for stid, duration in durations:
+                track = by_stid[stid]
+                if duration is None:
+                    continue
+                # A closed socket raises here, which stops downloading the rest of the mix
+                await websocket.send_json({"duration": duration, "track": track})
         await websocket.close()
     except WebSocketDisconnect:
         pass
