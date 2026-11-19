@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PongoServerURL</key>
+	<string>$(PONGO_SERVER_URL)</string>
+	<key>GoogleClientID</key>
+	<string>$(GOOGLE_CLIENT_ID)</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>de</string>
+		<string>hr</string>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Pongo</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>pongo</string>
+			</array>
+		</dict>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Pongo plays music from your Pongo server on your network.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pongo uses a photo you pick as a playlist cover.</string>
+</dict>
+</plist>

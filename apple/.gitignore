@@ -1,0 +1,5 @@
+Config/Pongo.local.xcconfig
+xcuserdata/
+.build/
+.swiftpm/
+DerivedData/

@@ -1,0 +1,14 @@
+// Build settings for your own server. Copy the values you need into
+// Pongo.local.xcconfig next to this file (it's not committed) to override them.
+
+// Base URL of your Pongo API. "/$()/" keeps the slashes from starting a comment.
+PONGO_SERVER_URL = http:/$()/localhost:8081/
+
+// Google OAuth client of type iOS, the one the API's IOS_CLIENT_ID is set to.
+GOOGLE_CLIENT_ID =
+
+// Your Apple developer team and a bundle ID of your own.
+DEVELOPMENT_TEAM =
+PONGO_BUNDLE_ID = com.example.pongo.swift
+
+#include? "Pongo.local.xcconfig"

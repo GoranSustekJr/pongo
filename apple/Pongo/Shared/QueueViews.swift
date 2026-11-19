@@ -1,0 +1,396 @@
+import PongoCore
+import SwiftUI
+
+/// The queue filling the player behind its controls, in sections: the
+/// tracks played, folded away; the one playing; those the user queued next;
+/// and the rest. A tap plays an entry, holding one lifts it to reorder,
+/// swiping moves it up or removes it, and editing selects entries to remove
+/// or download.
+struct QueuePanel: View {
+    @Environment(AppModel.self) private var model
+    /// Space the player's controls take at the bottom.
+    var bottomInset: CGFloat
+
+    @State private var editing = false
+    @State private var selection: Set<UUID> = []
+    @State private var confirmHalt = false
+    @State private var showsPlayed = false
+
+    private typealias Entry = (index: Int, item: QueueItem)
+
+    var body: some View {
+        let queue = model.player.queue
+        let entries: [Entry] = queue.playOrder.map { ($0, queue.items[$0]) }
+        let position = queue.position ?? 0
+        let played = Array(entries.prefix(position))
+        let queued = Array(entries.dropFirst(position + 1).prefix(queue.queuedCount))
+        let rest = Array(entries.dropFirst(position + 1 + queued.count))
+        ScrollViewReader { proxy in
+            List {
+                if !played.isEmpty {
+                    playedToggle(count: played.count)
+                    if showsPlayed { rows(played, base: 0, dimmed: true) }
+                }
+                if let current = entries.indices.contains(position) ? entries[position] : nil {
+                    header(L10n.nowplaying)
+                    row(current, dimmed: false)
+                }
+                if !queued.isEmpty {
+                    header(L10n.nextinqueue) {
+                        EmptyView()
+                    } trailing: {
+                        Button(L10n.clear) {
+                            Haptics.tap()
+                            model.player.remove(at: queued.map(\.index))
+                        }
+                    }
+                    rows(queued, base: position + 1, dimmed: false)
+                }
+                if !rest.isEmpty || model.player.isMixing {
+                    header(L10n.upnext) { QueueSummary(upcoming: queued + rest) }
+                    rows(rest, base: position + 1 + queued.count, dimmed: false)
+                }
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .scrollIndicators(.hidden)
+            .contentMargins(.top, 60, for: .scrollContent)
+            .contentMargins(.bottom, bottomInset + 20, for: .scrollContent)
+            .ignoresSafeArea(edges: .bottom)
+            .onAppear {
+                if let current = queue.current { proxy.scrollTo(current.id, anchor: UnitPoint(x: 0.5, y: 0.15)) }
+            }
+        }
+        .overlay(alignment: .top) { bar }
+        .alert(L10n.haltmusicplayer, isPresented: $confirmHalt) {
+            Button(L10n.cancel, role: .cancel) {}
+            Button(L10n.halt, role: .destructive) { model.player.halt() }
+        } message: {
+            Text(L10n.haltmusicplayerbody)
+        }
+        .animation(.snappy, value: editing)
+        .animation(.snappy, value: showsPlayed)
+        .animation(.snappy, value: queue.items.map(\.id))
+    }
+
+    // MARK: - Sections
+
+    private func header(
+        _ title: String, @ViewBuilder subtitle: () -> some View = { EmptyView() },
+        @ViewBuilder trailing: () -> some View = { EmptyView() }
+    ) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.system(size: 20, weight: .bold))
+                subtitle()
+            }
+            Spacer()
+            trailing()
+                .font(.system(size: 15, weight: .semibold))
+                .tint(model.nowPlaying.accent)
+        }
+        .foregroundStyle(.white)
+        .padding(.top, 14)
+        .listRowInsets(EdgeInsets(top: 0, leading: 15, bottom: 4, trailing: 15))
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+        .moveDisabled(true)
+    }
+
+    private func playedToggle(count: Int) -> some View {
+        Button {
+            Haptics.select()
+            showsPlayed.toggle()
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "clock.arrow.circlepath")
+                Text("\(L10n.played) · \(count)")
+                Spacer()
+                Image(systemName: "chevron.down")
+                    .rotationEffect(.degrees(showsPlayed ? 180 : 0))
+            }
+            .font(.system(size: 15, weight: .semibold))
+            .foregroundStyle(.white.opacity(0.75))
+            .padding(.horizontal, 14)
+            .frame(height: 40)
+            .background(.white.opacity(0.1), in: .capsule)
+            .contentShape(.capsule)
+        }
+        .buttonStyle(.press)
+        .listRowInsets(EdgeInsets(top: 0, leading: 15, bottom: 4, trailing: 15))
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+    }
+
+    /// [entries] of the play order from [base] on, which can be reordered
+    /// among themselves.
+    private func rows(_ entries: [Entry], base: Int, dimmed: Bool) -> some View {
+        ForEach(entries, id: \.item.id) { entry in
+            row(entry, dimmed: dimmed)
+        }
+        .onMove { offsets, destination in
+            model.player.move(
+                fromOffsets: IndexSet(offsets.map { $0 + base }), toOffset: destination + base)
+        }
+    }
+
+    private func row(_ entry: Entry, dimmed: Bool) -> some View {
+        let player = model.player
+        let (index, item) = entry
+        let isCurrent = index == player.queue.currentIndex
+        return QueueRow(
+            item: item, isCurrent: isCurrent, editing: editing, selected: selection.contains(item.id)
+        ) {
+            tap(item, index: index)
+        }
+        .opacity(dimmed ? 0.55 : 1)
+        .id(item.id)
+        .listRowInsets(EdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 12))
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
+        .moveDisabled(isCurrent)
+        .swipeActions(edge: .leading, allowsFullSwipe: true) {
+            if !isCurrent {
+                Button(L10n.playnext, systemImage: "text.line.first.and.arrowtriangle.forward") {
+                    Haptics.tap()
+                    player.playNext(at: index)
+                }
+                .tint(.indigo)
+            }
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            if !isCurrent {
+                Button(L10n.delete, systemImage: "trash", role: .destructive) {
+                    player.remove(at: [index])
+                }
+            }
+        }
+        .contextMenu {
+            if !isCurrent {
+                Button(L10n.playnext, systemImage: "text.line.first.and.arrowtriangle.forward") {
+                    player.playNext(at: index)
+                }
+                Button(L10n.removefromqueue, systemImage: "minus.circle", role: .destructive) {
+                    player.remove(at: [index])
+                }
+                Divider()
+            }
+            let favourite = model.favouriteIDs.contains(item.stid)
+            Button(favourite ? L10n.unlike : L10n.like, systemImage: favourite ? "heart.fill" : "heart") {
+                Task { await model.toggleFavourite(item.track) }
+            }
+            Button(L10n.addtoplaylist, systemImage: "music.note.list") {
+                Task { await model.addToPlaylist([item.track]) }
+            }
+            if let album = item.track.album, !album.id.isEmpty {
+                Divider()
+                Button(L10n.album, systemImage: "square.stack") {
+                    Task { await model.showAlbum(album.id) }
+                }
+            }
+            ForEach(item.track.artists, id: \.id) { artist in
+                Button(artist.name ?? L10n.artist, systemImage: "music.microphone") {
+                    Task { await model.showArtist(artist) }
+                }
+            }
+        }
+    }
+
+    private func tap(_ item: QueueItem, index: Int) {
+        let player = model.player
+        if editing {
+            if !selection.insert(item.id).inserted { selection.remove(item.id) }
+        } else if index == player.queue.currentIndex {
+            player.togglePlayback()
+        } else {
+            player.skip(to: index)
+        }
+    }
+
+    // MARK: - The bar on top
+
+    private var bar: some View {
+        let player = model.player
+        let state = model.nowPlaying
+        return HStack(spacing: 0) {
+            Spacer()
+            GlassIconButton(systemImage: "quote.bubble", dimmed: !state.lyricsExist) {
+                withAnimation(.spring(duration: 0.55, bounce: 0.12)) { state.toggleLyrics(model) }
+            }
+            Spacer()
+            GlassIconButton(systemImage: "shuffle", isOn: player.queue.shuffleEnabled) {
+                player.setShuffle(!player.queue.shuffleEnabled)
+            }
+            .disabled(!player.canShuffle)
+            Spacer()
+            GlassIconButton(systemImage: "rectangle.stack.fill", isOn: true) {
+                withAnimation(.spring(duration: 0.55, bounce: 0.12)) { state.toggleQueue() }
+            }
+            Spacer()
+            GlassIconButton(systemImage: "stop.fill") { confirmHalt = true }
+            Spacer()
+            Menu {
+                menuItems
+            } label: {
+                GlassIcon(systemImage: editing ? "checkmark" : "ellipsis")
+            }
+            .menuStyle(.button)
+            .buttonStyle(.plain)
+            .tint(.white)
+            Spacer()
+        }
+        .padding(.top, 12)
+        .tint(state.accent)
+        .sensoryFeedback(.selection, trigger: player.queue.shuffleEnabled)
+    }
+
+    @ViewBuilder private var menuItems: some View {
+        if editing {
+            Button(L10n.cancel, systemImage: "xmark") {
+                editing = false
+                selection = []
+            }
+            Button(L10n.clear, systemImage: "trash", role: .destructive) { removeSelected() }
+                .disabled(selection.isEmpty)
+            Button(L10n.download, systemImage: "icloud.and.arrow.down") { download(selectedOnly: true) }
+        } else {
+            Button(L10n.edit, systemImage: "pencil") { editing = true }
+            Divider()
+            Button(L10n.saveasplaylist, systemImage: "music.note.list") {
+                Task { await model.addToPlaylist(queueTracks(), creating: true) }
+            }
+            Button(L10n.download, systemImage: "icloud.and.arrow.down") { download(selectedOnly: false) }
+            Divider()
+            Button(L10n.clearupcoming, systemImage: "text.badge.xmark", role: .destructive) {
+                Haptics.tap()
+                model.player.clearUpcoming()
+            }
+            .disabled(model.player.queue.upcoming.isEmpty)
+            Button(L10n.halt, systemImage: "stop.fill") { confirmHalt = true }
+        }
+    }
+
+    /// The queue's tracks in play order, each once.
+    private func queueTracks(_ ids: Set<UUID>? = nil) -> [Track] {
+        let queue = model.player.queue
+        var seen: Set<String> = []
+        return queue.playOrder.map { queue.items[$0] }
+            .filter { ids?.contains($0.id) ?? true }
+            .map(\.track)
+            .filter { seen.insert($0.id).inserted }
+    }
+
+    private func removeSelected() {
+        let indexes = model.player.queue.items.indices.filter { selection.contains(model.player.queue.items[$0].id) }
+        model.player.remove(at: indexes)
+        editing = false
+        selection = []
+    }
+
+    /// Downloads the selected tracks, or all when none are selected, into an
+    /// offline playlist.
+    private func download(selectedOnly: Bool) {
+        let tracks = queueTracks(selectedOnly && !selection.isEmpty ? selection : nil)
+        editing = false
+        selection = []
+        Task { await model.addToPlaylist(tracks, kind: .offline) }
+    }
+}
+
+/// An entry of the queue: a big cover, title and artists, and the playing dot
+/// with a handle, or a checkmark while editing.
+private struct QueueRow: View {
+    @Environment(AppModel.self) private var model
+    let item: QueueItem
+    let isCurrent: Bool
+    let editing: Bool
+    let selected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 12.5) {
+                CoverImage(url: item.track.coverURL(size: 150))
+                    .frame(width: 65, height: 65)
+                    .coverShape(7.5)
+                VStack(alignment: .leading, spacing: 2.5) {
+                    Text(item.track.name)
+                        .font(.system(size: 18.5, weight: .semibold))
+                    Text(item.track.artistNames)
+                        .font(.system(size: 14))
+                        .opacity(0.78)
+                }
+                .lineLimit(1)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                if model.player.suggestedIDs.contains(item.id), !editing {
+                    // A suggestion of smart shuffle, which a tap keeps in the playlist
+                    Button {
+                        Task { await model.keepSuggestion(item) }
+                    } label: {
+                        Label(L10n.addtoplaylist, systemImage: "plus.circle")
+                            .labelStyle(.iconOnly)
+                            .font(.system(size: 22))
+                            .frame(width: 40, height: 40)
+                            .contentShape(.rect)
+                    }
+                    .buttonStyle(.press)
+                    .overlay(alignment: .topTrailing) {
+                        Image(systemName: "sparkles").font(.system(size: 10)).offset(x: 2, y: 4)
+                    }
+                } else if item.isMix {
+                    Image(systemName: "sparkles").font(.caption).opacity(0.6)
+                }
+                if editing {
+                    Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 25))
+                        .contentTransition(.symbolEffect(.replace))
+                        .frame(width: 47, height: 47)
+                } else {
+                    TrackStatus(stid: item.stid, isCurrent: isCurrent)
+                    // The entry playing stays where it is
+                    Image(systemName: "line.3.horizontal")
+                        .font(.system(size: 20))
+                        .opacity(isCurrent ? 0 : 0.9)
+                }
+            }
+            .foregroundStyle(.white)
+            .frame(height: 85)
+            .padding(.horizontal, isCurrent ? 8 : 0)
+            .background {
+                if isCurrent {
+                    RoundedRectangle(cornerRadius: 16, style: .continuous).fill(.white.opacity(0.12))
+                }
+            }
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+/// How many tracks are still to come, how long they take and when they end,
+/// kept apart so only it follows the playback position.
+private struct QueueSummary: View {
+    @Environment(AppModel.self) private var model
+    let upcoming: [(index: Int, item: QueueItem)]
+
+    var body: some View {
+        let player = model.player
+        let left = max(player.duration - player.progress.position, 0) + upcoming.reduce(0) { $0 + $1.item.duration }
+        // To the minute, so it doesn't change with every tick
+        let minutes = (left / 60).rounded(.up)
+        let locale = Locale(identifier: L10n.selectedLanguage)
+        let length = Duration.seconds(minutes * 60).formatted(
+            .units(allowed: [.hours, .minutes], width: .abbreviated).locale(locale))
+        let end = Date.now.addingTimeInterval(minutes * 60).formatted(
+            Date.FormatStyle(date: .omitted, time: .shortened).locale(locale))
+        VStack(alignment: .leading, spacing: 3) {
+            Text("\(upcoming.count) \(L10n.plustracks) · \(length) · \(L10n.endsat) \(end)")
+            if player.isMixing {
+                Label(L10n.mixkeepsgoing, systemImage: "sparkles")
+            }
+        }
+        .font(.system(size: 13, weight: .medium))
+        .foregroundStyle(.white.opacity(0.65))
+    }
+}
