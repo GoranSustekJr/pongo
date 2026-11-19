@@ -1,7 +1,20 @@
 # Pongo
 <img src="https://github.com/user-attachments/assets/1e2f3144-12e1-4686-a65c-b3f1c9e73c8f" width="250" height="250" />
 
-Pongo is a full stack application for free music streaming. Important to notice is that currently there is no tutorial or a simple way to install the app. If someone wants to try it out, fell free to aks by introducing yourself pongo.org@gmail.com
+Pongo is a full stack music streaming app: a Flutter app and a FastAPI server you host yourself.
+
+## Pongo is being revived
+
+Pongo stopped working when Spotify restricted its developer API in 2026. It's now being revived as a **self-hosted** app that anyone can run in their own environment:
+
+- **No Spotify and no paid APIs:** song, album and artist data comes from the public Deezer API, and the audio is matched on YouTube Music and downloaded with yt-dlp.
+- **Your own server:** the API and database run in Docker on any machine you have, at home or reachable from anywhere over HTTPS.
+- **No ads, no premium tier, no tracking.**
+- **Open source** under the [MIT License](LICENSE).
+
+**To set it up yourself, follow [SELF_HOSTING.md](SELF_HOSTING.md).** It's meant for personal use, for you and maybe a few friends, not for running a public service; see the note at the top of the guide.
+
+The iOS app comes first; macOS and Android follow later.
 
 
 ## Built with
@@ -23,14 +36,14 @@ Pongo is a full stack application for free music streaming. Important to notice 
 | Feature                          | Description                                                                                                     |
 |----------------------------------|-----------------------------------------------------------------------------------------------------------------|
 | Live lyrics                      | See synchronized lyrics in real time with the possibility of manual synchronization                             |
-| Mix mode                         | When single song is played, in the queue will be added 20 songs of similar atmosphere                           |
+| Mix mode                         | When a single song is played, similar songs keep being added before the queue runs out                          |
 | Show/Hide songs in playlist      | Toggle visibility of tracks in your playlist without having to remove them                                      |
 | Sleep mode                       | Gradually increase/decrease volume for certain period of time to allow you smooth falling asleep and waking up  |
 | Online/Offline playlists         | Access downloaded playlists without internet                                                                    |
 | Performance-saving preferences   | Reduce UI intensity for smoother playback                                                                       |
 | Search preferences               | Customize how search behaves and what it displays                                                               |
 | iOS, MacOS, Android supported    | Works across major platforms                                                                                    |
-| Apple/Google sign in             | Sign in easily and securly with your Apple or Google ID                                                         |
+| Google/Apple sign in             | Sign in with Google; Sign in with Apple needs a paid Apple developer account                                    |
 | See currently played artist/album| Info at a glance while listening                                                                                |
 | Dynamic coloring                 | UI adapts to album art colors                                                                                   |
 | Currently played controls        | Swipe up for full controls                                                                                      |
