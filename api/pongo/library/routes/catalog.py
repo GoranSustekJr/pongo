@@ -115,6 +115,12 @@ async def get_recommendations(request: Request):
     }
 
 
+@router.post("/get_genre")
+async def get_genre(request: Request):
+    data = await request.json()
+    return await deezer.get_genre_page(_catalog_id(data["gid"]))
+
+
 @router.post("/get_track_duration")
 async def get_track_duration(request: Request):
     data = await request.json()

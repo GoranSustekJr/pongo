@@ -25,3 +25,20 @@ def test_forgets_idle_keys_instead_of_growing(monkeypatch):
     for key in "efg":
         window.allow(key)
     assert len(window._events) == 3
+
+
+def test_stream_tokens_are_cut_out_of_the_access_log():
+    import logging
+
+    record = logging.LogRecord(
+        "uvicorn.access", logging.INFO, "", 0, '%s - "%s %s HTTP/%s" %d',
+        ("1.2.3.4", "GET", "/play_song/42?st=secret.token&x=1", "1.1", 200), None,
+    )
+    stream = logging.LogRecord(
+        "uvicorn.access", logging.INFO, "", 0, '%s - "%s %s HTTP/%s" %d',
+        ("1.2.3.4", "GET", "/stream/secret.token/42/index.m3u8", "1.1", 200), None,
+    )
+    hide = limits.HideStreamTokens()
+    assert hide.filter(record) and hide.filter(stream)
+    assert "secret" not in record.getMessage() and "/play_song/42?st=***&x=1" in record.getMessage()
+    assert "secret" not in stream.getMessage() and "/stream/***/42/index.m3u8" in stream.getMessage()

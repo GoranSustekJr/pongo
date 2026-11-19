@@ -72,3 +72,24 @@ def test_charts_failure_leaves_the_sections_empty(monkeypatch):
 
     monkeypatch.setattr(deezer, "_get", failing)
     assert asyncio.run(deezer.get_charts()) == {"tracks": [], "artists": [], "playlists": []}
+
+
+def test_genre_page_has_the_genres_charts(monkeypatch):
+    async def get(path, **params):
+        if path == "/genre/116":
+            return {"id": 116, "name": "Rap", "picture_xl": "rap.jpg"}
+        assert path == "/chart/116"
+        return {
+            "tracks": {"data": [{"id": 1, "title": "Song", "duration": 100, "artist": {"id": 2, "name": "A"}}]},
+            "albums": {"data": [{"id": 4, "title": "Record", "artist": {"id": 2, "name": "A"}, **COVER}]},
+            "artists": {"data": [{"id": 2, "name": "A", "picture_xl": "xl.jpg"}]},
+            "playlists": {"data": [{"id": 3, "title": "Rap hits", "picture_xl": "xl.jpg"}]},
+        }
+
+    monkeypatch.setattr(deezer, "_get", get)
+    page = asyncio.run(deezer.get_genre_page("116"))
+    assert page["name"] == "Rap"
+    assert page["icons"][0]["url"] == "rap.jpg"
+    assert page["tracks"][0]["id"] == "1"
+    assert page["albums"][0]["artists"][0]["name"] == "A"
+    assert page["playlists"][0]["name"] == "Rap hits"

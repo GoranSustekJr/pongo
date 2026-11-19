@@ -12,7 +12,7 @@ from library import config, db, limits
 from library.auth import tokens
 from library.auth.tokens import current_session
 from library.metadata import deezer
-from library.track import loudness, partial as partial_files
+from library.track import loudness, mood, partial as partial_files
 from library.track.downloads import (
     NotStreamable, TrackUnavailable, ensure_track, ensure_tracks, queue_of, stream_track, streaming,
 )
@@ -82,6 +82,13 @@ async def track_gains(request: Request):
     """Decibels to play each track at so they sound about as loud as each other."""
     stids = [str(s) for s in (await request.json()).get("stids") or []][: config.MAX_BATCH_TRACKS]
     return {"gains": await loudness.gains(stids)}
+
+
+@router.post("/track_moods", dependencies=[Depends(current_session)])
+async def track_moods(request: Request):
+    """The mood, tempo and scores of each of the tracks that were analyzed."""
+    stids = [str(s) for s in (await request.json()).get("stids") or []][: config.MAX_BATCH_TRACKS]
+    return {"moods": await mood.moods(stids)}
 
 
 @router.post("/download_track/{stid}", dependencies=[Depends(current_session)])
@@ -177,6 +184,15 @@ def _catalog_ids(values, limit: int) -> list[str]:
     return [str(v) for v in (values or [])[:limit] if str(v).isdigit()]
 
 
+async def _fits(stid: str, moods: set[str] | None) -> bool:
+    """Whether the track is of one of the moods, which downloading it measured."""
+    if not moods:
+        return True
+    found = (await mood.moods([stid])).get(stid)
+    # Songs whose mood couldn't be measured are let in
+    return found is None or found["mood"] in moods
+
+
 # Mix mode: the app asks for a few more similar tracks whenever its queue is nearly done
 @router.post("/next_mix_tracks")
 async def next_mix_tracks(request: Request, session: tokens.Session = Depends(current_session)):
@@ -185,18 +201,28 @@ async def next_mix_tracks(request: Request, session: tokens.Session = Depends(cu
     exclude = set(_catalog_ids(data.get("exclude"), MIX_MAX_EXCLUDE))
     count = data.get("count")
     count = min(max(count, 1), MIX_MAX_COUNT) if isinstance(count, int) else 3
+    # A mix of a mood only takes songs that sound like it
+    wanted = mood.NEIGHBOURS.get(data.get("mood"))
     if not seeds:
         raise HTTPException(status_code=422, detail="No seed tracks")
 
     candidates = await deezer.mix_candidates(seeds, exclude)
     by_stid = {track["id"]: track for track in candidates}
+    order = list(by_stid)
+    if wanted:
+        # Songs already known to fit come first, and those known not to are left out
+        known = await mood.moods(order)
+        order = sorted((s for s in order if s not in known or known[s]["mood"] in wanted),
+                       key=lambda s: s not in known)[: count * 6]
+    else:
+        order = order[: count * 3]
     result = []
     # Only as many downloads at once as tracks wanted; a failed one is replaced by the next candidate
     async with contextlib.aclosing(
-        ensure_tracks(queue_of(list(by_stid)[: count * 3]), ahead=count, owner=session.uid)
+        ensure_tracks(queue_of(order), ahead=count, owner=session.uid)
     ) as durations:
         async for stid, duration in durations:
-            if duration is not None:
+            if duration is not None and await _fits(stid, wanted):
                 result.append({"track": by_stid[stid], "duration": duration})
             if len(result) == count:
                 break

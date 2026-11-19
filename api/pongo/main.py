@@ -8,9 +8,10 @@ from fastapi.responses import JSONResponse
 from library import config, db, limits, migrations
 from library.metadata import deezer
 from library.routes import account, catalog, playback, sync
-from library.track import downloads, loudness
+from library.track import downloads, loudness, mood
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+logging.getLogger("uvicorn.access").addFilter(limits.HideStreamTokens())
 
 
 @asynccontextmanager
@@ -20,11 +21,17 @@ async def lifespan(_: FastAPI):
     downloads.clear_streams()
     await db.pool.open(wait=True)
     await migrations.apply_pending()
-    measuring = asyncio.create_task(loudness.measure_stored())
+    measuring = asyncio.create_task(_measure_stored())
     yield
     measuring.cancel()
     await deezer.close()
     await db.pool.close()
+
+
+async def _measure_stored():
+    """Measures audio stored before loudness and moods were, one after the other."""
+    await loudness.measure_stored()
+    await mood.analyze_stored()
 
 
 app = FastAPI(title="Pongo", lifespan=lifespan, docs_url=None, redoc_url=None)

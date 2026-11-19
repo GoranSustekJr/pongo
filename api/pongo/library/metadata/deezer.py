@@ -177,6 +177,20 @@ async def get_genres(limit: int) -> dict:
     return {"categories": {"items": items[:limit]}}
 
 
+async def get_genre_page(genre_id: str, limit: int = 25) -> dict:
+    """A genre's name and picture with its own charts."""
+    genre, chart = await asyncio.gather(_get(f"/genre/{genre_id}"), _get(f"/chart/{genre_id}", limit=limit))
+    return {
+        "id": str(genre["id"]),
+        "name": genre.get("name", ""),
+        "icons": _images(genre, "picture"),
+        "tracks": [track_shape(t) for t in chart["tracks"]["data"]],
+        "albums": [album_shape(a) for a in chart["albums"]["data"]],
+        "artists": [artist_shape(a) for a in chart["artists"]["data"]],
+        "playlists": [_playlist_shape(p) for p in chart["playlists"]["data"]],
+    }
+
+
 async def get_new_releases() -> dict:
     # Deezer's /editorial/0/releases is empty, so use its current editorial picks
     albums = await _get("/editorial/0/selection", limit=50)

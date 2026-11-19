@@ -15,7 +15,7 @@ from cachetools import TTLCache
 
 from library import config, db, limits
 from library.metadata import deezer
-from library.track import loudness, matcher
+from library.track import loudness, matcher, mood
 from library.track.partial import CHUNK, Partial
 
 log = logging.getLogger(__name__)
@@ -196,6 +196,7 @@ async def _fetch(stid: str) -> float:
         audio = await _download_streamable(video_id, Path(folder), _partials[stid])
         duration = await _audio_duration(audio)
         level = await loudness.measure(audio)
+        analyzed = await mood.analyze(audio)
         sha256, path, size = await asyncio.to_thread(_store_file, audio)
 
     async with db.pool.connection() as conn:
@@ -210,6 +211,13 @@ async def _fetch(stid: str) -> float:
             (sha256, path, size, level),
         )
         auid = (await cursor.fetchone())[0]
+        await conn.execute(
+            """
+            UPDATE audio SET tempo = %s, energy = %s, valence = %s, danceability = %s, mood_checked = true
+            WHERE auid = %s
+            """,
+            (*mood.values(analyzed), auid),
+        )
         await conn.execute(
             """
             INSERT INTO track (stid, ytvid, auid, duration, title, artists, isrc, match_score)

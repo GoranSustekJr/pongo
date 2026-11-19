@@ -1,5 +1,7 @@
 """In-memory rate limits. They reset when the server restarts, which is fine for abuse
 protection on a single small server."""
+import logging
+import re
 import time
 from collections import deque
 
@@ -52,3 +54,18 @@ def check(window: SlidingWindow, key: str) -> None:
 def client_ip(connection: HTTPConnection) -> str:
     # Behind Caddy, uvicorn's proxy headers make this the real client address
     return connection.client.host if connection.client else "unknown"
+
+
+class HideStreamTokens(logging.Filter):
+    """Cuts stream tokens out of logged request paths, where anyone reading the
+    logs could otherwise play music with them until they expire."""
+
+    _TOKEN = re.compile(r"(st=|/stream/)[^/&\s\"]+")
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if isinstance(record.args, tuple):
+            record.args = tuple(
+                self._TOKEN.sub(r"\1***", arg) if isinstance(arg, str) else arg for arg in record.args
+            )
+        return True
+
