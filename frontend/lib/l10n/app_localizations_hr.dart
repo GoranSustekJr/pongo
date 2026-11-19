@@ -857,4 +857,11 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get genres => 'Žanrovi';
+
+  @override
+  String get streamwhiledownloading => 'Sviraj dok se preuzima';
+
+  @override
+  String get streamwhiledownloadingdescription =>
+      'Eksperimentalno. Nove pjesme počinju ranije, dok ih poslužitelj još preuzima';
 }

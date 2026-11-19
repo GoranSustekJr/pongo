@@ -1,9 +1,12 @@
 """Fetch tracks onto the server. Each track downloads once, however many clients wait."""
 import asyncio
+import contextlib
 import hashlib
 import logging
+import secrets
 import shutil
 import tempfile
+import time
 from collections import deque
 from collections.abc import AsyncIterator
 from pathlib import Path
@@ -13,10 +16,20 @@ from cachetools import TTLCache
 from library import config, db, limits
 from library.metadata import deezer
 from library.track import loudness, matcher
+from library.track.partial import CHUNK, Partial
 
 log = logging.getLogger(__name__)
 
+# A streamed download's file stays a while after a player last asked for it, for pausing and seeking
+STREAM_KEEP = 3600
+# Others only briefly, for a player that asks just after the download finished
+UNSTREAMED_KEEP = 60
+# How long a player waits for a download to start before giving up on streaming it
+STREAM_START_TIMEOUT = 60
+
 _tasks: dict[str, asyncio.Task] = {}
+# The file each download writes, kept for players after the track is stored
+_partials: dict[str, Partial] = {}
 _waiters: dict[str, int] = {}
 _downloading: set[str] = set()
 # Tracks with no YouTube match, so mixes and retries don't search for them again right away
@@ -26,6 +39,19 @@ _slots = asyncio.Semaphore(config.MAX_CONCURRENT_DOWNLOADS)
 
 class TrackUnavailable(Exception):
     pass
+
+
+class NotStreamable(Exception):
+    """The track should be played from the library, once it's there, rather than streamed."""
+
+
+def _streams_dir() -> Path:
+    return config.TEMP_DIR / "streams"
+
+
+def clear_streams() -> None:
+    """Deletes the files of downloads from before a restart."""
+    shutil.rmtree(_streams_dir(), ignore_errors=True)
 
 
 async def _run(*command: str) -> str:
@@ -38,17 +64,22 @@ async def _run(*command: str) -> str:
     return stdout.decode()
 
 
+def _client_options(client: str) -> list[str]:
+    options = []
+    if client != "default":
+        options += ["--extractor-args", f"youtube:player_client={client}"]
+    if config.YTDLP_COOKIES_FILE:
+        options += ["--cookies", config.YTDLP_COOKIES_FILE]
+    return options
+
+
 async def _download_audio_with(video_id: str, folder: Path, client: str) -> Path:
     command = [
         "yt-dlp", "--no-playlist", "--no-progress", "--quiet",
         # iOS can't play the webm/opus YouTube often serves, so always end up with m4a
         "-f", "ba[ext=m4a]/ba/b", "-x", "--audio-format", "m4a",
-        "-o", str(folder / "audio.%(ext)s"),
+        "-o", str(folder / "audio.%(ext)s"), *_client_options(client),
     ]
-    if client != "default":
-        command += ["--extractor-args", f"youtube:player_client={client}"]
-    if config.YTDLP_COOKIES_FILE:
-        command += ["--cookies", config.YTDLP_COOKIES_FILE]
     await _run(*command, f"https://www.youtube.com/watch?v={video_id}")
     return folder / "audio.m4a"
 
@@ -65,6 +96,62 @@ async def _download_audio(video_id: str, folder: Path) -> Path:
             for leftover in folder.iterdir():
                 leftover.unlink()
     return await _download_audio_with(video_id, folder, config.YTDLP_PLAYER_CLIENTS[-1])
+
+
+async def _pipe_audio_with(video_id: str, partial: Partial, client: str) -> None:
+    process = await asyncio.create_subprocess_exec(
+        "yt-dlp", "--no-playlist", "--no-progress", "--quiet",
+        # YouTube's m4a is a fragmented MP4, which players can follow while it downloads
+        "-f", "ba[ext=m4a]", "-o", "-", *_client_options(client),
+        f"https://www.youtube.com/watch?v={video_id}",
+        stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+    )
+    errors = asyncio.create_task(process.stderr.read())
+    try:
+        with partial.path.open("wb") as file:
+            while data := await process.stdout.read(CHUNK):
+                partial.append(file, data)
+        returncode = await process.wait()
+    except BaseException:
+        with contextlib.suppress(ProcessLookupError):
+            process.kill()
+        errors.cancel()
+        raise
+    if returncode != 0:
+        raise TrackUnavailable(f"yt-dlp failed: {(await errors).decode(errors='replace')[-500:]}")
+
+
+async def _pipe_audio(video_id: str, partial: Partial) -> None:
+    """Downloads into `partial`, trying each of YTDLP_PLAYER_CLIENTS like _download_audio."""
+    for client in config.YTDLP_PLAYER_CLIENTS:
+        try:
+            await _pipe_audio_with(video_id, partial, client)
+            return
+        except TrackUnavailable as error:
+            # Another client could send different bytes than a player already has
+            if partial.written or client == config.YTDLP_PLAYER_CLIENTS[-1]:
+                raise
+            log.info("%s client failed for %s, trying the next: %s", client, video_id, error)
+
+
+async def _download_streamable(video_id: str, folder: Path, partial: Partial) -> Path:
+    """Downloads into `partial`, so players can stream it, then makes the library's file of it.
+
+    Falls back to a plain download for audio that can't be piped, such as when YouTube has no m4a.
+    """
+    partial.folder.mkdir(parents=True, exist_ok=True)
+    try:
+        await _pipe_audio(video_id, partial)
+        partial.complete()
+    except (TrackUnavailable, ValueError) as error:
+        partial.fail(str(error))
+        log.info("Couldn't download %s while streaming it, downloading it whole: %s", video_id, error)
+        return await _download_audio(video_id, folder)
+    # The library keeps plain MP4s with their index up front, which start playing quickest
+    audio = folder / "audio.m4a"
+    await _run("ffmpeg", "-v", "error", "-i", str(partial.path), "-map", "0:a", "-c", "copy",
+               "-movflags", "+faststart", str(audio))
+    return audio
 
 
 async def _audio_duration(path: Path) -> float:
@@ -106,7 +193,7 @@ async def _fetch(stid: str) -> float:
 
     config.TEMP_DIR.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=config.TEMP_DIR) as folder:
-        audio = await _download_audio(video_id, Path(folder))
+        audio = await _download_streamable(video_id, Path(folder), _partials[stid])
         duration = await _audio_duration(audio)
         level = await loudness.measure(audio)
         sha256, path, size = await asyncio.to_thread(_store_file, audio)
@@ -136,17 +223,65 @@ async def _fetch(stid: str) -> float:
 
 
 async def _fetch_with_slot(stid: str) -> float:
-    async with _slots:
-        _downloading.add(stid)
-        try:
-            return await _fetch(stid)
-        finally:
-            _downloading.discard(stid)
+    partial = _partials[stid]
+    try:
+        async with _slots:
+            _downloading.add(stid)
+            try:
+                return await _fetch(stid)
+            finally:
+                _downloading.discard(stid)
+    finally:
+        if not partial.finished:
+            partial.fail("The download stopped")
+        partial.used = time.monotonic()
+        _keep(stid, partial)
+
+
+def _keep(stid: str, partial: Partial) -> None:
+    """Deletes a finished download's file once players are done with it."""
+    left = partial.used + (STREAM_KEEP if partial.streamed else UNSTREAMED_KEEP) - time.monotonic()
+    if left > 0:
+        asyncio.get_running_loop().call_later(left, _keep, stid, partial)
+        return
+    if _partials.get(stid) is partial:
+        del _partials[stid]
+    shutil.rmtree(partial.folder, ignore_errors=True)
 
 
 def _forget(stid: str, task: asyncio.Task) -> None:
     if _tasks.get(stid) is task:
         del _tasks[stid]
+
+
+def _start(stid: str, owner: str | None) -> asyncio.Task:
+    """The download of the track, starting it if there's none. Raises TrackUnavailable."""
+    task = _tasks.get(stid)
+    if task is not None:
+        return task
+    if owner is not None and not limits.downloads.allow(owner):
+        raise TrackUnavailable(f"Download limit reached for user {owner}")
+    _partials[stid] = Partial(_streams_dir() / f"{stid}-{secrets.token_hex(4)}")
+    # Runs independently of the caller, so a client hanging up mid-download doesn't waste the work
+    task = asyncio.create_task(_fetch_with_slot(stid))
+    _tasks[stid] = task
+    task.add_done_callback(lambda done: _forget(stid, done))
+    return task
+
+
+@contextlib.contextmanager
+def _waiting(stid: str, task: asyncio.Task):
+    _waiters[stid] = _waiters.get(stid, 0) + 1
+    try:
+        yield
+    finally:
+        _waiters[stid] -= 1
+        if not _waiters[stid]:
+            del _waiters[stid]
+            # Nobody wants it any more, so drop it unless its download already started
+            if not task.done() and stid not in _downloading:
+                _forget(stid, task)
+                task.cancel()
 
 
 async def ensure_track(stid: str, owner: str | None = None) -> float:
@@ -160,34 +295,57 @@ async def ensure_track(stid: str, owner: str | None = None) -> float:
     if stid in _no_match:
         raise TrackUnavailable(f"No YouTube match for {stid}, checked within the last hour")
 
+    task = _start(stid, owner)
+    with _waiting(stid, task):
+        try:
+            return await asyncio.shield(task)
+        except TrackUnavailable:
+            raise
+        except deezer.DeezerError as error:
+            raise TrackUnavailable(str(error)) from error
+        except asyncio.CancelledError:
+            raise
+        except Exception as error:
+            log.exception("Failed to fetch track %s", stid)
+            raise TrackUnavailable(str(error)) from error
+
+
+def streaming(stid: str) -> Partial | None:
+    """The file of the track's current or recent download, if a player can still stream it."""
+    partial = _partials.get(stid)
+    return None if partial is None or partial.failed else partial
+
+
+async def stream_track(stid: str, owner: str | None = None) -> Partial:
+    """The track's download once players can start streaming it, starting the download if needed.
+
+    It's the same download ensure_track waits for. Raises NotStreamable if the track should be
+    played from the library instead, and TrackUnavailable if it can't be downloaded at all.
+    """
+    partial = streaming(stid)
     task = _tasks.get(stid)
-    if task is None and owner is not None and not limits.downloads.allow(owner):
-        raise TrackUnavailable(f"Download limit reached for user {owner}")
-    if task is None:
-        # Runs independently of the caller, so a client hanging up mid-download doesn't waste the work
-        task = asyncio.create_task(_fetch_with_slot(stid))
-        _tasks[stid] = task
-        task.add_done_callback(lambda done: _forget(stid, done))
-    _waiters[stid] = _waiters.get(stid, 0) + 1
-    try:
-        return await asyncio.shield(task)
-    except TrackUnavailable:
-        raise
-    except deezer.DeezerError as error:
-        raise TrackUnavailable(str(error)) from error
-    except asyncio.CancelledError:
-        raise
-    except Exception as error:
-        log.exception("Failed to fetch track %s", stid)
-        raise TrackUnavailable(str(error)) from error
-    finally:
-        _waiters[stid] -= 1
-        if not _waiters[stid]:
-            del _waiters[stid]
-            # Nobody wants it any more, so drop it unless its download already started
-            if not task.done() and stid not in _downloading:
-                _forget(stid, task)
-                task.cancel()
+    if partial is None:
+        if await db.track_duration(stid) is not None:
+            raise NotStreamable("The track is in the library")
+        if stid in _no_match:
+            raise TrackUnavailable(f"No YouTube match for {stid}, checked within the last hour")
+        task = _start(stid, owner)
+        partial = _partials[stid]
+    partial.streamed = True
+    partial.used = time.monotonic()
+    if task is None or task.done():
+        started = partial.layout is not None
+    else:
+        with _waiting(stid, task):
+            started = await partial.wait(
+                lambda: partial.layout is not None or partial.unstreamable is not None,
+                STREAM_START_TIMEOUT,
+            )
+    if partial.failed or not started:
+        if task is not None and task.done() and not task.cancelled() and task.exception():
+            raise TrackUnavailable(str(task.exception()))
+        raise NotStreamable(partial.unstreamable or "The download didn't start in time")
+    return partial
 
 
 async def _duration_or_none(stid: str, owner: str | None) -> float | None:

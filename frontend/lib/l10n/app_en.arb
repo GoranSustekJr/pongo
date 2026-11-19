@@ -1326,5 +1326,13 @@
     "genres": "Genres",
     "@genres": {
         "description": "genres"
+    },
+    "streamwhiledownloading": "Play while downloading",
+    "@streamwhiledownloading": {
+        "description": "Title of the experimental setting that plays tracks the server is still downloading"
+    },
+    "streamwhiledownloadingdescription": "Experimental. New songs start sooner, while the server is still getting them",
+    "@streamwhiledownloadingdescription": {
+        "description": "Subtitle of the play while downloading setting"
     }
 }

@@ -52,6 +52,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
   bool get showHistory => _settings.settings.enableHistory;
   bool get showExplore => _settings.settings.enableCategories;
   bool get useCachingAudioSource => _settings.settings.useCacheAudioSource;
+  bool get streamWhileDownloading => _settings.settings.streamWhileDownloading;
   bool get useCacheImages => _settings.settings.cacheImages;
   bool get useBlr => _settings.settings.useBlur;
   bool get useDetailedBlurhsh => _settings.settings.useDetailedBlurhash;
@@ -474,7 +475,7 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                             settingsTile(
                               context,
                               false,
-                              true,
+                              !kIsApple,
                               AppIcons.audioPlayer,
                               AppIcons.trash,
                               AppLocalizations.of(context)
@@ -485,6 +486,26 @@ class _PreferencesPhoneState extends State<PreferencesPhone> {
                                 await AudioPlayer.clearAssetCache();
                               },
                             ),
+                            // Only tried with AVPlayer so far
+                            if (kIsApple)
+                              settingsTileSwitcher(
+                                context,
+                                false,
+                                true,
+                                CupertinoIcons.waveform,
+                                streamWhileDownloading,
+                                AppLocalizations.of(context)
+                                    .streamwhiledownloading,
+                                AppLocalizations.of(context)
+                                    .streamwhiledownloadingdescription,
+                                (use) async {
+                                  await _save(
+                                    (s) =>
+                                        s.copyWith(streamWhileDownloading: use),
+                                  );
+                                  notifyChange();
+                                },
+                              ),
                             razh(20),
                             settingsText(AppLocalizations.of(context).images),
                             settingsTileSwitcher(

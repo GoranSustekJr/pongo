@@ -265,5 +265,7 @@
     "popularartists": "Beliebte Künstler",
     "featuredplaylists": "Empfohlene Playlists",
     "newreleases": "Neuerscheinungen",
-    "genres": "Genres"
+    "genres": "Genres",
+    "streamwhiledownloading": "Während des Downloads abspielen",
+    "streamwhiledownloadingdescription": "Experimentell. Neue Lieder starten früher, während der Server sie noch lädt"
 }

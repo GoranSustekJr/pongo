@@ -26,7 +26,8 @@ class PlayerRepositoryAudio implements PlayerRepository {
     required this._socketService,
     required this._storage,
     this._gains,
-  }) {
+    bool Function()? streamWhileDownloading,
+  }) : _streamWhileDownloading = streamWhileDownloading ?? (() => false) {
     _handler.mediaItem.listen((item) {
       _currentItem.value = item;
       _reportQueueToMix();
@@ -44,6 +45,8 @@ class PlayerRepositoryAudio implements PlayerRepository {
   final TrackSocketService _socketService;
   final SecureStorageService _storage;
   final TrackGains? _gains;
+  // Whether tracks the server is still downloading start right away
+  final bool Function() _streamWhileDownloading;
 
   final _currentItem = ValueNotifier<MediaItem?>(null);
   final _queue = ValueNotifier<List<MediaItem>>(const []);
@@ -146,10 +149,18 @@ class PlayerRepositoryAudio implements PlayerRepository {
 
   /// Waits until the server can stream the track with [stid] and returns its
   /// length in seconds, or `null` if it can't get it.
-  Future<double?> _ensureAvailable(String stid) async {
+  ///
+  /// [onDownloading] is called instead of showing the track as fetching if
+  /// the server has to download it first.
+  Future<double?> _ensureAvailable(
+    String stid, {
+    void Function()? onDownloading,
+  }) async {
     double? duration;
     await for (final state in _socketService.watchAvailability(stid)) {
       switch (state) {
+        case TrackDownloading() when onDownloading != null:
+          onDownloading();
         case TrackDownloading():
           _setFetching(stid, fetching: true);
         case TrackReady(:final durationSeconds):
@@ -219,6 +230,19 @@ class PlayerRepositoryAudio implements PlayerRepository {
       for (final track in tracks) {
         if (generation != _generation) return;
         var duration = durations[track.id];
+        if (duration == null && !started && _streamWhileDownloading()) {
+          // The first track plays while the server downloads it
+          final streaming = _startStreaming(track, collectionId, generation);
+          duration = await session.next();
+          _trackFetched.add((stid: track.id, duration: duration));
+          started = await _finishStreaming(
+            track.id,
+            streaming,
+            duration,
+            generation,
+          );
+          continue;
+        }
         if (duration == null) {
           _setFetching(track.id, fetching: true);
           duration = await session.next();
@@ -283,7 +307,23 @@ class PlayerRepositoryAudio implements PlayerRepository {
     final generation = _startNewQueue();
     _canShuffle.value = true;
 
-    final duration = await _ensureAvailable(track.id);
+    Future<void>? streaming;
+    final duration = await _ensureAvailable(
+      track.id,
+      onDownloading: _streamWhileDownloading()
+          ? () => streaming = _startStreaming(track, collectionId, generation)
+                .then((_) async {
+                  if (startMix && generation == _generation) {
+                    await _startMix(track);
+                  }
+                })
+          : null,
+    );
+    final started = streaming;
+    if (started != null) {
+      await _finishStreaming(track.id, started, duration, generation);
+      return;
+    }
     if (duration == null || generation != _generation) return;
     await _handler.setQueue([
       mediaItemFor(
@@ -294,6 +334,37 @@ class PlayerRepositoryAudio implements PlayerRepository {
     ]);
     await _handler.play();
     if (startMix) await _startMix(track);
+  }
+
+  /// Starts a queue of just [track], played from the server's download of it.
+  Future<void> _startStreaming(
+    Track track,
+    String collectionId,
+    int generation,
+  ) async {
+    if (generation != _generation) return;
+    _handler.streamWhileDownloading(track.id);
+    await _handler.setQueue([
+      // Its length is filled in once the player loads it
+      mediaItemFor(track, collectionId: collectionId, duration: Duration.zero),
+    ]);
+    await _handler.play();
+  }
+
+  /// Tells the player the download of the streamed [stid] ended once
+  /// [started], stopping it if the server couldn't get the track.
+  ///
+  /// Returns whether the track can play.
+  Future<bool> _finishStreaming(
+    String stid,
+    Future<void> started,
+    double? duration,
+    int generation,
+  ) async {
+    await started;
+    await _handler.downloadFinished(stid, available: duration != null);
+    if (duration == null && generation == _generation) await _handler.halt();
+    return duration != null;
   }
 
   Future<void> _startMix(Track track) async {

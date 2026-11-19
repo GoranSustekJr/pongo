@@ -91,6 +91,8 @@ Future<List<SingleChildWidget>> createProviders(AppConfig config) async {
           '${config.serverUrl}'
           '${caching ? 'play_song_caching' : 'play_song'}/'
           '${kIsApple ? '' : 'android/'}$stid?st=${auth.streamToken}',
+      downloadStreamUrl: (stid) =>
+          '${config.serverUrl}stream/${auth.streamToken}/$stid/index.m3u8',
     ),
     config: const AudioServiceConfig(
       androidNotificationChannelId:
@@ -125,6 +127,8 @@ Future<List<SingleChildWidget>> createProviders(AppConfig config) async {
     socketService: socketService,
     storage: storage,
     gains: gains,
+    streamWhileDownloading: () =>
+        kIsApple && settings.settings.streamWhileDownloading,
   );
   await player.restoreState();
 

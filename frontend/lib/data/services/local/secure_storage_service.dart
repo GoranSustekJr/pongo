@@ -18,6 +18,7 @@ abstract final class StorageKeys {
   static const searchPlaylistCount = 'NUMOFSEARCHPLAYLISTSKEY';
   static const lyricsTextAlign = 'LYRICSTEXTALIGNKEY';
   static const useCacheAudioSource = 'CACHEAUDIOSOURCEKEY';
+  static const streamWhileDownloading = 'STREAMWHILEDOWNLOADINGKEY';
   static const enableLyrics = 'ENABLEYRCSKEY';
   static const loopMode = 'LOOPMODEKEY';
   static const shuffleMode = 'SHUFFLEMODEKEY';

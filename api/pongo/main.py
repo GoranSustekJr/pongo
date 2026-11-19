@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from library import config, db, limits, migrations
 from library.metadata import deezer
 from library.routes import account, catalog, playback, sync
-from library.track import loudness
+from library.track import downloads, loudness
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -17,6 +17,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name
 async def lifespan(_: FastAPI):
     config.AUDIO_DIR.mkdir(parents=True, exist_ok=True)
     config.TEMP_DIR.mkdir(parents=True, exist_ok=True)
+    downloads.clear_streams()
     await db.pool.open(wait=True)
     await migrations.apply_pending()
     measuring = asyncio.create_task(loudness.measure_stored())
@@ -36,7 +37,7 @@ app.include_router(sync.router)
 @app.middleware("http")
 async def limit_requests(request: Request, call_next):
     # The player fetches audio in many small range requests, so those aren't counted
-    if not request.url.path.startswith("/play_song") and not limits.requests.allow(
+    if not request.url.path.startswith(("/play_song", "/stream/")) and not limits.requests.allow(
         limits.client_ip(request)
     ):
         return JSONResponse(status_code=429, content={"detail": "Too many requests"})

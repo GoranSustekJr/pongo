@@ -862,4 +862,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get genres => 'Genres';
+
+  @override
+  String get streamwhiledownloading => 'Während des Downloads abspielen';
+
+  @override
+  String get streamwhiledownloadingdescription =>
+      'Experimentell. Neue Lieder starten früher, während der Server sie noch lädt';
 }

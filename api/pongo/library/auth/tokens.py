@@ -121,7 +121,7 @@ def create_stream_token(uid: str, device_id: str) -> str:
     return f"{_b64(uid)}.{_b64(device_id)}.{expires}.{_stream_signature(uid, device_id, expires)}"
 
 
-async def check_stream_token(token: str | None) -> None:
+async def check_stream_token(token: str | None) -> Session:
     try:
         encoded_uid, encoded_device, expires, signature = (token or "").split(".")
         session = Session(uid=_unb64(encoded_uid), device_id=_unb64(encoded_device))
@@ -133,3 +133,4 @@ async def check_stream_token(token: str | None) -> None:
         raise HTTPException(status_code=401, detail="Invalid stream token")
     if await session_status(session) != "ok":
         raise HTTPException(status_code=401, detail="Invalid stream token")
+    return session

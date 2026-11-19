@@ -66,6 +66,10 @@ class SettingsRepositoryLocal extends SettingsRepository {
         StorageKeys.useCacheAudioSource,
         fallback: defaults.useCacheAudioSource,
       ),
+      streamWhileDownloading: await readBool(
+        StorageKeys.streamWhileDownloading,
+        fallback: defaults.streamWhileDownloading,
+      ),
       enableLyrics: await readBool(
         StorageKeys.enableLyrics,
         fallback: defaults.enableLyrics,
@@ -181,6 +185,10 @@ class SettingsRepositoryLocal extends SettingsRepository {
     await saveBool(
       StorageKeys.useCacheAudioSource,
       (s) => s.useCacheAudioSource,
+    );
+    await saveBool(
+      StorageKeys.streamWhileDownloading,
+      (s) => s.streamWhileDownloading,
     );
     await saveBool(StorageKeys.enableLyrics, (s) => s.enableLyrics);
     await saveBool(StorageKeys.enableHistory, (s) => s.enableHistory);

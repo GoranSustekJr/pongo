@@ -44,6 +44,8 @@ abstract class AppSettings with _$AppSettings {
     @Default(20) int searchPlaylistCount,
     @Default(TextAlign.left) TextAlign lyricsTextAlign,
     @Default(false) bool useCacheAudioSource,
+    // Experimental: plays tracks the server is still downloading
+    @Default(false) bool streamWhileDownloading,
     @Default(true) bool enableLyrics,
     @Default(true) bool enableHistory,
     @Default(true) bool enableCategories,

@@ -41,6 +41,8 @@ class _FakePlayer extends Fake implements AudioPlayer {
   Stream<int?> get currentIndexStream => const Stream.empty();
   @override
   Stream<bool> get playingStream => const Stream.empty();
+  @override
+  Stream<Duration?> get durationStream => const Stream.empty();
 
   @override
   Future<void> clearAudioSources() async {

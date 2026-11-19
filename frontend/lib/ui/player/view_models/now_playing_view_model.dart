@@ -118,13 +118,21 @@ class NowPlayingViewModel extends ChangeNotifier {
   }
 
   Future<void> _onItemChanged(MediaItem? item) async {
-    if (item == null || item.stid == _currentMediaItemId) return;
+    if (item == null) return;
+    // A track streamed while it downloads gets its length once it loads,
+    // and the lyrics are looked up by it
+    final hasLength = (item.duration ?? Duration.zero) != Duration.zero;
+    final lengthArrived =
+        item.stid == _currentMediaItemId &&
+        hasLength &&
+        (_currentMediaItem?.duration ?? Duration.zero) == Duration.zero;
+    if (item.stid == _currentMediaItemId && !lengthArrived) return;
     _currentMediaItemId = item.stid;
     _currentMediaItem = item;
     notifyListeners();
 
     final connected = !kIsMobile || _connectivity.isConnected;
-    if (_settings.settings.enableLyrics && connected) {
+    if (_settings.settings.enableLyrics && connected && hasLength) {
       final stid = item.stid;
       final lyrics = await _lyrics.lyrics(
         name: item.title,

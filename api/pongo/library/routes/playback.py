@@ -2,17 +2,20 @@ import asyncio
 import contextlib
 import json
 import logging
+import time
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Request, WebSocket, WebSocketDisconnect
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, StreamingResponse
 
 from library import config, db, limits
 from library.auth import tokens
 from library.auth.tokens import current_session
 from library.metadata import deezer
-from library.track import loudness
-from library.track.downloads import TrackUnavailable, ensure_track, ensure_tracks, queue_of
+from library.track import loudness, partial as partial_files
+from library.track.downloads import (
+    NotStreamable, TrackUnavailable, ensure_track, ensure_tracks, queue_of, stream_track, streaming,
+)
 
 log = logging.getLogger(__name__)
 
@@ -36,6 +39,42 @@ async def _audio_file(stid: str) -> Response:
 async def play_song(stid: str, st: str | None = None):
     await tokens.check_stream_token(st)
     return await _audio_file(stid)
+
+
+@router.get("/stream/{st}/{stid}/{name}")
+async def stream(st: str, stid: str, name: str, request: Request):
+    """A track that isn't in the library yet, as an HLS playlist, playable while it downloads.
+
+    The stream token is in the path, so the player's requests for the audio, which
+    are relative to the playlist, carry it too. A 404 means the app should wait for
+    the track to be in the library and play it from /play_song instead.
+    """
+    session = await tokens.check_stream_token(st)
+    if name == "index.m3u8":
+        try:
+            partial = await stream_track(stid, session.uid)
+        except (NotStreamable, TrackUnavailable) as error:
+            log.info("Not streaming %s: %s", stid, error)
+            raise HTTPException(status_code=404, detail="Not streamable")
+        return Response(partial_files.playlist(partial.layout, f"{partial.key}.m4a"),
+                        media_type="application/vnd.apple.mpegurl")
+
+    partial = streaming(stid)
+    if partial is None or partial.layout is None or name != f"{partial.key}.m4a":
+        raise HTTPException(status_code=404, detail="Not found")
+    partial.used = time.monotonic()
+    total = partial.layout.total
+    try:
+        span = partial_files.byte_range(request.headers.get("range"), total)
+    except ValueError:
+        raise HTTPException(status_code=416, detail="Range not satisfiable",
+                            headers={"Content-Range": f"bytes */{total}"})
+    start, end = span or (0, total - 1)
+    headers = {"Accept-Ranges": "bytes", "Content-Length": str(end - start + 1)}
+    if span:
+        headers["Content-Range"] = f"bytes {start}-{end}/{total}"
+    return StreamingResponse(partial.chunks(start, end), status_code=206 if span else 200,
+                             media_type="audio/mp4", headers=headers)
 
 
 @router.post("/track_gains", dependencies=[Depends(current_session)])

@@ -35,6 +35,10 @@ enum PlayerMessage {
 /// Builds the URL the native player streams a track from.
 typedef StreamUrlBuilder = String Function(String stid, {bool caching});
 
+/// Builds the URL of the HLS stream of a track the server is still
+/// downloading.
+typedef DownloadStreamUrlBuilder = String Function(String stid);
+
 /// Settings the player reads while it plays.
 typedef AudioPreferences = ({
   bool useCachingSource,
@@ -56,11 +60,14 @@ class PongoAudioHandler extends BaseAudioHandler {
     this._alarmLog,
     this._cacheDirectory,
     this._gainFor,
+    this._downloadStreamUrl,
   }) : player = player ?? AudioPlayer() {
     this.player.playbackEventStream.listen(
       (_) => _broadcastState(),
-      onError: (Object _, StackTrace _) {},
+      onError: (Object error, StackTrace _) =>
+          unawaited(_onPlaybackError(error)),
     );
+    this.player.durationStream.listen(_onDurationChanged);
     this.player.processingStateStream.listen(_onProcessingStateChanged);
     this.player.currentIndexStream.listen(_onCurrentIndexChanged);
     this.player.playingStream.listen((playing) {
@@ -79,6 +86,14 @@ class PongoAudioHandler extends BaseAudioHandler {
   final String? _cacheDirectory;
   // Decibels to play a track at, to even out loudness between tracks.
   final Future<double?> Function(String stid)? _gainFor;
+  final DownloadStreamUrlBuilder? _downloadStreamUrl;
+
+  // Tracks the server is still downloading, which play from its stream
+  final _downloading = <String>{};
+  // Tracks whose queued source is the server's stream of their download
+  final _streamed = <String>{};
+  // The track whose stream failed before its download finished
+  String? _failedStream;
   final VolumeService _volumeService;
   final SleepAlarmLog? _alarmLog;
   final _messages = StreamController<PlayerMessage>.broadcast();
@@ -133,6 +148,65 @@ class PongoAudioHandler extends BaseAudioHandler {
     }
   }
 
+  // A track streamed while it downloads only gets its length once it loads
+  void _onDurationChanged(Duration? duration) {
+    final index = player.currentIndex;
+    final items = queue.value;
+    if (duration == null ||
+        duration == Duration.zero ||
+        index == null ||
+        index >= items.length ||
+        (items[index].duration ?? Duration.zero) != Duration.zero) {
+      return;
+    }
+    final updated = items[index].copyWith(duration: duration);
+    queue.add([...items]..[index] = updated);
+    if (mediaItem.value?.id == updated.id) mediaItem.add(updated);
+  }
+
+  /// Plays the track with [stid] from the server's download of it, until
+  /// [downloadFinished], rather than waiting for it to be in the library.
+  void streamWhileDownloading(String stid) => _downloading.add(stid);
+
+  /// Tells the player the server's download of [stid] ended, and whether the
+  /// track is [available] in the library now.
+  ///
+  /// If its stream failed meanwhile, it carries on from the library.
+  Future<void> downloadFinished(String stid, {required bool available}) async {
+    _downloading.remove(stid);
+    if (_failedStream != stid) return;
+    _failedStream = null;
+    if (available) await _playCurrentFromLibrary();
+  }
+
+  Future<void> _onPlaybackError(Object error) async {
+    final stid = mediaItem.value?.id.split('.')[2];
+    if (stid == null || !_streamed.contains(stid)) return;
+    debugPrint('Streaming $stid failed: $error');
+    if (_downloading.contains(stid)) {
+      // The server may not be able to stream it, but still download it
+      _failedStream = stid;
+    } else {
+      await _playCurrentFromLibrary();
+    }
+  }
+
+  Future<void> _playCurrentFromLibrary() async {
+    final index = player.currentIndex;
+    final items = queue.value;
+    if (index == null || index >= items.length) return;
+    final position = player.position;
+    _replacingQueue = true;
+    try {
+      await player.removeAudioSourceAt(index);
+      await player.insertAudioSource(index, audioSourceFor(items[index]));
+    } finally {
+      _replacingQueue = false;
+    }
+    await player.seek(position, index: index);
+    if (player.playing) unawaited(player.play());
+  }
+
   void _onCurrentIndexChanged(int? index) {
     final items = queue.value;
     if (_replacingQueue || index == null || index >= items.length) return;
@@ -146,6 +220,12 @@ class PongoAudioHandler extends BaseAudioHandler {
     if (item.extras?['downloaded'] == 'true') {
       return AudioSource.file(item.extras!['audio'] as String, tag: item);
     }
+    final downloadStreamUrl = _downloadStreamUrl;
+    if (_downloading.contains(stid) && downloadStreamUrl != null) {
+      _streamed.add(stid);
+      return AudioSource.uri(Uri.parse(downloadStreamUrl(stid)), tag: item);
+    }
+    _streamed.remove(stid);
     if (preferences.useCachingSource) {
       // The caching source is still experimental in just_audio but has been
       // reliable for streaming tracks.

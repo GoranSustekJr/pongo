@@ -267,5 +267,7 @@
     "popularartists": "Popularni izvođači",
     "featuredplaylists": "Istaknute playliste",
     "newreleases": "Nova izdanja",
-    "genres": "Žanrovi"
+    "genres": "Žanrovi",
+    "streamwhiledownloading": "Sviraj dok se preuzima",
+    "streamwhiledownloadingdescription": "Eksperimentalno. Nove pjesme počinju ranije, dok ih poslužitelj još preuzima"
 }

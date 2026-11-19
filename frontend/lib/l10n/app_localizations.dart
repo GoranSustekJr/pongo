@@ -1689,6 +1689,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Genres'**
   String get genres;
+
+  /// Title of the experimental setting that plays tracks the server is still downloading
+  ///
+  /// In en, this message translates to:
+  /// **'Play while downloading'**
+  String get streamwhiledownloading;
+
+  /// Subtitle of the play while downloading setting
+  ///
+  /// In en, this message translates to:
+  /// **'Experimental. New songs start sooner, while the server is still getting them'**
+  String get streamwhiledownloadingdescription;
 }
 
 class _AppLocalizationsDelegate
