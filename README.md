@@ -79,7 +79,7 @@ SERVER_URL=http://192.168.1.10:8081/
 SERVER_URL_WSS=ws://192.168.1.10:8081/
 ```
 
-and run the app with `flutter run --release` from `frontend/`. Accounts start disabled unless their email is in `ALLOWED_EMAILS`; enable others with `scripts/enable_user.sh someone@example.com`.
+and run the app with `flutter run --release` from `frontend/`. Only emails in `ALLOWED_EMAILS` can sign in; let others in with `scripts/enable_user.sh someone@example.com`.
 
 ### Reaching it from the internet
 

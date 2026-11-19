@@ -9,6 +9,10 @@ services:
     volumes:
       - pongo_db:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d:ro
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 1g
+    pids_limit: 200
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U pongo_user -d pongo_db"]
       interval: 5s
@@ -30,6 +34,18 @@ services:
     volumes:
       - pongo_audio:/data
       - ./secrets:/run/pongo-secrets:ro
+    # Only /data and the scratch spaces below can be written
+    read_only: true
+    tmpfs:
+      - /tmp
+      # yt-dlp's and deno's caches
+      - /home/pongo/.cache:mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 2g
+    pids_limit: 256
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://localhost:8081/health', timeout=3)"]
       interval: 15s

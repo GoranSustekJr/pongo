@@ -97,3 +97,17 @@ def test_a_track_without_a_match_is_not_searched_again(monkeypatch):
 
     asyncio.run(scenario())
     assert len(searches) == 1
+
+
+def test_new_downloads_count_towards_the_users_limit(monkeypatch):
+    _fake_downloads(monkeypatch, 0)
+    monkeypatch.setattr(downloads.limits, "downloads", downloads.limits.SlidingWindow(1, 3600))
+
+    async def scenario():
+        assert await downloads.ensure_track("first", owner="user") == 1.0
+        try:
+            await downloads.ensure_track("second", owner="user")
+        except downloads.TrackUnavailable as error:
+            return str(error)
+
+    assert "limit" in asyncio.run(scenario())

@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from library import config, db
+from library import config, db, limits, migrations
 from library.metadata import deezer
 from library.routes import account, catalog, playback
 
@@ -16,6 +16,7 @@ async def lifespan(_: FastAPI):
     config.AUDIO_DIR.mkdir(parents=True, exist_ok=True)
     config.TEMP_DIR.mkdir(parents=True, exist_ok=True)
     await db.pool.open(wait=True)
+    await migrations.apply_pending()
     yield
     await deezer.close()
     await db.pool.close()
@@ -25,6 +26,16 @@ app = FastAPI(title="Pongo", lifespan=lifespan, docs_url=None, redoc_url=None)
 app.include_router(account.router)
 app.include_router(catalog.router)
 app.include_router(playback.router)
+
+
+@app.middleware("http")
+async def limit_requests(request: Request, call_next):
+    # The player fetches audio in many small range requests, so those aren't counted
+    if not request.url.path.startswith("/play_song") and not limits.requests.allow(
+        limits.client_ip(request)
+    ):
+        return JSONResponse(status_code=429, content={"detail": "Too many requests"})
+    return await call_next(request)
 
 
 @app.exception_handler(deezer.DeezerError)

@@ -10,7 +10,7 @@ from pathlib import Path
 
 from cachetools import TTLCache
 
-from library import config, db
+from library import config, db, limits
 from library.metadata import deezer
 from library.track import matcher
 
@@ -147,8 +147,11 @@ def _forget(stid: str, task: asyncio.Task) -> None:
         del _tasks[stid]
 
 
-async def ensure_track(stid: str) -> float:
-    """Duration of the track, downloading it first if needed. Raises TrackUnavailable."""
+async def ensure_track(stid: str, owner: str | None = None) -> float:
+    """Duration of the track, downloading it first if needed. Raises TrackUnavailable.
+
+    A new download counts towards the hourly download limit of `owner`, a user id.
+    """
     duration = await db.track_duration(stid)
     if duration is not None:
         return duration
@@ -156,6 +159,8 @@ async def ensure_track(stid: str) -> float:
         raise TrackUnavailable(f"No YouTube match for {stid}, checked within the last hour")
 
     task = _tasks.get(stid)
+    if task is None and owner is not None and not limits.downloads.allow(owner):
+        raise TrackUnavailable(f"Download limit reached for user {owner}")
     if task is None:
         # Runs independently of the caller, so a client hanging up mid-download doesn't waste the work
         task = asyncio.create_task(_fetch_with_slot(stid))
@@ -183,16 +188,16 @@ async def ensure_track(stid: str) -> float:
                 task.cancel()
 
 
-async def _duration_or_none(stid: str) -> float | None:
+async def _duration_or_none(stid: str, owner: str | None) -> float | None:
     try:
-        return await ensure_track(stid)
+        return await ensure_track(stid, owner)
     except TrackUnavailable as error:
         log.warning("Track %s unavailable: %s", stid, error)
         return None
 
 
 async def ensure_tracks(
-    stids: asyncio.Queue[str | None], ahead: int | None = None
+    stids: asyncio.Queue[str | None], ahead: int | None = None, owner: str | None = None
 ) -> AsyncIterator[tuple[str, float | None]]:
     """Yields (stid, duration or None if unavailable) for each queued stid, in order, until a None.
 
@@ -211,7 +216,7 @@ async def ensure_tracks(
                 if stid is None:
                     ended = True
                 else:
-                    pending.append((stid, asyncio.create_task(_duration_or_none(stid))))
+                    pending.append((stid, asyncio.create_task(_duration_or_none(stid, owner))))
             if pending:
                 stid, task = pending.popleft()
                 yield stid, await task

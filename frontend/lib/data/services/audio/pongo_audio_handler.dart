@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:clock/clock.dart';
@@ -52,6 +53,7 @@ class PongoAudioHandler extends BaseAudioHandler {
     required this._volumeService,
     AudioPlayer? player,
     this._alarmLog,
+    this._cacheDirectory,
   }) : player = player ?? AudioPlayer() {
     this.player.playbackEventStream.listen(
       (_) => _broadcastState(),
@@ -70,6 +72,9 @@ class PongoAudioHandler extends BaseAudioHandler {
   final AudioPlayer player;
 
   final StreamUrlBuilder _streamUrl;
+  // Where streamed tracks are cached, one file per track ID; just_audio's
+  // default keys the cache on the URL, which changes with each stream token.
+  final String? _cacheDirectory;
   final VolumeService _volumeService;
   final SleepAlarmLog? _alarmLog;
   final _messages = StreamController<PlayerMessage>.broadcast();
@@ -139,6 +144,9 @@ class PongoAudioHandler extends BaseAudioHandler {
       return LockCachingAudioSource(
         Uri.parse(_streamUrl(stid, caching: true)),
         tag: item,
+        cacheFile: _cacheDirectory == null
+            ? null
+            : File('$_cacheDirectory/$stid.m4a'),
       );
     }
     return AudioSource.uri(Uri.parse(_streamUrl(stid)), tag: item);

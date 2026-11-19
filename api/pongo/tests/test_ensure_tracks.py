@@ -7,7 +7,7 @@ def _fake_fetch(monkeypatch, delays):
     """Makes ensure_track sleep for each stid's delay, recording the order fetches start."""
     started = []
 
-    async def ensure_track(stid):
+    async def ensure_track(stid, owner=None):
         started.append(stid)
         await asyncio.sleep(delays[stid])
         if stid.startswith("bad"):

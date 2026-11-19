@@ -1,0 +1,17 @@
+# Weekly pull requests for newer dependencies. yt-dlp needs updating most often,
+# since YouTube changes break old versions; run scripts/check_download.sh after
+# rebuilding with a new version.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /api/pongo
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /api/pongo
+    schedule:
+      interval: weekly
+  - package-ecosystem: pub
+    directory: /frontend
+    schedule:
+      interval: weekly

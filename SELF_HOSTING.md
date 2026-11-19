@@ -37,7 +37,7 @@ Edit `.env`:
 | Setting | What to put |
 |---|---|
 | `DB_PASSWORD`, `JWT_SECRET` | Long random values: run `openssl rand -hex 48` once for each. |
-| `ALLOWED_EMAILS` | The Google account emails allowed in, comma separated. Anyone else who signs in gets a disabled account. |
+| `ALLOWED_EMAILS` | The Google account emails allowed in, comma separated. Sign-ins from any other email are refused, and nothing about them is stored. |
 | `IOS_CLIENT_ID` | Your Google iOS client ID, from step 2. |
 
 Leave the rest as it is for now, then start the server:
@@ -87,7 +87,7 @@ flutter run --release -d <your device>     # flutter devices lists them
 
 To update the app later, run the same command again. **Don't use `flutter install`**: it deletes the app first, along with all its data on the phone (downloads, playlists, sign-in).
 
-Sign in with Google in the app. If your email isn't in `ALLOWED_EMAILS`, enable the account with `scripts/enable_user.sh you@example.com`.
+Sign in with Google in the app. To let in someone whose email isn't in `ALLOWED_EMAILS`, run `scripts/enable_user.sh them@example.com`; no restart needed.
 
 ## 4. Use it from anywhere (optional)
 
@@ -116,10 +116,21 @@ The iOS app allows plain HTTP only on the local network, so a build against your
 | Problem | What to check |
 |---|---|
 | The app can't reach the server | Is the server's LAN address still the one in `frontend/.env`? Home routers hand out new ones; reserving the address in the router stops that. Is the phone on the same Wi-Fi? Does `curl http://<address>:8081/health` work from another machine? Is a firewall blocking port 8081? |
-| Songs stopped downloading | YouTube changes often and older yt-dlp versions stop working. The server updates yt-dlp on every start (`YTDLP_AUTO_UPDATE`), so run `docker compose restart api`. Check `docker compose logs api` for the error. |
+| Songs stopped downloading | YouTube changes often and older yt-dlp versions stop working. Raise the `yt-dlp` version in `api/pongo/requirements.txt` (on GitHub, Dependabot opens a pull request for it every week), rebuild with `docker compose up -d --build api`, and check with `scripts/check_download.sh`. `docker compose logs api` shows the error. |
 | A song is always "unavailable" | No YouTube video matched it closely enough. The server waits an hour before searching for it again. |
 | Docker on a Mac says `docker-credential-desktop` not found | `~/.docker/config.json` contains `"credsStore": "desktop"` left over from Docker Desktop; remove that line. |
+| Sign-in fails with "not allowed" | The email isn't in `ALLOWED_EMAILS`; add it there, or run `scripts/enable_user.sh`. |
+| Requests fail with 429 | A rate limit was hit: sign-ins, requests and connections per IP, and new downloads per user per hour. Raise `SIGN_INS_PER_MINUTE`, `REQUESTS_PER_MINUTE`, `SOCKETS_PER_MINUTE` or `DOWNLOADS_PER_HOUR` in `.env` if they're too low for you. |
 | The app stops opening after a week | That's the free Apple account's 7-day limit. Run `flutter run --release` again; your data stays. |
+
+## Security
+
+- Only allowed emails can sign in, and strangers' sign-ins aren't stored.
+- Rate limits apply per IP, plus a limit on new downloads per user per hour.
+- Access tokens last 2 hours. Refresh tokens are replaced every time they're used, and if an old one is used again the device is signed out.
+- The audio links carry a stream token that expires after 7 days.
+- The API container runs read-only, as a normal user, with no Linux capabilities. Over the internet only HTTPS is served, through Caddy.
+- yt-dlp is pinned to a known version instead of updating itself.
 
 ## How it works
 

@@ -25,6 +25,16 @@ services:
       # Certificates, so a restart doesn't request new ones
       - caddy_data:/data
       - caddy_config:/config
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
 
 volumes:
   caddy_data:

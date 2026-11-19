@@ -1,8 +1,10 @@
 #!/bin/sh
 set -e
 
-# YouTube changes often and old yt-dlp versions stop working, so stay current
-if [ "${YTDLP_AUTO_UPDATE:-true}" = "true" ]; then
+# yt-dlp is pinned in requirements.txt and updated by rebuilding with a newer pin.
+# Opting in installs the newest release at every start instead, which only works
+# without the read-only filesystem in docker-compose.yml.
+if [ "${YTDLP_AUTO_UPDATE:-false}" = "true" ]; then
     pip install --quiet --no-cache-dir --user --upgrade 'yt-dlp[default]' \
         || echo "yt-dlp update failed, continuing with the installed version"
 fi

@@ -110,8 +110,15 @@ class AuthRepositoryRemote extends AuthRepository {
     }
   }
 
+  Future<bool>? _refreshing;
+
   @override
-  Future<bool> refreshSession() async {
+  Future<bool> refreshSession() =>
+      // Requests failing together share one renewal, since each refresh token
+      // works only once
+      _refreshing ??= _refreshSession().whenComplete(() => _refreshing = null);
+
+  Future<bool> _refreshSession() async {
     final refreshToken = await _storage.read(StorageKeys.refreshToken);
     final http.Response response;
     try {
@@ -132,6 +139,11 @@ class AuthRepositoryRemote extends AuthRepository {
     final data = jsonDecode(response.utf8Body) as Map<String, dynamic>;
     _accessToken = data['at'] as String?;
     await _storage.write(StorageKeys.accessToken, _accessToken);
+    // The server issues a new refresh token every time and refuses old ones
+    final newRefreshToken = data['rt+JWT'] as String?;
+    if (newRefreshToken != null) {
+      await _storage.write(StorageKeys.refreshToken, newRefreshToken);
+    }
     if (data['st'] != null) await _setStreamToken(data['st'] as String);
     return true;
   }

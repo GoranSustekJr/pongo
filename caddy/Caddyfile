@@ -1,6 +1,10 @@
 # HTTPS in front of the API, with a Let's Encrypt certificate for PONGO_DOMAIN.
 # Let's Encrypt checks the domain over port 80, so the router forwards 80 and 443 here.
 {$PONGO_DOMAIN} {
+	# Nothing the app sends comes close; this stops oversized uploads at the door
+	request_body {
+		max_size 1MB
+	}
 	header {
 		Strict-Transport-Security "max-age=31536000"
 		-Server

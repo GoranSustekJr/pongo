@@ -1,5 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -73,10 +74,12 @@ Future<List<SingleChildWidget>> createProviders(AppConfig config) async {
   await settings.load();
 
   final alarmLog = SleepAlarmLog();
+  final cacheDirectory = '${(await getTemporaryDirectory()).path}/tracks';
   final handler = await AudioService.init(
     builder: () => PongoAudioHandler(
       volumeService: volume,
       alarmLog: alarmLog,
+      cacheDirectory: cacheDirectory,
       streamUrl: (stid, {caching = false}) =>
           '${config.serverUrl}'
           '${caching ? 'play_song_caching' : 'play_song'}/'

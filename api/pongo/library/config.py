@@ -34,3 +34,11 @@ YTDLP_PLAYER_CLIENTS = [
     v.strip() for v in os.getenv("YTDLP_PLAYER_CLIENTS", "visionos,default").split(",") if v.strip()
 ]
 YTDLP_COOKIES_FILE = os.getenv("YTDLP_COOKIES_FILE", "")
+
+# Rate limits per client IP, and new downloads per user
+SIGN_INS_PER_MINUTE = int(os.getenv("SIGN_INS_PER_MINUTE", "10"))
+REQUESTS_PER_MINUTE = int(os.getenv("REQUESTS_PER_MINUTE", "600"))
+SOCKETS_PER_MINUTE = int(os.getenv("SOCKETS_PER_MINUTE", "120"))
+DOWNLOADS_PER_HOUR = int(os.getenv("DOWNLOADS_PER_HOUR", "200"))
+# Most tracks one queue request may ask for
+MAX_BATCH_TRACKS = 500

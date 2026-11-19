@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from datetime import datetime, timedelta, timezone
 
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
@@ -40,10 +41,35 @@ async def _identity(token: str, platform: str, is_apple: bool) -> dict:
     }
 
 
-async def _store_user_and_device(identity: dict, is_apple: bool, device_id: str) -> None:
-    enabled = (identity["email"] or "").lower() in config.ALLOWED_EMAILS
+# A refresh token one version behind still works this long after the device moved on,
+# for an app that renewed but didn't get to store the new token
+ROTATION_GRACE = timedelta(minutes=5)
+
+
+class NotAllowed(Exception):
+    pass
+
+
+async def _is_allowed(email: str | None) -> bool:
+    email = (email or "").lower()
+    if not email:
+        return False
+    if email in config.ALLOWED_EMAILS:
+        return True
+    return await db.fetch_one("SELECT 1 FROM allowed_emails WHERE email = %s", (email,)) is not None
+
+
+async def _store_user_and_device(identity: dict, is_apple: bool, device_id: str) -> int:
+    """Stores the user and device and returns the device's new refresh version."""
+    enabled = await _is_allowed(identity["email"])
     async with db.pool.connection() as conn:
-        # An allow-listed email can turn on an account that already exists, never turn one off
+        exists = await (
+            await conn.execute("SELECT 1 FROM users WHERE uid = %s", (identity["uid"],))
+        ).fetchone()
+        # Strangers aren't stored at all, so sign-in attempts can't fill the database
+        if not enabled and not exists:
+            raise NotAllowed(identity["email"])
+        # An allowed email can turn on an account that already exists, never turn one off
         await conn.execute(
             """
             INSERT INTO users (uid, email, name, picture, apple_auth, hidden_auth, disabled)
@@ -53,13 +79,18 @@ async def _store_user_and_device(identity: dict, is_apple: bool, device_id: str)
             """,
             {**identity, "apple": is_apple, "disabled": not enabled},
         )
-        await conn.execute(
+        # Signing in again starts a new refresh version, so the device's older tokens stop working
+        cursor = await conn.execute(
             """
             INSERT INTO user_device (uid, device_id) VALUES (%s, %s)
-            ON CONFLICT (uid, device_id) DO UPDATE SET last_seen = now()
+            ON CONFLICT (uid, device_id) DO UPDATE
+            SET last_seen = now(), refresh_version = user_device.refresh_version + 1,
+                refresh_rotated_at = now()
+            RETURNING refresh_version
             """,
             (identity["uid"], device_id),
         )
+        version = (await cursor.fetchone())[0]
         # Signing in on a device past the limit signs out the least recently used one
         await conn.execute(
             """
@@ -71,30 +102,76 @@ async def _store_user_and_device(identity: dict, is_apple: bool, device_id: str)
             """,
             {"uid": identity["uid"]},
         )
+    return version
 
 
 async def sign_in(token: str, platform: str, device_id: str, is_apple: bool) -> dict | None:
+    """Tokens for the account, or None if the sign-in token is invalid. Raises NotAllowed."""
     try:
         identity = await _identity(token, platform, is_apple)
     except Exception:
         log.exception("Sign in rejected (platform=%s, apple=%s)", platform, is_apple)
         return None
 
-    await _store_user_and_device(identity, is_apple, device_id)
+    version = await _store_user_and_device(identity, is_apple, device_id)
     uid, email = identity["uid"], identity["email"]
     return {
-        "rt+JWT": tokens.create_refresh_token(uid, email, device_id),
+        "rt+JWT": tokens.create_refresh_token(uid, email, device_id, version),
         "at+JWT": tokens.create_access_token(uid, email, device_id),
         "st": tokens.create_stream_token(uid, device_id),
     }
+
+
+async def _next_refresh_version(session: tokens.Session) -> int | None:
+    """The version to issue the renewed refresh token for, or None to refuse.
+
+    Using a token that is more than one version old, or one version old outside the
+    grace period, means someone else has a copy, so the device is signed out.
+    """
+    async with db.pool.connection() as conn:
+        row = await (
+            await conn.execute(
+                """
+                SELECT refresh_version, refresh_rotated_at FROM user_device
+                WHERE uid = %s AND device_id = %s FOR UPDATE
+                """,
+                (session.uid, session.device_id),
+            )
+        ).fetchone()
+        if row is None:
+            return None
+        current, rotated_at = row
+        if session.version == current:
+            await conn.execute(
+                """
+                UPDATE user_device
+                SET refresh_version = refresh_version + 1, refresh_rotated_at = now(), last_seen = now()
+                WHERE uid = %s AND device_id = %s
+                """,
+                (session.uid, session.device_id),
+            )
+            return current + 1
+        recent = rotated_at is not None and rotated_at > datetime.now(timezone.utc) - ROTATION_GRACE
+        if session.version == current - 1 and recent:
+            return current
+        await conn.execute(
+            "DELETE FROM user_device WHERE uid = %s AND device_id = %s",
+            (session.uid, session.device_id),
+        )
+    log.warning("Old refresh token reused for user %s, signed out device %s", session.uid, session.device_id)
+    return None
 
 
 async def renew(refresh_token: str | None) -> dict | None:
     session = tokens.decode(refresh_token, "rt+JWT") if refresh_token else None
     if session is None or await tokens.session_status(session) == "unknown":
         return None
+    version = await _next_refresh_version(session)
+    if version is None:
+        return None
     row = await db.fetch_one("SELECT email FROM users WHERE uid = %s", (session.uid,))
     return {
         "at": tokens.create_access_token(session.uid, row[0], session.device_id),
+        "rt+JWT": tokens.create_refresh_token(session.uid, row[0], session.device_id, version),
         "st": tokens.create_stream_token(session.uid, session.device_id),
     }
