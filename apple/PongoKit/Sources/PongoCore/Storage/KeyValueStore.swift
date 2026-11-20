@@ -42,6 +42,7 @@ public enum StorageKey: String, Sendable {
     case showLiveLyrics = "SHOWLIVELYRICSKEY"
     case crossfadeSeconds = "CROSSFADESECONDSKEY"
     case gaplessAlbums = "GAPLESSALBUMSKEY"
+    case bassBoost = "BASSBOOSTKEY"
     case smartShuffle = "SMARTSHUFFLEKEY"
 }
 

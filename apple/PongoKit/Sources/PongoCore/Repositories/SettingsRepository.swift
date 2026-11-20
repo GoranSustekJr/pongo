@@ -46,6 +46,7 @@ public final class SettingsRepository {
         settings.showLiveLyrics = store.bool(.showLiveLyrics, fallback: settings.showLiveLyrics)
         settings.crossfadeSeconds = store.int(.crossfadeSeconds, fallback: settings.crossfadeSeconds)
         settings.gaplessAlbums = store.bool(.gaplessAlbums, fallback: settings.gaplessAlbums)
+        settings.bassBoost = store.bool(.bassBoost, fallback: settings.bassBoost)
         settings.smartShuffle = store.bool(.smartShuffle, fallback: settings.smartShuffle)
         self.settings = settings
     }
@@ -92,7 +93,7 @@ public final class SettingsRepository {
         (.dynamicBlurhash, \.useDynamicBlurhash), (.useAnimations, \.useAnimations),
         (.useLiquidGlass, \.useLiquidGlass), (.streamWhileDownloading, \.streamWhileDownloading),
         (.showLiveLyrics, \.showLiveLyrics), (.gaplessAlbums, \.gaplessAlbums),
-        (.smartShuffle, \.smartShuffle),
+        (.smartShuffle, \.smartShuffle), (.bassBoost, \.bassBoost),
     ]
 
     private static let ints: [(StorageKey, KeyPath<AppSettings, Int>)] = [

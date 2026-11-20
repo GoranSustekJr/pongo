@@ -9,7 +9,7 @@ extension Database: SyncSource, SyncStateStore {
     public nonisolated var kinds: Set<String> {
         [
             "favourite", "online_playlist", "local_playlist", "played_track", "played_artist",
-            "search", "sleep_alarm", "lyrics_delay",
+            "search", "sleep_alarm", "lyrics_delay", "play_count",
         ]
     }
 
@@ -94,9 +94,37 @@ extension Database: SyncSource, SyncStateStore {
                 guard let stid = row["stid"]?.text else { return nil }
                 return (stid, SyncItem(data: ["ms": row["sync_time_delay"]?.json ?? .null]))
             }
+        case "play_count":
+            let parts = key.map(Self.playCountKey)
+            let rows =
+                if let parts {
+                    try db.query(
+                        "SELECT * FROM play_counts WHERE month = ? AND device = ? AND stid = ?",
+                        parts.map(SQLValue.text))
+                } else {
+                    try db.query("SELECT * FROM play_counts")
+                }
+            return rows.compactMap { row in
+                guard let month = row["month"]?.text, let device = row["device"]?.text, let stid = row["stid"]?.text
+                else { return nil }
+                let track = row["track"]?.text.flatMap { try? JSONValue.decode(Data($0.utf8)) } ?? .null
+                return (
+                    "\(month)|\(device)|\(stid)",
+                    SyncItem(data: [
+                        "plays": row["plays"]?.json ?? .int(0), "seconds": .double(row["seconds"]?.double ?? 0),
+                        "track": track,
+                    ])
+                )
+            }
         default:
             return []
         }
+    }
+
+    /// The month, device and track of a play count's key, `month|device|stid`.
+    private static func playCountKey(_ key: String) -> [String] {
+        let parts = key.split(separator: "|", maxSplits: 2).map(String.init)
+        return parts.count == 3 ? parts : [key, "", ""]
     }
 
     /// The row's sync ID, giving it one first if it has none.
@@ -183,6 +211,17 @@ extension Database: SyncSource, SyncStateStore {
                 try db.execute(
                     "INSERT INTO lyrics_sync_time_delay (stid, sync_time_delay) VALUES (?, ?)", [key, .int(ms)])
             }
+        case "play_count":
+            // Another device's count, which only that device changes
+            let parts = Self.playCountKey(item.key).map(SQLValue.text)
+            guard let data else {
+                try db.execute("DELETE FROM play_counts WHERE month = ? AND device = ? AND stid = ?", parts)
+                return
+            }
+            let track = data["track"].map { SQLValue.text($0.encodedString()) } ?? .null
+            try db.execute(
+                "INSERT OR REPLACE INTO play_counts (month, device, stid, plays, seconds, track) VALUES (?, ?, ?, ?, ?, ?)",
+                parts + [.int(data["plays"]?.int ?? 0), .double(data["seconds"]?.double ?? 0), track])
         default:
             break
         }

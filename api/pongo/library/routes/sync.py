@@ -17,7 +17,7 @@ router = APIRouter()
 
 KINDS = {
     "favourite", "online_playlist", "local_playlist",
-    "played_track", "played_artist", "search", "sleep_alarm", "lyrics_delay", "setting",
+    "played_track", "played_artist", "search", "sleep_alarm", "lyrics_delay", "setting", "play_count",
 }
 MAX_CHANGES = 500
 MAX_ITEM_BYTES = 2_000_000

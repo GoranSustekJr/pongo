@@ -103,5 +103,19 @@
   "listeningwith": {"en": "Listening with", "de": "Hörst mit", "hr": "Slušaš s"},
   "pausedhere": {"en": "Paused just for you. Play to catch up.", "de": "Nur für dich pausiert. Spiel ab, um aufzuholen.", "hr": "Pauzirano samo za tebe. Pokreni za nastavak."},
   "addedby": {"en": "Added by", "de": "Hinzugefügt von", "hr": "Dodao/la"},
-  "away": {"en": "Away", "de": "Abwesend", "hr": "Odsutan/na"}
+  "away": {"en": "Away", "de": "Abwesend", "hr": "Odsutan/na"},
+  "bassboost": {"en": "Bass boost", "de": "Bassverstärkung", "hr": "Pojačanje basa"},
+  "bassboostdescription": {"en": "Lifts the low bass a little, so songs sound deeper", "de": "Hebt den tiefen Bass etwas an, damit Songs voller klingen", "hr": "Malo pojačava duboki bas da pjesme zvuče dublje"},
+  "stats": {"en": "Stats", "de": "Statistik", "hr": "Statistika"},
+  "statsdescription": {"en": "Your most played songs each month", "de": "Deine meistgehörten Songs pro Monat", "hr": "Tvoje najslušanije pjesme svaki mjesec"},
+  "topsongs": {"en": "Top songs", "de": "Top-Songs", "hr": "Najslušanije pjesme"},
+  "topartists": {"en": "Top artists", "de": "Top-Künstler", "hr": "Najslušaniji izvođači"},
+  "plays": {"en": "plays", "de": "Wiedergaben", "hr": "slušanja"},
+  "play1": {"en": "play", "de": "Wiedergabe", "hr": "slušanje"},
+  "minuteslistened": {"en": "Minutes", "de": "Minuten", "hr": "Minuta"},
+  "songsplayed": {"en": "Songs", "de": "Songs", "hr": "Pjesama"},
+  "playsfull": {"en": "Plays", "de": "Wiedergaben", "hr": "Slušanja"},
+  "nostatsyet": {"en": "No stats yet", "de": "Noch keine Statistik", "hr": "Još nema statistike"},
+  "nostatsyetdetail": {"en": "A song counts once you've listened to 30 seconds of it.", "de": "Ein Song zählt, sobald du 30 Sekunden davon gehört hast.", "hr": "Pjesma se računa nakon 30 sekundi slušanja."},
+  "playall": {"en": "Play all", "de": "Alle abspielen", "hr": "Pusti sve"}
 }

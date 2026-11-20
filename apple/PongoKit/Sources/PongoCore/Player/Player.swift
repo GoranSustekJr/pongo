@@ -43,6 +43,8 @@ public struct PlayerPreferences: Sendable {
     public var crossfade: Double = 0
     /// Whether tracks of one album that follow each other skip the fade.
     public var gaplessAlbums = true
+    /// Whether the low bass is lifted a little.
+    public var bassBoost = false
 
     public init() {}
 }
@@ -80,11 +82,27 @@ public final class Player {
     public let progress = PlaybackProgress()
 
     @ObservationIgnored public var preferences = PlayerPreferences() {
-        didSet { scheduleCrossfade() }
+        didSet {
+            BassBoost.shared.isOn.store(preferences.bassBoost, ordering: .relaxed)
+            scheduleCrossfade()
+        }
     }
     @ObservationIgnored public var onMessage: ((PlayerMessage) -> Void)?
     /// Called when a track starts playing, such as to record it as played.
     @ObservationIgnored public var onTrackStarted: ((QueueItem) -> Void)?
+    /// Reports seconds listened to an entry: first once it was listened to
+    /// long enough to count as played, with `true`, then every half minute
+    /// and when it ends.
+    @ObservationIgnored public var onListened: ((QueueItem, Double, Bool) -> Void)?
+    // What was listened to of the current entry and not reported yet
+    @ObservationIgnored private var listening: Listening?
+
+    private struct Listening {
+        var item: QueueItem
+        var seconds: Double = 0
+        var counted = false
+        var lastPosition: Double?
+    }
     /// Sets the device volume, for the alarm to wake the user.
     @ObservationIgnored public var setDeviceVolume: ((Double) -> Void)?
     /// Writes a line to the sleep alarm log.
@@ -809,6 +827,7 @@ public final class Player {
         guard let url = stream ?? sourceURL(for: item) else { return nil }
         let playerItem = AVPlayerItem(url: url)
         playerItem.preferredForwardBufferDuration = 30
+        if stream == nil { BassBoost.attach(to: playerItem) }
         if !url.isFileURL {
             // Audio the server can't serve, or a server that can't be reached, fails as the item loads
             failureObservations[ObjectIdentifier(playerItem)] =
@@ -884,7 +903,9 @@ public final class Player {
     }
 
     private func currentChanged() {
+        reportListening()
         guard let item = current else { return }
+        listening = Listening(item: item)
         duration = item.duration
         progress.position = 0
         progress.buffered = 0
@@ -911,6 +932,7 @@ public final class Player {
                     let wasPlaying = self.isPlaying
                     self.isPlaying = status != .paused
                     if wasPlaying != self.isPlaying { self.onPlaybackChanged?() }
+                    if wasPlaying && !self.isPlaying { self.saveListening() }
                     self.isBuffering = status == .waitingToPlayAtSpecifiedRate
                     self.updateNowPlaying()
                 }
@@ -939,6 +961,7 @@ public final class Player {
         guard let item = engine.currentItem, item === loadedCurrent?.item else { return }
         progress.position = time.seconds.isFinite ? time.seconds : 0
         if progress.position > 0.5 { failuresInARow = 0 }
+        countListening()
         if let range = item.loadedTimeRanges.last?.timeRangeValue {
             progress.buffered = range.end.seconds
         }
@@ -948,6 +971,44 @@ public final class Player {
             updateNowPlaying()
             scheduleCrossfade()
         }
+    }
+
+    // MARK: - Listening time
+
+    /// Adds the time played since the last tick; a seek isn't listening.
+    private func countListening() {
+        guard var listening, listening.item.id == current?.id else { return }
+        let position = progress.position
+        if let last = listening.lastPosition, isPlaying, position > last, position - last < 1.5 {
+            listening.seconds += position - last
+        }
+        listening.lastPosition = position
+        let length = duration > 0 ? duration : listening.item.duration
+        let enough = length > 0 ? min(30, length / 2) : 30
+        if !listening.counted, listening.seconds >= enough {
+            onListened?(listening.item, listening.seconds, true)
+            listening.counted = true
+            listening.seconds = 0
+        } else if listening.counted, listening.seconds >= 30 {
+            onListened?(listening.item, listening.seconds, false)
+            listening.seconds = 0
+        }
+        self.listening = listening
+    }
+
+    /// Reports the time listened so far, as playback pauses.
+    private func saveListening() {
+        guard let listening, listening.counted, listening.seconds > 0 else { return }
+        onListened?(listening.item, listening.seconds, false)
+        self.listening?.seconds = 0
+    }
+
+    /// Reports what's left of the entry that played, if it counted.
+    private func reportListening() {
+        if let listening, listening.counted, listening.seconds > 0 {
+            onListened?(listening.item, listening.seconds, false)
+        }
+        listening = nil
     }
 
     // MARK: - Crossfades
@@ -1014,6 +1075,7 @@ public final class Player {
     private func prepareTail(of item: QueueItem, at handoff: Double) {
         guard let url = sourceURL(for: item) else { return }
         let playerItem = AVPlayerItem(url: url)
+        BassBoost.attach(to: playerItem)
         tail.automaticallyWaitsToMinimizeStalling = false
         tail.replaceCurrentItem(with: playerItem)
         tail.volume = 0

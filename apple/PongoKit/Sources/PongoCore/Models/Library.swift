@@ -185,6 +185,8 @@ public struct AppSettings: Sendable, Hashable {
     /// Whether songs of one album that follow each other play without a fade,
     /// as the album was mastered.
     public var gaplessAlbums = true
+    /// Whether the low bass is lifted a little, so songs sound deeper.
+    public var bassBoost = false
     /// Whether shuffling a playlist or the favourites mixes in suggested
     /// songs like them.
     public var smartShuffle = true

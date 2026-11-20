@@ -22,6 +22,9 @@ struct LibraryView: View {
             Section(L10n.sleep) {
                 row(.sleepAlarms, "moon.zzz.fill", L10n.sleep, L10n.sleepandalarmclock)
             }
+            Section(L10n.stats) {
+                row(.stats, "chart.bar.fill", L10n.stats, L10n.statsdescription)
+            }
         }
         .listStyle(.insetGrouped)
         .pongoBackground()

@@ -264,3 +264,53 @@ private func item(_ stid: String) -> QueueItem {
         #expect(decoded.addedBy == "friend")
     }
 }
+
+@Suite struct BassBoostTests {
+    /// The filter's gain in dB at [frequency], from its coefficients.
+    private func gain(_ c: [Double], at frequency: Double, rate: Double) -> Double {
+        let w = 2 * Double.pi * frequency / rate
+        func magnitude(_ a: Double, _ b: Double, _ c: Double) -> Double {
+            let re = a + b * cos(w) + c * cos(2 * w)
+            let im = -(b * sin(w) + c * sin(2 * w))
+            return sqrt(re * re + im * im)
+        }
+        return 20 * log10(magnitude(c[0], c[1], c[2]) / magnitude(1, c[3], c[4]))
+    }
+
+    @Test func liftsOnlyTheLowBass() {
+        let c = BassBoost.coefficients(sampleRate: 44_100)
+        #expect(abs(gain(c, at: 40, rate: 44_100) - 4.96) < 0.1)
+        #expect(abs(gain(c, at: 80, rate: 44_100) - 4.43) < 0.1)
+        #expect(abs(gain(c, at: 1_000, rate: 44_100) - -2) < 0.1)
+        #expect(abs(gain(c, at: 10_000, rate: 44_100) - -2) < 0.05)
+    }
+}
+
+@Suite struct PlayStatsTests {
+    private func track(_ id: String, artist: String) -> Track {
+        Track(id: id, name: id, artists: [ArtistRef(id: artist, name: artist)], album: nil)
+    }
+
+    @Test func countsPlaysPerMonthAcrossDevices() async throws {
+        let database = try Database()
+        let november = Date(timeIntervalSince1970: 1_794_000_000)
+        let month = Database.month(of: november)
+        try await database.recordListen(track("a", artist: "x"), seconds: 30, newPlay: true, at: november)
+        try await database.recordListen(track("a", artist: "x"), seconds: 90, newPlay: false, at: november)
+        try await database.recordListen(track("b", artist: "y"), seconds: 30, newPlay: true, at: november)
+        // Another device's count of the same song, as a sync brings it
+        try await database.apply(
+            SyncKey(kind: "play_count", key: "\(month)|other|a"),
+            ["plays": .int(2), "seconds": .double(400), "track": .object(["id": "a", "name": "a", "artists": []])])
+        let stats = try await database.monthStats(month)
+        #expect(stats.tracks.map(\.id) == ["a", "b"])
+        #expect(stats.tracks.first?.plays == 3)
+        #expect(stats.tracks.first?.seconds == 520)
+        #expect(stats.plays == 4)
+        #expect(stats.artists.map(\.id) == ["x", "y"])
+        #expect(try await database.playMonths() == [month])
+        // This device's counts go out to the others
+        let snapshot = try await database.snapshot()
+        #expect(snapshot.keys.filter { $0.kind == "play_count" }.count == 3)
+    }
+}

@@ -143,13 +143,14 @@ private struct PlayerControls: View {
             PlayerProgress(item: item)
             transport
             VolumeRow()
-            if mode == .artwork {
+            // Lyrics have their own bar; from the cover and the queue, this row switches between them
+            if mode != .lyrics {
                 bottomRow.transition(.opacity)
             }
         }
         .padding(.horizontal, 15)
         .padding(.top, 10)
-        .padding(.bottom, mode == .artwork ? 0 : 8)
+        .padding(.bottom, mode == .lyrics ? 8 : 0)
     }
 
     private var transport: some View {
@@ -250,6 +251,10 @@ private struct PlayerControls: View {
                 Task { await model.showArtist(artist) }
             }
         }
+        if isDJMix(item) {
+            Divider()
+            Button("Shazam", systemImage: "shazam.logo") { Task { await model.shazam(item.stid) } }
+        }
         Divider()
         Button(L10n.halt, systemImage: "stop.fill") { confirmHalt = true }
     }
@@ -272,7 +277,7 @@ private struct PlayerControls: View {
 }
 
 /// The title and artists, centered while playing; next to them the small
-/// cover while lyrics or the queue show, and Shazam for mixes.
+/// cover while lyrics or the queue show.
 private struct TitleRow: View {
     @Environment(AppModel.self) private var model
     let item: QueueItem
@@ -301,24 +306,14 @@ private struct TitleRow: View {
                     .frame(height: 24)
             }
             .animation(.smooth(duration: 0.5), value: centered)
-            if isMix {
-                Button {
-                    Task { await model.shazam(item.stid) }
-                } label: {
-                    Image(systemName: "shazam.logo.fill")
-                        .font(.system(size: 28))
-                        .shadow(color: .black.opacity(0.6), radius: 8)
-                }
-                .buttonStyle(.press)
-                .transition(.scale.combined(with: .opacity))
-            }
         }
         .frame(height: 54)
     }
+}
 
-    private var isMix: Bool {
-        item.isMix || item.track.name.range(of: #"Mix #\d{1,2}"#, options: .regularExpression) != nil
-    }
+/// Whether [item] is a long mix of several songs, which Shazam can name.
+private func isDJMix(_ item: QueueItem) -> Bool {
+    item.isMix || item.track.name.range(of: #"Mix #\d{1,2}"#, options: .regularExpression) != nil
 }
 
 /// The artists of a track, each opening its page; scrolls sideways when they

@@ -21,12 +21,17 @@ public actor Database {
         return try Database(path: directory.appending(path: "pongo.sqlite").path)
     }
 
-    private static let version = 1
+    private static let version = 2
 
     private static func migrate(_ db: SQLiteConnection) throws {
         guard db.userVersion < version else { return }
         try db.transaction {
-            for sql in schema { try db.execute(sql) }
+            if db.userVersion < 1 {
+                for sql in schema { try db.execute(sql) }
+            }
+            if db.userVersion < 2 {
+                for sql in playStatsSchema { try db.execute(sql) }
+            }
         }
         db.userVersion = version
     }

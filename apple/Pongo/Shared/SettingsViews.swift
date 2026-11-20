@@ -191,6 +191,7 @@ struct PreferencesView: View {
                 }
                 .groupedRowBackground()
                 toggle(L10n.gaplessalbums, L10n.gaplessalbumsdescription, "square.stack", \.gaplessAlbums)
+                toggle(L10n.bassboost, L10n.bassboostdescription, "speaker.wave.2", \.bassBoost)
                 toggle(L10n.smartshuffle, L10n.smartshuffledescription, "shuffle", \.smartShuffle)
                 Button {
                     model.player.clearCache()

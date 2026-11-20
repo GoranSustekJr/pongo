@@ -61,22 +61,33 @@ struct QueuePanel: View {
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .scrollIndicators(.hidden)
-            .contentMargins(.top, 84, for: .scrollContent)
-            // Entries fade out before they reach the buttons on top, so none show behind them
-            .mask {
-                VStack(spacing: 0) {
-                    Color.clear.frame(height: 62)
-                    LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom).frame(height: 16)
-                    Color.black
+            #if os(iOS)
+                .contentMargins(.top, 84, for: .scrollContent)
+                // Entries fade out before they reach the buttons on top, so none show behind them
+                .mask {
+                    VStack(spacing: 0) {
+                        Color.clear.frame(height: 62)
+                        LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom).frame(height: 16)
+                        Color.black
+                    }
                 }
-            }
-            .contentMargins(.bottom, bottomInset + 20, for: .scrollContent)
+                // The last entry scrolls up clear of the player's controls
+                .contentMargins(.bottom, bottomInset + 70, for: .scrollContent)
+            #else
+                .contentMargins(.top, 4, for: .scrollContent)
+                .contentMargins(.bottom, bottomInset + 20, for: .scrollContent)
+            #endif
             .ignoresSafeArea(edges: .bottom)
             .onAppear {
                 if let current = queue.current { proxy.scrollTo(current.id, anchor: UnitPoint(x: 0.5, y: 0.15)) }
             }
         }
-        .overlay(alignment: .top) { bar }
+        #if os(iOS)
+            .overlay(alignment: .top) { bar }
+        #else
+            // On a Mac the buttons get a row of their own, which the list starts below
+            .safeAreaInset(edge: .top, spacing: 0) { bar.padding(.bottom, 10) }
+        #endif
         #if os(iOS)
             .sheet(isPresented: Binding { model.showsListenTogether } set: { model.showsListenTogether = $0 }) {
                 ListenTogetherView()
@@ -230,43 +241,73 @@ struct QueuePanel: View {
 
     // MARK: - The bar on top
 
+    /// Shuffle on the left, which the player has no other button for, and
+    /// on the right listening together and the menu with everything else;
+    /// lyrics and closing the queue are in the player's own controls.
     private var bar: some View {
         let player = model.player
-        let state = model.nowPlaying
-        return HStack(spacing: 0) {
-            Spacer()
-            GlassIconButton(systemImage: "quote.bubble", dimmed: !state.lyricsExist) {
-                withAnimation(.spring(duration: 0.55, bounce: 0.12)) { state.toggleLyrics(model) }
+        let session = model.listening
+        let others = session.listeners.filter { $0.id != session.userID && $0.isPresent }.count
+        return HStack(spacing: 10) {
+            if editing {
+                Button {
+                    editing = false
+                    selection = []
+                } label: {
+                    Label(L10n.done, systemImage: "checkmark")
+                        .barPill(isOn: true)
+                }
+                .buttonStyle(.press)
+            } else {
+                Button {
+                    player.setShuffle(!player.queue.shuffleEnabled)
+                } label: {
+                    Label(L10n.shuffle, systemImage: "shuffle")
+                        .barPill(isOn: player.queue.shuffleEnabled)
+                }
+                .buttonStyle(.press)
+                .disabled(!player.canShuffle)
+                .opacity(player.canShuffle ? 1 : 0.55)
             }
-            Spacer()
-            GlassIconButton(systemImage: "shuffle", isOn: player.queue.shuffleEnabled) {
-                player.setShuffle(!player.queue.shuffleEnabled)
+            Spacer(minLength: 0)
+            HStack(spacing: 0) {
+                Button {
+                    model.showsListenTogether = true
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: session.isActive ? "person.2.wave.2.fill" : "person.2.wave.2")
+                        if others > 0 {
+                            Text("\(others)").font(.system(size: 14, weight: .bold).monospacedDigit())
+                        }
+                    }
+                    .foregroundStyle(session.isActive ? AnyShapeStyle(.tint) : AnyShapeStyle(.white))
+                    .padding(.horizontal, 14)
+                    .frame(height: 42)
+                    .contentShape(.rect)
+                }
+                .buttonStyle(.press)
+                Rectangle().fill(.white.opacity(0.2)).frame(width: 1, height: 20)
+                Menu {
+                    menuItems
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 15)
+                        .frame(height: 42)
+                        .contentShape(.rect)
+                }
+                .menuStyle(.button)
+                .buttonStyle(.plain)
             }
-            .disabled(!player.canShuffle)
-            Spacer()
-            GlassIconButton(systemImage: "rectangle.stack.fill", isOn: true) {
-                withAnimation(.spring(duration: 0.55, bounce: 0.12)) { state.toggleQueue() }
-            }
-            Spacer()
-            GlassIconButton(systemImage: "person.2.wave.2", isOn: model.listening.isActive) {
-                model.showsListenTogether = true
-            }
-            Spacer()
-            GlassIconButton(systemImage: "stop.fill") { confirmHalt = true }
-            Spacer()
-            Menu {
-                menuItems
-            } label: {
-                GlassIcon(systemImage: editing ? "checkmark" : "ellipsis")
-            }
-            .menuStyle(.button)
-            .buttonStyle(.plain)
-            .tint(.white)
-            Spacer()
+            .font(.system(size: 16, weight: .semibold))
+            .playerChrome(in: Capsule())
         }
+        .padding(.horizontal, 15)
         .padding(.top, 12)
-        .tint(state.accent)
+        .tint(model.nowPlaying.accent)
         .sensoryFeedback(.selection, trigger: player.queue.shuffleEnabled)
+        .animation(.snappy, value: editing)
+        .animation(.snappy, value: session.isActive)
     }
 
     @ViewBuilder private var menuItems: some View {
@@ -280,7 +321,6 @@ struct QueuePanel: View {
             Button(L10n.download, systemImage: "icloud.and.arrow.down") { download(selectedOnly: true) }
         } else {
             Button(L10n.edit, systemImage: "pencil") { editing = true }
-            Button(L10n.listentogether, systemImage: "person.2.wave.2") { model.showsListenTogether = true }
             Divider()
             Button(L10n.saveasplaylist, systemImage: "music.note.list") {
                 Task { await model.addToPlaylist(queueTracks(), creating: true) }
@@ -423,5 +463,18 @@ private struct QueueSummary: View {
         }
         .font(.system(size: 13, weight: .medium))
         .foregroundStyle(.white.opacity(0.65))
+    }
+}
+
+extension View {
+    /// A label as a frosted pill in the queue's bar, lit when [isOn].
+    fileprivate func barPill(isOn: Bool) -> some View {
+        font(.system(size: 15, weight: .semibold))
+            .foregroundStyle(isOn ? .black.opacity(0.8) : .white)
+            .padding(.horizontal, 16)
+            .frame(height: 42)
+            .contentShape(.capsule)
+            .playerChrome(in: Capsule(), isOn: isOn)
+            .animation(.snappy, value: isOn)
     }
 }

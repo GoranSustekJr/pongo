@@ -27,6 +27,8 @@ extension L10n {
     static var `audioplayer`: String { tr("audioplayer") }
     static var `audioplayercaching`: String { tr("audioplayercaching") }
     static var `away`: String { tr("away") }
+    static var `bassboost`: String { tr("bassboost") }
+    static var `bassboostdescription`: String { tr("bassboostdescription") }
     static var `beforeyouneedtowakeupat`: String { tr("beforeyouneedtowakeupat") }
     static var `buypremium`: String { tr("buypremium") }
     static var `bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium`: String { tr("bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium") }
@@ -169,6 +171,7 @@ extension L10n {
     static var `madeforyou`: String { tr("madeforyou") }
     static var `makehost`: String { tr("makehost") }
     static var `maximumvolumeofthealarm`: String { tr("maximumvolumeofthealarm") }
+    static var `minuteslistened`: String { tr("minuteslistened") }
     static var `mix`: String { tr("mix") }
     static var `mixkeepsgoing`: String { tr("mixkeepsgoing") }
     static var `moodchill`: String { tr("moodchill") }
@@ -188,6 +191,8 @@ extension L10n {
     static var `nolyricsavailable`: String { tr("nolyricsavailable") }
     static var `noplainlyrics`: String { tr("noplainlyrics") }
     static var `noresults`: String { tr("noresults") }
+    static var `nostatsyet`: String { tr("nostatsyet") }
+    static var `nostatsyetdetail`: String { tr("nostatsyetdetail") }
     static var `nosynclyrics`: String { tr("nosynclyrics") }
     static var `notallowedinsession`: String { tr("notallowedinsession") }
     static var `nothingplaying`: String { tr("nothingplaying") }
@@ -215,6 +220,8 @@ extension L10n {
     static var `picklines`: String { tr("picklines") }
     static var `plain`: String { tr("plain") }
     static var `play`: String { tr("play") }
+    static var `play1`: String { tr("play1") }
+    static var `playall`: String { tr("playall") }
     static var `played`: String { tr("played") }
     static var `playingdetailsbackgroundwilldynamicallychange`: String { tr("playingdetailsbackgroundwilldynamicallychange") }
     static var `playlist`: String { tr("playlist") }
@@ -224,6 +231,8 @@ extension L10n {
     static var `playlistnamealreadyexists`: String { tr("playlistnamealreadyexists") }
     static var `playlists`: String { tr("playlists") }
     static var `playnext`: String { tr("playnext") }
+    static var `plays`: String { tr("plays") }
+    static var `playsfull`: String { tr("playsfull") }
     static var `pleaseallowaccesstophotogalery`: String { tr("pleaseallowaccesstophotogalery") }
     static var `pleasecontactinordertoenableyouraccountandusetheapp`: String { tr("pleasecontactinordertoenableyouraccountandusetheapp") }
     static var `pleaseenablepongoaccesstophotos`: String { tr("pleaseenablepongoaccesstophotos") }
@@ -324,9 +333,12 @@ extension L10n {
     static var `smartshuffle`: String { tr("smartshuffle") }
     static var `smartshuffledescription`: String { tr("smartshuffledescription") }
     static var `songs`: String { tr("songs") }
+    static var `songsplayed`: String { tr("songsplayed") }
     static var `start`: String { tr("start") }
     static var `startpage`: String { tr("startpage") }
     static var `startsession`: String { tr("startsession") }
+    static var `stats`: String { tr("stats") }
+    static var `statsdescription`: String { tr("statsdescription") }
     static var `streamwhiledownloading`: String { tr("streamwhiledownloading") }
     static var `streamwhiledownloadingdescription`: String { tr("streamwhiledownloadingdescription") }
     static var `subscribed`: String { tr("subscribed") }
@@ -340,6 +352,8 @@ extension L10n {
     static var `termsandconditions`: String { tr("termsandconditions") }
     static var `theirownrights`: String { tr("theirownrights") }
     static var `thequeuemustnotbeemptyinordertostartthealarm`: String { tr("thequeuemustnotbeemptyinordertostartthealarm") }
+    static var `topartists`: String { tr("topartists") }
+    static var `topsongs`: String { tr("topsongs") }
     static var `topten`: String { tr("topten") }
     static var `toptentracks`: String { tr("toptentracks") }
     static var `toptracks`: String { tr("toptracks") }

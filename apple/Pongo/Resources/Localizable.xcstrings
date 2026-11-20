@@ -554,6 +554,52 @@
         }
       }
     },
+    "bassboost": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bass boost"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bassverstärkung"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pojačanje basa"
+          }
+        }
+      }
+    },
+    "bassboostdescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lifts the low bass a little, so songs sound deeper"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hebt den tiefen Bass etwas an, damit Songs voller klingen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Malo pojačava duboki bas da pjesme zvuče dublje"
+          }
+        }
+      }
+    },
     "beforeyouneedtowakeupat": {
       "extractionState": "manual",
       "localizations": {
@@ -3814,6 +3860,29 @@
         }
       }
     },
+    "minuteslistened": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minutes"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minuten"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minuta"
+          }
+        }
+      }
+    },
     "mix": {
       "extractionState": "manual",
       "localizations": {
@@ -4247,6 +4316,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nema rezultata"
+          }
+        }
+      }
+    },
+    "nostatsyet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No stats yet"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch keine Statistik"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Još nema statistike"
+          }
+        }
+      }
+    },
+    "nostatsyetdetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A song counts once you've listened to 30 seconds of it."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Song zählt, sobald du 30 Sekunden davon gehört hast."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pjesma se računa nakon 30 sekundi slušanja."
           }
         }
       }
@@ -4872,6 +4987,52 @@
         }
       }
     },
+    "play1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "play"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiedergabe"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "slušanje"
+          }
+        }
+      }
+    },
+    "playall": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play all"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle abspielen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pusti sve"
+          }
+        }
+      }
+    },
     "played": {
       "extractionState": "manual",
       "localizations": {
@@ -5075,6 +5236,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pusti sljedeće"
+          }
+        }
+      }
+    },
+    "plays": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "plays"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiedergaben"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "slušanja"
+          }
+        }
+      }
+    },
+    "playsfull": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plays"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiedergaben"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slušanja"
           }
         }
       }
@@ -7379,6 +7586,29 @@
         }
       }
     },
+    "songsplayed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Songs"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Songs"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pjesama"
+          }
+        }
+      }
+    },
     "start": {
       "extractionState": "manual",
       "localizations": {
@@ -7444,6 +7674,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pokreni sesiju"
+          }
+        }
+      }
+    },
+    "stats": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stats"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statistik"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statistika"
+          }
+        }
+      }
+    },
+    "statsdescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your most played songs each month"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine meistgehörten Songs pro Monat"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje najslušanije pjesme svaki mjesec"
           }
         }
       }
@@ -7743,6 +8019,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Redoslijed ne smije biti prazan kako bi se pokrenuo alarm"
+          }
+        }
+      }
+    },
+    "topartists": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top artists"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top-Künstler"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Najslušaniji izvođači"
+          }
+        }
+      }
+    },
+    "topsongs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top songs"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top-Songs"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Najslušanije pjesme"
           }
         }
       }

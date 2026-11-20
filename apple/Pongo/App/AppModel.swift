@@ -110,6 +110,10 @@ final class AppModel {
             guard let self, !item.isMix, Int(item.stid) != nil else { return }
             Task { try? await self.database.addPlayedTrack(item.stid) }
         }
+        player.onListened = { [weak self] item, seconds, newPlay in
+            guard let self else { return }
+            Task { try? await self.database.recordListen(item.track, seconds: seconds, newPlay: newPlay) }
+        }
         #if os(iOS)
             player.setDeviceVolume = { [weak self] level in self?.volume.set(level) }
         #endif
@@ -129,6 +133,7 @@ final class AppModel {
         preferences.streamWhileDownloading = current.streamWhileDownloading
         preferences.crossfade = Double(current.crossfadeSeconds)
         preferences.gaplessAlbums = current.gaplessAlbums
+        preferences.bassBoost = current.bassBoost
         player.preferences = preferences
         L10n.selectedLanguage = current.locale
         URLCache.shared.diskCapacity = current.cacheImages ? 500_000_000 : 50_000_000

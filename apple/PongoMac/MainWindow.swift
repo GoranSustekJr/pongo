@@ -111,6 +111,7 @@ private struct Sidebar: View {
                 Label(L10n.favouritesongs, systemImage: "heart").tag(SidebarSection.favourites)
                 Label(L10n.offlinesongs, systemImage: "arrow.down.circle").tag(SidebarSection.downloads)
                 Label(L10n.sleep, systemImage: "moon.zzz").tag(SidebarSection.sleepAlarms)
+                Label(L10n.stats, systemImage: "chart.bar").tag(SidebarSection.stats)
             }
             playlistSection(L10n.onlineplaylists, kind: .online, playlists: online)
             playlistSection(L10n.offlineplaylists, kind: .offline, playlists: offline)
@@ -211,6 +212,7 @@ private struct SectionView: View {
         case .favourites: FavouritesView()
         case .downloads: DownloadsView()
         case .sleepAlarms: SleepAlarmsView()
+        case .stats: StatsView()
         case .playlists(let kind): UserPlaylistsView(kind: kind)
         case .playlist(let kind, let playlist):
             UserPlaylistView(kind: kind, playlist: playlist).id(playlist.id)
