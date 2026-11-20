@@ -24,6 +24,7 @@ struct LibraryView: View {
             }
             Section(L10n.stats) {
                 row(.stats, "chart.bar.fill", L10n.stats, L10n.statsdescription)
+                row(.topSongs, "flame.fill", L10n.top25, L10n.top25description)
             }
         }
         .listStyle(.insetGrouped)

@@ -108,3 +108,62 @@ def test_a_dropped_host_has_a_while_to_come_back(hub, monkeypatch):
         await asyncio.sleep(0.03)
         assert session.host == "guest"
     _run(scenario())
+
+
+def test_a_majority_votes_the_song_off(hub):
+    async def scenario():
+        host_inbox, a_inbox, b_inbox = [], [], []
+        session = await hub.create(_member("host", host_inbox), ["vote"])
+        await hub.join(session, _member("a", a_inbox))
+        await hub.join(session, _member("b", b_inbox))
+        await hub.handle(session, "host", {"type": "playback", "entry": "e1"})
+        await hub.handle(session, "a", {"type": "vote"})
+        assert a_inbox[-1] == {"type": "votes", "entry": "e1", "voters": ["a"], "needed": 2}
+        assert not any(m["type"] == "request" for m in host_inbox)
+        await hub.handle(session, "b", {"type": "vote"})
+        assert [m for m in host_inbox if m["type"] == "request"][-1]["request"] == {"next": {}}
+        # A new song starts the count again
+        await hub.handle(session, "a", {"type": "vote"})
+        await hub.handle(session, "host", {"type": "playback", "entry": "e2"})
+        assert session.votes == set()
+    _run(scenario())
+
+
+def test_votes_need_the_right(hub):
+    async def scenario():
+        guest_inbox = []
+        session = await hub.create(_member("host", []))
+        await hub.join(session, _member("guest", guest_inbox))
+        await hub.handle(session, "host", {"type": "playback", "entry": "e1"})
+        await hub.handle(session, "guest", {"type": "vote"})
+        assert guest_inbox[-1] == {"type": "denied", "kind": "vote"}
+    _run(scenario())
+
+
+def test_reactions_go_to_the_others_but_not_too_often(hub):
+    async def scenario():
+        host_inbox = []
+        session = await hub.create(_member("host", host_inbox))
+        await hub.join(session, _member("guest", []))
+        await hub.handle(session, "guest", {"type": "react", "emoji": "🔥"})
+        await hub.handle(session, "guest", {"type": "react", "emoji": "🔥"})
+        await hub.handle(session, "guest", {"type": "react", "emoji": "💩"})
+        reactions = [m for m in host_inbox if m["type"] == "reaction"]
+        assert reactions == [{"type": "reaction", "from": "guest", "emoji": "🔥"}]
+    _run(scenario())
+
+
+def test_guests_suggest_songs_and_hear_back(hub):
+    async def scenario():
+        host_inbox, guest_inbox = [], []
+        session = await hub.create(_member("host", host_inbox))
+        await hub.join(session, _member("guest", guest_inbox))
+        add = {"add": {"track": {"id": "1"}, "next": False}}
+        await hub.handle(session, "guest", {"type": "suggest", "request": add})
+        assert host_inbox[-1] == {"type": "suggestion", "from": "guest", "request": add}
+        # Only songs to add can be suggested
+        await hub.handle(session, "guest", {"type": "suggest", "request": {"clearUpcoming": {}}})
+        assert guest_inbox[-1] == {"type": "denied", "kind": "suggest"}
+        await hub.handle(session, "host", {"type": "answer", "to": "guest", "accepted": True, "title": "One"})
+        assert guest_inbox[-1] == {"type": "answered", "accepted": True, "title": "One"}
+    _run(scenario())

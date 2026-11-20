@@ -22,9 +22,20 @@ struct RootView: View {
         .environment(\.usesLiquidGlass, settings.useLiquidGlass)
         // A tap on the live lyrics
         .onOpenURL { url in
-            guard url == PongoLinks.lyrics, model.player.current != nil else { return }
-            model.nowPlaying.lyricsOn = true
-            model.router.showsPlayer = true
+            if model.openJoinLink(url) { return }
+            switch url {
+            case PongoLinks.lyrics where model.player.current != nil:
+                model.nowPlaying.lyricsOn = true
+                model.router.showsPlayer = true
+            case PongoLinks.player where model.player.current != nil:
+                model.router.showsPlayer = true
+            case PongoLinks.topSongs:
+                model.router.showsPlayer = false
+                model.router.tab = .library
+                model.router.library = [.topSongs]
+            default:
+                break
+            }
         }
         .onAppear {
             toasts.install(model: model)
@@ -88,8 +99,17 @@ struct MainTabView: View {
             MiniPlayer()
                 .matchedTransitionSource(id: "player", in: playerTransition)
         }
+        .overlay { ReactionsOverlay() }
+        // Joining from a link, with no player open to show the session in
+        .sheet(isPresented: Binding { model.showsListenTogether && !model.router.showsPlayer } set: { model.showsListenTogether = $0 }) {
+            ListenTogetherView()
+        }
+        .sheet(item: Binding { model.listening.recap } set: { if $0 == nil { model.listening.dismissRecap() } }) { recap in
+            SessionRecapView(recap: recap)
+        }
         .fullScreenCover(isPresented: $router.showsPlayer) {
             NowPlayingView()
+                .overlay { ReactionsOverlay() }
                 .navigationTransition(.zoom(sourceID: "player", in: playerTransition))
         }
         // The player shows the picker itself while it's open

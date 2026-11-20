@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>PongoAppGroup</key>
+	<string>$(DEVELOPMENT_TEAM).$(PONGO_BUNDLE_ID)</string>
 	<key>PongoServerURL</key>
 	<string>$(PONGO_SERVER_URL)</string>
 	<key>GoogleClientID</key>
@@ -11,6 +13,17 @@
 		<string>en</string>
 		<string>de</string>
 		<string>hr</string>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Pongo</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>pongo</string>
+			</array>
+		</dict>
 	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>

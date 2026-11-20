@@ -89,6 +89,19 @@ public final class AuthRepository: SessionTokens {
         return true
     }
 
+    /// The signed in account's user ID, from its access token.
+    public var accountID: String? {
+        guard let token = currentAccessToken else { return nil }
+        let parts = token.split(separator: ".")
+        guard parts.count == 3 else { return nil }
+        var payload = parts[1].replacingOccurrences(of: "-", with: "+").replacingOccurrences(of: "_", with: "/")
+        payload += String(repeating: "=", count: (4 - payload.count % 4) % 4)
+        guard let data = Data(base64Encoded: payload),
+            let claims = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+        else { return nil }
+        return claims["uid"] as? String
+    }
+
     /// Signs the user out on this device.
     public func signOut() {
         setSession(signedIn: false, accessToken: nil, refreshToken: nil)

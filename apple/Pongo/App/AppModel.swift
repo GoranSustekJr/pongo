@@ -41,6 +41,9 @@ final class AppModel {
     #if os(iOS)
         @ObservationIgnored private var liveLyrics: LiveLyricsController?
     #endif
+    @ObservationIgnored private var widgets: WidgetPublisher?
+    /// The model of the running app, for Siri and Shortcuts.
+    @ObservationIgnored nonisolated(unsafe) static weak var current: AppModel?
     #if os(iOS)
         let volume = DeviceVolume()
     #endif
@@ -100,19 +103,26 @@ final class AppModel {
             liveLyrics = LiveLyricsController(model: self)
             liveLyrics?.start()
         #endif
+        widgets = WidgetPublisher(model: self)
+        widgets?.start()
+        Self.current = self
     }
 
     private func configurePlayer() {
         applyPreferences()
         player.onMessage = { [weak self] message in self?.show(message) }
         listening.onNotice = { [weak self] notice in self?.show(notice) }
+        listening.delay = UserDefaults.standard.double(forKey: ListeningSession.delayKey)
         player.onTrackStarted = { [weak self] item in
             guard let self, !item.isMix, Int(item.stid) != nil else { return }
             Task { try? await self.database.addPlayedTrack(item.stid) }
         }
         player.onListened = { [weak self] item, seconds, newPlay in
             guard let self else { return }
-            Task { try? await self.database.recordListen(item.track, seconds: seconds, newPlay: newPlay) }
+            Task {
+                try? await self.database.recordListen(item.track, seconds: seconds, newPlay: newPlay)
+                if newPlay { self.widgets?.statsChanged() }
+            }
         }
         #if os(iOS)
             player.setDeviceVolume = { [weak self] level in self?.volume.set(level) }
@@ -143,6 +153,12 @@ final class AppModel {
     /// another account starts afresh.
     func sessionChanged() async {
         if auth.isSignedIn {
+            // A library left by another account isn't this one's
+            if let account = auth.accountID {
+                let owner = try? await database.libraryOwner()
+                if let owner, owner != account { await clearLibrary() }
+                try? await database.setLibraryOwner(account)
+            }
             await sync.start()
         } else {
             // A session is someone's own; another account starts without it
@@ -150,9 +166,23 @@ final class AppModel {
             #if DEBUG
                 if DemoMode.isOn { return }
             #endif
-            await sync.reset()
             player.halt()
+            await clearLibrary()
         }
+    }
+
+    /// Sends the last changes to the account, then signs out.
+    func signOut() async {
+        await sync.sync()
+        auth.signOut()
+    }
+
+    /// Forgets the account's library and what was synced of it.
+    private func clearLibrary() async {
+        await sync.reset()
+        try? await database.clearLibrary()
+        libraryChanged()
+        widgets?.statsChanged()
     }
 
     // MARK: - The library
@@ -281,7 +311,14 @@ final class AppModel {
         case .full: messages.show(L10n.sessionfull, systemImage: "person.2.slash", isError: true)
         case .connectionLost: messages.show(L10n.sessionconnectionlost, systemImage: "wifi.slash", isError: true)
         case .nowHosting: messages.show(L10n.nowhosting, systemImage: "crown")
+        case .voted(let count, let needed):
+            messages.show("\(L10n.votedtoskip) · \(count)/\(needed)", systemImage: "forward")
         case .hostChanged(let name): messages.show("\(L10n.hostisnow) \(name)", systemImage: "crown")
+        case .suggested(let title): messages.show(L10n.suggestedtohost, detail: title, systemImage: "lightbulb")
+        case .suggestionAnswered(let title, let accepted):
+            messages.show(
+                accepted ? L10n.suggestionadded : L10n.suggestiondeclined, detail: title,
+                systemImage: accepted ? "checkmark.circle" : "xmark.circle")
         }
     }
 }

@@ -36,6 +36,18 @@ final class LiveLyricsController {
             center.addObserver(forName: .pongoSkipToNext, object: nil, queue: .main) { [weak self] _ in
                 MainActor.assumeIsolated { self?.model.player.skipToNext() }
             },
+            center.addObserver(forName: .pongoLyricsLine, object: nil, queue: .main) { [weak self] note in
+                let forward = note.userInfo?["forward"] as? Bool ?? true
+                MainActor.assumeIsolated { self?.jumpLine(forward: forward) }
+            },
+            center.addObserver(forName: .pongoLyricsTiming, object: nil, queue: .main) { [weak self] note in
+                let earlier = note.userInfo?["earlier"] as? Bool ?? true
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    if earlier { self.model.nowPlaying.increaseDelay() } else { self.model.nowPlaying.decreaseDelay() }
+                    Task { await self.refresh() }
+                }
+            },
         ]
         // Lines change at most a few times a second, as often as the player
         // reports its position
@@ -49,7 +61,8 @@ final class LiveLyricsController {
 
     private func refresh() async {
         let player = model.player
-        guard model.settings.settings.showLiveLyrics, let item = player.current,
+        // Only while listening together, where the lock screen shows what everyone hears
+        guard model.settings.settings.showLiveLyrics, model.listening.isActive || isDemo, let item = player.current,
             ActivityAuthorizationInfo().areActivitiesEnabled
         else {
             await end()
@@ -60,7 +73,8 @@ final class LiveLyricsController {
         let (line, next) = lines()
         let state = LyricsActivityAttributes.ContentState(
             title: item.track.name, artist: item.track.artistNames, line: line, nextLine: next,
-            isPlaying: player.isPlaying, cover: look.cover, background: look.background, accent: look.accent)
+            isPlaying: player.isPlaying, cover: look.cover, background: look.background, accent: look.accent,
+            delay: model.nowPlaying.syncedLines.isEmpty ? nil : model.nowPlaying.delay)
         guard state != shown else { return }
 
         if let activity, activity.activityState == .active {
@@ -89,6 +103,28 @@ final class LiveLyricsController {
         self.activity = nil
         shown = nil
         await activity.end(nil, dismissalPolicy: .immediate)
+    }
+
+    /// Seeks to the next line, or back to the start of the line being sung,
+    /// or to the one before it when that just started.
+    private func jumpLine(forward: Bool) {
+        let state = model.nowPlaying
+        let lines = state.syncedLines
+        guard !lines.isEmpty else { return }
+        let shift = Double(state.delay) / 1000
+        let position = model.player.progress.position + shift + 0.25
+        let index = lines.lastIndex { $0.time <= position }
+        let target: Int
+        if forward {
+            target = (index ?? -1) + 1
+        } else if let index {
+            target = position - lines[index].time > 2 ? index : max(index - 1, 0)
+        } else {
+            target = 0
+        }
+        guard lines.indices.contains(target) else { return }
+        model.player.seek(to: max(lines[target].time - shift, 0))
+        Task { await refresh() }
     }
 
     /// The line being sung and the one after it, timed like the player's

@@ -623,6 +623,29 @@
         }
       }
     },
+    "biggestmonth": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your biggest month"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein stärkster Monat"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoj najjači mjesec"
+          }
+        }
+      }
+    },
     "buypremium": {
       "extractionState": "manual",
       "localizations": {
@@ -1723,6 +1746,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Podaci"
+          }
+        }
+      }
+    },
+    "decline": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decline"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ablehnen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odbij"
           }
         }
       }
@@ -2831,6 +2877,52 @@
         }
       }
     },
+    "headphonedelay": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Headphone delay"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopfhörer-Verzögerung"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kašnjenje slušalica"
+          }
+        }
+      }
+    },
+    "headphonedelaydescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you hear the music later than your friends, as Bluetooth headphones often do, move this right until you're in time."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn du die Musik später hörst als deine Freunde, wie oft mit Bluetooth-Kopfhörern, schieb dies nach rechts, bis es passt."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ako glazbu čuješ kasnije od prijatelja, što se često događa s Bluetooth slušalicama, pomakni ovo udesno dok ne budete usklađeni."
+          }
+        }
+      }
+    },
     "hidden": {
       "extractionState": "manual",
       "localizations": {
@@ -3883,6 +3975,29 @@
         }
       }
     },
+    "minutespermonth": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minutes per month"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minuten pro Monat"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minuta po mjesecu"
+          }
+        }
+      }
+    },
     "mix": {
       "extractionState": "manual",
       "localizations": {
@@ -3925,6 +4040,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zatim se miks nastavlja"
+          }
+        }
+      }
+    },
+    "month": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Month"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monat"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mjesec"
           }
         }
       }
@@ -6505,6 +6643,29 @@
         }
       }
     },
+    "rightvote": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vote to skip"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zum Überspringen abstimmen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glasati za preskakanje"
+          }
+        }
+      }
+    },
     "sameaseveryone": {
       "extractionState": "manual",
       "localizations": {
@@ -6570,6 +6731,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Spremi svoje podatke"
+          }
+        }
+      }
+    },
+    "scantojoin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan with a phone's camera to join"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit der Handykamera scannen, um beizutreten"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skeniraj kamerom mobitela za pridruživanje"
           }
         }
       }
@@ -6892,6 +7076,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nema sesije s tim kodom"
+          }
+        }
+      }
+    },
+    "sessionrecap": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Session recap"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sitzungsrückblick"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregled sesije"
           }
         }
       }
@@ -7885,6 +8092,98 @@
         }
       }
     },
+    "suggestedsongs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggested songs"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorgeschlagene Songs"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Predložene pjesme"
+          }
+        }
+      }
+    },
+    "suggestedtohost": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggested to the host"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dem Host vorgeschlagen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Predloženo domaćinu"
+          }
+        }
+      }
+    },
+    "suggestionadded": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your suggestion was added"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Vorschlag wurde hinzugefügt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoj prijedlog je dodan"
+          }
+        }
+      }
+    },
+    "suggestiondeclined": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your suggestion wasn't added"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Vorschlag wurde nicht hinzugefügt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoj prijedlog nije dodan"
+          }
+        }
+      }
+    },
     "sync": {
       "extractionState": "manual",
       "localizations": {
@@ -8019,6 +8318,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Redoslijed ne smije biti prazan kako bi se pokrenuo alarm"
+          }
+        }
+      }
+    },
+    "top25": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top 25"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top 25"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Top 25"
+          }
+        }
+      }
+    },
+    "top25description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your most played songs this month, always up to date"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine meistgehörten Songs dieses Monats, immer aktuell"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoje najslušanije pjesme ovog mjeseca, uvijek ažurno"
           }
         }
       }
@@ -8690,6 +9035,29 @@
         }
       }
     },
+    "votedtoskip": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voted to skip"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Für Überspringen gestimmt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glasao/la za preskakanje"
+          }
+        }
+      }
+    },
     "wanttohelpoutlyrics": {
       "extractionState": "manual",
       "localizations": {
@@ -8732,6 +9100,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Upozorenje"
+          }
+        }
+      }
+    },
+    "with": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S"
+          }
+        }
+      }
+    },
+    "year": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Year"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jahr"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Godina"
           }
         }
       }

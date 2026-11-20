@@ -28,7 +28,11 @@ struct QueuePanel: View {
         ScrollViewReader { proxy in
             List {
                 if model.listening.isActive {
-                    ListeningBanner { model.showsListenTogether = true }
+                    VStack(spacing: 6) {
+                        ListeningBanner { model.showsListenTogether = true }
+                        if model.listening.state == .live { SessionActions() }
+                        if model.listening.isHost, !model.listening.suggestions.isEmpty { SuggestionsList() }
+                    }
                         .listRowInsets(EdgeInsets(top: 0, leading: 15, bottom: 6, trailing: 15))
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)

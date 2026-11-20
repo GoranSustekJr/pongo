@@ -30,6 +30,7 @@ extension L10n {
     static var `bassboost`: String { tr("bassboost") }
     static var `bassboostdescription`: String { tr("bassboostdescription") }
     static var `beforeyouneedtowakeupat`: String { tr("beforeyouneedtowakeupat") }
+    static var `biggestmonth`: String { tr("biggestmonth") }
     static var `buypremium`: String { tr("buypremium") }
     static var `bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium`: String { tr("bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium") }
     static var `bysigninginyou`: String { tr("bysigninginyou") }
@@ -78,6 +79,7 @@ extension L10n {
     static var `dailymix`: String { tr("dailymix") }
     static var `darkmode`: String { tr("darkmode") }
     static var `data`: String { tr("data") }
+    static var `decline`: String { tr("decline") }
     static var `delete`: String { tr("delete") }
     static var `deleteaccount`: String { tr("deleteaccount") }
     static var `deleteyouraccount`: String { tr("deleteyouraccount") }
@@ -126,6 +128,8 @@ extension L10n {
     static var `halt`: String { tr("halt") }
     static var `haltmusicplayer`: String { tr("haltmusicplayer") }
     static var `haltmusicplayerbody`: String { tr("haltmusicplayerbody") }
+    static var `headphonedelay`: String { tr("headphonedelay") }
+    static var `headphonedelaydescription`: String { tr("headphonedelaydescription") }
     static var `hidden`: String { tr("hidden") }
     static var `hide`: String { tr("hide") }
     static var `home`: String { tr("home") }
@@ -172,8 +176,10 @@ extension L10n {
     static var `makehost`: String { tr("makehost") }
     static var `maximumvolumeofthealarm`: String { tr("maximumvolumeofthealarm") }
     static var `minuteslistened`: String { tr("minuteslistened") }
+    static var `minutespermonth`: String { tr("minutespermonth") }
     static var `mix`: String { tr("mix") }
     static var `mixkeepsgoing`: String { tr("mixkeepsgoing") }
+    static var `month`: String { tr("month") }
     static var `moodchill`: String { tr("moodchill") }
     static var `moodenergetic`: String { tr("moodenergetic") }
     static var `moodhappy`: String { tr("moodhappy") }
@@ -286,9 +292,11 @@ extension L10n {
     static var `rightplayback`: String { tr("rightplayback") }
     static var `righttakeover`: String { tr("righttakeover") }
     static var `righttextalign`: String { tr("righttextalign") }
+    static var `rightvote`: String { tr("rightvote") }
     static var `sameaseveryone`: String { tr("sameaseveryone") }
     static var `saveasplaylist`: String { tr("saveasplaylist") }
     static var `saveyourdata`: String { tr("saveyourdata") }
+    static var `scantojoin`: String { tr("scantojoin") }
     static var `search`: String { tr("search") }
     static var `searchmarket`: String { tr("searchmarket") }
     static var `searchpreferences`: String { tr("searchpreferences") }
@@ -303,6 +311,7 @@ extension L10n {
     static var `sessionconnectionlost`: String { tr("sessionconnectionlost") }
     static var `sessionfull`: String { tr("sessionfull") }
     static var `sessionnotfound`: String { tr("sessionnotfound") }
+    static var `sessionrecap`: String { tr("sessionrecap") }
     static var `settings`: String { tr("settings") }
     static var `sharelyrics`: String { tr("sharelyrics") }
     static var `sharesessioncode`: String { tr("sharesessioncode") }
@@ -346,12 +355,18 @@ extension L10n {
     static var `successfullydownloadedthetrack`: String { tr("successfullydownloadedthetrack") }
     static var `successfullysavedsynctimedelay`: String { tr("successfullysavedsynctimedelay") }
     static var `suggested`: String { tr("suggested") }
+    static var `suggestedsongs`: String { tr("suggestedsongs") }
+    static var `suggestedtohost`: String { tr("suggestedtohost") }
+    static var `suggestionadded`: String { tr("suggestionadded") }
+    static var `suggestiondeclined`: String { tr("suggestiondeclined") }
     static var `sync`: String { tr("sync") }
     static var `synctimedelay`: String { tr("synctimedelay") }
     static var `taptochange`: String { tr("taptochange") }
     static var `termsandconditions`: String { tr("termsandconditions") }
     static var `theirownrights`: String { tr("theirownrights") }
     static var `thequeuemustnotbeemptyinordertostartthealarm`: String { tr("thequeuemustnotbeemptyinordertostartthealarm") }
+    static var `top25`: String { tr("top25") }
+    static var `top25description`: String { tr("top25description") }
     static var `topartists`: String { tr("topartists") }
     static var `topsongs`: String { tr("topsongs") }
     static var `topten`: String { tr("topten") }
@@ -381,8 +396,11 @@ extension L10n {
     static var `volume`: String { tr("volume") }
     static var `volumedown`: String { tr("volumedown") }
     static var `volumeup`: String { tr("volumeup") }
+    static var `votedtoskip`: String { tr("votedtoskip") }
     static var `wanttohelpoutlyrics`: String { tr("wanttohelpoutlyrics") }
     static var `warning`: String { tr("warning") }
+    static var `with`: String { tr("with") }
+    static var `year`: String { tr("year") }
     static var `you`: String { tr("you") }
     static var `youcan`: String { tr("youcan") }
     static var `yourmoods`: String { tr("yourmoods") }

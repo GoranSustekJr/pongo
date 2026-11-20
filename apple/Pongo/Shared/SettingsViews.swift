@@ -111,7 +111,7 @@ struct ProfileView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { profile = try? await model.auth.fetchProfile() }
         .confirmationDialog(L10n.signout, isPresented: $confirmSignOut) {
-            Button(L10n.signout, role: .destructive) { model.auth.signOut() }
+            Button(L10n.signout, role: .destructive) { Task { await model.signOut() } }
         }
         .alert(L10n.deleteyouraccount, isPresented: $confirmDelete) {
             Button(L10n.cancel, role: .cancel) {}

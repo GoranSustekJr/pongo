@@ -98,6 +98,9 @@ struct ListenTogetherView: View {
         Section {
             if let code = session.code {
                 VStack(spacing: 6) {
+                    if let link = session.joinLink, session.isHost {
+                        JoinCode(link: link).padding(.bottom, 6)
+                    }
                     Text(code)
                         .font(.system(size: 40, weight: .bold, design: .monospaced))
                         .tracking(6)
@@ -110,7 +113,7 @@ struct ListenTogetherView: View {
                             copyToPasteboard(code)
                             Haptics.tap()
                         }
-                        ShareLink(item: "\(L10n.listentogether) · Pongo: \(code)") {
+                        ShareLink(item: session.joinLink ?? URL(string: "pongo://")!, message: Text("\(L10n.listentogether) · Pongo: \(code)")) {
                             Image(systemName: "square.and.arrow.up")
                         }
                     }
@@ -133,8 +136,25 @@ struct ListenTogetherView: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
+            if session.state == .live {
+                SessionActions(onArtwork: false)
+            }
         }
         .groupedRowBackground()
+        if session.isHost, !session.suggestions.isEmpty {
+            Section {
+                SuggestionsList().listRowInsets(EdgeInsets())
+            }
+            .listRowBackground(Color.clear)
+        }
+        if session.state == .live, !session.isHost {
+            Section {
+                DelaySlider()
+            } footer: {
+                Text(L10n.headphonedelaydescription)
+            }
+            .groupedRowBackground()
+        }
         if session.state == .live || session.code != nil {
             if session.isHost {
                 Section(L10n.guestscan) {
@@ -379,6 +399,7 @@ extension ListenRight {
         case .manage: L10n.rightmanage
         case .modes: L10n.rightmodes
         case .takeover: L10n.righttakeover
+        case .vote: L10n.rightvote
         }
     }
 
@@ -389,6 +410,7 @@ extension ListenRight {
         case .manage: "arrow.up.arrow.down"
         case .modes: "shuffle"
         case .takeover: "music.note.list"
+        case .vote: "forward"
         }
     }
 }
@@ -417,4 +439,138 @@ extension ListenPreset {
         case .coPilot: "person.2"
         }
     }
+}
+
+/// Emoji to react with and, for guests who may, a vote to skip the song.
+struct SessionActions: View {
+    @Environment(AppModel.self) private var model
+    /// Light text, for over the player's artwork.
+    var onArtwork = true
+
+    var body: some View {
+        let session = model.listening
+        // Guests who may vote, and the host while votes come in, who can skip at once
+        let canVote = session.isHost ? session.skipVotes != nil : session.rights.contains(.vote)
+        HStack(spacing: 6) {
+            ForEach(ListeningSession.reactionEmoji, id: \.self) { emoji in
+                Button {
+                    Haptics.tap()
+                    session.react(emoji)
+                } label: {
+                    Text(emoji)
+                        .font(.system(size: 22))
+                        .frame(maxWidth: .infinity, minHeight: 40)
+                        .contentShape(.rect)
+                }
+                .buttonStyle(.press)
+            }
+            if canVote {
+                let votes = session.skipVotes
+                let voted = !session.isHost && votes?.voters.contains(session.userID ?? "") == true
+                Button {
+                    Haptics.tap()
+                    if session.isHost { model.player.skipToNext() } else { session.voteToSkip() }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: voted ? "forward.fill" : "forward")
+                        if let votes {
+                            Text("\(votes.voters.count)/\(votes.needed)").monospacedDigit()
+                        }
+                    }
+                    .font(.system(size: 14, weight: .semibold))
+                    .padding(.horizontal, 12)
+                    .frame(height: 34)
+                    .foregroundStyle(onArtwork ? Color.white : Color.primary)
+                    .background((onArtwork ? Color.white : Color.primary).opacity(voted ? 0.3 : 0.12), in: .capsule)
+                }
+                .buttonStyle(.press)
+                .help(L10n.rightvote)
+                .accessibilityLabel(L10n.rightvote)
+                .disabled(voted)
+            }
+        }
+    }
+}
+
+/// Reactions floating up from the bottom corner and fading, with who sent
+/// them.
+struct ReactionsOverlay: View {
+    @Environment(AppModel.self) private var model
+
+    var body: some View {
+        let session = model.listening
+        ZStack(alignment: .bottomTrailing) {
+            ForEach(session.reactions) { reaction in
+                FloatingReaction(reaction: reaction, name: name(of: reaction, in: session))
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+        .padding(.trailing, 30)
+        .padding(.bottom, 160)
+        .allowsHitTesting(false)
+    }
+
+    private func name(of reaction: ListenReaction, in session: ListeningSession) -> String {
+        if reaction.from == session.userID { return L10n.you }
+        return session.listener(reaction.from)?.name.split(separator: " ").first.map(String.init) ?? ""
+    }
+}
+
+private struct FloatingReaction: View {
+    let reaction: ListenReaction
+    let name: String
+    @State private var risen = false
+
+    var body: some View {
+        // Each one drifts its own way, from its ID
+        let drift = CGFloat(abs(reaction.id.hashValue % 90)) - 45
+        VStack(spacing: 2) {
+            Text(reaction.emoji).font(.system(size: 40))
+            if !name.isEmpty {
+                Text(name)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 2)
+                    .background(.black.opacity(0.35), in: .capsule)
+            }
+        }
+        .scaleEffect(risen ? 1.15 : 0.4)
+        .offset(x: risen ? drift : 0, y: risen ? -280 : 0)
+        .opacity(risen ? 0 : 1)
+        .onAppear {
+            withAnimation(.easeOut(duration: 2.8)) { risen = true }
+        }
+    }
+}
+
+/// How far ahead of the host the user's player runs, for headphones that
+/// play late.
+private struct DelaySlider: View {
+    @Environment(AppModel.self) private var model
+
+    var body: some View {
+        let session = model.listening
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Label(L10n.headphonedelay, systemImage: "headphones")
+                Spacer()
+                Text("\(Int((session.delay * 1000).rounded())) ms")
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+            }
+            Slider(
+                value: Binding {
+                    session.delay
+                } set: { delay in
+                    session.delay = (delay * 20).rounded() / 20
+                    UserDefaults.standard.set(session.delay, forKey: ListeningSession.delayKey)
+                }, in: -0.5...0.5)
+        }
+    }
+}
+
+extension ListeningSession {
+    /// Where the headphone delay is kept between sessions.
+    static let delayKey = "listenTogetherDelay"
 }

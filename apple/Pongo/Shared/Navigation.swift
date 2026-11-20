@@ -19,6 +19,7 @@ enum Route: Hashable {
     case userPlaylist(PlaylistKind, UserPlaylist)
     case sleepAlarms
     case stats
+    case topSongs
     case profile
     case preferences
     case about
@@ -77,7 +78,7 @@ final class Router {
 #if os(macOS)
     /// The Mac window's sidebar.
     enum SidebarSection: Hashable {
-        case home, search, favourites, downloads, sleepAlarms, stats
+        case home, search, favourites, downloads, sleepAlarms, stats, topSongs
         case playlists(PlaylistKind)
         case playlist(PlaylistKind, UserPlaylist)
     }
@@ -103,6 +104,7 @@ struct RouteView: View {
         case .userPlaylist(let kind, let playlist): UserPlaylistView(kind: kind, playlist: playlist)
         case .sleepAlarms: SleepAlarmsView()
         case .stats: StatsView()
+        case .topSongs: TopSongsView()
         case .profile: ProfileView()
         case .preferences: PreferencesView()
         case .about: AboutView()

@@ -30,6 +30,24 @@ struct MacRootView: View {
             #endif
         }
         .task(id: model.auth.isSignedIn) { await model.sessionChanged() }
+        .onOpenURL { url in
+            if model.openJoinLink(url) { return }
+            switch url {
+            case PongoLinks.player where model.player.current != nil:
+                model.router.showsPlayer = true
+            case PongoLinks.lyrics where model.player.current != nil:
+                model.nowPlaying.lyricsOn = true
+                model.router.showsPlayer = true
+            case PongoLinks.topSongs:
+                model.router.showsPlayer = false
+                model.router.section = .topSongs
+            default:
+                break
+            }
+        }
+        .sheet(item: Binding { model.listening.recap } set: { if $0 == nil { model.listening.dismissRecap() } }) { recap in
+            SessionRecapView(recap: recap)
+        }
         .onChange(of: model.settings.settings) { model.applyPreferences() }
         .onChange(of: model.sync.revision) { Task { await model.reloadLibraryIDs() } }
         .onChange(of: model.auth.disabledCount) {

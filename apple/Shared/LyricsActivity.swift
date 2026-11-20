@@ -21,6 +21,8 @@ nonisolated struct LyricsActivityAttributes: ActivityAttributes {
         /// one for highlights.
         var background: [Double]
         var accent: [Double]
+        /// How many milliseconds earlier the lyrics show than they're timed.
+        var delay: Int? = nil
     }
 }
 
@@ -51,12 +53,55 @@ nonisolated struct SkipToNextIntent: LiveActivityIntent {
     }
 }
 
-extension Notification.Name {
-    nonisolated static let pongoTogglePlayback = Notification.Name("PongoTogglePlayback")
-    nonisolated static let pongoSkipToNext = Notification.Name("PongoSkipToNext")
+/// Jumps to the start of the next lyrics line, or back to the previous one.
+struct LyricsLineIntent: LiveActivityIntent {
+    static let title: LocalizedStringResource = "Jump to a lyrics line"
+    static let isDiscoverable = false
+
+    @Parameter(title: "Forward")
+    var forward: Bool
+
+    init() {}
+
+    init(forward: Bool) {
+        self.forward = forward
+    }
+
+    func perform() async throws -> some IntentResult {
+        let forward = forward
+        await MainActor.run {
+            NotificationCenter.default.post(name: .pongoLyricsLine, object: nil, userInfo: ["forward": forward])
+        }
+        return .result()
+    }
 }
 
-/// The link a tap on the activity opens: the player with lyrics.
-nonisolated enum PongoLinks {
-    static let lyrics = URL(string: "pongo://lyrics")!
+/// Shows the lyrics a quarter second earlier or later, for this song.
+struct LyricsTimingIntent: LiveActivityIntent {
+    static let title: LocalizedStringResource = "Adjust the lyrics timing"
+    static let isDiscoverable = false
+
+    @Parameter(title: "Earlier")
+    var earlier: Bool
+
+    init() {}
+
+    init(earlier: Bool) {
+        self.earlier = earlier
+    }
+
+    func perform() async throws -> some IntentResult {
+        let earlier = earlier
+        await MainActor.run {
+            NotificationCenter.default.post(name: .pongoLyricsTiming, object: nil, userInfo: ["earlier": earlier])
+        }
+        return .result()
+    }
+}
+
+extension Notification.Name {
+    nonisolated static let pongoLyricsLine = Notification.Name("PongoLyricsLine")
+    nonisolated static let pongoLyricsTiming = Notification.Name("PongoLyricsTiming")
+    nonisolated static let pongoTogglePlayback = Notification.Name("PongoTogglePlayback")
+    nonisolated static let pongoSkipToNext = Notification.Name("PongoSkipToNext")
 }

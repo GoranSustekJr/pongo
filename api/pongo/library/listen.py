@@ -20,8 +20,16 @@ from typing import Awaitable, Callable
 log = logging.getLogger(__name__)
 
 # What a host can let guests do: add songs, play/pause/skip/seek, remove and reorder
-# songs, change shuffle and repeat, and start something else in place of the queue
-RIGHTS = ("add", "playback", "manage", "modes", "takeover")
+# songs, change shuffle and repeat, start something else in place of the queue, and
+# vote to skip the song playing
+RIGHTS = ("add", "playback", "manage", "modes", "takeover", "vote")
+
+# The reactions listeners can send, which float up on everyone's player
+REACTIONS = ("🔥", "❤️", "😂", "😮", "🙌", "💃")
+# Seconds between one listener's reactions
+REACTION_GAP = 0.4
+# Seconds between one guest's song suggestions
+SUGGESTION_GAP = 1.0
 
 # The right each request needs, by its kind
 NEEDS = {
@@ -70,6 +78,16 @@ class Session:
     playback: dict | None = None
     # Waits for someone who dropped, then moves on without them
     timers: dict[str, asyncio.Task] = field(default_factory=dict)
+    # Who voted to skip the entry playing
+    votes: set[str] = field(default_factory=set)
+    voted_entry: str | None = None
+    # When each listener last reacted, and last suggested a song
+    reacted: dict[str, float] = field(default_factory=dict)
+    suggested: dict[str, float] = field(default_factory=dict)
+
+    def votes_needed(self) -> int:
+        """More than half of those listening, the host included."""
+        return len(self.present()) // 2 + 1
 
     def rights_of(self, uid: str) -> set[str]:
         if uid == self.host:
@@ -158,6 +176,23 @@ class Hub:
             else:
                 session.playback = message
             await self._broadcast(session, message, skip=uid)
+            # Votes are for the entry they were cast on
+            if kind == "playback" and session.votes and message.get("entry") != session.voted_entry:
+                session.votes.clear()
+                await self._broadcast(session, self._votes(session))
+        elif kind == "vote":
+            await self._vote(session, member)
+        elif kind == "react":
+            await self._react(session, member, message.get("emoji"))
+        elif kind == "suggest" and uid != session.host:
+            await self._suggest(session, member, message.get("request"))
+        elif kind == "answer" and uid == session.host:
+            guest = session.members.get(str(message.get("to")))
+            if guest is not None and guest.uid != uid:
+                await self._send(guest, {
+                    "type": "answered", "accepted": message.get("accepted") is True,
+                    "title": str(message.get("title") or "")[:200],
+                })
         elif kind == "request" and uid != session.host:
             await self._request(session, member, message.get("request"))
         elif kind == "rights" and uid == session.host:
@@ -184,6 +219,47 @@ class Hub:
             await self._send(member, {"type": "denied", "kind": kind})
             return
         await self._send(host, {"type": "request", "from": member.uid, "request": request})
+
+    @staticmethod
+    def _votes(session: Session) -> dict:
+        return {
+            "type": "votes", "entry": session.voted_entry, "voters": sorted(session.votes),
+            "needed": session.votes_needed(),
+        }
+
+    async def _vote(self, session: Session, member: Member) -> None:
+        entry = (session.playback or {}).get("entry")
+        host = session.members.get(session.host)
+        if entry is None or "vote" not in session.rights_of(member.uid) or host is None or not host.present:
+            await self._send(member, {"type": "denied", "kind": "vote"})
+            return
+        if entry != session.voted_entry:
+            session.votes.clear()
+            session.voted_entry = entry
+        session.votes.add(member.uid)
+        if len(session.votes) >= session.votes_needed():
+            session.votes.clear()
+            await self._send(host, {"type": "request", "from": member.uid, "request": {"next": {}}})
+        await self._broadcast(session, self._votes(session))
+
+    async def _suggest(self, session: Session, member: Member, request) -> None:
+        """Passes a song a guest would like added to the host, who decides."""
+        now = time.monotonic()
+        host = session.members.get(session.host)
+        if not isinstance(request, dict) or list(request) != ["add"] or host is None or not host.present:
+            await self._send(member, {"type": "denied", "kind": "suggest"})
+            return
+        if now - session.suggested.get(member.uid, 0) < SUGGESTION_GAP:
+            return
+        session.suggested[member.uid] = now
+        await self._send(host, {"type": "suggestion", "from": member.uid, "request": request})
+
+    async def _react(self, session: Session, member: Member, emoji) -> None:
+        now = time.monotonic()
+        if emoji not in REACTIONS or now - session.reacted.get(member.uid, 0) < REACTION_GAP:
+            return
+        session.reacted[member.uid] = now
+        await self._broadcast(session, {"type": "reaction", "from": member.uid, "emoji": emoji}, skip=member.uid)
 
     async def _hand_over(self, session: Session, to: Member) -> None:
         session.host = to.uid

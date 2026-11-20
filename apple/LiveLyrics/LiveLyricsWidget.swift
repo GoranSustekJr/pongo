@@ -7,6 +7,8 @@ import WidgetKit
 struct LiveLyricsBundle: WidgetBundle {
     var body: some Widget {
         LiveLyricsWidget()
+        NowPlayingWidget()
+        TopSongsWidget()
     }
 }
 
@@ -37,14 +39,17 @@ struct LiveLyricsWidget: Widget {
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     if let line = state.line {
-                        Text(line)
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundStyle(color(state.accent))
-                            .lineLimit(2)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity)
-                            .contentTransition(.opacity)
-                            .padding(.top, 4)
+                        VStack(spacing: 6) {
+                            Text(line)
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundStyle(color(state.accent))
+                                .lineLimit(2)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity)
+                                .contentTransition(.opacity)
+                            LyricsControls(delay: state.delay)
+                        }
+                        .padding(.top, 4)
                     }
                 }
             } compactLeading: {
@@ -85,12 +90,14 @@ private struct LockScreenLyrics: View {
                         .lineLimit(2)
                         .shadow(color: color(state.accent).opacity(0.6), radius: 10)
                         .contentTransition(.opacity)
-                    if let next = state.nextLine {
-                        Text(next)
+                    HStack(spacing: 8) {
+                        Text(state.nextLine ?? " ")
                             .font(.system(size: 16, weight: .semibold))
                             .opacity(0.5)
                             .lineLimit(1)
                             .contentTransition(.opacity)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        LyricsControls(delay: state.delay)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -103,6 +110,48 @@ private struct LockScreenLyrics: View {
                 colors: [color(state.background), color(state.background).mix(with: .black, by: 0.45)],
                 startPoint: .topLeading, endPoint: .bottomTrailing)
         }
+    }
+}
+
+/// Back a line and on a line, and the lyrics' timing, a little earlier or
+/// later.
+private struct LyricsControls: View {
+    let delay: Int?
+
+    var body: some View {
+        HStack(spacing: 6) {
+            HStack(spacing: 0) {
+                Button(intent: LyricsLineIntent(forward: false)) {
+                    Image(systemName: "chevron.up").frame(width: 26, height: 26)
+                }
+                .accessibilityLabel("Previous line")
+                Button(intent: LyricsLineIntent(forward: true)) {
+                    Image(systemName: "chevron.down").frame(width: 26, height: 26)
+                }
+                .accessibilityLabel("Next line")
+            }
+            .background(.white.opacity(0.14), in: .capsule)
+            if let delay {
+                HStack(spacing: 0) {
+                    Button(intent: LyricsTimingIntent(earlier: false)) {
+                        Image(systemName: "minus").frame(width: 24, height: 26)
+                    }
+                    .accessibilityLabel("Lyrics later")
+                    Text(verbatim: delay == 0 ? "0s" : String(format: "%+.2gs", Double(delay) / 1000))
+                        .font(.system(size: 11, weight: .semibold).monospacedDigit())
+                        .contentTransition(.numericText(value: Double(delay)))
+                        .frame(minWidth: 30)
+                    Button(intent: LyricsTimingIntent(earlier: true)) {
+                        Image(systemName: "plus").frame(width: 24, height: 26)
+                    }
+                    .accessibilityLabel("Lyrics earlier")
+                }
+                .background(.white.opacity(0.14), in: .capsule)
+            }
+        }
+        .font(.system(size: 12, weight: .bold))
+        .buttonStyle(.plain)
+        .foregroundStyle(.white)
     }
 }
 

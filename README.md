@@ -57,6 +57,8 @@ The iOS app comes first; macOS and Android follow later.
 | Queue management                 | Reorder or remove songs in the queue                                                                            |
 | Repeat and shuffle               | Toggle repeat and shuffle modes                                                                                 |
 | Listen together                  | Friends follow your queue live on their own phones and accounts (iOS and macOS apps)                            |
+| Stats                            | Top songs and artists by month and year, plus an always up-to-date Top 25 playlist                          |
+| Widgets and Siri                 | Now Playing and Top Songs widgets on iPhone and Mac; "Play my favourites in Pongo" and "Play my top songs in Pongo"           |
 | Animations                       | Smooth transitions and effects                                                                                  |
 
 
@@ -138,7 +140,7 @@ The native player requests `/play_song/{id}?st=<stream token>`, which serves the
 
 ### Listening together
 
-In the iOS and macOS apps, the queue's people button starts a session and shows a six-letter code that friends with an account on the same server join with. The host's app publishes its queue and playback position over the `/listen` WebSocket; guests' players follow it, correcting drift against the server's clock. What guests do to their player goes to the host as a request, which the server passes on only if the host allowed it: adding songs, playback, removing and reordering, shuffle and repeat, or playing something else, set by a preset (Listen along, Party, Co-pilot) or one by one, for everyone or per guest. The host can pass the session to a guest, and it passes to the guest who joined first when the host leaves or stays disconnected for 30 seconds. Sessions live in the server's memory only.
+In the iOS and macOS apps, the queue's people button starts a session and shows a six-letter code that friends with an account on the same server join with. The host's app publishes its queue and playback position over the `/listen` WebSocket; guests' players follow it, correcting drift against the server's clock. What guests do to their player goes to the host as a request, which the server passes on only if the host allowed it: adding songs, playback, removing and reordering, shuffle and repeat, or playing something else, set by a preset (Listen along, Party, Co-pilot) or one by one, for everyone or per guest. Guests with the vote right skip a song once more than half of everyone listening voted, anyone can send emoji reactions that float up on everyone's player, and each guest can set a headphone delay so Bluetooth latency doesn't put them behind. Guests join by scanning the host's QR code or opening the shared link; guests who can't add songs suggest them instead, and the host adds or declines each. When a session ends, a recap lists what played and who added it, and saves it as a playlist. The host can pass the session to a guest, and it passes to the guest who joined first when the host leaves or stays disconnected for 30 seconds. Sessions live in the server's memory only.
 
 ### Mix Mode
 

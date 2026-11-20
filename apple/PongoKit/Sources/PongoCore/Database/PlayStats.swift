@@ -17,7 +17,7 @@ public struct ArtistStat: Sendable, Identifiable, Equatable {
 
 /// What the user listened to in a month, on all their devices.
 public struct MonthStats: Sendable, Equatable {
-    /// The month, as `yyyy-MM`.
+    /// The month, as `yyyy-MM`, or the year for a year's stats.
     public var month: String
     public var plays: Int
     public var seconds: Double
@@ -26,6 +26,22 @@ public struct MonthStats: Sendable, Equatable {
     /// The most played tracks, most first.
     public var tracks: [PlayStat]
     public var artists: [ArtistStat]
+}
+
+/// What the user listened to in a year, and in each of its months.
+public struct YearStats: Sendable, Equatable {
+    public struct Month: Sendable, Equatable, Identifiable {
+        /// `yyyy-MM`.
+        public var month: String
+        public var plays: Int
+        public var seconds: Double
+        public var id: String { month }
+    }
+
+    /// The year's totals, top tracks and artists; its `month` is the year.
+    public var total: MonthStats
+    /// The months with plays, in order.
+    public var months: [Month]
 }
 
 /// Plays counted per month, track and device, so devices syncing their counts
@@ -85,12 +101,37 @@ extension Database {
 
     /// What was played in [month], with its [limit] most played tracks.
     public func monthStats(_ month: String, limit: Int = 50) throws -> MonthStats {
+        try stats(month, months: "month = ?", limit: limit)
+    }
+
+    /// What was played in [year], `yyyy`, with each month's share.
+    public func yearStats(_ year: String, limit: Int = 50) throws -> YearStats {
+        let total = try stats(year, months: "month LIKE ? || '-%'", limit: limit)
+        let months = try db.query(
+            """
+            SELECT month, SUM(plays) AS plays, SUM(seconds) AS seconds FROM play_counts
+            WHERE month LIKE ? || '-%' GROUP BY month HAVING SUM(plays) > 0 ORDER BY month
+            """, [.text(year)]
+        ).compactMap { row -> YearStats.Month? in
+            guard let month = row["month"]?.text else { return nil }
+            return YearStats.Month(month: month, plays: row["plays"]?.int ?? 0, seconds: row["seconds"]?.double ?? 0)
+        }
+        return YearStats(total: total, months: months)
+    }
+
+    /// The years with plays, latest first.
+    public func playYears() throws -> [String] {
+        Array(Set(try playMonths().map { String($0.prefix(4)) })).sorted(by: >)
+    }
+
+    /// What was played in the months [condition] picks with [period].
+    private func stats(_ period: String, months condition: String, limit: Int) throws -> MonthStats {
         let rows = try db.query(
             """
             SELECT stid, SUM(plays) AS plays, SUM(seconds) AS seconds, MAX(track) AS track
-            FROM play_counts WHERE month = ? GROUP BY stid HAVING SUM(plays) > 0
+            FROM play_counts WHERE \(condition) GROUP BY stid HAVING SUM(plays) > 0
             ORDER BY SUM(plays) DESC, SUM(seconds) DESC
-            """, [.text(month)])
+            """, [.text(period)])
         let all: [PlayStat] = rows.compactMap { row in
             guard let text = row["track"]?.text,
                 let track = try? JSONDecoder().decode(Track.self, from: Data(text.utf8))
@@ -104,8 +145,37 @@ extension Database {
             }
         }
         return MonthStats(
-            month: month, plays: all.reduce(0) { $0 + $1.plays }, seconds: all.reduce(0) { $0 + $1.seconds },
+            month: period, plays: all.reduce(0) { $0 + $1.plays }, seconds: all.reduce(0) { $0 + $1.seconds },
             trackCount: all.count, tracks: Array(all.prefix(limit)),
             artists: Array(artists.values.sorted { $0.plays > $1.plays }.prefix(10)))
+    }
+}
+
+/// The library on the device belongs to one account at a time.
+extension Database {
+    /// The tables of what syncs with the account, which go when it signs out.
+    /// Downloaded songs stay: they're files on this device, which any
+    /// account can play.
+    static let accountTables = [
+        "favourites", "opid_stid", "online_playlist", "lpid_track_id", "local_playlist", "lfh_tracks",
+        "lfh_artists", "search_history", "sleep", "lyrics_sync_time_delay", "play_counts",
+    ]
+
+    /// The user ID of the account the library is of, if known.
+    public func libraryOwner() throws -> String? {
+        try db.query("SELECT value FROM play_meta WHERE name = 'owner'").first?["value"]?.text
+    }
+
+    public func setLibraryOwner(_ account: String) throws {
+        try db.execute("INSERT OR REPLACE INTO play_meta (name, value) VALUES ('owner', ?)", [.text(account)])
+    }
+
+    /// Removes the account's library from the device, so another account
+    /// starts with its own.
+    public func clearLibrary() throws {
+        try db.transaction {
+            for table in Self.accountTables { try db.execute("DELETE FROM \(table)") }
+            try db.execute("DELETE FROM play_meta WHERE name = 'owner'")
+        }
     }
 }

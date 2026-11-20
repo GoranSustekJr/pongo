@@ -13,6 +13,8 @@ public enum ListenRight: String, CaseIterable, Sendable, Codable {
     case modes
     /// Start a playlist, album or mix in place of the queue.
     case takeover
+    /// Vote to skip the song playing, which goes once most listeners did.
+    case vote
 }
 
 /// Sets of rights a host picks from when starting a session.
@@ -27,7 +29,7 @@ public enum ListenPreset: String, CaseIterable, Sendable {
     public var rights: Set<ListenRight> {
         switch self {
         case .listenAlong: []
-        case .party: [.add]
+        case .party: [.add, .vote]
         case .coPilot: Set(ListenRight.allCases)
         }
     }
@@ -51,8 +53,52 @@ public struct Listener: Identifiable, Sendable, Equatable {
     public var hasOwnRights: Bool
 }
 
+/// Who voted to skip the song playing, and how many votes skip it.
+public struct SkipVotes: Sendable, Equatable {
+    public var voters: [String]
+    public var needed: Int
+}
+
+/// An emoji someone sent, floating up on everyone's player for a moment.
+public struct ListenReaction: Sendable, Equatable, Identifiable {
+    public var id = UUID()
+    /// The user ID of who sent it.
+    public var from: String
+    public var emoji: String
+}
+
+/// A song a guest would like added, waiting for the host to decide.
+public struct SongSuggestion: Sendable, Equatable, Identifiable {
+    public var id = UUID()
+    /// The user ID of who suggested it.
+    public var from: String
+    public var track: Track
+    public var next: Bool
+}
+
+/// What played in a session that ended, to keep as a playlist.
+public struct SessionRecap: Sendable, Equatable, Identifiable {
+    public struct Song: Sendable, Equatable {
+        public var track: Track
+        /// The name of who added it, if a guest did.
+        public var addedBy: String?
+    }
+
+    public var id = UUID()
+    public var songs: [Song]
+    /// The names of everyone else who listened.
+    public var listeners: [String]
+    public var started: Date
+}
+
 /// Something about the session to tell the user.
 public enum ListenNotice: Sendable, Equatable {
+    /// The user's suggestion went to the host.
+    case suggested(String)
+    /// The host added the song the user suggested, or didn't.
+    case suggestionAnswered(String, accepted: Bool)
+    /// The user's vote to skip counted; this many of so many voted.
+    case voted(Int, Int)
     /// The host didn't let guests do that.
     case notAllowed
     case notFound
@@ -96,11 +142,40 @@ public final class ListeningSession {
     public private(set) var guestRights: Set<ListenRight> = []
     /// Whether the user paused just for themselves while following.
     public private(set) var isPausedHere = false
+    /// The votes to skip the song playing, if anyone voted.
+    public private(set) var skipVotes: SkipVotes?
+    /// Reactions sent in the last few seconds, oldest first.
+    public private(set) var reactions: [ListenReaction] = []
+    /// Songs guests suggested, which the host adds or declines.
+    public private(set) var suggestions: [SongSuggestion] = []
+    /// What played in the session that just ended, until it's dismissed.
+    public private(set) var recap: SessionRecap?
+    /// Seconds a guest's player runs ahead of the host's, to make up for
+    /// headphones that play late, such as Bluetooth ones; negative plays
+    /// behind.
+    public var delay: Double = 0 {
+        didSet {
+            lastCorrection = .distantPast
+            follow()
+        }
+    }
+
+    /// The emoji listeners can react with.
+    public static let reactionEmoji = ["🔥", "❤️", "😂", "😮", "🙌", "💃"]
 
     @ObservationIgnored public var onNotice: ((ListenNotice) -> Void)?
 
     public var isActive: Bool { state != .idle }
     public var isHost: Bool { userID != nil && userID == hostID }
+    /// A link that opens the app and joins the session.
+    public var joinLink: URL? { code.flatMap { URL(string: "pongo://join/\($0)") } }
+
+    /// The session code in a join link.
+    public static func code(in link: URL) -> String? {
+        guard link.scheme == "pongo", link.host() == "join" else { return nil }
+        let code = link.lastPathComponent.uppercased().filter { $0.isLetter || $0.isNumber }
+        return code.isEmpty ? nil : code
+    }
     public var host: Listener? { listeners.first { $0.id == hostID } }
 
     /// What the user may do.
@@ -124,6 +199,7 @@ public final class ListeningSession {
     /// Whether this connection still has to publish the queue, as a host.
     @ObservationIgnored private var mustPublish = true
     @ObservationIgnored private var publishedQueue: Int?
+    @ObservationIgnored private var publishedEntry: UUID?
     /// The host's latest playback.
     @ObservationIgnored private var playback: Playback?
     @ObservationIgnored private var lastCorrection = Date.distantPast
@@ -131,6 +207,13 @@ public final class ListeningSession {
     /// measurement was.
     @ObservationIgnored private var clockOffset: Double = 0
     @ObservationIgnored private var bestRoundTrip = Double.infinity
+    /// Whether the user just voted, so the count that comes back is told.
+    @ObservationIgnored private var justVoted = false
+    /// What played, for the recap, and who else was there.
+    @ObservationIgnored private var played: [SessionRecap.Song] = []
+    @ObservationIgnored private var playedEntry: UUID?
+    @ObservationIgnored private var others: [String: String] = [:]
+    @ObservationIgnored private var started = Date()
 
     private struct Playback {
         var entry: UUID
@@ -180,12 +263,22 @@ public final class ListeningSession {
 
     private func start(_ how: Start) {
         if isActive { leave() }
+        played = []
+        playedEntry = nil
+        others = [:]
+        started = Date()
+        recap = nil
         state = .connecting
         connection = Task { [weak self] in await self?.run(how) }
         timers = Task { [weak self] in await self?.tick() }
     }
 
     private func end() {
+        if played.count >= 2 {
+            recap = SessionRecap(songs: played, listeners: others.values.sorted(), started: started)
+        }
+        played = []
+        suggestions = []
         connection?.cancel()
         timers?.cancel()
         publishTask?.cancel()
@@ -203,6 +296,9 @@ public final class ListeningSession {
         playback = nil
         publishedQueue = nil
         isPausedHere = false
+        skipVotes = nil
+        reactions = []
+        justVoted = false
     }
 
     // MARK: - The connection
@@ -324,6 +420,7 @@ public final class ListeningSession {
             follow()
         case "playback":
             guard !isHost, let entry = (message["entry"] as? String).flatMap(UUID.init(uuidString:)) else { return }
+            if playback?.entry != entry { skipVotes = nil }
             playback = Playback(
                 entry: entry, position: message["position"] as? Double ?? 0,
                 playing: message["playing"] as? Bool ?? false, at: message["at"] as? Double ?? serverNow)
@@ -332,7 +429,28 @@ public final class ListeningSession {
             guard isHost, let request = Self.decode(PlayerRequest.self, message["request"]) else { return }
             apply(request, from: message["from"] as? String)
         case "denied":
+            justVoted = false
             onNotice?(.notAllowed)
+        case "votes":
+            let voters = message["voters"] as? [String] ?? []
+            let needed = message["needed"] as? Int ?? 0
+            skipVotes = voters.isEmpty ? nil : SkipVotes(voters: voters, needed: needed)
+            if justVoted {
+                justVoted = false
+                // An empty count after the vote means it skipped the song
+                if !voters.isEmpty { onNotice?(.voted(voters.count, needed)) }
+            }
+        case "suggestion":
+            guard isHost, let from = message["from"] as? String,
+                case .add(let track, let next)? = Self.decode(PlayerRequest.self, message["request"]),
+                suggestions.count < 50
+            else { return }
+            suggestions.append(SongSuggestion(from: from, track: track, next: next))
+        case "answered":
+            onNotice?(.suggestionAnswered(message["title"] as? String ?? "", accepted: message["accepted"] as? Bool == true))
+        case "reaction":
+            guard let from = message["from"] as? String, let emoji = message["emoji"] as? String else { return }
+            show(ListenReaction(from: from, emoji: emoji))
         case "pong":
             guard let sent = message["t"] as? Double, let server = message["server"] as? Double else { return }
             let now = Date().timeIntervalSince1970
@@ -389,6 +507,7 @@ public final class ListeningSession {
             seconds += 1
             guard state == .live else { continue }
             if seconds % 15 == 0 { ping() }
+            notePlayed()
             if isHost {
                 if seconds % 5 == 0 && player.isPlaying { publishPlayback() }
             } else {
@@ -467,6 +586,10 @@ public final class ListeningSession {
 
     private func publishPlayback() {
         guard isHost, let current = player.current else { return }
+        if publishedEntry != current.id {
+            publishedEntry = current.id
+            skipVotes = nil
+        }
         send([
             "type": "playback", "entry": current.id.uuidString, "position": player.exactPosition,
             "playing": player.isPlaying, "at": serverNow,
@@ -538,6 +661,61 @@ public final class ListeningSession {
         }
     }
 
+    // MARK: - Suggestions and the recap
+
+    /// Adds the song [suggestion] is of, by who suggested it.
+    public func accept(_ suggestion: SongSuggestion) {
+        answer(suggestion, accepted: true)
+        apply(.add(track: suggestion.track, next: suggestion.next), from: suggestion.from)
+    }
+
+    public func decline(_ suggestion: SongSuggestion) {
+        answer(suggestion, accepted: false)
+    }
+
+    private func answer(_ suggestion: SongSuggestion, accepted: Bool) {
+        suggestions.removeAll { $0.id == suggestion.id }
+        send(["type": "answer", "to": suggestion.from, "accepted": accepted, "title": suggestion.track.name])
+    }
+
+    public func dismissRecap() {
+        recap = nil
+    }
+
+    /// Keeps the song playing for the recap, once per entry.
+    private func notePlayed() {
+        for listener in listeners where listener.id != userID { others[listener.id] = listener.name }
+        guard let current = player.current, current.id != playedEntry else { return }
+        playedEntry = current.id
+        let addedBy = current.addedBy.flatMap { $0 == userID ? nil : listener($0)?.name ?? others[$0] }
+        played.append(SessionRecap.Song(track: current.track, addedBy: addedBy))
+    }
+
+    // MARK: - Votes and reactions
+
+    /// Votes to skip the song playing.
+    public func voteToSkip() {
+        guard isActive else { return }
+        justVoted = true
+        send(["type": "vote"])
+    }
+
+    /// Sends [emoji] to everyone, and shows it here too.
+    public func react(_ emoji: String) {
+        guard isActive, Self.reactionEmoji.contains(emoji), let userID else { return }
+        send(["type": "react", "emoji": emoji])
+        show(ListenReaction(from: userID, emoji: emoji))
+    }
+
+    private func show(_ reaction: ListenReaction) {
+        reactions.append(reaction)
+        if reactions.count > 20 { reactions.removeFirst(reactions.count - 20) }
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(3))
+            self?.reactions.removeAll { $0.id == reaction.id }
+        }
+    }
+
     /// Takes what the user does to the player while following the host.
     private func intercept(_ request: PlayerRequest) -> Bool {
         let allowed = Self.needed(request).map(rights.contains) ?? false
@@ -546,6 +724,16 @@ public final class ListeningSession {
             // Stopping leaves the session, and stops here
             leave()
             return false
+        case .add(let track, _) where !allowed:
+            // Without the right to add, adding asks the host
+            guard let request = Self.json(request) else { return true }
+            send(["type": "suggest", "request": request])
+            onNotice?(.suggested(track.name))
+            return true
+        case .next where !allowed && rights.contains(.vote):
+            // Without the right to skip, skipping is a vote to
+            voteToSkip()
+            return true
         case .play where !allowed:
             isPausedHere = false
             lastCorrection = .distantPast
@@ -579,7 +767,7 @@ public final class ListeningSession {
         guard !isHost, !isPausedHere, let playback, player.queue.items.contains(where: { $0.id == playback.entry })
         else { return }
         let elapsed = playback.playing ? max(serverNow - playback.at, 0) : 0
-        let target = playback.position + elapsed
+        let target = playback.position + elapsed + delay
         // Past its end, the host's player is already moving on and will say so
         if let item = player.queue.items.first(where: { $0.id == playback.entry }), item.duration > 0,
             target > item.duration - 0.5

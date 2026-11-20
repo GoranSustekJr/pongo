@@ -46,6 +46,7 @@ struct MainWindow: View {
                 MacNowPlayingView()
                     .transition(.opacity.combined(with: .scale(scale: 1.04)))
             }
+            ReactionsOverlay()
         }
         .animation(.smooth(duration: 0.35), value: router.showsPlayer)
         .frame(minWidth: 900, minHeight: 600)
@@ -112,6 +113,7 @@ private struct Sidebar: View {
                 Label(L10n.offlinesongs, systemImage: "arrow.down.circle").tag(SidebarSection.downloads)
                 Label(L10n.sleep, systemImage: "moon.zzz").tag(SidebarSection.sleepAlarms)
                 Label(L10n.stats, systemImage: "chart.bar").tag(SidebarSection.stats)
+                Label(L10n.top25, systemImage: "flame").tag(SidebarSection.topSongs)
             }
             playlistSection(L10n.onlineplaylists, kind: .online, playlists: online)
             playlistSection(L10n.offlineplaylists, kind: .offline, playlists: offline)
@@ -213,6 +215,7 @@ private struct SectionView: View {
         case .downloads: DownloadsView()
         case .sleepAlarms: SleepAlarmsView()
         case .stats: StatsView()
+        case .topSongs: TopSongsView()
         case .playlists(let kind): UserPlaylistsView(kind: kind)
         case .playlist(let kind, let playlist):
             UserPlaylistView(kind: kind, playlist: playlist).id(playlist.id)

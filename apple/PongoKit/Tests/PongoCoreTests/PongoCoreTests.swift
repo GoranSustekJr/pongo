@@ -252,7 +252,7 @@ private func item(_ stid: String) -> QueueItem {
 
     @Test func presetsMatchTheirRights() {
         #expect(ListenPreset.matching([]) == .listenAlong)
-        #expect(ListenPreset.matching([.add]) == .party)
+        #expect(ListenPreset.matching([.add, .vote]) == .party)
         #expect(ListenPreset.matching(Set(ListenRight.allCases)) == .coPilot)
         #expect(ListenPreset.matching([.add, .playback]) == nil)
     }
@@ -312,5 +312,68 @@ private func item(_ stid: String) -> QueueItem {
         // This device's counts go out to the others
         let snapshot = try await database.snapshot()
         #expect(snapshot.keys.filter { $0.kind == "play_count" }.count == 3)
+    }
+
+    @Test func addsUpTheYearByMonth() async throws {
+        let database = try Database()
+        let calendar = Calendar.current
+        let march = calendar.date(from: DateComponents(year: 2026, month: 3, day: 10))!
+        let may = calendar.date(from: DateComponents(year: 2026, month: 5, day: 10))!
+        let lastYear = calendar.date(from: DateComponents(year: 2025, month: 12, day: 10))!
+        try await database.recordListen(track("a", artist: "x"), seconds: 60, newPlay: true, at: march)
+        try await database.recordListen(track("a", artist: "x"), seconds: 60, newPlay: true, at: may)
+        try await database.recordListen(track("b", artist: "y"), seconds: 30, newPlay: true, at: may)
+        try await database.recordListen(track("c", artist: "z"), seconds: 30, newPlay: true, at: lastYear)
+        let year = try await database.yearStats("2026")
+        #expect(year.total.plays == 3)
+        #expect(year.total.tracks.map(\.id) == ["a", "b"])
+        #expect(year.months.map(\.month) == ["2026-03", "2026-05"])
+        #expect(year.months.map(\.plays) == [1, 2])
+        #expect(try await database.playYears() == ["2026", "2025"])
+    }
+}
+
+@Suite struct AccountLibraryTests {
+    @Test func signingOutClearsTheLibraryButNotDownloads() async throws {
+        let database = try Database()
+        let track = Track(id: "1", name: "One", artists: [], album: nil)
+        try await database.recordListen(track, seconds: 40, newPlay: true)
+        try await database.addPlayedTrack("1")
+        try await database.addFavourite(Favourite(stid: "1", title: "One", artists: [], album: nil, image: nil))
+        try await database.setLibraryOwner("a")
+        try await database.execute("INSERT INTO downloaded_tracks (stid) VALUES ('9')")
+        try await database.clearLibrary()
+        #expect(try await database.playMonths().isEmpty)
+        #expect(try await database.playedTracks().isEmpty)
+        #expect(try await database.favourites().isEmpty)
+        #expect(try await database.libraryOwner() == nil)
+        #expect(try await database.countRows("downloaded_tracks") == 1)
+    }
+
+    @MainActor @Test func readsTheAccountFromItsToken() {
+        let store = TestStore()
+        // {"uid":"user-42"} as a token's payload; the signature isn't checked here
+        store.set("x.eyJ1aWQiOiJ1c2VyLTQyIn0.y", for: .accessToken)
+        let auth = AuthRepository(client: APIClient(config: AppConfig(serverURL: "http://x", googleClientID: "")), store: store)
+        #expect(auth.accountID == "user-42")
+    }
+}
+
+extension Database {
+    func execute(_ sql: String) throws { try db.execute(sql) }
+    func countRows(_ table: String) throws -> Int { try count("SELECT COUNT(*) FROM \(table)") }
+}
+
+private final class TestStore: KeyValueStore, @unchecked Sendable {
+    private var values: [StorageKey: String] = [:]
+    func string(_ key: StorageKey) -> String? { values[key] }
+    func set(_ value: String?, for key: StorageKey) { values[key] = value }
+}
+
+@Suite struct JoinLinkTests {
+    @MainActor @Test func readsTheCodeFromALink() {
+        #expect(ListeningSession.code(in: URL(string: "pongo://join/ab12cd")!) == "AB12CD")
+        #expect(ListeningSession.code(in: URL(string: "pongo://lyrics")!) == nil)
+        #expect(ListeningSession.code(in: URL(string: "https://join/AB12CD")!) == nil)
     }
 }
