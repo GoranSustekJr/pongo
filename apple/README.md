@@ -17,8 +17,12 @@ between this app and the Flutter one.
   toolbar, the lyrics and queue panel, the full-window player, the menus and
   the Settings window. `Pongo/Shared/Platform.swift` maps the few UIKit and
   AppKit differences the shared screens meet.
-- `LiveLyrics/`: the widget extension that draws the Live Activity, and
-  `Shared/` (top level) what it and the app both use.
+- `LiveLyrics/`: the iPhone widget extension, which draws the Live Activity
+  and the home and lock screen widgets; `Shared/` (top level) holds what it
+  and the iPhone app both use.
+- `MacWidgets/`: the Mac widget extension. `Widgets/` holds the widgets both
+  extensions draw, and `WidgetData/` the data the apps write for them into
+  their App Group.
 - `Config/`: build settings, the Info.plists and the Mac entitlements.
 - `scripts/generate_strings.py`: generates `Pongo/Resources/Localizable.xcstrings`
   and `Pongo/Shared/Strings.swift` from the Flutter `.arb` files plus

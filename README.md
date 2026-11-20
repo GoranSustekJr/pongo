@@ -1,71 +1,77 @@
 # Pongo
-<img src="https://github.com/user-attachments/assets/1e2f3144-12e1-4686-a65c-b3f1c9e73c8f" width="250" height="250" />
 
-Pongo is a full stack music streaming app: a Flutter app and a FastAPI server you host yourself.
+<img src="https://github.com/user-attachments/assets/1e2f3144-12e1-4686-a65c-b3f1c9e73c8f" width="160" height="160" align="right" />
 
-## Pongo is being revived
-
-Pongo stopped working when Spotify restricted its developer API in 2026. It's now being revived as a **self-hosted** app that anyone can run in their own environment:
+Pongo is a music streaming app you host yourself: native **iPhone and Mac** apps in SwiftUI, an older Flutter app, and a FastAPI server that runs in Docker on any machine you have.
 
 - **No Spotify and no paid APIs:** song, album and artist data comes from the public Deezer API, and the audio is matched on YouTube Music and downloaded with yt-dlp.
-- **Your own server:** the API and database run in Docker on any machine you have, at home or reachable from anywhere over HTTPS.
+- **Your own server:** at home on your network, or reachable from anywhere over HTTPS.
 - **No ads, no premium tier, no tracking.**
 - **Open source** under the [MIT License](LICENSE).
 
 **To set it up yourself, follow [SELF_HOSTING.md](SELF_HOSTING.md).** It's meant for personal use, for you and maybe a few friends, not for running a public service; see the note at the top of the guide.
 
-The iOS app comes first; macOS and Android follow later.
+<p align="center">
+  <img src="docs/screenshots/iphone-player.jpg" width="250" alt="The player on iPhone" />
+  &nbsp;
+  <img src="docs/screenshots/iphone-library.jpg" width="250" alt="The library on iPhone" />
+  &nbsp;
+  <img src="docs/screenshots/iphone-favourites.jpg" width="250" alt="Favourite songs on iPhone" />
+</p>
 
+<p align="center">
+  <img src="docs/screenshots/mac-home.jpg" width="560" alt="The Mac app's home screen" />
+  &nbsp;
+  <img src="docs/screenshots/mac-preferences.jpg" width="240" alt="The Mac app's settings window" />
+</p>
+
+## Why it's back
+
+Pongo stopped working when Spotify restricted its developer API in 2026. It's been rebuilt so that nothing depends on a service that can switch it off: the catalog comes from Deezer's open API, the audio is stored on your own server, and the apps were rewritten natively for iPhone and Mac (in [`apple/`](apple/)). The Flutter app in [`frontend/`](frontend/) still works against the same server, and a library syncs between both.
+
+## Features
+
+### Listening
+- **Live lyrics:** synchronized lyrics that follow the song, with manual timing, translations, and a Live Activity on the lock screen while listening together.
+- **Mix mode and smart shuffle:** similar songs keep coming before the queue runs out.
+- **Moods and daily mixes** made from what you listen to.
+- **Even volume** so every song plays at about the same loudness, and an optional **bass boost**.
+- **Sleep alarm:** fades the music out as you fall asleep and back in to wake you.
+- **Queue management:** reorder, remove, play next, shuffle and repeat.
+- **Offline songs and playlists** for listening without internet.
+
+### Listening together
+Friends follow your queue live on their own phones or Macs, each on their own account and headphones.
+- Presets (**Listen along**, **Party**, **Co-pilot**) or custom rights for adding songs, playback, managing the queue, modes and taking over, for everyone or per guest.
+- **Vote to skip**, **emoji reactions**, and **song suggestions** the host adds or declines.
+- Join by **QR code or link**, set a **headphone delay** for Bluetooth, and pass the session to someone else.
+- A **recap** at the end, which saves what played as a playlist.
+
+### Your library
+- Favourites, online and offline playlists, history, sleep alarms and settings **sync across your devices**.
+- **Stats:** top songs and artists by month and year, minutes listened, and a **Top 25** playlist that keeps itself up to date.
+- Hide songs in a playlist without removing them.
+
+### On your devices
+- **Widgets** on iPhone and Mac: Now Playing, and your Top Songs.
+- **Siri and Shortcuts:** "Play my favourites in Pongo", "Play my top songs in Pongo".
+- A **Mac app with its own layout**: sidebar, toolbar player, lyrics and queue panel, and menus.
+- **Liquid Glass** design with colors taken from the album art.
+- Sign in with Google. English, Deutsch and Hrvatski.
 
 ## Built with
 
+![Swift](https://img.shields.io/badge/Swift-F05138?style=for-the-badge&logo=swift&logoColor=white)
+![SwiftUI](https://img.shields.io/badge/SwiftUI-0D96F6?style=for-the-badge&logo=swift&logoColor=white)
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
-![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/fastapi-109989?style=for-the-badge&logo=FASTAPI&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Shazam API](https://img.shields.io/badge/Shazam-0088FF?style=for-the-badge&logo=Shazam&logoColor=white)
-
-## Demo video
-- https://youtu.be/PcywrO85vYY, 3.3.2025.  
-- https://youtu.be/VLkgnx1HZGk, 28.7.2025. (Updated UI and new feature)
-
-## Features
-
-| Feature                          | Description                                                                                                     |
-|----------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| Live lyrics                      | See synchronized lyrics in real time with the possibility of manual synchronization                             |
-| Mix mode                         | When a single song is played, similar songs keep being added before the queue runs out                          |
-| Even volume                      | Loud songs are turned down so every song plays at about the same loudness                                       |
-| Library sync                     | Favourites, playlists, history, sleep alarms and settings stay the same on all your devices                     |
-| Show/Hide songs in playlist      | Toggle visibility of tracks in your playlist without having to remove them                                      |
-| Sleep mode                       | Gradually increase/decrease volume for certain period of time to allow you smooth falling asleep and waking up  |
-| Online/Offline playlists         | Access downloaded playlists without internet                                                                    |
-| Performance-saving preferences   | Reduce UI intensity for smoother playback                                                                       |
-| Search preferences               | Customize how search behaves and what it displays                                                               |
-| iOS, MacOS, Android supported    | Works across major platforms                                                                                    |
-| Google/Apple sign in             | Sign in with Google; Sign in with Apple needs a paid Apple developer account                                    |
-| See currently played artist/album| Info at a glance while listening                                                                                |
-| Dynamic coloring                 | UI adapts to album art colors                                                                                   |
-| Currently played controls        | Swipe up for full controls                                                                                      |
-| English/Deutsch/Hrvatski         | App available in 3 languages                                                                                    |
-| Pause by tapping on image        | Tap artwork to pause                                                                                            |
-| Play next/previous on swipe      | Swipe navigation bar to change songs                                                                            |
-| Account deletion                 | Three-tap account deletion from the app                                                                         |
-| Liquid glass UI                  | Frosted, fluid visual design                                                                                    |
-| Queue management                 | Reorder or remove songs in the queue                                                                            |
-| Repeat and shuffle               | Toggle repeat and shuffle modes                                                                                 |
-| Listen together                  | Friends follow your queue live on their own phones and accounts (iOS and macOS apps)                            |
-| Stats                            | Top songs and artists by month and year, plus an always up-to-date Top 25 playlist                          |
-| Widgets and Siri                 | Now Playing and Top Songs widgets on iPhone and Mac; "Play my favourites in Pongo" and "Play my top songs in Pongo"           |
-| Animations                       | Smooth transitions and effects                                                                                  |
-
-
 
 ## Running it
 
-The API and database run in Docker; the iOS app connects to them over your network.
+The API and database run in Docker; the apps connect to them over your network.
 
 ```sh
 cp .env.example .env            # set DB_PASSWORD, JWT_SECRET, ALLOWED_EMAILS and the sign in ids
@@ -84,7 +90,7 @@ SERVER_URL=http://192.168.1.10:8081/
 SERVER_URL_WSS=ws://192.168.1.10:8081/
 ```
 
-and run the app with `flutter run --release` from `frontend/`. Only emails in `ALLOWED_EMAILS` can sign in; let others in with `scripts/enable_user.sh someone@example.com`.
+and run the app with `flutter run --release` from `frontend/`. For the native iPhone and Mac apps, follow [apple/README.md](apple/README.md) instead. Only emails in `ALLOWED_EMAILS` can sign in; let others in with `scripts/enable_user.sh someone@example.com`.
 
 ### Reaching it from the internet
 
@@ -101,7 +107,7 @@ Audio lives in the `pongo_audio` volume and the database in `pongo_db`. Back up 
 
 Tests: `flutter test test/catalog_models_test.dart` in `frontend/`, and `python -m pytest tests` in `api/pongo/`.
 
-## Frontend structure
+## Flutter app structure
 
 ```
 frontend/lib/
@@ -146,14 +152,12 @@ In the iOS and macOS apps, the queue's people button starts a session and shows 
 
 When a single track is played with mix on, the app keeps the queue going: whenever two or fewer tracks are left, it posts the last five tracks played and everything already queued to `/next_mix_tracks`. The server picks similar tracks from the Deezer radios of those tracks' artists and the latest artist's related artists, downloads three of them, and returns them with their lengths; it keeps no mix state between calls. The app makes one such request at a time, drops answers for a queue it has since left, and after a failure tries again with growing delays.
 
-## App Preview
+## The Flutter app
 
-<img src="https://github.com/user-attachments/assets/1afacff7-c027-48fd-a900-be631d27c1f6" width="293" height="633" />
-<img src="https://github.com/user-attachments/assets/48885f3a-6c38-4289-b09a-2cfe10855a46" width="293" height="633" />
-<img src="https://github.com/user-attachments/assets/535b95df-62f5-4953-92fe-c22e60e55514" width="293" height="633" />
-<img src="https://github.com/user-attachments/assets/a0aac160-664d-410d-b544-bf0be7a2dcbf" width="293" height="633" />
-<img src="https://github.com/user-attachments/assets/c2d8204d-5408-42b1-922b-3eda18445fe1" width="293" height="633" />
+The Flutter app came first and still runs against the same server. Demo videos: [March 2025](https://youtu.be/PcywrO85vYY) and [July 2025](https://youtu.be/VLkgnx1HZGk), with an updated UI.
 
-
-
-
+<img src="https://github.com/user-attachments/assets/1afacff7-c027-48fd-a900-be631d27c1f6" width="180" />
+<img src="https://github.com/user-attachments/assets/48885f3a-6c38-4289-b09a-2cfe10855a46" width="180" />
+<img src="https://github.com/user-attachments/assets/535b95df-62f5-4953-92fe-c22e60e55514" width="180" />
+<img src="https://github.com/user-attachments/assets/a0aac160-664d-410d-b544-bf0be7a2dcbf" width="180" />
+<img src="https://github.com/user-attachments/assets/c2d8204d-5408-42b1-922b-3eda18445fe1" width="180" />
