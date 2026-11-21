@@ -12,42 +12,18 @@ struct MainWindow: View {
     var body: some View {
         @Bindable var router = model.router
         ZStack {
-            NavigationSplitView {
-                Sidebar()
-                    .navigationSplitViewColumnWidth(min: 200, ideal: 230, max: 320)
-            } detail: {
-                NavigationStack(path: $router.path) {
-                    SectionView(section: router.section ?? .home, query: $query)
-                        .navigationDestination(for: Route.self, destination: RouteView.init)
-                }
-                // Controls are white; teal marks what is on or selected
-                .tint(.primary)
-                .inspector(isPresented: inspectorShown) {
-                    InspectorView()
-                        .inspectorColumnWidth(min: 340, ideal: 420, max: 560)
-                }
-            }
-            .searchable(text: $query, placement: .sidebar, prompt: L10n.searchsongsartistsalbums)
-            .onSubmit(of: .search) { model.rememberSearch(query) }
-            .onChange(of: query) { _, query in
-                if !query.isEmpty, router.section != .search {
-                    router.section = .search
-                }
-            }
-            .toolbar { PlayerToolbar() }
-            // The sidebar shows where the user is; the toolbar holds the player
-            .toolbar(removing: .title)
-            // The full player has its own controls, and nothing under it may take clicks
-            .toolbarVisibility(router.showsPlayer ? .hidden : .automatic, for: .windowToolbar)
-            .opacity(router.showsPlayer ? 0 : 1)
-            .allowsHitTesting(!router.showsPlayer)
-
+            // The full player replaces the library rather than covering it, so
+            // nothing hidden under it takes clicks or keeps the keyboard
             if router.showsPlayer, model.player.current != nil {
                 MacNowPlayingView()
                     .transition(.opacity.combined(with: .scale(scale: 1.04)))
+            } else {
+                library(router: router)
             }
             ReactionsOverlay()
         }
+        // The sidebar shows where the user is; the toolbar holds the player
+        .toolbar(removing: .title)
         .animation(.smooth(duration: 0.35), value: router.showsPlayer)
         .frame(minWidth: 900, minHeight: 600)
         .onChange(of: router.section) { router.path = [] }
@@ -85,6 +61,34 @@ struct MainWindow: View {
         } message: {
             Text(L10n.haltmusicplayerbody)
         }
+    }
+
+    /// The sidebar, the picked section, the toolbar and the side panel.
+    private func library(router: Router) -> some View {
+        @Bindable var router = router
+        return NavigationSplitView {
+            Sidebar()
+                .navigationSplitViewColumnWidth(min: 200, ideal: 230, max: 320)
+        } detail: {
+            NavigationStack(path: $router.path) {
+                SectionView(section: router.section ?? .home, query: $query)
+                    .navigationDestination(for: Route.self, destination: RouteView.init)
+            }
+            // Controls are white; teal marks what is on or selected
+            .tint(.primary)
+            .inspector(isPresented: inspectorShown) {
+                InspectorView()
+                    .inspectorColumnWidth(min: 340, ideal: 420, max: 560)
+            }
+        }
+        .searchable(text: $query, placement: .sidebar, prompt: L10n.searchsongsartistsalbums)
+        .onSubmit(of: .search) { model.rememberSearch(query) }
+        .onChange(of: query) { _, query in
+            if !query.isEmpty, router.section != .search {
+                router.section = .search
+            }
+        }
+        .toolbar { PlayerToolbar() }
     }
 
     private var inspectorShown: Binding<Bool> {

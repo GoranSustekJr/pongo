@@ -46,6 +46,7 @@ extension L10n {
     static var `changeplaylisttile`: String { tr("changeplaylisttile") }
     static var `changeplaylisttilebody`: String { tr("changeplaylisttilebody") }
     static var `changetitle`: String { tr("changetitle") }
+    static var `checkingsongs`: String { tr("checkingsongs") }
     static var `clear`: String { tr("clear") }
     static var `clearallappcache`: String { tr("clearallappcache") }
     static var `clearallcache`: String { tr("clearallcache") }
@@ -95,6 +96,7 @@ extension L10n {
     static var `downloadsstillplay`: String { tr("downloadsstillplay") }
     static var `downloadsucceeded`: String { tr("downloadsucceeded") }
     static var `downloadtracksnow`: String { tr("downloadtracksnow") }
+    static var `dragtoreorder`: String { tr("dragtoreorder") }
     static var `dynamicblurhash`: String { tr("dynamicblurhash") }
     static var `dynamicblurhashwarning`: String { tr("dynamicblurhashwarning") }
     static var `edit`: String { tr("edit") }
@@ -186,6 +188,8 @@ extension L10n {
     static var `moodintense`: String { tr("moodintense") }
     static var `moodmelancholy`: String { tr("moodmelancholy") }
     static var `moodparty`: String { tr("moodparty") }
+    static var `movedown`: String { tr("movedown") }
+    static var `moveup`: String { tr("moveup") }
     static var `name`: String { tr("name") }
     static var `newalbums`: String { tr("newalbums") }
     static var `newplaylist`: String { tr("newplaylist") }
@@ -200,6 +204,7 @@ extension L10n {
     static var `nostatsyet`: String { tr("nostatsyet") }
     static var `nostatsyetdetail`: String { tr("nostatsyetdetail") }
     static var `nosynclyrics`: String { tr("nosynclyrics") }
+    static var `notaddedunavailable`: String { tr("notaddedunavailable") }
     static var `notallowedinsession`: String { tr("notallowedinsession") }
     static var `nothingplaying`: String { tr("nothingplaying") }
     static var `notification`: String { tr("notification") }

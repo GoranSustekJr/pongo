@@ -80,6 +80,8 @@ struct TrackList: View {
     var missing: Set<String> = []
     var hidden: [String: Bool] = [:]
     var showsAlbum = true
+    /// Removes a track from the user's playlist, from its menu; nil elsewhere.
+    var remove: ((Track) -> Void)?
     var play: (Int) -> Void
 
     var body: some View {
@@ -93,7 +95,13 @@ struct TrackList: View {
                         hidden: hidden[track.id] == true)
                 }
                 .buttonStyle(.row)
-                .contextMenu { TrackMenu(track: track, collectionID: collectionID, showsAlbum: showsAlbum) }
+                .contextMenu {
+                    TrackMenu(track: track, collectionID: collectionID, showsAlbum: showsAlbum)
+                    if let remove {
+                        Divider()
+                        Button(L10n.removefromplaylist, systemImage: "trash", role: .destructive) { remove(track) }
+                    }
+                }
                 if index < tracks.count - 1 {
                     Rectangle().fill(Color.pongoIcon.opacity(0.2)).frame(height: 0.5).padding(.leading, 62)
                 }
@@ -470,13 +478,84 @@ struct TrackEditor<Actions: View>: View {
     @State private var selection: Set<String> = []
 
     var body: some View {
-        NavigationStack {
-            list
-                .navigationTitle(selection.isEmpty ? title : "\(selection.count) \(L10n.selected)")
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar { toolbar }
-        }
+        #if os(macOS)
+            macBody
+        #else
+            NavigationStack {
+                list
+                    .navigationTitle(selection.isEmpty ? title : "\(selection.count) \(L10n.selected)")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar { toolbar }
+            }
+        #endif
     }
+
+    #if os(macOS)
+        /// A Mac sheet has no toolbar, so the title, the selection and the
+        /// actions sit in the sheet itself, with buttons to move songs as well
+        /// as dragging them.
+        private var macBody: some View {
+            let allSelected = !tracks.isEmpty && selection.count == tracks.count
+            return VStack(spacing: 0) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(selection.isEmpty ? title : "\(selection.count) \(L10n.selected)").font(.headline)
+                        if reorder != nil {
+                            Text(L10n.dragtoreorder).font(.caption).foregroundStyle(.secondary)
+                        }
+                    }
+                    Spacer()
+                    Button(allSelected ? L10n.deselectall : L10n.selectall) {
+                        selection = allSelected ? [] : Set(tracks.map(\.id))
+                    }
+                }
+                .padding(14)
+                Divider()
+                List(selection: $selection) {
+                    ForEach(tracks) { track in
+                        row(track).tag(track.id)
+                    }
+                    .onMove(perform: moveAction)
+                }
+                .listStyle(.inset)
+                Divider()
+                HStack(spacing: 10) {
+                    if reorder != nil {
+                        Button(L10n.moveup, systemImage: "arrow.up") { shift(-1) }
+                            .disabled(!canShift(-1))
+                        Button(L10n.movedown, systemImage: "arrow.down") { shift(1) }
+                            .disabled(!canShift(1))
+                        Divider().frame(height: 18)
+                    }
+                    actions(tracks.filter { selection.contains($0.id) }, { dismiss() })
+                        .disabled(selection.isEmpty)
+                    Button(L10n.done) { dismiss() }
+                        .keyboardShortcut(.defaultAction)
+                }
+                .padding(14)
+            }
+            .frame(minWidth: 620, idealWidth: 680, minHeight: 520, idealHeight: 640)
+        }
+
+        /// Moves the selected tracks one place up (-1) or down (1), keeping
+        /// their order among themselves.
+        private func shift(_ step: Int) {
+            guard canShift(step) else { return }
+            let selected = tracks.indices.filter { selection.contains(tracks[$0].id) }
+            var moved = tracks
+            for index in step < 0 ? selected : selected.reversed() {
+                moved.swapAt(index, index + step)
+            }
+            tracks = moved
+            Task { await reorder?(moved) }
+        }
+
+        private func canShift(_ step: Int) -> Bool {
+            let selected = tracks.indices.filter { selection.contains(tracks[$0].id) }
+            guard let first = selected.first, let last = selected.last else { return false }
+            return step < 0 ? first > 0 : last < tracks.count - 1
+        }
+    #endif
 
     private var list: some View {
         List(selection: $selection) {

@@ -12,6 +12,31 @@ public actor Database {
     public init(path: String? = nil) throws {
         db = try SQLiteConnection(path: path ?? ":memory:")
         try Self.migrate(db)
+        try Self.countLibraryChanges(db)
+    }
+
+    /// The tables other devices should get changes to soon. Listening history
+    /// and play counts change all through playback, so they go with the
+    /// regular sync instead.
+    static let libraryTables = [
+        "favourites", "online_playlist", "opid_stid", "local_playlist", "lpid_track_id", "sleep",
+        "lyrics_sync_time_delay",
+    ]
+
+    /// Counts changes to [libraryTables] in `temp.library_changes`, for
+    /// [changeCount].
+    private static func countLibraryChanges(_ db: SQLiteConnection) throws {
+        try db.execute("CREATE TEMP TABLE IF NOT EXISTS library_changes (count INTEGER NOT NULL)")
+        try db.execute("INSERT INTO library_changes SELECT 0 WHERE NOT EXISTS (SELECT 1 FROM library_changes)")
+        for table in libraryTables {
+            for event in ["INSERT", "UPDATE", "DELETE"] {
+                try db.execute(
+                    """
+                    CREATE TEMP TRIGGER IF NOT EXISTS \(table)_\(event.lowercased())_counted
+                    AFTER \(event) ON main.\(table) BEGIN UPDATE library_changes SET count = count + 1; END
+                    """)
+            }
+        }
     }
 
     /// The database in the app's Application Support directory.

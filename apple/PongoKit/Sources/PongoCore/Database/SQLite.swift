@@ -100,9 +100,6 @@ final class SQLiteConnection {
         set { try? execute("PRAGMA user_version = \(newValue)") }
     }
 
-    /// The number of rows changed since the connection opened.
-    var totalChanges: Int { Int(sqlite3_total_changes(handle)) }
-
     /// The ID of the latest inserted row.
     var lastInsertID: Int { Int(sqlite3_last_insert_rowid(handle)) }
 

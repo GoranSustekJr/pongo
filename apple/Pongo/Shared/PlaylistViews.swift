@@ -122,6 +122,7 @@ struct UserPlaylistView: View {
     @State private var pickingCover = false
     @State private var pickedCover: PhotosPickerItem?
     @State private var confirmDelete = false
+    @State private var removing: Track?
 
     init(kind: PlaylistKind, playlist: UserPlaylist) {
         self.kind = kind
@@ -150,7 +151,7 @@ struct UserPlaylistView: View {
             } else {
                 TrackList(
                     tracks: tracks, collectionID: collectionID, missing: Set(missing), hidden: hidden,
-                    showsAlbum: kind == .online
+                    showsAlbum: kind == .online, remove: { removing = $0 }
                 ) { index in
                     let track = tracks[index]
                     guard let position = shown.firstIndex(of: track) else { return }
@@ -214,6 +215,14 @@ struct UserPlaylistView: View {
         }
         .confirmationDialog(L10n.removeplaylist, isPresented: $confirmDelete, titleVisibility: .visible) {
             Button(L10n.delete, role: .destructive) { Task { await deletePlaylist() } }
+        }
+        .confirmationDialog(
+            L10n.removetracksfromplaylist, isPresented: Binding { removing != nil } set: { if !$0 { removing = nil } },
+            titleVisibility: .visible, presenting: removing
+        ) { track in
+            Button(L10n.removefromplaylist, role: .destructive) { Task { await remove([track]) } }
+        } message: { track in
+            Text(track.name)
         }
         .photosPicker(isPresented: $pickingCover, selection: $pickedCover, matching: .images)
         .onChange(of: pickedCover) { Task { await setCover() } }

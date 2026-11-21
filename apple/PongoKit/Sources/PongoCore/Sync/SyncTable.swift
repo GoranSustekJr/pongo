@@ -302,5 +302,9 @@ extension Database: SyncSource, SyncStateStore {
         try db.execute("DELETE FROM sync_meta")
     }
 
-    public func changeCount() -> Int { db.totalChanges }
+    /// Grows with changes to the library tables only: not with listening,
+    /// whose changes wait for the regular sync, nor with a sync's own records.
+    public func changeCount() -> Int {
+        (try? db.query("SELECT count FROM library_changes").first?["count"]?.int) ?? 0
+    }
 }

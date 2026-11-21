@@ -135,5 +135,10 @@
   "suggestionadded": {"en": "Your suggestion was added", "de": "Dein Vorschlag wurde hinzugefügt", "hr": "Tvoj prijedlog je dodan"},
   "suggestiondeclined": {"en": "Your suggestion wasn't added", "de": "Dein Vorschlag wurde nicht hinzugefügt", "hr": "Tvoj prijedlog nije dodan"},
   "sessionrecap": {"en": "Session recap", "de": "Sitzungsrückblick", "hr": "Pregled sesije"},
-  "with": {"en": "With", "de": "Mit", "hr": "S"}
+  "with": {"en": "With", "de": "Mit", "hr": "S"},
+  "notaddedunavailable": {"en": "Can't be played, so not added", "de": "Nicht abspielbar, daher nicht hinzugefügt", "hr": "Ne može se reproducirati pa nije dodano"},
+  "checkingsongs": {"en": "Checking the songs can be played…", "de": "Prüfe, ob die Titel abspielbar sind…", "hr": "Provjeravam mogu li se pjesme reproducirati…"},
+  "moveup": {"en": "Move up", "de": "Nach oben", "hr": "Pomakni gore"},
+  "movedown": {"en": "Move down", "de": "Nach unten", "hr": "Pomakni dolje"},
+  "dragtoreorder": {"en": "Drag songs to change their order", "de": "Titel ziehen, um die Reihenfolge zu ändern", "hr": "Povucite pjesme za promjenu redoslijeda"}
 }

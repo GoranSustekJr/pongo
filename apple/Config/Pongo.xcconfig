@@ -4,6 +4,10 @@
 // Base URL of your Pongo API. "/$()/" keeps the slashes from starting a comment.
 PONGO_SERVER_URL = http:/$()/localhost:8081/
 
+// Optional second address, tried when the first can't be reached, such as the
+// server's address on your home network.
+PONGO_LOCAL_SERVER_URL =
+
 // Google OAuth client of type iOS, the one the API's IOS_CLIENT_ID is set to.
 GOOGLE_CLIENT_ID =
 

@@ -64,20 +64,28 @@ extension Router {
 }
 
 /// Plays and pauses with the space bar, as Mac music apps do, unless the
-/// user is typing.
+/// user is typing, and closes the full player with Escape, wherever the
+/// keyboard focus is.
 @MainActor
-final class SpaceBarMonitor {
+final class PlayerKeyMonitor {
     private var monitor: Any?
 
-    func start(_ player: Player) {
+    func start(_ model: AppModel) {
         guard monitor == nil else { return }
-        monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak player] event in
-            guard event.keyCode == 49, event.modifierFlags.intersection(.deviceIndependentFlagsMask).isEmpty,
-                !(event.window?.firstResponder is NSText), event.window?.attachedSheet == nil,
-                let player, player.current != nil
+        monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak model] event in
+            guard let model, event.modifierFlags.intersection(.deviceIndependentFlagsMask).isEmpty,
+                event.window?.attachedSheet == nil
             else { return event }
-            player.togglePlayback()
-            return nil
+            switch event.keyCode {
+            case 49 where !(event.window?.firstResponder is NSText) && model.player.current != nil:
+                model.player.togglePlayback()
+                return nil
+            case 53 where model.router.showsPlayer:
+                model.router.showsPlayer = false
+                return nil
+            default:
+                return event
+            }
         }
     }
 }

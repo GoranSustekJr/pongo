@@ -6,6 +6,8 @@
 	<string>group.$(PONGO_BUNDLE_ID)</string>
 	<key>PongoServerURL</key>
 	<string>$(PONGO_SERVER_URL)</string>
+	<key>PongoLocalServerURL</key>
+	<string>$(PONGO_LOCAL_SERVER_URL)</string>
 	<key>GoogleClientID</key>
 	<string>$(GOOGLE_CLIENT_ID)</string>
 	<key>CFBundleLocalizations</key>

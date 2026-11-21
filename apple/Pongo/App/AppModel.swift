@@ -63,6 +63,7 @@ final class AppModel {
         let info = Bundle.main.infoDictionary ?? [:]
         config = AppConfig(
             serverURL: info["PongoServerURL"] as? String ?? "http://localhost:8081/",
+            fallbackServerURLs: [info["PongoLocalServerURL"] as? String ?? ""],
             googleClientID: info["GoogleClientID"] as? String ?? "")
         database = try Database.appDatabase()
         client = APIClient(config: config)
@@ -98,6 +99,7 @@ final class AppModel {
             if DemoMode.isOn { DemoMode.seed(store: DefaultsStore(), database: database) }
         #endif
         player.restoreState()
+        Task { await config.servers.choose() }
         Task { await reloadLibraryIDs() }
         #if os(iOS)
             liveLyrics = LiveLyricsController(model: self)
@@ -244,14 +246,53 @@ final class AppModel {
     }
 
     /// Opens the playlist picker for [tracks]; offline playlists download the
-    /// tracks that aren't on the device first.
+    /// tracks that aren't on the device first. Tracks the server can't get are
+    /// left out, since they could never play from the playlist.
     func addToPlaylist(_ tracks: [Track], kind: PlaylistKind = .online, creating: Bool = false) async {
+        let tracks = await playable(tracks)
         guard !tracks.isEmpty else { return }
         var request = PlaylistRequest(kind: kind, tracks: tracks, creating: creating)
         if kind == .offline {
             request.toDownload = (try? await database.missingDownloads(tracks.map(\.id))) ?? []
         }
         playlistRequest = request
+    }
+
+    /// [tracks] without those that can't be played here or fetched by the
+    /// server; says which were left out.
+    private func playable(_ tracks: [Track]) async -> [Track] {
+        guard !tracks.isEmpty else { return [] }
+        // Files on the device and downloaded songs play without the server
+        let notDownloaded = Set((try? await database.missingDownloads(tracks.map(\.id))) ?? tracks.map(\.id))
+        let unchecked = tracks.filter { $0.audioPath == nil && notDownloaded.contains($0.id) }
+        guard !unchecked.isEmpty else { return tracks }
+        let onServer = (try? await catalog.availability(unchecked.map(\.id)))?.durations ?? [:]
+        let toFetch = Array(Set(unchecked.map(\.id)).subtracting(onServer.keys))
+        guard !toFetch.isEmpty else { return tracks }
+        messages.show(L10n.checkingsongs, systemImage: "hourglass")
+        // As many at once as the server downloads
+        let socket = socket
+        let unavailable = await withTaskGroup(of: String?.self) { group in
+            var failed = Set<String>()
+            var next = toFetch.makeIterator()
+            for _ in 0..<4 {
+                guard let stid = next.next() else { break }
+                group.addTask { await socket.ensureAvailable(stid) == .unavailable ? stid : nil }
+            }
+            while let result = await group.next() {
+                if let result { failed.insert(result) }
+                if let stid = next.next() {
+                    group.addTask { await socket.ensureAvailable(stid) == .unavailable ? stid : nil }
+                }
+            }
+            return failed
+        }
+        if messages.current?.text == L10n.checkingsongs { messages.dismiss() }
+        guard !unavailable.isEmpty else { return tracks }
+        let names = tracks.filter { unavailable.contains($0.id) }.map(\.name)
+        let shown = names.prefix(2).joined(separator: ", ") + (names.count > 2 ? " +\(names.count - 2)" : "")
+        messages.show(L10n.notaddedunavailable, detail: shown, systemImage: "exclamationmark.triangle", isError: true)
+        return tracks.filter { !unavailable.contains($0.id) }
     }
 
     /// Adds [query] to the search history.

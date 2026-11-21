@@ -50,11 +50,13 @@ final class LiveLyricsController {
             },
         ]
         // Lines change at most a few times a second, as often as the player
-        // reports its position
+        // reports its position. Without an activity it only checks whether
+        // one should start, which can wait longer.
         loop = Task { [weak self] in
             while !Task.isCancelled {
                 await self?.refresh()
-                try? await Task.sleep(for: .milliseconds(250))
+                let showing = self?.activity != nil
+                try? await Task.sleep(for: showing ? .milliseconds(250) : .seconds(2))
             }
         }
     }

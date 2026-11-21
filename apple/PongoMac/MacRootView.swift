@@ -5,7 +5,7 @@ import SwiftUI
 /// user's language, appearance and glass to everything in the window.
 struct MacRootView: View {
     @Environment(AppModel.self) private var model
-    @State private var spaceBar = SpaceBarMonitor()
+    @State private var keys = PlayerKeyMonitor()
 
     var body: some View {
         let settings = model.settings.settings
@@ -24,7 +24,7 @@ struct MacRootView: View {
         .environment(\.usesLiquidGlass, settings.useLiquidGlass)
         .overlay(alignment: .top) { MacToasts() }
         .onAppear {
-            spaceBar.start(model.player)
+            keys.start(model)
             #if DEBUG
                 if DemoMode.isOn { DemoMode.open(model) }
             #endif

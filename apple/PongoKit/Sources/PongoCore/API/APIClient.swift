@@ -1,21 +1,55 @@
 import Foundation
+import Synchronization
 
 /// Environment values the app is built against.
 public struct AppConfig: Sendable {
-    /// Base URL of the Pongo API, ending with a slash.
-    public var serverURL: String
-    /// Base WebSocket URL of the Pongo API, ending with a slash.
-    public var socketURL: String
+    /// The addresses the Pongo API can be reached at, and which one is in use.
+    public let servers: ServerAddresses
     /// Google OAuth client ID for iOS and macOS.
     public var googleClientID: String
 
-    public init(serverURL: String, socketURL: String? = nil, googleClientID: String) {
-        let server = serverURL.hasSuffix("/") ? serverURL : serverURL + "/"
-        self.serverURL = server
-        self.socketURL =
-            socketURL.map { $0.hasSuffix("/") ? $0 : $0 + "/" }
-            ?? server.replacingOccurrences(of: "http", with: "ws", options: .anchored)
+    /// Base URL of the Pongo API in use, ending with a slash.
+    public var serverURL: String { servers.current }
+    /// Base WebSocket URL of the Pongo API in use, ending with a slash.
+    public var socketURL: String {
+        serverURL.replacingOccurrences(of: "http", with: "ws", options: .anchored)
+    }
+
+    /// [fallbackServerURLs] are tried in order when [serverURL] can't be reached,
+    /// such as the server's address on the home network.
+    public init(serverURL: String, fallbackServerURLs: [String] = [], googleClientID: String) {
+        servers = ServerAddresses([serverURL] + fallbackServerURLs)
         self.googleClientID = googleClientID
+    }
+}
+
+/// The base URLs of one Pongo server, in order of preference, and the one
+/// requests go to.
+public final class ServerAddresses: Sendable {
+    public let all: [String]
+    private let index = Mutex(0)
+
+    init(_ urls: [String]) {
+        let urls = urls.filter { !$0.isEmpty }.map { $0.hasSuffix("/") ? $0 : $0 + "/" }
+        all = urls.isEmpty ? ["http://localhost:8081/"] : urls
+    }
+
+    public var current: String { all[index.withLock { $0 }] }
+
+    /// Switches to the first address whose health check answers, keeping the
+    /// current one when none does.
+    public func choose(session: URLSession = .shared) async {
+        guard all.count > 1 else { return }
+        for (i, base) in all.enumerated() {
+            guard let url = URL(string: base + "health") else { continue }
+            let request = URLRequest(url: url, timeoutInterval: 4)
+            if let (_, response) = try? await session.data(for: request),
+                (response as? HTTPURLResponse)?.statusCode == 200
+            {
+                index.withLock { $0 = i }
+                return
+            }
+        }
     }
 }
 
@@ -95,17 +129,30 @@ public final class APIClient: Sendable {
         return try JSONValue.decode(data)
     }
 
-    /// Posts [body] to [path] and returns the body and status code.
-    func send(_ path: String, _ body: [String: JSONValue], timeout: TimeInterval) async throws
-        -> (Data, Int)
-    {
+    /// Posts [body] to [path] and returns the body and status code. When the
+    /// server can't be reached it tries the other addresses once.
+    func send(
+        _ path: String, _ body: [String: JSONValue], timeout: TimeInterval, switchServer: Bool = true
+    ) async throws -> (Data, Int) {
         var request = URLRequest(url: url(path), timeoutInterval: timeout)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = JSONValue.object(body).encoded()
-        let (data, response) = try await session.data(for: request)
-        return (data, (response as? HTTPURLResponse)?.statusCode ?? 0)
+        do {
+            let (data, response) = try await session.data(for: request)
+            return (data, (response as? HTTPURLResponse)?.statusCode ?? 0)
+        } catch let error as URLError where switchServer && Self.unreachable.contains(error.code) {
+            let tried = config.serverURL
+            await config.servers.choose(session: session)
+            guard config.serverURL != tried else { throw error }
+            return try await send(path, body, timeout: timeout, switchServer: false)
+        }
     }
+
+    private static let unreachable: Set<URLError.Code> = [
+        .cannotFindHost, .dnsLookupFailed, .cannotConnectToHost, .timedOut,
+        .networkConnectionLost, .notConnectedToInternet,
+    ]
 
     static func detail(_ data: Data) -> String {
         (try? JSONValue.decode(data))?["detail"]?.string ?? ""

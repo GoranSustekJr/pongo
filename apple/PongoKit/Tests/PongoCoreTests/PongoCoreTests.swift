@@ -377,3 +377,38 @@ private final class TestStore: KeyValueStore, @unchecked Sendable {
         #expect(ListeningSession.code(in: URL(string: "https://join/AB12CD")!) == nil)
     }
 }
+
+@Suite struct ServerAddressesTests {
+    @Test func startsOnTheFirstAddressAndSkipsEmptyOnes() {
+        let config = AppConfig(
+            serverURL: "https://pongo.example:48129", fallbackServerURLs: ["", "https://192.168.1.2:9090/"],
+            googleClientID: "")
+        #expect(config.servers.all == ["https://pongo.example:48129/", "https://192.168.1.2:9090/"])
+        #expect(config.serverURL == "https://pongo.example:48129/")
+        #expect(config.socketURL == "wss://pongo.example:48129/")
+    }
+
+    @Test func keepsTheCurrentAddressWhenNoneAnswers() async {
+        let config = AppConfig(
+            serverURL: "http://127.0.0.1:9/", fallbackServerURLs: ["http://127.0.0.1:7/"], googleClientID: "")
+        await config.servers.choose()
+        #expect(config.serverURL == "http://127.0.0.1:9/")
+    }
+}
+
+@Suite struct LibraryChangeTests {
+    @Test func onlyLibraryChangesAskForASync() async throws {
+        let database = try Database()
+        let start = await database.changeCount()
+        // Listening, history and the sync's own records wait for the regular sync
+        let track = Track(id: "a", name: "a", artists: [], album: nil)
+        try await database.recordListen(track, seconds: 30, newPlay: true)
+        try await database.addPlayedTrack("a")
+        try await database.setCursor(42)
+        #expect(await database.changeCount() == start)
+
+        let favourite = Favourite(stid: "1", title: "Song", artists: [], album: nil, image: nil)
+        #expect(try await database.toggleFavourite(favourite))
+        #expect(await database.changeCount() > start)
+    }
+}

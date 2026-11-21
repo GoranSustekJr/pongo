@@ -991,6 +991,29 @@
         }
       }
     },
+    "checkingsongs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking the songs can be played…"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prüfe, ob die Titel abspielbar sind…"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Provjeravam mogu li se pjesme reproducirati…"
+          }
+        }
+      }
+    },
     "clear": {
       "extractionState": "manual",
       "localizations": {
@@ -2114,6 +2137,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Preuzmite pjesme sada!"
+          }
+        }
+      }
+    },
+    "dragtoreorder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag songs to change their order"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titel ziehen, um die Reihenfolge zu ändern"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Povucite pjesme za promjenu redoslijeda"
           }
         }
       }
@@ -4205,6 +4251,52 @@
         }
       }
     },
+    "movedown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move down"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach unten"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pomakni dolje"
+          }
+        }
+      }
+    },
+    "moveup": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move up"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach oben"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pomakni gore"
+          }
+        }
+      }
+    },
     "name": {
       "extractionState": "manual",
       "localizations": {
@@ -4523,6 +4615,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nema sinkroniziranih stihova"
+          }
+        }
+      }
+    },
+    "notaddedunavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can't be played, so not added"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht abspielbar, daher nicht hinzugefügt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne može se reproducirati pa nije dodano"
           }
         }
       }

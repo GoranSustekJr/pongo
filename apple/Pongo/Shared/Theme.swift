@@ -55,7 +55,13 @@ private struct PongoGlass<S: Shape>: ViewModifier {
 
     func body(content: Content) -> some View {
         if liquidGlass {
-            content.glassEffect(.regular.interactive(interactive), in: shape)
+            #if os(macOS)
+                // Interactive glass takes the click from the button it wraps on
+                // the Mac, and its press effect is made for touch anyway
+                content.glassEffect(.regular, in: shape)
+            #else
+                content.glassEffect(.regular.interactive(interactive), in: shape)
+            #endif
         } else {
             content.background(.ultraThinMaterial, in: shape)
         }

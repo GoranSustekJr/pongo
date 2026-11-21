@@ -91,7 +91,7 @@ func copyToPasteboard(_ text: String) {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
     #else
-        copyToPasteboard(text)
+        UIPasteboard.general.string = text
     #endif
 }
 
