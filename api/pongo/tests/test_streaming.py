@@ -1,6 +1,7 @@
 import asyncio
 import struct
 
+import httpx
 import pytest
 
 from library import db
@@ -168,3 +169,45 @@ def test_audio_that_cant_be_piped_is_downloaded_whole(monkeypatch, tmp_path):
     audio = asyncio.run(downloads._download_streamable("v", tmp_path, partial))
     assert audio == tmp_path / "whole.m4a"
     assert partial.failed and downloads.streaming("v") is None
+
+
+def _fake_youtube(monkeypatch, audio: bytes, part: int):
+    """Serves `audio` the way YouTube does: in byte ranges, with the file's size."""
+    requested = []
+
+    def serve(request):
+        start, end = map(int, request.headers["range"].removeprefix("bytes=").split("-"))
+        requested.append((start, end))
+        end = min(end, len(audio) - 1)
+        return httpx.Response(206, content=audio[start:end + 1],
+                              headers={"content-range": f"bytes {start}-{end}/{len(audio)}"})
+
+    real_client = httpx.AsyncClient
+    monkeypatch.setattr(downloads.httpx, "AsyncClient",
+                        lambda **kw: real_client(transport=httpx.MockTransport(serve), **kw))
+    monkeypatch.setattr(downloads, "_audio_source", lambda video_id, client: ("https://yt/a", {}, part))
+    return requested
+
+
+def test_loaded_ytdlp_fetches_the_audio_in_parts(monkeypatch, tmp_path):
+    audio = _fmp4()
+    requested = _fake_youtube(monkeypatch, audio, part=100)
+    partial = Partial(tmp_path / "p")
+    partial.folder.mkdir()
+    asyncio.run(downloads._pipe_audio_with("v", partial, "visionos"))
+    assert partial.path.read_bytes() == audio
+    assert requested[0] == (0, 99) and len(requested) == -(-len(audio) // 100)
+
+
+def test_running_ytdlp_takes_over_when_the_loaded_one_fails(monkeypatch, tmp_path):
+    def broken(video_id, client):
+        raise RuntimeError("Sign in to confirm you're not a bot")
+
+    async def run(*command, **kw):
+        raise downloads.TrackUnavailable(f"ran {command[0]}")
+
+    monkeypatch.setattr(downloads, "_audio_source", broken)
+    monkeypatch.setattr(downloads.asyncio, "create_subprocess_exec", run)
+    partial = Partial(tmp_path / "p")
+    with pytest.raises(downloads.TrackUnavailable, match="ran yt-dlp"):
+        asyncio.run(downloads._pipe_audio_with("v", partial, "visionos"))

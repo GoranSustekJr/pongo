@@ -6,11 +6,13 @@ import logging
 import secrets
 import shutil
 import tempfile
+import threading
 import time
 from collections import deque
 from collections.abc import AsyncIterator
 from pathlib import Path
 
+import httpx
 from cachetools import TTLCache
 
 from library import config, db, limits
@@ -35,6 +37,13 @@ _downloading: set[str] = set()
 # Tracks with no YouTube match, so mixes and retries don't search for them again right away
 _no_match: TTLCache = TTLCache(maxsize=5000, ttl=3600)
 _slots = asyncio.Semaphore(config.MAX_CONCURRENT_DOWNLOADS)
+# Moods aren't needed to play a track, so they're analyzed after it's stored, one at a time
+_analyzing = asyncio.Semaphore(1)
+_analyses: set[asyncio.Task] = set()
+# yt-dlp loaded once per worker thread and player client: starting it takes most of a second
+_loaded = threading.local()
+# YouTube slows down single requests for large ranges, so audio comes in parts this big
+_RANGE = 10 * 1024 * 1024
 
 
 class TrackUnavailable(Exception):
@@ -98,7 +107,55 @@ async def _download_audio(video_id: str, folder: Path) -> Path:
     return await _download_audio_with(video_id, folder, config.YTDLP_PLAYER_CLIENTS[-1])
 
 
+def _audio_source(video_id: str, client: str) -> tuple[str, dict, int]:
+    """Blocking. The URL of the video's m4a audio, the headers to fetch it with and the size
+    of the parts to fetch it in, found by a yt-dlp kept loaded in this thread."""
+    instances = getattr(_loaded, "instances", None)
+    if instances is None:
+        instances = _loaded.instances = {}
+    ydl = instances.get(client)
+    if ydl is None:
+        import yt_dlp
+
+        options = {"quiet": True, "no_warnings": True, "noplaylist": True, "format": "ba[ext=m4a]"}
+        if client != "default":
+            options["extractor_args"] = {"youtube": {"player_client": [client]}}
+        if config.YTDLP_COOKIES_FILE:
+            options["cookiefile"] = config.YTDLP_COOKIES_FILE
+        ydl = instances[client] = yt_dlp.YoutubeDL(options)
+    info = ydl.extract_info(f"https://www.youtube.com/watch?v={video_id}", download=False)
+    part = (info.get("downloader_options") or {}).get("http_chunk_size") or _RANGE
+    return info["url"], info.get("http_headers") or {}, part
+
+
+async def _pipe_audio_loaded(video_id: str, partial: Partial, client: str) -> None:
+    """Downloads into `partial` with the loaded yt-dlp, which skips starting one per track."""
+    url, headers, part = await asyncio.to_thread(_audio_source, video_id, client)
+    async with httpx.AsyncClient(headers=headers, timeout=30, follow_redirects=True) as http:
+        with partial.path.open("wb") as file:
+            total = None
+            while total is None or partial.written < total:
+                start = partial.written
+                request_range = {"Range": f"bytes={start}-{start + part - 1}"}
+                async with http.stream("GET", url, headers=request_range) as response:
+                    response.raise_for_status()
+                    total = int(response.headers.get("content-range", "/0").rsplit("/", 1)[-1] or 0)
+                    async for data in response.aiter_bytes(CHUNK):
+                        partial.append(file, data)
+                if not total or partial.written == start:
+                    break
+
+
 async def _pipe_audio_with(video_id: str, partial: Partial, client: str) -> None:
+    try:
+        await _pipe_audio_loaded(video_id, partial, client)
+        return
+    except Exception as error:
+        # Players may already have bytes a fresh download couldn't continue
+        if partial.written:
+            raise TrackUnavailable(f"Download of {video_id} broke off: {error}") from error
+        log.info("Loaded yt-dlp couldn't download %s with %s, running it instead: %s",
+                 video_id, client, error)
     process = await asyncio.create_subprocess_exec(
         "yt-dlp", "--no-playlist", "--no-progress", "--quiet",
         # YouTube's m4a is a fragmented MP4, which players can follow while it downloads
@@ -176,7 +233,18 @@ def _store_file(path: Path) -> tuple[str, str, int]:
     return sha256, str(target), size
 
 
+def _analyze_later(auid: int, path: Path) -> None:
+    async def analyze():
+        async with _analyzing:
+            await mood.save(auid, await mood.analyze(path))
+
+    task = asyncio.create_task(analyze())
+    _analyses.add(task)
+    task.add_done_callback(_analyses.discard)
+
+
 async def _fetch(stid: str) -> float:
+    started = time.monotonic()
     full = await deezer.full_track(stid)
     track = {
         "title": full["title"],
@@ -194,9 +262,8 @@ async def _fetch(stid: str) -> float:
     config.TEMP_DIR.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=config.TEMP_DIR) as folder:
         audio = await _download_streamable(video_id, Path(folder), _partials[stid])
-        duration = await _audio_duration(audio)
-        level = await loudness.measure(audio)
-        analyzed = await mood.analyze(audio)
+        downloaded = time.monotonic()
+        duration, level = await asyncio.gather(_audio_duration(audio), loudness.measure(audio))
         sha256, path, size = await asyncio.to_thread(_store_file, audio)
 
     async with db.pool.connection() as conn:
@@ -213,13 +280,6 @@ async def _fetch(stid: str) -> float:
         auid = (await cursor.fetchone())[0]
         await conn.execute(
             """
-            UPDATE audio SET tempo = %s, energy = %s, valence = %s, danceability = %s, mood_checked = true
-            WHERE auid = %s
-            """,
-            (*mood.values(analyzed), auid),
-        )
-        await conn.execute(
-            """
             INSERT INTO track (stid, ytvid, auid, duration, title, artists, isrc, match_score)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (stid) DO NOTHING
@@ -227,6 +287,9 @@ async def _fetch(stid: str) -> float:
             (stid, video_id, auid, duration, track["title"], track["artist"],
              full.get("isrc"), match_score),
         )
+    _analyze_later(auid, Path(path))
+    log.info("Fetched %s in %.1f s, %.1f s of it after the download",
+             stid, time.monotonic() - started, time.monotonic() - downloaded)
     return duration
 
 
