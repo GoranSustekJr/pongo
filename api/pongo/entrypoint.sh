@@ -10,4 +10,4 @@ if [ "${YTDLP_AUTO_UPDATE:-false}" = "true" ]; then
 fi
 
 # One worker: in-progress downloads are tracked in memory
-exec uvicorn main:app --host 0.0.0.0 --port 8081 --proxy-headers
+exec uvicorn main:app --host "${HOST:-0.0.0.0}" --port "${PORT:-8081}" --proxy-headers

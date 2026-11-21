@@ -1,0 +1,43 @@
+# For a Linux server that is also a router, or anywhere Docker must not touch the firewall.
+# Run dockerd with "iptables": false and "bridge": "none", then:
+#   docker compose -f docker-compose.yml -f docker-compose.host.yml up -d --build
+# Both containers use the host's network: no NAT or port proxy, and Postgres
+# listens on 127.0.0.1 only.
+services:
+  db:
+    network_mode: host
+    command:
+      - postgres
+      - -c
+      - listen_addresses=127.0.0.1
+      - -c
+      - port=${DB_PORT:-55432}
+      # Sized for a small server shared with other services, on an SSD
+      - -c
+      - shared_buffers=256MB
+      - -c
+      - effective_cache_size=1GB
+      - -c
+      - work_mem=8MB
+      - -c
+      - maintenance_work_mem=64MB
+      - -c
+      - random_page_cost=1.1
+      - -c
+      - effective_io_concurrency=200
+      - -c
+      - wal_compression=on
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p ${DB_PORT:-55432} -U pongo_user -d pongo_db"]
+
+  api:
+    build:
+      context: ./api/pongo
+      network: host
+    network_mode: host
+    ports: !reset []
+    environment:
+      DATABASE_URL: postgresql://pongo_user:${DB_PASSWORD}@127.0.0.1:${DB_PORT:-55432}/pongo_db
+      PORT: ${API_PORT:-8081}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os, urllib.request as u; u.urlopen('http://127.0.0.1:%s/health' % os.environ['PORT'], timeout=3)"]

@@ -1,0 +1,46 @@
+# HTTPS with a Let's Encrypt certificate, for when Let's Encrypt can't reach ports
+# 80 and 443: Caddy proves it owns PONGO_DOMAIN through a Duck DNS record instead.
+# The addresses in PONGO_OWN_CERT_SITES, such as the server's IP addresses on the
+# home network, get the certificate in secrets/tls instead, since Let's Encrypt
+# doesn't sign private addresses.
+{
+	admin off
+	# Nothing listens on port 80, so no redirects to HTTPS
+	auto_https disable_redirects
+	# The container is read-only and needs no local CA of Caddy's
+	skip_install_trust
+}
+
+(pongo) {
+	# Library syncs with playlist covers are the largest requests; this stops anything bigger at the door
+	request_body {
+		max_size 10MB
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+	# WebSockets pass straight through. For audio the API checks the request and
+	# names the file, and Caddy sends it, Range requests included.
+	reverse_proxy 127.0.0.1:{$API_PORT} {
+		@audio header X-Pongo-Audio *
+		handle_response @audio {
+			root * /srv/pongo
+			rewrite * /{rp.header.X-Pongo-Audio}
+			header Content-Type audio/mp4
+			file_server
+		}
+	}
+}
+
+https://{$PONGO_DOMAIN}:{$PONGO_TLS_PORT} {
+	tls {
+		dns duckdns {env.DUCKDNS_TOKEN}
+	}
+	import pongo
+}
+
+{$PONGO_OWN_CERT_SITES} {
+	tls /certs/server-fullchain.crt /certs/server.key
+	import pongo
+}
