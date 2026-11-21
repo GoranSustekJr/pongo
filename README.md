@@ -12,17 +12,15 @@ Pongo is a music streaming app you host yourself: native **iPhone and Mac** apps
 **To set it up yourself, follow [SELF_HOSTING.md](SELF_HOSTING.md).** It's meant for personal use, for you and maybe a few friends, not for running a public service; see the note at the top of the guide.
 
 <p align="center">
-  <img src="docs/screenshots/iphone-player.jpg" width="250" alt="The player on iPhone" />
-  &nbsp;
-  <img src="docs/screenshots/iphone-library.jpg" width="250" alt="The library on iPhone" />
-  &nbsp;
-  <img src="docs/screenshots/iphone-favourites.jpg" width="250" alt="Favourite songs on iPhone" />
+  <img src="docs/screenshots/mac-home.png" width="100%" alt="The Mac app: home with mixes and moods, and synced lyrics in the side panel" />
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/mac-home.jpg" width="560" alt="The Mac app's home screen" />
+  <img src="docs/screenshots/iphone-home.jpg" width="31%" alt="Home on iPhone, with shortcuts, daily mixes and moods" />
   &nbsp;
-  <img src="docs/screenshots/mac-preferences.jpg" width="240" alt="The Mac app's settings window" />
+  <img src="docs/screenshots/iphone-player.jpg" width="31%" alt="The player on iPhone, colored by the album art" />
+  &nbsp;
+  <img src="docs/screenshots/iphone-lyrics.jpg" width="31%" alt="Synced lyrics on iPhone" />
 </p>
 
 ## Why it's back
@@ -32,6 +30,8 @@ Pongo stopped working when Spotify restricted its developer API in 2026. It's be
 ## Features
 
 ### Listening
+<img src="docs/screenshots/iphone-queue.jpg" width="250" align="right" alt="The queue on iPhone" />
+
 - **Live lyrics:** synchronized lyrics that follow the song, with manual timing, translations, and a Live Activity on the lock screen while listening together.
 - **Mix mode and smart shuffle:** similar songs keep coming before the queue runs out.
 - **Moods and daily mixes** made from what you listen to.
@@ -40,12 +40,18 @@ Pongo stopped working when Spotify restricted its developer API in 2026. It's be
 - **Queue management:** reorder, remove, play next, shuffle and repeat.
 - **Offline songs and playlists** for listening without internet.
 
+<br clear="right" />
+
 ### Listening together
+<img src="docs/screenshots/iphone-listen.jpg" width="250" align="right" alt="Starting a session of listening together, with its code and QR code" />
+
 Friends follow your queue live on their own phones or Macs, each on their own account and headphones.
 - Presets (**Listen along**, **Party**, **Co-pilot**) or custom rights for adding songs, playback, managing the queue, modes and taking over, for everyone or per guest.
 - **Vote to skip**, **emoji reactions**, and **song suggestions** the host adds or declines.
 - Join by **QR code or link**, set a **headphone delay** for Bluetooth, and pass the session to someone else.
 - A **recap** at the end, which saves what played as a playlist.
+
+<br clear="right" />
 
 ### Your library
 - Favourites, online and offline playlists, history, sleep alarms and settings **sync across your devices**.
@@ -58,6 +64,12 @@ Friends follow your queue live on their own phones or Macs, each on their own ac
 - A **Mac app with its own layout**: sidebar, toolbar player, lyrics and queue panel, and menus.
 - **Liquid Glass** design with colors taken from the album art.
 - Sign in with Google. English, Deutsch and Hrvatski.
+
+<p align="center">
+  <img src="docs/screenshots/mac-player.jpg" width="49%" alt="The Mac app's full-window player with synced lyrics" />
+  &nbsp;
+  <img src="docs/screenshots/mac-playlist.jpg" width="49%" alt="A playlist in the Mac app, with the queue panel open" />
+</p>
 
 ## Built with
 
