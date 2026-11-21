@@ -1,8 +1,8 @@
 # Pongo for iOS and macOS (native)
 
-A SwiftUI rewrite of the Flutter app in `frontend/`. It talks to the same
-server, uses the same database layout and sync format, so a library syncs
-between this app and the Flutter one.
+The Pongo apps, in SwiftUI. They replaced the Flutter app, which is archived
+under the git tag `archive/flutter`; they keep its database layout and sync
+format, so a library still syncs with it.
 
 ## Layout
 
@@ -25,8 +25,8 @@ between this app and the Flutter one.
   their App Group.
 - `Config/`: build settings, the Info.plists and the Mac entitlements.
 - `scripts/generate_strings.py`: generates `Pongo/Resources/Localizable.xcstrings`
-  and `Pongo/Shared/Strings.swift` from the Flutter `.arb` files plus
-  `scripts/extra_strings.json`. Run it after changing either.
+  and `Pongo/Shared/Strings.swift` from `scripts/strings.json`, which holds
+  every string in English, German and Croatian. Run it after changing that file.
 
 ## Setup
 
@@ -38,20 +38,22 @@ between this app and the Flutter one.
    DEVELOPMENT_TEAM = <your team ID>
    ```
 
-   `/$()/` keeps xcconfig from reading `//` as a comment.
+   `/$()/` keeps xcconfig from reading `//` as a comment. Optionally,
+   `PONGO_LOCAL_SERVER_URL` holds a second address, such as the server's on
+   the home network, which the apps use when the first can't be reached.
 
 2. Open `Pongo.xcodeproj` in Xcode 27 and run the `Pongo` scheme.
 
-The app needs iOS 26.1. Its bundle ID is `com.example.pongo.swift`, so it
-installs next to the Flutter app instead of replacing it, and each app keeps
-its own data. Set `PONGO_BUNDLE_ID` in the local xcconfig to change it.
+The app needs iOS 26.1, and the Mac app macOS 26.1. The bundle ID is
+`com.example.pongo.swift`; set `PONGO_BUNDLE_ID` in the local xcconfig to
+change it.
 
-Sign-in opens Google in a browser sheet (OAuth with PKCE) and uses the same iOS
-client ID as the Flutter app, so the server accepts its tokens without changes.
+Sign-in opens Google in a browser sheet (OAuth with PKCE) with the iOS client
+ID, which the server checks tokens against.
 
 Tests for the core run with `swift test` in `PongoKit/`.
 
-## Differences from the Flutter app
+## Compared with the Flutter app
 
 The screens follow the Flutter app's look (its background, colors, big synced
 lyrics with blur, the queue and lyrics panels in the player, the delay

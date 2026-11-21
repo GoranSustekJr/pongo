@@ -1,8 +1,8 @@
 # Self-hosting Pongo
 
-Pongo is being revived as a self-hosted music app: you run the server on your own machine and install the app on your own phone. This guide takes you from a fresh clone to playing music, first on your home network and then, optionally, from anywhere.
+Pongo is a self-hosted music app: you run the server on your own machine and install the native app on your own iPhone or Mac. This guide takes you from a fresh clone to playing music, first on your home network and then, optionally, from anywhere.
 
-The iOS app is the focus of the revival. macOS and Android builds exist but haven't been brought up to date yet.
+The apps are written in SwiftUI, in [`apple/`](apple/). The original Flutter app is archived and no longer developed.
 
 ## Before you start: personal use only
 
@@ -20,7 +20,7 @@ The code is under the [MIT License](LICENSE): free to use, change and share, wit
 |---|---|
 | **Server** | Any machine that can run Docker: a Mac, a Linux box, a home server. 2 CPU cores, 2 GB of RAM and some disk for the audio (about 4 MB per song). |
 | **Docker** | [Docker Desktop](https://www.docker.com/products/docker-desktop/), or on a Mac [Colima](https://github.com/abiosoft/colima) (`brew install colima docker docker-compose && colima start`). |
-| **For the iOS app** | A Mac with [Xcode](https://developer.apple.com/xcode/) and [Flutter](https://docs.flutter.dev/get-started/install) 3.47 or newer, and an iPhone on iOS 15 or later. |
+| **For the apps** | A Mac with [Xcode](https://developer.apple.com/xcode/) 27, and an iPhone on iOS 26.1 or later or a Mac on macOS 26.1 or later. |
 | **Apple account** | A free Apple ID works, but apps installed with it stop opening after 7 days until you install them again. A paid developer account ($99/year) gives 1-year installs, TestFlight and Sign in with Apple. |
 | **Google Cloud project** | Free. Used only for Google sign-in. |
 
@@ -55,43 +55,39 @@ The first start takes a few minutes. The database and the audio are kept in Dock
 2. Go to **Credentials → Create credentials → OAuth client ID**, choose **iOS**, and enter the bundle ID you'll give the app in step 3, such as `com.yourname.pongo`.
 3. Copy the **Client ID** (`1234-abc.apps.googleusercontent.com`) into:
    - `IOS_CLIENT_ID` in the server's `.env`, then run `docker compose up -d` again;
-   - `iosClientID` in `frontend/.env` (step 3).
-4. Copy the **iOS URL scheme** (`com.googleusercontent.apps.1234-abc`) into `frontend/ios/Runner/Info.plist`, replacing the existing `com.googleusercontent.apps.…` value under `CFBundleURLSchemes`.
+   - `GOOGLE_CLIENT_ID` in the apps' local settings (step 3).
+
+The iPhone and Mac apps both use this iOS client.
 
 ## 3. Build the app
 
-Create `frontend/.env`. For a phone on the same Wi-Fi, use the server's LAN address, not `localhost`. On a Mac, `ipconfig getifaddr en0` prints it.
+Create `apple/Config/Pongo.local.xcconfig` (it's gitignored). For a phone on the same Wi-Fi, use the server's LAN address, not `localhost`. On a Mac, `ipconfig getifaddr en0` prints it.
 
 ```
-iosClientID=<your Google iOS client ID>
-androidClientID=
-desktopClientID=
-desktopClientSecred=
-SERVER_URL=http://192.168.1.10:8081/
-SERVER_URL_WSS=ws://192.168.1.10:8081/
+PONGO_SERVER_URL = http:/$()/192.168.1.10:8081/
+GOOGLE_CLIENT_ID = <your Google iOS client ID>
+DEVELOPMENT_TEAM = <your Apple team ID>
+PONGO_BUNDLE_ID = <the bundle ID from step 2>
 ```
 
-Then set up signing:
+`/$()/` keeps Xcode from reading `//` as the start of a comment. Your team ID is under **Membership** on [developer.apple.com](https://developer.apple.com/account), or in Xcode under **Settings → Accounts**.
 
-1. Open `frontend/ios/Runner.xcworkspace` in Xcode.
-2. Select the **Runner** target → **Signing & Capabilities**, choose your own **Team**, and change the **Bundle Identifier** to the one from step 2.
-3. Connect the iPhone, trust the Mac, and turn on **Developer Mode** on the phone (Settings → Privacy & Security).
+Then install it:
 
-Install and start it:
+- **iPhone:** connect it, trust the Mac, and turn on **Developer Mode** on the phone (Settings → Privacy & Security). Open `apple/Pongo.xcodeproj`, pick the **Pongo** scheme and your iPhone, and press Run.
+- **Mac:** pick the **Pongo Mac** scheme and press Run, or build it with `xcodebuild -project apple/Pongo.xcodeproj -scheme "Pongo Mac" -configuration Release build` and copy `Pongo.app` to Applications.
 
-```sh
-cd frontend
-flutter pub get
-flutter run --release -d <your device>     # flutter devices lists them
-```
+To update the app later, run it from Xcode again; installing over it keeps its data.
 
-To update the app later, run the same command again. **Don't use `flutter install`**: it deletes the app first, along with all its data on the phone (downloads, playlists, sign-in).
+To give the Mac app to someone else, zip `Pongo.app` with `ditto -c -k --keepParent Pongo.app Pongo.zip`. With a free Apple account it isn't notarized, so the first time they open it they have to click **Open Anyway** in System Settings → Privacy & Security.
 
 Sign in with Google in the app. To let in someone whose email isn't in `ALLOWED_EMAILS`, run `scripts/enable_user.sh them@example.com`; no restart needed.
 
-## 4. Use it from anywhere (optional)
+## 4. Reaching it from outside your home
 
-To reach the server away from home, it needs a hostname and HTTPS. The app sends sign-in tokens to the server, so don't expose it over plain HTTP.
+To reach the server away from home, it needs a hostname and HTTPS. The app sends sign-in tokens to the server, so don't expose it over plain HTTP. Use a certificate from Let's Encrypt: devices trust it as it is, while a certificate you sign yourself has to be installed on every device, and work Macs often don't allow that.
+
+### With ports 80 and 443
 
 1. Get a free dynamic DNS hostname, for example from [No-IP](https://www.noip.com) or [Duck DNS](https://www.duckdns.org), pointing at your home IP. Their update client or your router keeps it current.
 2. On your router, forward ports **80** and **443** to the server. Let's Encrypt checks the hostname over port 80.
@@ -102,26 +98,51 @@ To reach the server away from home, it needs a hostname and HTTPS. The app sends
    curl https://yourname.ddns.net/health
    ```
 
-4. Point the app at it in `frontend/.env` and build again:
+### Without them: the DNS check
+
+If your provider blocks ports 80 and 443, or the router uses them, Let's Encrypt can check a DNS record instead, and the server can use any port. Caddy sets the record through [Duck DNS](https://www.duckdns.org), which is free.
+
+1. Sign in at duckdns.org, create a subdomain, and copy the token shown at the top of the page.
+2. In `.env`, set:
 
    ```
-   SERVER_URL=https://yourname.ddns.net/
-   SERVER_URL_WSS=wss://yourname.ddns.net/
+   PONGO_DOMAIN=yourname.duckdns.org
+   DUCKDNS_TOKEN=<your token>
+   PONGO_TLS_PORT=9090
+   PONGO_OWN_CERT_SITES=https://192.168.1.10:9090
+   COMPOSE_FILE=docker-compose.yml:docker-compose.host.yml:docker-compose.dns.yml
    ```
 
-The iOS app allows plain HTTP only on the local network, so a build against your LAN address keeps working for development.
+   This setup runs the containers on the host's network, so it's meant for a Linux server. `PONGO_OWN_CERT_SITES` lists the addresses, such as the server's LAN address, that use a certificate of your own from `secrets/tls` (`server-fullchain.crt` and `server.key`), since Let's Encrypt doesn't sign private addresses.
+3. Forward a port of your choice on the router to `PONGO_TLS_PORT`, then start it. A small container keeps the hostname pointed at your home IP, and Caddy renews the certificate by itself:
+
+   ```sh
+   docker compose up -d --build
+   curl https://yourname.duckdns.org:<port>/health
+   ```
+
+### Pointing the apps at it
+
+Set the new address in `apple/Config/Pongo.local.xcconfig` and build again. `PONGO_LOCAL_SERVER_URL` can keep the LAN address; the apps fall back to it when the first address can't be reached.
+
+```
+PONGO_SERVER_URL = https:/$()/yourname.duckdns.org:<port>/
+PONGO_LOCAL_SERVER_URL = http:/$()/192.168.1.10:8081/
+```
+
+The apps allow plain HTTP only on the local network, so a build against your LAN address keeps working for development.
 
 ## Troubleshooting
 
 | Problem | What to check |
 |---|---|
-| The app can't reach the server | Is the server's LAN address still the one in `frontend/.env`? Home routers hand out new ones; reserving the address in the router stops that. Is the phone on the same Wi-Fi? Does `curl http://<address>:8081/health` work from another machine? Is a firewall blocking port 8081? |
+| The app can't reach the server | Is the server's LAN address still the one in `Pongo.local.xcconfig`? Home routers hand out new ones; reserving the address in the router stops that. Is the phone on the same Wi-Fi? Does `curl http://<address>:8081/health` work from another machine? Is a firewall blocking port 8081? |
 | Songs stopped downloading | YouTube changes often and older yt-dlp versions stop working. Raise the `yt-dlp` version in `api/pongo/requirements.txt` (on GitHub, Dependabot opens a pull request for it every week), rebuild with `docker compose up -d --build api`, and check with `scripts/check_download.sh`. `docker compose logs api` shows the error. |
 | A song is always "unavailable" | No YouTube video matched it closely enough. The server waits an hour before searching for it again. |
 | Docker on a Mac says `docker-credential-desktop` not found | `~/.docker/config.json` contains `"credsStore": "desktop"` left over from Docker Desktop; remove that line. |
 | Sign-in fails with "not allowed" | The email isn't in `ALLOWED_EMAILS`; add it there, or run `scripts/enable_user.sh`. |
 | Requests fail with 429 | A rate limit was hit: sign-ins, requests and connections per IP, and new downloads per user per hour. Raise `SIGN_INS_PER_MINUTE`, `REQUESTS_PER_MINUTE`, `SOCKETS_PER_MINUTE` or `DOWNLOADS_PER_HOUR` in `.env` if they're too low for you. |
-| The app stops opening after a week | That's the free Apple account's 7-day limit. Run `flutter run --release` again; your data stays. |
+| The app stops opening after a week | That's the free Apple account's 7-day limit. Run it from Xcode again; your data stays. |
 
 ## Security
 
@@ -134,4 +155,4 @@ The iOS app allows plain HTTP only on the local network, so a build against your
 
 ## How it works
 
-The [README](README.md#how-does-it-work) explains how tracks are matched, downloaded, streamed and mixed, and [docs in the frontend](README.md#frontend-structure) describe the app's structure.
+The [README](README.md#how-does-it-work) explains how tracks are matched, downloaded, streamed and mixed, and [apple/README.md](apple/README.md) describes the apps' structure.

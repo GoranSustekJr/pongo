@@ -1,21 +1,12 @@
 #!/usr/bin/env python3
-"""Generates the app's string catalog and L10n accessors from the Flutter
-app's .arb files, plus apple/scripts/extra_strings.json for strings
-only the Swift app has. Run it after changing either."""
+"""Generates the app's string catalog and L10n accessors from
+apple/scripts/strings.json, which holds every string in English, German and
+Croatian. Run it after changing that file."""
 import json
 import pathlib
 
 root = pathlib.Path(__file__).resolve().parents[2]
-languages = ["en", "de", "hr"]
-strings = {}
-for language in languages:
-    arb = json.loads((root / f"frontend/lib/l10n/app_{language}.arb").read_text())
-    for key, value in arb.items():
-        if not key.startswith("@"):
-            strings.setdefault(key, {})[language] = value
-extra = json.loads((root / "apple/scripts/extra_strings.json").read_text())
-for key, values in extra.items():
-    strings.setdefault(key, {}).update(values)
+strings = json.loads((root / "apple/scripts/strings.json").read_text())
 
 catalog = {"sourceLanguage": "en", "version": "1.0", "strings": {}}
 for key in sorted(strings):

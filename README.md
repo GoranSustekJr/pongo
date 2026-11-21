@@ -2,7 +2,7 @@
 
 <img src="https://github.com/user-attachments/assets/1e2f3144-12e1-4686-a65c-b3f1c9e73c8f" width="160" height="160" align="right" />
 
-Pongo is a music streaming app you host yourself: native **iPhone and Mac** apps in SwiftUI, an older Flutter app, and a FastAPI server that runs in Docker on any machine you have.
+Pongo is a music streaming app you host yourself: native **iPhone and Mac** apps in SwiftUI and a FastAPI server that runs in Docker on any machine you have.
 
 - **No Spotify and no paid APIs:** song, album and artist data comes from the public Deezer API, and the audio is matched on YouTube Music and downloaded with yt-dlp.
 - **Your own server:** at home on your network, or reachable from anywhere over HTTPS.
@@ -27,7 +27,7 @@ Pongo is a music streaming app you host yourself: native **iPhone and Mac** apps
 
 ## Why it's back
 
-Pongo stopped working when Spotify restricted its developer API in 2026. It's been rebuilt so that nothing depends on a service that can switch it off: the catalog comes from Deezer's open API, the audio is stored on your own server, and the apps were rewritten natively for iPhone and Mac (in [`apple/`](apple/)). The Flutter app in [`frontend/`](frontend/) still works against the same server, and a library syncs between both.
+Pongo stopped working when Spotify restricted its developer API in 2026. It's been rebuilt so that nothing depends on a service that can switch it off: the catalog comes from Deezer's open API, the audio is stored on your own server, and the apps were rewritten natively for iPhone and Mac (in [`apple/`](apple/)). The original Flutter app is archived: see [The Flutter app](#the-flutter-app) below.
 
 ## Features
 
@@ -63,7 +63,6 @@ Friends follow your queue live on their own phones or Macs, each on their own ac
 
 ![Swift](https://img.shields.io/badge/Swift-F05138?style=for-the-badge&logo=swift&logoColor=white)
 ![SwiftUI](https://img.shields.io/badge/SwiftUI-0D96F6?style=for-the-badge&logo=swift&logoColor=white)
-![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/fastapi-109989?style=for-the-badge&logo=FASTAPI&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
@@ -79,18 +78,7 @@ docker compose up -d --build
 curl http://localhost:8081/health
 ```
 
-Then create `frontend/.env` with the server address (use your computer's LAN address, not localhost, for a phone):
-
-```
-iosClientID=<Google iOS OAuth client id>
-androidClientID=
-desktopClientID=
-desktopClientSecred=
-SERVER_URL=http://192.168.1.10:8081/
-SERVER_URL_WSS=ws://192.168.1.10:8081/
-```
-
-and run the app with `flutter run --release` from `frontend/`. For the native iPhone and Mac apps, follow [apple/README.md](apple/README.md) instead. Only emails in `ALLOWED_EMAILS` can sign in; let others in with `scripts/enable_user.sh someone@example.com`.
+Then build the iPhone or Mac app against it, as [apple/README.md](apple/README.md) describes: put the server's address (your computer's LAN address, not localhost, for a phone) and your Google iOS client ID in `apple/Config/Pongo.local.xcconfig` and run the `Pongo` or `Pongo Mac` scheme in Xcode. Only emails in `ALLOWED_EMAILS` can sign in; let others in with `scripts/enable_user.sh someone@example.com`.
 
 ### Reaching it from the internet
 
@@ -101,31 +89,13 @@ docker compose -f docker-compose.yml -f docker-compose.public.yml up -d --build
 curl https://$PONGO_DOMAIN/health
 ```
 
-Build the app against `SERVER_URL=https://<hostname>/` and `SERVER_URL_WSS=wss://<hostname>/`. The iOS app allows plain HTTP only to the local network, so the LAN setup above keeps working for development.
+If ports 80 and 443 can't be forwarded, `docker-compose.dns.yml` gets the certificate through Let's Encrypt's DNS check instead, with a free [Duck DNS](https://www.duckdns.org) hostname, on any port; see [SELF_HOSTING.md](SELF_HOSTING.md#without-them-the-dns-check).
+
+Set `PONGO_SERVER_URL = https:/$()/<hostname>/` in the apps' local xcconfig. `PONGO_LOCAL_SERVER_URL` can hold the server's address at home too; the apps fall back to it when the first one can't be reached. The apps allow plain HTTP only to the local network, so the LAN setup above keeps working for development.
 
 Audio lives in the `pongo_audio` volume and the database in `pongo_db`. Back up both.
 
-Tests: `flutter test test/catalog_models_test.dart` in `frontend/`, and `python -m pytest tests` in `api/pongo/`.
-
-## Flutter app structure
-
-```
-frontend/lib/
-  main.dart
-  app/        App widgets, theme and navigation
-  core/       Audio, network client, storage, notifications, constants
-  shared/     Models, data and widgets used by several features
-  features/   One folder per feature
-    <feature>/
-      data/          API requests and data managers
-      models/
-      presentation/
-        phone/
-        desktop/
-        widgets/     Shared by phone and desktop
-```
-
-Import each symbol from the file that declares it, using `package:pongo/...` paths. Authenticated requests go through `core/network/api_client.dart`.
+Tests: `swift test` in `apple/PongoKit/`, and `python -m pytest tests` in `api/pongo/`.
 
 ## How Does It Work?
 
@@ -154,7 +124,7 @@ When a single track is played with mix on, the app keeps the queue going: whenev
 
 ## The Flutter app
 
-The Flutter app came first and still runs against the same server. Demo videos: [March 2025](https://youtu.be/PcywrO85vYY) and [July 2025](https://youtu.be/VLkgnx1HZGk), with an updated UI.
+The Flutter app came first. It's no longer developed: the code is kept in git under the tag [`archive/flutter`](../../tree/archive/flutter) (in `frontend/`), and its desktop work under `archive/flutter-macos`. It still runs against the same server, and a library syncs with the native apps. Demo videos: [March 2025](https://youtu.be/PcywrO85vYY) and [July 2025](https://youtu.be/VLkgnx1HZGk), with an updated UI.
 
 <img src="https://github.com/user-attachments/assets/1afacff7-c027-48fd-a900-be631d27c1f6" width="180" />
 <img src="https://github.com/user-attachments/assets/48885f3a-6c38-4289-b09a-2cfe10855a46" width="180" />
