@@ -265,5 +265,8 @@
     "popularartists": "Beliebte Künstler",
     "featuredplaylists": "Empfohlene Playlists",
     "newreleases": "Neuerscheinungen",
-    "genres": "Genres"
+    "genres": "Genres",
+    "play": "Wiedergeben",
+    "minutesshort": "Min.",
+    "changecover": "Cover ändern"
 }

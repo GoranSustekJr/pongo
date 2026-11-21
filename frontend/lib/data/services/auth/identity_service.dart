@@ -25,7 +25,10 @@ class IdentityService {
   // GoogleSignIn may only be initialized once per app run.
   Future<void>? _googleInitialized;
 
-  /// Signs in with Google on a phone, or returns `null` if the user cancels.
+  /// Signs in with Google on a phone or a Mac, or returns `null` if the user
+  /// cancels.
+  ///
+  /// Macs use the iOS client ID, so the server checks them like iPhones.
   Future<IdentityCredential?> signInWithGoogle() async {
     final clientId = kIsApple ? _config.appleClientId : _config.androidClientId;
     _googleInitialized ??= GoogleSignIn.instance.initialize(
@@ -51,7 +54,7 @@ class IdentityService {
       idToken: idToken,
       apple: false,
       platform: kIsApple ? 'ios' : kPlatform,
-      deviceId: await _phoneDeviceId(),
+      deviceId: await _deviceId(),
     );
   }
 
@@ -67,7 +70,7 @@ class IdentityService {
       idToken: credential.authorizationCode,
       apple: true,
       platform: kIsApple ? 'ios' : kPlatform,
-      deviceId: await _phoneDeviceId(),
+      deviceId: await _deviceId(),
     );
   }
 
@@ -85,19 +88,14 @@ class IdentityService {
       idToken: idToken,
       apple: false,
       platform: 'web',
-      deviceId: await _desktopDeviceId(),
+      deviceId: await _deviceId(),
     );
   }
 
-  Future<String?> _phoneDeviceId() async {
+  Future<String?> _deviceId() async {
     final deviceInfo = DeviceInfoPlugin();
     if (kIsIOS) return (await deviceInfo.iosInfo).identifierForVendor;
     if (kIsAndroid) return (await deviceInfo.androidInfo).id;
-    return null;
-  }
-
-  Future<String?> _desktopDeviceId() async {
-    final deviceInfo = DeviceInfoPlugin();
     if (kIsMacOS) return (await deviceInfo.macOsInfo).systemGUID;
     if (kIsWindows) return (await deviceInfo.windowsInfo).deviceId;
     if (kIsLinux) return (await deviceInfo.linuxInfo).machineId;

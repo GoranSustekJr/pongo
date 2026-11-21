@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
 
 import '../utils/platform.dart';
 
@@ -50,6 +51,16 @@ class Navigations {
           ? MaterialPageRoute(builder: (context) => page)
           : CupertinoPageRoute(builder: (context) => page),
     );
+  }
+
+  /// Opens an artist, album or playlist screen: as a page on phones and as a
+  /// sheet over the window on desktops, where those screens have a fixed size.
+  void catalogScreen(BuildContext context, WidgetBuilder builder) {
+    if (kIsMobile) {
+      nextScreen(context, builder(context));
+    } else {
+      showMacosSheet(context: context, builder: builder);
+    }
   }
 
   void nextScreenReplace(BuildContext context, Widget page, Object? arguments) {

@@ -4,7 +4,9 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../player/view_models/player_view_model.dart';
 import '../../view_models/recommendations_view_model.dart';
 import '../phone/sections/recommendations_categories.dart';
+import '../phone/sections/recommendations_charts.dart';
 import '../phone/sections/recommendations_history.dart';
+import '../phone/sections/recommendations_quick_picks.dart';
 
 class RecommendationsBodyMacos extends StatelessWidget {
   final RecommendationsViewModel dataManager;
@@ -38,17 +40,23 @@ class RecommendationsBodyMacos extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      if (dataManager.history.isNotEmpty)
-                        RecommendationsHistory(
+                      RecommendationsQuickPicks(
+                        dataManager: dataManager,
+                        player: player,
+                      ),
+                      RecommendationsHistory(
+                        dataManager: dataManager,
+                        player: player,
+                        skip: RecommendationsQuickPicks.count,
+                      ),
+                      RecommendationsCategories(
+                        dataManager: dataManager,
+                        player: player,
+                        middle: RecommendationsCharts(
                           dataManager: dataManager,
                           player: player,
                         ),
-                      if (dataManager.categories.isNotEmpty ||
-                          dataManager.newReleases.isNotEmpty)
-                        RecommendationsCategories(
-                          dataManager: dataManager,
-                          player: player,
-                        ),
+                      ),
                     ],
                   ),
                 ),

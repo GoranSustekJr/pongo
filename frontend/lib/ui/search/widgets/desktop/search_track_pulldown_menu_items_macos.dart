@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 
 import '../../../../domain/models/catalog/track.dart';
+import '../../../../domain/models/playlists/playlist_handler.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/app_icons.dart';
 import '../../../core/ui/space.dart';
 import '../../../core/view_models/track_actions_view_model.dart';
+import '../../../playlists/view_models/open_playlist.dart';
 
 List<MacosPulldownMenuEntry> searchTrackPulldownMenuItemsMacos(
   BuildContext context,
@@ -55,9 +57,7 @@ List<MacosPulldownMenuEntry> searchTrackPulldownMenuItemsMacos(
           ],
         ),
       ),
-      onTap: () {
-        //TODO: Add to playlist
-      },
+      onTap: () => _addToPlaylist(context, track),
     ),
     const MacosPulldownMenuDivider(),
     MacosPulldownMenuItem(
@@ -137,3 +137,12 @@ List<MacosPulldownMenuEntry> searchTrackPulldownMenuItemsMacos(
     ),
   ];
 }
+
+void _addToPlaylist(BuildContext context, Track track) => OpenPlaylist().show(
+  context,
+  PlaylistHandler(
+    type: PlaylistHandlerType.online,
+    function: PlaylistHandlerFunction.addToPlaylist,
+    track: [onlineHandlerTrack(track)],
+  ),
+);

@@ -862,4 +862,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get genres => 'Genres';
+
+  @override
+  String get play => 'Wiedergeben';
+
+  @override
+  String get minutesshort => 'Min.';
+
+  @override
+  String get changecover => 'Cover ändern';
 }

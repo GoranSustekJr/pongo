@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import '../../../../../domain/models/catalog/track.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/image_resolution.dart';
+import '../../../../../utils/platform.dart';
 import '../../../../core/app_icons.dart';
 import '../../../../core/themes/colors.dart';
 import '../../../../core/ui/image/image_compatible.dart';
@@ -97,8 +98,8 @@ class RecommendationsQuickPicks extends StatelessWidget {
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: kIsDesktop ? 3 : 2,
                 mainAxisExtent: 56,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,

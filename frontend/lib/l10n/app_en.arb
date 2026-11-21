@@ -1326,5 +1326,17 @@
     "genres": "Genres",
     "@genres": {
         "description": "genres"
+    },
+    "play": "Play",
+    "@play": {
+        "description": "play"
+    },
+    "minutesshort": "min",
+    "@minutesshort": {
+        "description": "Short unit after a number of minutes"
+    },
+    "changecover": "Change cover",
+    "@changecover": {
+        "description": "changecover"
     }
 }

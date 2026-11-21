@@ -857,4 +857,13 @@ class AppLocalizationsHr extends AppLocalizations {
 
   @override
   String get genres => 'Žanrovi';
+
+  @override
+  String get play => 'Reproduciraj';
+
+  @override
+  String get minutesshort => 'min';
+
+  @override
+  String get changecover => 'Promijeni naslovnicu';
 }

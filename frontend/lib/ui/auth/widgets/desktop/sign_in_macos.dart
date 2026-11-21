@@ -60,39 +60,6 @@ class _SignInMacosState extends State<SignInMacos> {
                         'Google',
                       ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            indent: 10,
-                            endIndent: 5,
-                            thickness: 1.5,
-                            color: Col.fadeIcon,
-                          ),
-                        ),
-                        Text(
-                          AppLocalizations.of(context).or,
-                          style: TextStyle(color: Col.fadeIcon),
-                        ),
-                        Expanded(
-                          child: Divider(
-                            color: Col.fadeIcon,
-                            indent: 5,
-                            endIndent: 10,
-                            thickness: 1.5,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Material(
-                      color: Col.transp,
-                      child: signInButtonPhone(
-                        context,
-                        GoogleLogoPainter(),
-                        '${AppLocalizations.of(context).signinwith} Apple',
-                        'Apple',
-                      ),
-                    ),
                     Expanded(child: Container()),
                     Padding(
                       padding: const EdgeInsets.only(

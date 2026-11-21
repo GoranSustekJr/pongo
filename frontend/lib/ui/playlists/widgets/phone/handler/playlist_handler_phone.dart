@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +12,7 @@ import '../../../../core/themes/colors.dart';
 import '../../../../core/ui/app_blur.dart';
 import '../../../../shell/view_models/shell_view_model.dart';
 import '../../../view_models/playlist_handler_view_model.dart';
+import '../pick_cover.dart';
 import 'playlist_handler_body_phone.dart';
 
 /// The overlay for creating playlists and adding tracks to them.
@@ -98,30 +98,8 @@ class _PlaylistHandlerPhoneState extends State<PlaylistHandlerPhone> {
     }
     if (pickedFile == null || !mounted) return;
 
-    final l10n = AppLocalizations.of(context);
-    // Crop the image to a square
-    final croppedFile = await ImageCropper().cropImage(
-      sourcePath: pickedFile.path,
-      maxHeight: 500,
-      maxWidth: 500,
-      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: l10n.cropimage,
-          toolbarColor: Colors.black,
-          toolbarWidgetColor: Colors.white,
-          hideBottomControls: true,
-        ),
-        IOSUiSettings(
-          title: l10n.cropimage,
-          cancelButtonTitle: l10n.cancel,
-          doneButtonTitle: l10n.okey,
-        ),
-      ],
-    );
-    if (croppedFile != null) {
-      setState(() => newPlaylistCover = File(croppedFile.path));
-    }
+    final cover = await squareCover(context, pickedFile.path, 500);
+    if (cover != null) setState(() => newPlaylistCover = cover);
   }
 
   @override

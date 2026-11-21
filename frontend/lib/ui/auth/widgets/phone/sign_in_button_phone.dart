@@ -33,7 +33,8 @@ Padding signInButtonPhone(
                 padding: const EdgeInsets.only(),
                 onPressed: () {
                   if (who == 'Google') {
-                    if (kIsMobile) {
+                    // Macs sign in like iPhones, with the same client ID
+                    if (kIsApple || kIsAndroid) {
                       context.read<SessionViewModel>().signIn(
                         SignInProvider.google,
                       );

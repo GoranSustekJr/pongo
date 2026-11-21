@@ -39,7 +39,10 @@ class RecommendationsCharts extends StatelessWidget {
               type: type,
               showLoading: false,
               onTap: () {
-                Navigations().nextScreen(context, page(context, items[index]));
+                Navigations().catalogScreen(
+                  context,
+                  (context) => page(context, items[index]),
+                );
               },
             ),
           ),

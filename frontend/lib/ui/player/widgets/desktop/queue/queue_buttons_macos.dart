@@ -3,15 +3,69 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_alert/flutter_platform_alert.dart';
 import 'package:macos_ui/macos_ui.dart';
 
+import '../../../../../data/repositories/player/media_items.dart';
+import '../../../../../domain/models/playlists/playlist_handler.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/platform.dart';
 import '../../../../core/app_icons.dart';
 import '../../../../core/themes/colors.dart';
 import '../../../../core/ui/phone/buttons/icon_button.dart';
 import '../../../../core/ui/space.dart';
+import '../../../../core/view_models/track_actions_view_model.dart';
+import '../../../../playlists/view_models/open_playlist.dart';
 import '../../../../shell/view_models/shell_view_model.dart';
 import '../../../view_models/player_view_model.dart';
 import '../../phone/alerts/halt_alert.dart';
+
+// The queue's catalog tracks for the playlist editor
+List<PlaylistHandlerOnlineTrack> _queueTracks(BuildContext context) => [
+  for (final item in context.player.queue.value)
+    if (item.toTrack() case final track)
+      PlaylistHandlerOnlineTrack(
+        id: track.id,
+        name: track.name,
+        artist: track.artists,
+        cover: item.artUri?.toString() ?? '',
+        albumTrack: track.album,
+        playlistHandlerCoverType:
+            (item.artUri?.toString() ?? '').contains('file:///')
+            ? PlaylistHandlerCoverType.bytes
+            : PlaylistHandlerCoverType.url,
+      ),
+];
+
+// Saves the queue as a new online playlist
+void _saveAsPlaylist(BuildContext context) {
+  final tracks = _queueTracks(context);
+  if (tracks.isEmpty) return;
+  OpenPlaylist().show(
+    context,
+    PlaylistHandler(
+      type: PlaylistHandlerType.online,
+      function: PlaylistHandlerFunction.createPlaylist,
+      track: tracks,
+    ),
+  );
+}
+
+// Downloads the queue into an offline playlist
+Future<void> _download(BuildContext context) async {
+  final tracks = _queueTracks(context);
+  if (tracks.isEmpty) return;
+  final toDownload = await context.trackActions.missingDownloads([
+    for (final track in tracks) track.id,
+  ]);
+  if (!context.mounted) return;
+  OpenPlaylist().show(
+    context,
+    PlaylistHandler(
+      type: PlaylistHandlerType.offline,
+      function: PlaylistHandlerFunction.addToPlaylist,
+      toDownload: toDownload,
+      track: tracks,
+    ),
+  );
+}
 
 class QueueButtonsMacos extends StatelessWidget {
   final bool edit;
@@ -144,9 +198,12 @@ class QueueButtonsMacos extends StatelessWidget {
                         removeItemsFromQueue,
                         edgeInsets: EdgeInsets.zero,
                       )
-                    : iconButton(AppIcons.musicAlbums, Colors.white, () {
-                        // TODO: Add to playlist
-                      }, edgeInsets: EdgeInsets.zero),
+                    : iconButton(
+                        AppIcons.musicAlbums,
+                        Colors.white,
+                        () => _saveAsPlaylist(context),
+                        edgeInsets: EdgeInsets.zero,
+                      ),
               ),
             ),
           ),
@@ -167,9 +224,12 @@ class QueueButtonsMacos extends StatelessWidget {
                       ) // Add transparency here
                     : Col.transp,
               ),
-              child: iconButton(AppIcons.download, Colors.white, () {
-                // TODO: Download
-              }, edgeInsets: EdgeInsets.zero),
+              child: iconButton(
+                AppIcons.download,
+                Colors.white,
+                () => _download(context),
+                edgeInsets: EdgeInsets.zero,
+              ),
             ),
           ),
           dividerVertical(30, 1, 7.5),

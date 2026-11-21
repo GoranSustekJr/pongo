@@ -1689,6 +1689,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Genres'**
   String get genres;
+
+  /// play
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get play;
+
+  /// Short unit after a number of minutes
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get minutesshort;
+
+  /// changecover
+  ///
+  /// In en, this message translates to:
+  /// **'Change cover'**
+  String get changecover;
 }
 
 class _AppLocalizationsDelegate

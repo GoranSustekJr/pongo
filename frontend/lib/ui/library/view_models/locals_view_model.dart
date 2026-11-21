@@ -48,6 +48,9 @@ class LocalsViewModel extends ChangeNotifier {
   /// Every downloaded track.
   List<Track> get tracksBackup => _tracksBackup;
 
+  /// Lengths in milliseconds of the downloaded tracks, by ID.
+  Map<String, int> get durations => _durations;
+
   /// Whether the list is being edited.
   bool get edit => _edit;
 

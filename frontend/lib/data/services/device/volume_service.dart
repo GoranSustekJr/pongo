@@ -34,16 +34,25 @@ class VolumeService {
     } else {
       VolumeController.instance.addListener(_update);
     }
-    _update(await RealVolume.getCurrentVol(StreamType.MUSIC) ?? 0);
+    // real_volume only exists on phones
+    _update(
+      kIsMobile
+          ? await RealVolume.getCurrentVol(StreamType.MUSIC) ?? 0
+          : await VolumeController.instance.getVolume(),
+    );
   }
 
   /// Sets the device volume to [volume], without showing the system UI.
   Future<void> setVolume(double volume) async {
-    await RealVolume.setVolume(
-      volume,
-      showUI: false,
-      streamType: StreamType.MUSIC,
-    );
+    if (kIsMobile) {
+      await RealVolume.setVolume(
+        volume,
+        showUI: false,
+        streamType: StreamType.MUSIC,
+      );
+    } else {
+      await VolumeController.instance.setVolume(volume);
+    }
     _update(volume);
   }
 

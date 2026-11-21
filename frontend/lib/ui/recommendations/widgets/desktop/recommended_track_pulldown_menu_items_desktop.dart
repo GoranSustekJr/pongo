@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_desktop_context_menu/flutter_desktop_context_menu.dart';
 
 import '../../../../domain/models/catalog/track.dart';
+import '../../../../domain/models/playlists/playlist_handler.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../core/view_models/track_actions_view_model.dart';
+import '../../../playlists/view_models/open_playlist.dart';
 
 Menu recommendedTrackPulldownMenuItemsDesktop(
   BuildContext context,
@@ -22,9 +24,7 @@ Menu recommendedTrackPulldownMenuItemsDesktop(
       MenuItem.separator(),
       MenuItem(
         label: AppLocalizations.of(context).addtoplaylist,
-        onClick: (menuItem) {
-          // TODO: Add too playlist
-        },
+        onClick: (menuItem) => _addToPlaylist(context, track),
       ),
       MenuItem.separator(),
       MenuItem(
@@ -51,3 +51,12 @@ Menu recommendedTrackPulldownMenuItemsDesktop(
     ],
   );
 }
+
+void _addToPlaylist(BuildContext context, Track track) => OpenPlaylist().show(
+  context,
+  PlaylistHandler(
+    type: PlaylistHandlerType.online,
+    function: PlaylistHandlerFunction.addToPlaylist,
+    track: [onlineHandlerTrack(track)],
+  ),
+);

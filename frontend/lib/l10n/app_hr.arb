@@ -267,5 +267,8 @@
     "popularartists": "Popularni izvođači",
     "featuredplaylists": "Istaknute playliste",
     "newreleases": "Nova izdanja",
-    "genres": "Žanrovi"
+    "genres": "Žanrovi",
+    "play": "Reproduciraj",
+    "minutesshort": "min",
+    "changecover": "Promijeni naslovnicu"
 }

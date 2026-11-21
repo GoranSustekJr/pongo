@@ -15,8 +15,9 @@ import '../../../player/view_models/player_view_model.dart';
 import '../../../player/widgets/desktop/lyrics/lyrics_macos.dart';
 import '../../../player/widgets/desktop/queue/queue_buttons_macos.dart';
 import '../../../player/widgets/desktop/queue/queue_macos.dart';
-import '../../../playlists/widgets/desktop/offline_playlists_macos.dart';
-import '../../../playlists/widgets/desktop/online_playlists_macos.dart';
+import '../../../../domain/models/playlists/playlist_handler.dart';
+import '../../../playlists/widgets/desktop/playlist_editor_macos.dart';
+import '../../../playlists/widgets/desktop/user_playlists_macos.dart';
 import '../../../search/widgets/desktop/search_macos.dart';
 import '../../../settings/view_models/profile_view_model.dart';
 import '../../../settings/widgets/desktop/settings_macos.dart';
@@ -96,9 +97,9 @@ class _HomeStateMacos extends State<MainMacos> {
     pages = [
       const SearchMacos(),
       const FavouritesMacos(),
-      const OnlinePlaylistsMacos(),
+      const UserPlaylistsMacos(type: PlaylistHandlerType.online),
       const LocalsMacos(),
-      const OfflinePlaylistsMacos(),
+      const UserPlaylistsMacos(type: PlaylistHandlerType.offline),
       const SleepAlarmMacos(),
       const LyricsMacos(),
       const SettingsMacos(),
@@ -106,12 +107,31 @@ class _HomeStateMacos extends State<MainMacos> {
     profile = ProfileViewModel(auth: context.read())
       ..addListener(() => setState(() {}));
     locale = context.readSettings.locale;
+    shell = context.shell..playlistHandler.addListener(showPlaylistEditor);
   }
 
   @override
   void dispose() {
+    shell.playlistHandler.removeListener(showPlaylistEditor);
     profile.dispose();
     super.dispose();
+  }
+
+  // Playlist editor \\
+  late final ShellViewModel shell;
+  bool editorOpen = false;
+
+  // Shows the editor in a sheet whenever a page asks for it
+  Future<void> showPlaylistEditor() async {
+    final handler = shell.playlistHandler.value;
+    if (handler == null || editorOpen) return;
+    editorOpen = true;
+    await showMacosSheet<void>(
+      context: context,
+      builder: (_) => PlaylistEditorMacos(playlistHandler: handler),
+    );
+    editorOpen = false;
+    shell.playlistHandler.value = null;
   }
 
   @override

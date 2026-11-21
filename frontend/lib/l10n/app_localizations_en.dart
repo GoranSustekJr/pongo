@@ -852,4 +852,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get genres => 'Genres';
+
+  @override
+  String get play => 'Play';
+
+  @override
+  String get minutesshort => 'min';
+
+  @override
+  String get changecover => 'Change cover';
 }
