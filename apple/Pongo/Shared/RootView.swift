@@ -120,6 +120,13 @@ struct MainTabView: View {
         ) { request in
             PlaylistPicker(request: request)
         }
+        .sheet(
+            item: Binding {
+                router.showsPlayer ? nil : model.versionRequest
+            } set: { model.versionRequest = $0 }
+        ) { track in
+            NavigationStack { TrackVersionsView(track: track) }
+        }
         .alert(L10n.haltmusicplayer, isPresented: $router.confirmsHalt) {
             Button(L10n.cancel, role: .cancel) {}
             Button(L10n.halt, role: .destructive) { model.player.halt() }

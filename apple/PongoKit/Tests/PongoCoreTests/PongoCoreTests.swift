@@ -278,11 +278,22 @@ private func item(_ stid: String) -> QueueItem {
     }
 
     @Test func liftsOnlyTheLowBass() {
-        let c = BassBoost.coefficients(sampleRate: 44_100)
-        #expect(abs(gain(c, at: 40, rate: 44_100) - 4.96) < 0.1)
-        #expect(abs(gain(c, at: 80, rate: 44_100) - 4.43) < 0.1)
-        #expect(abs(gain(c, at: 1_000, rate: 44_100) - -2) < 0.1)
-        #expect(abs(gain(c, at: 10_000, rate: 44_100) - -2) < 0.05)
+        for shelf in BassBoost.shelves {
+            let c = BassBoost.coefficients(shelf, sampleRate: 44_100)
+            // The full lift well below the corner, none well above it
+            #expect(abs(gain(c, at: 20, rate: 44_100) - (shelf.gainDB + shelf.headroomDB)) < 0.6)
+            #expect(abs(gain(c, at: 3_000, rate: 44_100) - shelf.headroomDB) < 0.1)
+            #expect(abs(gain(c, at: 10_000, rate: 44_100) - shelf.headroomDB) < 0.05)
+        }
+        #expect(BassBoost.shelves[0].gainDB == 8)
+    }
+
+    @MainActor @Test func theOldSwitchBecomesTheLowLevel() {
+        let store = MemoryStore()
+        store.set(true, for: .bassBoost)
+        #expect(SettingsRepository(store: store).settings.bassBoost == .low)
+        store.set(3, for: .bassBoostLevel)
+        #expect(SettingsRepository(store: store).settings.bassBoost == .high)
     }
 }
 

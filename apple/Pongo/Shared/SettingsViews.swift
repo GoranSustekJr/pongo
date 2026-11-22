@@ -191,7 +191,15 @@ struct PreferencesView: View {
                 }
                 .groupedRowBackground()
                 toggle(L10n.gaplessalbums, L10n.gaplessalbumsdescription, "square.stack", \.gaplessAlbums)
-                toggle(L10n.bassboost, L10n.bassboostdescription, "speaker.wave.2", \.bassBoost)
+                MenuRow(
+                    systemImage: "speaker.wave.2", title: L10n.bassboost, subtitle: L10n.bassboostdescription,
+                    selection: settings.binding(\.bassBoost)
+                ) {
+                    Text(L10n.off).tag(BassBoostLevel.off)
+                    Text("\(L10n.bassboostlow) · 8 dB").tag(BassBoostLevel.low)
+                    Text("\(L10n.bassboostmedium) · 11 dB").tag(BassBoostLevel.medium)
+                    Text("\(L10n.bassboosthigh) · 14 dB").tag(BassBoostLevel.high)
+                }
                 toggle(L10n.smartshuffle, L10n.smartshuffledescription, "shuffle", \.smartShuffle)
                 Button {
                     model.player.clearCache()

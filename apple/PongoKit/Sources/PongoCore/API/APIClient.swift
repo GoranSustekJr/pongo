@@ -92,8 +92,10 @@ public final class APIClient: Sendable {
     }
 
     /// Posts [body] to [path] and decodes the JSON response.
-    public func post(_ path: String, _ body: [String: JSONValue] = [:]) async throws -> JSONValue {
-        let data = try await postForData(path, body)
+    public func post(
+        _ path: String, _ body: [String: JSONValue] = [:], timeout: TimeInterval = 60
+    ) async throws -> JSONValue {
+        let data = try await postForData(path, body, timeout: timeout)
         do {
             return try JSONValue.decode(data)
         } catch {

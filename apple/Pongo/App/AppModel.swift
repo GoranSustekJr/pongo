@@ -38,6 +38,8 @@ final class AppModel {
     let messages = MessageCenter()
     let nowPlaying = NowPlayingModel()
     let recents = RecentCollections()
+    let imports: PlaylistImports
+    let versions: TrackVersionsRepository
     #if os(iOS)
         @ObservationIgnored private var liveLyrics: LiveLyricsController?
     #endif
@@ -49,6 +51,8 @@ final class AppModel {
     #endif
 
     var playlistRequest: PlaylistRequest?
+    /// The track whose recordings the version picker shows.
+    var versionRequest: Track?
     /// Whether the screen of listening together shows.
     var showsListenTogether = false
     private(set) var favouriteIDs: Set<String> = []
@@ -91,6 +95,8 @@ final class AppModel {
                 URL(string: "\(config.serverURL)stream/\(auth.streamToken)/\(stid)/index.m3u8")
             })
         listening = ListeningSession(client: client, player: player)
+        imports = PlaylistImports(client: client, database: database, messages: messages)
+        versions = TrackVersionsRepository(client: client)
         sync = LibrarySync(
             client: client, store: database, sources: [database, SettingsSyncSource(settings: settings)])
         L10n.selectedLanguage = settings.settings.locale
@@ -107,6 +113,7 @@ final class AppModel {
         #endif
         widgets = WidgetPublisher(model: self)
         widgets?.start()
+        imports.changed = { [weak self] in self?.libraryChanged() }
         Self.current = self
     }
 

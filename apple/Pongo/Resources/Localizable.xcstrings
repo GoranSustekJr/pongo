@@ -583,19 +583,88 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lifts the low bass a little, so songs sound deeper"
+            "value": "Lifts the low bass, so songs sound deeper"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hebt den tiefen Bass etwas an, damit Songs voller klingen"
+            "value": "Hebt den tiefen Bass an, damit Songs voller klingen"
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Malo pojačava duboki bas da pjesme zvuče dublje"
+            "value": "Pojačava duboki bas da pjesme zvuče dublje"
+          }
+        }
+      }
+    },
+    "bassboosthigh": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoch"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visoko"
+          }
+        }
+      }
+    },
+    "bassboostlow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Low"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niedrig"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nisko"
+          }
+        }
+      }
+    },
+    "bassboostmedium": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medium"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mittel"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Srednje"
           }
         }
       }
@@ -3218,6 +3287,995 @@
           "stringUnit": {
             "state": "translated",
             "value": "Slike"
+          }
+        }
+      }
+    },
+    "importadd": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hinzufügen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj"
+          }
+        }
+      }
+    },
+    "importadded": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "added"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hinzugefügt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dodano"
+          }
+        }
+      }
+    },
+    "importallfound": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every song was found"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Lieder wurden gefunden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sve pjesme su pronađene"
+          }
+        }
+      }
+    },
+    "importalreadythere": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "already there"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "schon da"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "već postoji"
+          }
+        }
+      }
+    },
+    "importapplelibrary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Music library"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Music-Mediathek"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Music knjižnica"
+          }
+        }
+      }
+    },
+    "importchoose": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auswählen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odaberi"
+          }
+        }
+      }
+    },
+    "importchoosefiles": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose files"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dateien auswählen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odaberi datoteke"
+          }
+        }
+      }
+    },
+    "importdescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bring your playlists over from Spotify and Apple Music. Pongo finds every song in its catalog."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hol deine Playlists von Spotify und Apple Music. Pongo sucht jedes Lied in seinem Katalog."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prenesi svoje playliste sa Spotifyja i Apple Musica. Pongo pronađe svaku pjesmu u svom katalogu."
+          }
+        }
+      }
+    },
+    "importerrordenied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow Pongo to use Media & Apple Music in Settings."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erlaube Pongo in den Einstellungen den Zugriff auf Medien & Apple Music."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopusti Pongu pristup Medijima i Apple Musicu u Postavkama."
+          }
+        }
+      }
+    },
+    "importerrorfailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importing stopped. Try again; songs already added stay."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Import wurde abgebrochen. Versuch es noch einmal; schon hinzugefügte Lieder bleiben."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uvoz je prekinut. Pokušaj ponovno; već dodane pjesme ostaju."
+          }
+        }
+      }
+    },
+    "importerrorfiles": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No playlists were found in these files. Unzip Spotify's download first."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In diesen Dateien wurden keine Playlists gefunden. Entpacke zuerst Spotifys Download."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "U ovim datotekama nema playlista. Najprije raspakiraj Spotifyjevo preuzimanje."
+          }
+        }
+      }
+    },
+    "importerrorlibrary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Music library couldn't be read."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Musikmediathek konnte nicht gelesen werden."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glazbena knjižnica nije se mogla učitati."
+          }
+        }
+      }
+    },
+    "importerrorliked": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liked Songs can't be shared. Import them from your Spotify account data below."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lieblingssongs lassen sich nicht teilen. Importiere sie unten aus deinen Spotify-Kontodaten."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pjesme koje ti se sviđaju ne mogu se dijeliti. Uvezi ih ispod iz podataka Spotify računa."
+          }
+        }
+      }
+    },
+    "importerrornotfound": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't find it. Is the playlist public?"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht gefunden. Ist die Playlist öffentlich?"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nije pronađeno. Je li playlista javna?"
+          }
+        }
+      }
+    },
+    "importerrorprivate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This playlist is private. Share it to get a public link, then try again."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Playlist ist privat. Teile sie, um einen öffentlichen Link zu bekommen, und versuch es noch einmal."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ova playlista je privatna. Podijeli je da dobiješ javnu poveznicu pa pokušaj ponovno."
+          }
+        }
+      }
+    },
+    "importerrorserver": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your Pongo server can't import playlists yet. Update it first."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Pongo-Server kann noch keine Playlists importieren. Aktualisiere ihn zuerst."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoj Pongo poslužitelj još ne može uvoziti playliste. Najprije ga ažuriraj."
+          }
+        }
+      }
+    },
+    "importerrorunavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The service didn't answer. Try again later."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Dienst hat nicht geantwortet. Versuch es später noch einmal."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servis nije odgovorio. Pokušaj kasnije."
+          }
+        }
+      }
+    },
+    "importerrorunsupported": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That isn't a Spotify or Apple Music playlist or album link."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das ist kein Link zu einer Playlist oder einem Album von Spotify oder Apple Music."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To nije poveznica na playlistu ili album sa Spotifyja ili Apple Musica."
+          }
+        }
+      }
+    },
+    "importfiles": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Files"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dateien"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datoteke"
+          }
+        }
+      }
+    },
+    "importfilesfooter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlists of any length: export them to a CSV file at tunemymusic.com (Spotify → Export to file) or exportify.app, right away and without Premium. Spotify's own data download (spotify.com/account/privacy, \"Account data\") takes a few days and brings every playlist and your Liked Songs: unzip it and choose Playlist1.json and YourLibrary.json. Playlists exported from the Music app work too."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlists jeder Länge: Exportiere sie auf tunemymusic.com (Spotify → Export to file) oder exportify.app als CSV-Datei, sofort und ohne Premium. Spotifys eigener Datendownload (spotify.com/account/privacy, „Kontodaten“) dauert ein paar Tage und bringt alle Playlists und deine Lieblingssongs: Entpacke ihn und wähle Playlist1.json und YourLibrary.json. Aus der Musik-App exportierte Playlists gehen auch."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playliste bilo koje duljine: izvezi ih u CSV datoteku na tunemymusic.com (Spotify → Export to file) ili exportify.app, odmah i bez Premiuma. Spotifyjevo preuzimanje podataka (spotify.com/account/privacy, „Podaci o računu”) traje nekoliko dana i donosi sve playliste i pjesme koje ti se sviđaju: raspakiraj ga i odaberi Playlist1.json i YourLibrary.json. Rade i playliste izvezene iz aplikacije Glazba."
+          }
+        }
+      }
+    },
+    "importfinding": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finding songs"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lieder werden gesucht"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tražim pjesme"
+          }
+        }
+      }
+    },
+    "importfound": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "found"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gefunden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pronađeno"
+          }
+        }
+      }
+    },
+    "importfromlink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From a link"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über einen Link"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preko poveznice"
+          }
+        }
+      }
+    },
+    "importkeepopen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep Pongo open until it's done."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lass Pongo offen, bis es fertig ist."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drži Pongo otvoren dok ne završi."
+          }
+        }
+      }
+    },
+    "importlibraryfooter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every playlist in the Music app on this device, private ones too."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Playlists der Musik-App auf diesem Gerät, auch private."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sve playliste iz aplikacije Glazba na ovom uređaju, i privatne."
+          }
+        }
+      }
+    },
+    "importlinkfooter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share a playlist or album and copy its link. Spotify links bring at most 100 songs; for longer playlists use a file below."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teile eine Playlist oder ein Album und kopiere den Link. Spotify-Links bringen höchstens 100 Lieder; für längere Playlists nimm unten eine Datei."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podijeli playlistu ili album i kopiraj poveznicu. Spotifyjeve poveznice donose najviše 100 pjesama; za dulje playliste koristi datoteku ispod."
+          }
+        }
+      }
+    },
+    "importlinkplaceholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spotify or Apple Music link"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Link von Spotify oder Apple Music"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poveznica sa Spotifyja ili Apple Musica"
+          }
+        }
+      }
+    },
+    "importmerged": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added to your playlist with the same name"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zu deiner gleichnamigen Playlist hinzugefügt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodano u tvoju playlistu istog imena"
+          }
+        }
+      }
+    },
+    "importmore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import more"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mehr importieren"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uvezi još"
+          }
+        }
+      }
+    },
+    "importnolibrary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No playlists with songs in the library"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Playlists mit Liedern in der Mediathek"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "U knjižnici nema playlista s pjesmama"
+          }
+        }
+      }
+    },
+    "importnotfound": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not found"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht gefunden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nije pronađeno"
+          }
+        }
+      }
+    },
+    "importnotfounddetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick the right song or skip it."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle das richtige Lied oder überspringe es."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odaberi pravu pjesmu ili je preskoči."
+          }
+        }
+      }
+    },
+    "importpartial": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spotify shares only the first 100 songs. For all of them, export the playlist to a CSV file at tunemymusic.com or exportify.app and choose it under Files; the songs join this playlist."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spotify teilt nur die ersten 100 Lieder. Für alle exportiere die Playlist auf tunemymusic.com oder exportify.app als CSV-Datei und wähle sie unter Dateien; die Lieder kommen in diese Playlist."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spotify dijeli samo prvih 100 pjesama. Za sve izvezi playlistu u CSV datoteku na tunemymusic.com ili exportify.app i odaberi je pod Datoteke; pjesme idu u ovu playlistu."
+          }
+        }
+      }
+    },
+    "importpartialother": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The service showed only part of this list"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Dienst zeigte nur einen Teil dieser Liste"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servis je pokazao samo dio ovog popisa"
+          }
+        }
+      }
+    },
+    "importpaste": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paste"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einfügen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zalijepi"
+          }
+        }
+      }
+    },
+    "importpicksong": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick the song"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle das Lied"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odaberi pjesmu"
+          }
+        }
+      }
+    },
+    "importplaylists": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import playlists"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlists importieren"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uvezi playliste"
+          }
+        }
+      }
+    },
+    "importreadlibrary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Read my playlists"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meine Playlists lesen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Učitaj moje playliste"
+          }
+        }
+      }
+    },
+    "importselectnone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select none"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine auswählen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poništi odabir"
+          }
+        }
+      }
+    },
+    "importstart": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importieren"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uvezi"
+          }
+        }
+      }
+    },
+    "importsummary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imported"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importiert"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uvezeno"
+          }
+        }
+      }
+    },
+    "importtofavourites": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Goes to your favourite songs"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kommt zu deinen Lieblingsliedern"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ide u omiljene pjesme"
+          }
+        }
+      }
+    },
+    "importtoimport": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To import"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zum Importieren"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Za uvoz"
           }
         }
       }
@@ -9081,6 +10139,259 @@
         }
       }
     },
+    "versionchanged": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pongo now plays this recording"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pongo spielt jetzt diese Aufnahme"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pongo sada pušta ovu snimku"
+          }
+        }
+      }
+    },
+    "versionfailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That recording couldn't be downloaded"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Aufnahme konnte nicht geladen werden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta snimka se nije mogla preuzeti"
+          }
+        }
+      }
+    },
+    "versionnotvideo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That isn't a YouTube link"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das ist kein YouTube-Link"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To nije YouTube poveznica"
+          }
+        }
+      }
+    },
+    "versionpaste": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Or paste a YouTube link"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oder einen YouTube-Link einfügen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ili zalijepi YouTube poveznicu"
+          }
+        }
+      }
+    },
+    "versionplaying": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plays now"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spielt jetzt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sada svira"
+          }
+        }
+      }
+    },
+    "versionsfooter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A song can have several recordings with the same name, such as a re-recording years later. The one you pick plays for everyone on this server."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Lied kann mehrere Aufnahmen mit demselben Namen haben, etwa eine Neuaufnahme Jahre später. Die gewählte spielt für alle auf diesem Server."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pjesma može imati više snimki istog imena, npr. novu snimku godinama kasnije. Odabrana se pušta svima na ovom poslužitelju."
+          }
+        }
+      }
+    },
+    "versionsnone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No recordings found"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Aufnahmen gefunden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nema pronađenih snimki"
+          }
+        }
+      }
+    },
+    "versionstitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose the recording"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufnahme wählen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odaberi snimku"
+          }
+        }
+      }
+    },
+    "versionswitching": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloading the recording"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufnahme wird geladen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preuzimam snimku"
+          }
+        }
+      }
+    },
+    "versionuse": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwenden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koristi"
+          }
+        }
+      }
+    },
+    "versionvideo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Video"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Video"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Video"
+          }
+        }
+      }
+    },
     "volume": {
       "extractionState": "manual",
       "localizations": {
@@ -9238,6 +10549,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "S"
+          }
+        }
+      }
+    },
+    "wrongversion": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrong version?"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falsche Version?"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kriva verzija?"
           }
         }
       }

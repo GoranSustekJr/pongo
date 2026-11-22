@@ -52,6 +52,10 @@ struct MainWindow: View {
             PlaylistPicker(request: request)
                 .frame(minWidth: 420, minHeight: 480)
         }
+        .sheet(item: Binding { model.versionRequest } set: { model.versionRequest = $0 }) { track in
+            NavigationStack { TrackVersionsView(track: track) }
+                .frame(minWidth: 480, minHeight: 560)
+        }
         .sheet(isPresented: Binding { model.showsListenTogether } set: { model.showsListenTogether = $0 }) {
             ListenTogetherView()
         }
@@ -118,6 +122,8 @@ private struct Sidebar: View {
                 Label(L10n.sleep, systemImage: "moon.zzz").tag(SidebarSection.sleepAlarms)
                 Label(L10n.stats, systemImage: "chart.bar").tag(SidebarSection.stats)
                 Label(L10n.top25, systemImage: "flame").tag(SidebarSection.topSongs)
+                Label(L10n.importplaylists, systemImage: "square.and.arrow.down.on.square")
+                    .tag(SidebarSection.importPlaylists)
             }
             playlistSection(L10n.onlineplaylists, kind: .online, playlists: online)
             playlistSection(L10n.offlineplaylists, kind: .offline, playlists: offline)
@@ -220,6 +226,7 @@ private struct SectionView: View {
         case .sleepAlarms: SleepAlarmsView()
         case .stats: StatsView()
         case .topSongs: TopSongsView()
+        case .importPlaylists: ImportPlaylistsView()
         case .playlists(let kind): UserPlaylistsView(kind: kind)
         case .playlist(let kind, let playlist):
             UserPlaylistView(kind: kind, playlist: playlist).id(playlist.id)

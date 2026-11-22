@@ -26,6 +26,9 @@ struct LibraryView: View {
                 row(.stats, "chart.bar.fill", L10n.stats, L10n.statsdescription)
                 row(.topSongs, "flame.fill", L10n.top25, L10n.top25description)
             }
+            Section {
+                row(.importPlaylists, "square.and.arrow.down.on.square", L10n.importplaylists, "Spotify · Apple Music")
+            }
         }
         .listStyle(.insetGrouped)
         .pongoBackground()

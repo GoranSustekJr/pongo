@@ -137,6 +137,16 @@ public final class DownloadsRepository: Sendable {
         }
     }
 
+    /// Downloads the audio of the downloaded track with [stid] again, after the
+    /// server changed which recording it plays. Returns whether it was downloaded.
+    @discardableResult
+    public func refreshAudio(of stid: String) async throws -> Bool {
+        guard try await database.isDownloaded(stid) else { return false }
+        let audio = try await client.postForData("download_track/\(stid)", timeout: 300)
+        try audio.write(to: Downloads.directory.appending(path: "\(stid).m4a"), options: .atomic)
+        return true
+    }
+
     /// Deletes the tracks with [stids] and their files.
     public func remove(_ stids: [String]) async throws {
         try await database.removeDownloads(stids)

@@ -40,5 +40,7 @@
 	<string>Pongo plays music from your Pongo server on your network.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Pongo uses a photo you pick as a playlist cover.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Pongo reads your Music library's playlists when you import them.</string>
 </dict>
 </plist>

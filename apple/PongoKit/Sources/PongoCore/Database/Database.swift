@@ -158,6 +158,19 @@ extension Database {
             ])
     }
 
+    /// Adds those of [favourites] that aren't favourites yet, in one go.
+    /// Returns how many were added.
+    public func addFavourites(_ favourites: [Favourite]) throws -> Int {
+        try db.transaction {
+            var added = 0
+            for favourite in favourites where try !isFavourite(favourite.stid) {
+                try addFavourite(favourite)
+                added += 1
+            }
+            return added
+        }
+    }
+
     /// Adds [favourite], or removes it if it's already a favourite. Returns
     /// whether the track is a favourite afterwards.
     public func toggleFavourite(_ favourite: Favourite) throws -> Bool {
@@ -307,6 +320,25 @@ extension Database {
         ).first?["max_order"]?.int ?? -1
         try insertOnlineTrack(track, opid: track.opid, order: maxOrder + 1)
         return true
+    }
+
+    /// Appends those of [tracks] playlist [opid] doesn't have yet, in order, in
+    /// one go. Returns how many were added.
+    public func addOnlineTracks(_ opid: Int, _ tracks: [OnlinePlaylistTrack]) throws -> Int {
+        try db.transaction {
+            var existing = Set(
+                try db.query("SELECT stid FROM opid_stid WHERE opid = ?", [.int(opid)]).compactMap { $0["stid"]?.text })
+            var order = try db.query(
+                "SELECT MAX(order_number) AS max_order FROM opid_stid WHERE opid = ?", [.int(opid)]
+            ).first?["max_order"]?.int ?? -1
+            var added = 0
+            for track in tracks where existing.insert(track.stid).inserted {
+                order += 1
+                try insertOnlineTrack(track, opid: opid, order: order)
+                added += 1
+            }
+            return added
+        }
     }
 
     private func insertOnlineTrack(_ track: OnlinePlaylistTrack, opid: Int, order: Int) throws {
@@ -595,6 +627,12 @@ extension Database {
             if let stid = row["stid"]?.text, let gain = row["gain"]?.double { gains[stid] = gain }
         }
         return gains
+    }
+
+    public func removeTrackGains(_ stids: [String]) throws {
+        guard !stids.isEmpty else { return }
+        try db.execute(
+            "DELETE FROM track_gain WHERE stid IN (\(placeholders(stids.count)))", stids.map(SQLValue.text))
     }
 
     public func saveTrackGains(_ gains: [String: Double]) throws {

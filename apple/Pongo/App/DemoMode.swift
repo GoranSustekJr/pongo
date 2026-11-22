@@ -132,6 +132,9 @@
                 case "favourites": model.router.section = .favourites
                 case "sleep": model.router.section = .sleepAlarms
                 case "search": model.router.search(for: "Queen")
+                case "import", "importdone":
+                    model.imports.showDemo(results: screen == "importdone")
+                    model.router.section = .importPlaylists
                 default: break
                 }
                 return
@@ -164,6 +167,10 @@
             case "sleep":
                 model.router.tab = .library
                 model.router.library = [.sleepAlarms]
+            case "import", "importdone":
+                model.imports.showDemo(results: screen == "importdone")
+                model.router.tab = .library
+                model.router.library = [.importPlaylists]
             default: break
             }
         }

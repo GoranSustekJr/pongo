@@ -29,6 +29,9 @@ extension L10n {
     static var `away`: String { tr("away") }
     static var `bassboost`: String { tr("bassboost") }
     static var `bassboostdescription`: String { tr("bassboostdescription") }
+    static var `bassboosthigh`: String { tr("bassboosthigh") }
+    static var `bassboostlow`: String { tr("bassboostlow") }
+    static var `bassboostmedium`: String { tr("bassboostmedium") }
     static var `beforeyouneedtowakeupat`: String { tr("beforeyouneedtowakeupat") }
     static var `biggestmonth`: String { tr("biggestmonth") }
     static var `buypremium`: String { tr("buypremium") }
@@ -143,6 +146,49 @@ extension L10n {
     static var `howmanytracksshownwhensearching`: String { tr("howmanytracksshownwhensearching") }
     static var `imagecaching`: String { tr("imagecaching") }
     static var `images`: String { tr("images") }
+    static var `importadd`: String { tr("importadd") }
+    static var `importadded`: String { tr("importadded") }
+    static var `importallfound`: String { tr("importallfound") }
+    static var `importalreadythere`: String { tr("importalreadythere") }
+    static var `importapplelibrary`: String { tr("importapplelibrary") }
+    static var `importchoose`: String { tr("importchoose") }
+    static var `importchoosefiles`: String { tr("importchoosefiles") }
+    static var `importdescription`: String { tr("importdescription") }
+    static var `importerrordenied`: String { tr("importerrordenied") }
+    static var `importerrorfailed`: String { tr("importerrorfailed") }
+    static var `importerrorfiles`: String { tr("importerrorfiles") }
+    static var `importerrorlibrary`: String { tr("importerrorlibrary") }
+    static var `importerrorliked`: String { tr("importerrorliked") }
+    static var `importerrornotfound`: String { tr("importerrornotfound") }
+    static var `importerrorprivate`: String { tr("importerrorprivate") }
+    static var `importerrorserver`: String { tr("importerrorserver") }
+    static var `importerrorunavailable`: String { tr("importerrorunavailable") }
+    static var `importerrorunsupported`: String { tr("importerrorunsupported") }
+    static var `importfiles`: String { tr("importfiles") }
+    static var `importfilesfooter`: String { tr("importfilesfooter") }
+    static var `importfinding`: String { tr("importfinding") }
+    static var `importfound`: String { tr("importfound") }
+    static var `importfromlink`: String { tr("importfromlink") }
+    static var `importkeepopen`: String { tr("importkeepopen") }
+    static var `importlibraryfooter`: String { tr("importlibraryfooter") }
+    static var `importlinkfooter`: String { tr("importlinkfooter") }
+    static var `importlinkplaceholder`: String { tr("importlinkplaceholder") }
+    static var `importmerged`: String { tr("importmerged") }
+    static var `importmore`: String { tr("importmore") }
+    static var `importnolibrary`: String { tr("importnolibrary") }
+    static var `importnotfound`: String { tr("importnotfound") }
+    static var `importnotfounddetail`: String { tr("importnotfounddetail") }
+    static var `importpartial`: String { tr("importpartial") }
+    static var `importpartialother`: String { tr("importpartialother") }
+    static var `importpaste`: String { tr("importpaste") }
+    static var `importpicksong`: String { tr("importpicksong") }
+    static var `importplaylists`: String { tr("importplaylists") }
+    static var `importreadlibrary`: String { tr("importreadlibrary") }
+    static var `importselectnone`: String { tr("importselectnone") }
+    static var `importstart`: String { tr("importstart") }
+    static var `importsummary`: String { tr("importsummary") }
+    static var `importtofavourites`: String { tr("importtofavourites") }
+    static var `importtoimport`: String { tr("importtoimport") }
     static var `join`: String { tr("join") }
     static var `joinsession`: String { tr("joinsession") }
     static var `justify`: String { tr("justify") }
@@ -398,6 +444,17 @@ extension L10n {
     static var `userinterface`: String { tr("userinterface") }
     static var `usesynctimedelay`: String { tr("usesynctimedelay") }
     static var `version`: String { tr("version") }
+    static var `versionchanged`: String { tr("versionchanged") }
+    static var `versionfailed`: String { tr("versionfailed") }
+    static var `versionnotvideo`: String { tr("versionnotvideo") }
+    static var `versionpaste`: String { tr("versionpaste") }
+    static var `versionplaying`: String { tr("versionplaying") }
+    static var `versionsfooter`: String { tr("versionsfooter") }
+    static var `versionsnone`: String { tr("versionsnone") }
+    static var `versionstitle`: String { tr("versionstitle") }
+    static var `versionswitching`: String { tr("versionswitching") }
+    static var `versionuse`: String { tr("versionuse") }
+    static var `versionvideo`: String { tr("versionvideo") }
     static var `volume`: String { tr("volume") }
     static var `volumedown`: String { tr("volumedown") }
     static var `volumeup`: String { tr("volumeup") }
@@ -405,6 +462,7 @@ extension L10n {
     static var `wanttohelpoutlyrics`: String { tr("wanttohelpoutlyrics") }
     static var `warning`: String { tr("warning") }
     static var `with`: String { tr("with") }
+    static var `wrongversion`: String { tr("wrongversion") }
     static var `year`: String { tr("year") }
     static var `you`: String { tr("you") }
     static var `youcan`: String { tr("youcan") }

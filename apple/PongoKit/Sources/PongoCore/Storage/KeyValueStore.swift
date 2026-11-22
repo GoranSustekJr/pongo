@@ -42,7 +42,9 @@ public enum StorageKey: String, Sendable {
     case showLiveLyrics = "SHOWLIVELYRICSKEY"
     case crossfadeSeconds = "CROSSFADESECONDSKEY"
     case gaplessAlbums = "GAPLESSALBUMSKEY"
+    /// Whether the bass boost was on, from when it had no levels.
     case bassBoost = "BASSBOOSTKEY"
+    case bassBoostLevel = "BASSBOOSTLEVELKEY"
     case smartShuffle = "SMARTSHUFFLEKEY"
 }
 

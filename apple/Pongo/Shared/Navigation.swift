@@ -23,6 +23,7 @@ enum Route: Hashable {
     case profile
     case preferences
     case about
+    case importPlaylists
 }
 
 /// The selected tab and each tab's navigation stack.
@@ -78,7 +79,7 @@ final class Router {
 #if os(macOS)
     /// The Mac window's sidebar.
     enum SidebarSection: Hashable {
-        case home, search, favourites, downloads, sleepAlarms, stats, topSongs
+        case home, search, favourites, downloads, sleepAlarms, stats, topSongs, importPlaylists
         case playlists(PlaylistKind)
         case playlist(PlaylistKind, UserPlaylist)
     }
@@ -108,6 +109,7 @@ struct RouteView: View {
         case .profile: ProfileView()
         case .preferences: PreferencesView()
         case .about: AboutView()
+        case .importPlaylists: ImportPlaylistsView()
         }
     }
 }

@@ -43,8 +43,8 @@ public struct PlayerPreferences: Sendable {
     public var crossfade: Double = 0
     /// Whether tracks of one album that follow each other skip the fade.
     public var gaplessAlbums = true
-    /// Whether the low bass is lifted a little.
-    public var bassBoost = false
+    /// How much the low bass is lifted.
+    public var bassBoost = BassBoostLevel.off
 
     public init() {}
 }
@@ -83,7 +83,7 @@ public final class Player {
 
     @ObservationIgnored public var preferences = PlayerPreferences() {
         didSet {
-            BassBoost.shared.isOn.store(preferences.bassBoost, ordering: .relaxed)
+            BassBoost.shared.level.store(preferences.bassBoost.rawValue, ordering: .relaxed)
             scheduleCrossfade()
         }
     }
@@ -1227,6 +1227,13 @@ public final class Player {
             else { return }
             try? FileManager.default.moveItem(at: temporary, to: file)
         }
+    }
+
+    /// Forgets the cached audio and loudness of the track with [stid], after
+    /// the server changed which recording it plays.
+    public func forgetAudio(of stid: String) async {
+        try? FileManager.default.removeItem(at: cacheDirectory.appending(path: "\(stid).m4a"))
+        await gains.forget(stid)
     }
 
     /// Deletes the cached tracks.

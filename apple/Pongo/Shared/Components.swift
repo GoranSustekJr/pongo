@@ -150,6 +150,12 @@ struct TrackMenu: View {
                 Task { await model.toggleFavourite(track) }
             }
         }
+        // Catalog tracks only: files from the device have no other recordings
+        if track.id.allSatisfy(\.isNumber) {
+            Button(L10n.wrongversion, systemImage: "waveform.badge.magnifyingglass") {
+                model.versionRequest = track
+            }
+        }
         if (showsAlbum && track.album != nil) || !track.artists.isEmpty {
             Divider()
         }
@@ -422,11 +428,12 @@ extension GroupedRow where Trailing == EmptyView {
 struct MenuRow<Value: Hashable, Options: View>: View {
     var systemImage: String
     var title: String
+    var subtitle: String?
     @Binding var selection: Value
     @ViewBuilder var options: Options
 
     var body: some View {
-        GroupedRow(systemImage: systemImage, title: title) {
+        GroupedRow(systemImage: systemImage, title: title, subtitle: subtitle) {
             Picker(title, selection: $selection) { options }
                 .labelsHidden()
                 .pickerStyle(.menu)

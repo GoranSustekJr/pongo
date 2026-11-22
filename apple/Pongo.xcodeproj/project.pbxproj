@@ -86,13 +86,44 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A00000000000000000000003 /* Pongo */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (F0000000000000000000000A /* Exceptions for "Pongo" folder in "PongoMac" target */, ); path = Pongo; sourceTree = "<group>"; };
-		F00000000000000000000009 /* PongoMac */ = {isa = PBXFileSystemSynchronizedRootGroup; path = PongoMac; sourceTree = "<group>"; };
-		A0000000000000000000000A /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; path = Shared; sourceTree = "<group>"; };
-		A0000000000000000000000B /* LiveLyrics */ = {isa = PBXFileSystemSynchronizedRootGroup; path = LiveLyrics; sourceTree = "<group>"; };
-		A0000000000000000000000E /* WidgetData */ = {isa = PBXFileSystemSynchronizedRootGroup; path = WidgetData; sourceTree = "<group>"; };
-		A0000000000000000000000F /* Widgets */ = {isa = PBXFileSystemSynchronizedRootGroup; path = Widgets; sourceTree = "<group>"; };
-		F00000000000000000000010 /* MacWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; path = MacWidgets; sourceTree = "<group>"; };
+		A00000000000000000000003 /* Pongo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F0000000000000000000000A /* Exceptions for "Pongo" folder in "PongoMac" target */,
+			);
+			path = Pongo;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000000A /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000000B /* LiveLyrics */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = LiveLyrics;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000000E /* WidgetData */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = WidgetData;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000000F /* Widgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Widgets;
+			sourceTree = "<group>";
+		};
+		F00000000000000000000009 /* PongoMac */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PongoMac;
+			sourceTree = "<group>";
+		};
+		F00000000000000000000010 /* MacWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MacWidgets;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,8 +270,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				A00000000000000000000003 /* Pongo */,
-				F00000000000000000000009 /* PongoMac */,
 				A0000000000000000000000E /* WidgetData */,
+				F00000000000000000000009 /* PongoMac */,
 			);
 			name = PongoMac;
 			packageProductDependencies = (
@@ -702,20 +733,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D00000000000000000000001 /* Build configuration list for PBXProject "Pongo" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D00000000000000000000002 /* Debug */,
-				D00000000000000000000003 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		B0000000000000000000000E /* Build configuration list for PBXNativeTarget "LiveLyrics" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D00000000000000000000006 /* Debug */,
 				D00000000000000000000007 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D00000000000000000000001 /* Build configuration list for PBXProject "Pongo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D00000000000000000000002 /* Debug */,
+				D00000000000000000000003 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

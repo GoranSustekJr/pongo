@@ -138,6 +138,11 @@ public enum LocalsSort: String, Sendable, CaseIterable {
 }
 
 /// How lyrics are aligned.
+/// How much the low bass is lifted.
+public enum BassBoostLevel: Int, Sendable, CaseIterable {
+    case off, low, medium, high
+}
+
 public enum LyricsAlignment: String, Sendable, CaseIterable {
     case left
     case center
@@ -185,8 +190,8 @@ public struct AppSettings: Sendable, Hashable {
     /// Whether songs of one album that follow each other play without a fade,
     /// as the album was mastered.
     public var gaplessAlbums = true
-    /// Whether the low bass is lifted a little, so songs sound deeper.
-    public var bassBoost = false
+    /// How much the low bass is lifted, so songs sound deeper.
+    public var bassBoost = BassBoostLevel.off
     /// Whether shuffling a playlist or the favourites mixes in suggested
     /// songs like them.
     public var smartShuffle = true

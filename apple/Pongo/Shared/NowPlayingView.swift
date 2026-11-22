@@ -64,6 +64,9 @@ struct NowPlayingView: View {
         .sheet(item: Bindable(model).playlistRequest) { request in
             PlaylistPicker(request: request)
         }
+        .sheet(item: Bindable(model).versionRequest) { track in
+            NavigationStack { TrackVersionsView(track: track) }
+        }
         .task(id: player.current?.stid) { await state.loadAccent(player.current?.track.coverURL(size: 300)) }
         .task(id: player.current.map { "\($0.stid)|\($0.duration > 0)" }) {
             if let item = player.current { await state.load(item, model: model) }

@@ -25,6 +25,13 @@ public actor TrackGains {
         return gains[stid]
     }
 
+    /// Forgets the gain of the track with [stid], whose audio changed.
+    public func forget(_ stid: String) async {
+        gains[stid] = nil
+        unknownUntil[stid] = nil
+        try? await database.removeTrackGains([stid])
+    }
+
     /// Looks up the gains of [stids] that aren't known yet.
     public func prefetch(_ stids: [String]) async {
         let now = Date()

@@ -46,7 +46,10 @@ public final class SettingsRepository {
         settings.showLiveLyrics = store.bool(.showLiveLyrics, fallback: settings.showLiveLyrics)
         settings.crossfadeSeconds = store.int(.crossfadeSeconds, fallback: settings.crossfadeSeconds)
         settings.gaplessAlbums = store.bool(.gaplessAlbums, fallback: settings.gaplessAlbums)
-        settings.bassBoost = store.bool(.bassBoost, fallback: settings.bassBoost)
+        // The old switch was on/off; on becomes the lowest level
+        let wasBoosted = store.bool(.bassBoost, fallback: false)
+        settings.bassBoost =
+            BassBoostLevel(rawValue: store.int(.bassBoostLevel, fallback: wasBoosted ? 1 : 0)) ?? .off
         settings.smartShuffle = store.bool(.smartShuffle, fallback: settings.smartShuffle)
         self.settings = settings
     }
@@ -81,6 +84,7 @@ public final class SettingsRepository {
         save(.sleepAlarmDeviceVolume, \.sleepAlarmDeviceVolume) { String($0) }
         for (key, field) in Self.bools { save(key, field) { String($0) } }
         for (key, field) in Self.ints { save(key, field) { String($0) } }
+        save(.bassBoostLevel, \.bassBoost) { String($0.rawValue) }
     }
 
     private static let bools: [(StorageKey, KeyPath<AppSettings, Bool>)] = [
@@ -93,7 +97,7 @@ public final class SettingsRepository {
         (.dynamicBlurhash, \.useDynamicBlurhash), (.useAnimations, \.useAnimations),
         (.useLiquidGlass, \.useLiquidGlass), (.streamWhileDownloading, \.streamWhileDownloading),
         (.showLiveLyrics, \.showLiveLyrics), (.gaplessAlbums, \.gaplessAlbums),
-        (.smartShuffle, \.smartShuffle), (.bassBoost, \.bassBoost),
+        (.smartShuffle, \.smartShuffle),
     ]
 
     private static let ints: [(StorageKey, KeyPath<AppSettings, Int>)] = [

@@ -96,7 +96,7 @@ Settings), the mini player in the tab bar, Liquid Glass and swipe actions.
 Debug builds launched with `-PongoDemo` skip sign-in and fill the queue,
 favourites and a playlist with sample tracks. Add `-PongoDemoScreen <name>`
 to open `player`, `lyrics`, `queue`, `library`, `favourites`, `settings`,
-`preferences` or `sleep`, and `-PongoDemoScrolled` (or `-PongoDemoMiddle`) to open lists scrolled to
+`preferences`, `sleep`, `import` or `importdone`, and `-PongoDemoScrolled` (or `-PongoDemoMiddle`) to open lists scrolled to
 their end (or middle). With `lyrics`, `-PongoDemoPosition <seconds>` jumps into the song, and the
 screen `card` opens a lyric card:
 
