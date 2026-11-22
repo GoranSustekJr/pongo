@@ -16,5 +16,8 @@ RUN useradd --create-home pongo && mkdir -p /data && chown pongo /data
 USER pongo
 # The self-updated yt-dlp lands in the user's site-packages
 ENV PATH=/home/pongo/.local/bin:$PATH
+# Without its own threads, numpy's OpenBLAS has none to stop before a fork. Otherwise starting
+# ffmpeg while a mood is analyzed can deadlock the whole server.
+ENV OPENBLAS_NUM_THREADS=1
 
 ENTRYPOINT ["./entrypoint.sh"]
