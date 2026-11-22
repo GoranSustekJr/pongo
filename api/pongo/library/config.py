@@ -44,5 +44,10 @@ SIGN_INS_PER_MINUTE = int(os.getenv("SIGN_INS_PER_MINUTE", "10"))
 REQUESTS_PER_MINUTE = int(os.getenv("REQUESTS_PER_MINUTE", "600"))
 SOCKETS_PER_MINUTE = int(os.getenv("SOCKETS_PER_MINUTE", "120"))
 DOWNLOADS_PER_HOUR = int(os.getenv("DOWNLOADS_PER_HOUR", "200"))
+# Playlist imports: shared links read, and songs matched to the catalog, per user
+IMPORT_LINKS_PER_HOUR = int(os.getenv("IMPORT_LINKS_PER_HOUR", "120"))
+IMPORT_SONGS_PER_HOUR = int(os.getenv("IMPORT_SONGS_PER_HOUR", "20000"))
+# Most songs one match request may ask for
+MAX_IMPORT_BATCH = 50
 # Most tracks one queue request may ask for
 MAX_BATCH_TRACKS = 500

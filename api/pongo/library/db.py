@@ -37,6 +37,12 @@ async def track_duration(stid: str) -> float | None:
     return row[0] if row else None
 
 
+async def chosen_video(stid: str) -> str | None:
+    """The YouTube video a user chose for the track, if one did."""
+    row = await fetch_one("SELECT ytvid FROM track_override WHERE stid = %s", (stid,))
+    return row[0] if row else None
+
+
 async def track_audio_path(stid: str) -> str | None:
     row = await fetch_one(
         "SELECT a.path FROM track t JOIN audio a USING (auid) WHERE t.stid = %s",

@@ -44,6 +44,11 @@ sign_ins = SlidingWindow(config.SIGN_INS_PER_MINUTE, 60)
 requests = SlidingWindow(config.REQUESTS_PER_MINUTE, 60)
 sockets = SlidingWindow(config.SOCKETS_PER_MINUTE, 60)
 downloads = SlidingWindow(config.DOWNLOADS_PER_HOUR, 3600)
+import_links = SlidingWindow(config.IMPORT_LINKS_PER_HOUR, 3600)
+# Each look at a track's recordings searches YouTube several times
+versions = SlidingWindow(60, 3600)
+# Counted per batch of songs, so a big library takes many events
+import_batches = SlidingWindow(max(1, config.IMPORT_SONGS_PER_HOUR // config.MAX_IMPORT_BATCH), 3600)
 
 
 def check(window: SlidingWindow, key: str) -> None:

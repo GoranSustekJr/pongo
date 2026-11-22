@@ -7,7 +7,8 @@ from fastapi.responses import JSONResponse
 
 from library import config, db, limits, migrations
 from library.metadata import deezer
-from library.routes import account, catalog, listen, playback, sync
+from library.imports import links
+from library.routes import account, catalog, imports, listen, playback, sync, versions
 from library.track import downloads, loudness, mood
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -25,6 +26,7 @@ async def lifespan(_: FastAPI):
     yield
     measuring.cancel()
     await deezer.close()
+    await links.close()
     await db.pool.close()
 
 
@@ -40,6 +42,8 @@ app.include_router(catalog.router)
 app.include_router(playback.router)
 app.include_router(sync.router)
 app.include_router(listen.router)
+app.include_router(imports.router)
+app.include_router(versions.router)
 
 
 @app.middleware("http")

@@ -243,7 +243,9 @@ def _analyze_later(auid: int, path: Path) -> None:
     task.add_done_callback(_analyses.discard)
 
 
-async def _fetch(stid: str) -> float:
+async def _fetch(stid: str, chosen: str | None = None) -> float:
+    """Downloads and stores the track's audio: from the video [chosen], replacing what's
+    stored, or else a user's earlier choice, or else the best YouTube match."""
     started = time.monotonic()
     full = await deezer.full_track(stid)
     track = {
@@ -251,13 +253,19 @@ async def _fetch(stid: str) -> float:
         "artist": full["artist"]["name"],
         "duration": full.get("duration", 0),
     }
-    match = await asyncio.to_thread(matcher.find_video, track)
-    if match is None:
-        _no_match[stid] = True
-        raise TrackUnavailable(f"No YouTube match for {track}")
-    video_id, match_score = match
-    log.info("Matched %s (%s - %s) to %s, score %.2f",
-             stid, track["artist"], track["title"], video_id, match_score)
+    if chosen is None:
+        chosen = await db.chosen_video(stid)
+    if chosen is not None:
+        video_id, match_score = chosen, 1.0
+        log.info("Using the chosen video %s for %s (%s - %s)", video_id, stid, track["artist"], track["title"])
+    else:
+        match = await asyncio.to_thread(matcher.find_video, track)
+        if match is None:
+            _no_match[stid] = True
+            raise TrackUnavailable(f"No YouTube match for {track}")
+        video_id, match_score = match
+        log.info("Matched %s (%s - %s) to %s, score %.2f",
+                 stid, track["artist"], track["title"], video_id, match_score)
 
     config.TEMP_DIR.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=config.TEMP_DIR) as folder:
@@ -282,7 +290,8 @@ async def _fetch(stid: str) -> float:
             """
             INSERT INTO track (stid, ytvid, auid, duration, title, artists, isrc, match_score)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT (stid) DO NOTHING
+            ON CONFLICT (stid) DO UPDATE SET ytvid = EXCLUDED.ytvid, auid = EXCLUDED.auid,
+                duration = EXCLUDED.duration, match_score = EXCLUDED.match_score
             """,
             (stid, video_id, auid, duration, track["title"], track["artist"],
              full.get("isrc"), match_score),
@@ -293,13 +302,13 @@ async def _fetch(stid: str) -> float:
     return duration
 
 
-async def _fetch_with_slot(stid: str) -> float:
+async def _fetch_with_slot(stid: str, chosen: str | None = None) -> float:
     partial = _partials[stid]
     try:
         async with _slots:
             _downloading.add(stid)
             try:
-                return await _fetch(stid)
+                return await (_fetch(stid) if chosen is None else _fetch(stid, chosen))
             finally:
                 _downloading.discard(stid)
     finally:
@@ -325,16 +334,17 @@ def _forget(stid: str, task: asyncio.Task) -> None:
         del _tasks[stid]
 
 
-def _start(stid: str, owner: str | None) -> asyncio.Task:
+def _start(stid: str, owner: str | None, chosen: str | None = None) -> asyncio.Task:
     """The download of the track, starting it if there's none. Raises TrackUnavailable."""
     task = _tasks.get(stid)
-    if task is not None:
+    # A finished task stays listed until its done callback runs
+    if task is not None and not task.done():
         return task
     if owner is not None and not limits.downloads.allow(owner):
         raise TrackUnavailable(f"Download limit reached for user {owner}")
     _partials[stid] = Partial(_streams_dir() / f"{stid}-{secrets.token_hex(4)}")
     # Runs independently of the caller, so a client hanging up mid-download doesn't waste the work
-    task = asyncio.create_task(_fetch_with_slot(stid))
+    task = asyncio.create_task(_fetch_with_slot(stid, chosen))
     _tasks[stid] = task
     task.add_done_callback(lambda done: _forget(stid, done))
     return task
@@ -379,6 +389,54 @@ async def ensure_track(stid: str, owner: str | None = None) -> float:
         except Exception as error:
             log.exception("Failed to fetch track %s", stid)
             raise TrackUnavailable(str(error)) from error
+
+
+async def use_version(stid: str, video_id: str, owner: str | None = None) -> float:
+    """Replaces the track's audio with that of the YouTube video [video_id], and keeps
+    using that video when the track is downloaded again. Returns the new duration.
+
+    The old audio stays until the new one is stored, so a failed download changes nothing.
+    """
+    running = _tasks.get(stid)
+    if running is not None:
+        # Let a download already under way finish first; its result is replaced below
+        with contextlib.suppress(Exception):
+            await asyncio.shield(running)
+    old = await db.fetch_one("SELECT ytvid, auid, duration FROM track WHERE stid = %s", (stid,))
+    if old is None or old[0] != video_id:
+        task = _start(stid, owner, chosen=video_id)
+        try:
+            duration = await asyncio.shield(task)
+        except TrackUnavailable:
+            raise
+        except Exception as error:
+            log.exception("Failed to use video %s for %s", video_id, stid)
+            raise TrackUnavailable(str(error)) from error
+    else:
+        duration = old[2]
+    await db.execute(
+        """
+        INSERT INTO track_override (stid, ytvid, uid) VALUES (%s, %s, %s)
+        ON CONFLICT (stid) DO UPDATE SET ytvid = EXCLUDED.ytvid, uid = EXCLUDED.uid, chosen_at = now()
+        """,
+        (stid, video_id, owner),
+    )
+    _no_match.pop(stid, None)
+    if old is not None and old[0] != video_id:
+        await _drop_unused_audio(old[1])
+    return duration
+
+
+async def _drop_unused_audio(auid: int) -> None:
+    """Deletes audio no track uses any more, with its file."""
+    row = await db.fetch_one(
+        "DELETE FROM audio WHERE auid = %s AND NOT EXISTS (SELECT 1 FROM track WHERE auid = %s) RETURNING path",
+        (auid, auid),
+    )
+    if row:
+        with contextlib.suppress(OSError):
+            Path(row[0]).unlink()
+        log.info("Deleted audio %s, which no track uses any more", auid)
 
 
 def streaming(stid: str) -> Partial | None:

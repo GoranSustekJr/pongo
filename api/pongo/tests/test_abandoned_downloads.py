@@ -86,6 +86,7 @@ def test_a_track_without_a_match_is_not_searched_again(monkeypatch):
     monkeypatch.setattr(db, "track_duration", not_stored)
     monkeypatch.setattr(downloads.deezer, "full_track", full_track)
     monkeypatch.setattr(downloads.matcher, "find_video", find_video)
+    monkeypatch.setattr(db, "chosen_video", not_stored)
     monkeypatch.setattr(downloads, "_no_match", {})
 
     async def scenario():

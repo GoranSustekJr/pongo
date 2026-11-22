@@ -4,6 +4,8 @@ The public API needs no key and allows 50 requests per 5 seconds per IP.
 """
 import asyncio
 import logging
+import time
+from collections import deque
 from urllib.parse import urlencode
 
 import httpx
@@ -18,10 +20,27 @@ NOT_FOUND = 800
 _client = httpx.AsyncClient(base_url=BASE_URL, timeout=15)
 _cache: TTLCache = TTLCache(maxsize=5000, ttl=3600)
 _in_flight = asyncio.Semaphore(10)
+# Stay a little under Deezer's limit so big imports don't run into it
+RATE_LIMIT, RATE_WINDOW = 45, 5.0
+_sent: deque[float] = deque()
+_pacing = asyncio.Lock()
 
 
 class DeezerError(Exception):
     pass
+
+
+async def _pace():
+    """Waits until another request fits in Deezer's rate limit."""
+    async with _pacing:
+        while True:
+            now = time.monotonic()
+            while _sent and _sent[0] <= now - RATE_WINDOW:
+                _sent.popleft()
+            if len(_sent) < RATE_LIMIT:
+                _sent.append(now)
+                return
+            await asyncio.sleep(_sent[0] + RATE_WINDOW - now)
 
 
 async def _get(path: str, **params) -> dict:
@@ -30,6 +49,7 @@ async def _get(path: str, **params) -> dict:
         return _cache[key]
 
     for attempt in range(3):
+        await _pace()
         async with _in_flight:
             response = await _client.get(path, params=params)
         response.raise_for_status()
@@ -120,6 +140,20 @@ async def search(query: str) -> dict:
         "artists": {"items": [artist_shape(a) for a in artists["data"]]},
         "playlists": {"items": [_playlist_shape(p) for p in playlists["data"]]},
     }
+
+
+async def search_tracks(query: str, limit: int = 10) -> list[dict]:
+    """Raw track search results, best first."""
+    data = await _get("/search/track", q=query.replace("+", "%2B"), limit=limit)
+    return data.get("data") or []
+
+
+async def track_by_isrc(isrc: str) -> dict | None:
+    try:
+        track = await _get(f"/track/isrc:{isrc}")
+    except DeezerError:
+        return None
+    return track if track.get("id") else None
 
 
 async def full_track(stid: str) -> dict:
