@@ -8,7 +8,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
     volumes:
       - pongo_db:/var/lib/postgresql/data
-      - ./database/init:/docker-entrypoint-initdb.d:ro
     security_opt:
       - no-new-privileges:true
     mem_limit: 1g

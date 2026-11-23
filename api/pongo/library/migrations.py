@@ -1,7 +1,7 @@
 """Applies the numbered SQL files in migrations/ that the database hasn't seen yet.
 
-database/init only runs when the database is first created; changes after that
-go here, one file each, applied in order at startup.
+A new database gets every table from them, starting with 001_schema.sql; each
+change after that is a file of its own, applied in order at startup.
 """
 import logging
 from pathlib import Path

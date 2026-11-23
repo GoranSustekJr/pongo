@@ -24,6 +24,19 @@ APPLE_PRIVATE_KEY_PATH = os.getenv("APPLE_PRIVATE_KEY_PATH", "")
 # Accounts with these emails are enabled on first sign in, all others start disabled
 ALLOWED_EMAILS = _csv("ALLOWED_EMAILS")
 
+
+def _flag(name: str, default: bool) -> bool:
+    return os.getenv(name, "true" if default else "false").strip().lower() in ("1", "true", "yes", "on")
+
+
+# Anyone who can reach the server can create an account. Off (the default, so an
+# existing server stays invite-only), only ALLOWED_EMAILS and scripts/enable_user.sh get in
+OPEN_SIGNUP = _flag("OPEN_SIGNUP", False)
+# Accounts with a username and password, for servers without Google sign-in
+PASSWORD_ACCOUNTS = _flag("PASSWORD_ACCOUNTS", True)
+# Shown in the apps when they connect
+SERVER_NAME = os.getenv("SERVER_NAME", "Pongo").strip() or "Pongo"
+
 DATA_DIR = Path(os.getenv("DATA_DIR", "/data"))
 AUDIO_DIR = DATA_DIR / "audio"
 TEMP_DIR = DATA_DIR / "tmp"

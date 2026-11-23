@@ -1,7 +1,9 @@
--- Pongo schema. Runs once, when the Postgres data volume is first created.
+-- Pongo's first tables. The API creates them on a new database; servers set up
+-- before this was a migration got them from database/init, so nothing here may fail
+-- when they exist.
 -- Audio bytes live on the audio volume; the database only stores where they are.
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     uid          text PRIMARY KEY,
     email        text,
     created      timestamptz NOT NULL DEFAULT now(),
@@ -13,14 +15,14 @@ CREATE TABLE users (
     disabled     boolean NOT NULL DEFAULT true  -- invite-only: see ALLOWED_EMAILS
 );
 
-CREATE TABLE user_device (
+CREATE TABLE IF NOT EXISTS user_device (
     uid        text NOT NULL REFERENCES users(uid) ON DELETE CASCADE,
     device_id  text NOT NULL,
     last_seen  timestamptz NOT NULL DEFAULT now(),
     PRIMARY KEY (uid, device_id)
 );
 
-CREATE TABLE audio (
+CREATE TABLE IF NOT EXISTS audio (
     auid          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     sha256        char(64) NOT NULL UNIQUE,
     path          text NOT NULL,
@@ -29,7 +31,7 @@ CREATE TABLE audio (
 );
 
 -- stid is the metadata provider's track id (Deezer).
-CREATE TABLE track (
+CREATE TABLE IF NOT EXISTS track (
     stid         text PRIMARY KEY,
     ytvid        varchar(15) NOT NULL,
     auid         bigint NOT NULL REFERENCES audio(auid),
@@ -41,5 +43,5 @@ CREATE TABLE track (
     created      timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE INDEX track_ytvid_idx ON track (ytvid);
-CREATE INDEX track_auid_idx ON track (auid);
+CREATE INDEX IF NOT EXISTS track_ytvid_idx ON track (ytvid);
+CREATE INDEX IF NOT EXISTS track_auid_idx ON track (auid);
