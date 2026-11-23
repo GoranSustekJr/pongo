@@ -57,6 +57,29 @@ public final class AuthRepository: SessionTokens {
         return true
     }
 
+    /// Signs in to a password account, or creates it when [create] is set.
+    /// Throws APIError.status with the server's reason when it refuses.
+    public func signIn(username: String, password: String, create: Bool) async throws {
+        let value = try await client.postUnauthenticated(
+            create ? "auth/register" : "auth/login",
+            [
+                "username": .string(username), "password": .string(password),
+                "device_id": JSONValue(Self.deviceID),
+            ])
+        guard let access = value["at+JWT"]?.string, let refresh = value["rt+JWT"]?.string else {
+            throw APIError.malformed("No tokens in the sign in response")
+        }
+        setStreamToken(value["st"]?.string ?? "")
+        setSession(signedIn: true, accessToken: access, refreshToken: refresh)
+    }
+
+    /// Changes the password of a password account; the account's other devices
+    /// are signed out.
+    public func changePassword(from old: String, to new: String) async throws {
+        _ = try await client.postForData(
+            "change_password", ["old_password": .string(old), "new_password": .string(new)])
+    }
+
     /// Renews the access token, signing out if the session expired.
     ///
     /// Requests failing together share one renewal, since each refresh token

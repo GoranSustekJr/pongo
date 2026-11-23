@@ -24,21 +24,32 @@ public struct AppConfig: Sendable {
 }
 
 /// The base URLs of one Pongo server, in order of preference, and the one
-/// requests go to.
+/// requests go to. They can be replaced when the user picks another server.
 public final class ServerAddresses: Sendable {
-    public let all: [String]
-    private let index = Mutex(0)
+    private let state: Mutex<(all: [String], index: Int)>
 
     init(_ urls: [String]) {
-        let urls = urls.filter { !$0.isEmpty }.map { $0.hasSuffix("/") ? $0 : $0 + "/" }
-        all = urls.isEmpty ? ["http://localhost:8081/"] : urls
+        state = Mutex((Self.clean(urls), 0))
     }
 
-    public var current: String { all[index.withLock { $0 }] }
+    private static func clean(_ urls: [String]) -> [String] {
+        let urls = urls.filter { !$0.isEmpty }.map { $0.hasSuffix("/") ? $0 : $0 + "/" }
+        return urls.isEmpty ? ["http://localhost:8081/"] : urls
+    }
+
+    public var all: [String] { state.withLock { $0.all } }
+
+    public var current: String { state.withLock { $0.all[$0.index] } }
+
+    /// Uses [urls] from now on, starting with the first.
+    public func replace(with urls: [String]) {
+        state.withLock { $0 = (Self.clean(urls), 0) }
+    }
 
     /// Switches to the first address whose health check answers, keeping the
     /// current one when none does.
     public func choose(session: URLSession = .shared) async {
+        let all = all
         guard all.count > 1 else { return }
         for (i, base) in all.enumerated() {
             guard let url = URL(string: base + "health") else { continue }
@@ -46,7 +57,7 @@ public final class ServerAddresses: Sendable {
             if let (_, response) = try? await session.data(for: request),
                 (response as? HTTPURLResponse)?.statusCode == 200
             {
-                index.withLock { $0 = i }
+                state.withLock { if $0.all == all { $0.index = i } }
                 return
             }
         }

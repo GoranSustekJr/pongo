@@ -64,11 +64,30 @@ final class AppModel {
     /// showing it reload.
     var libraryRevision: Int { localRevision + sync.revision }
 
+    /// Where the server the user typed in is kept; without one the app uses
+    /// the address it was built with.
+    static let serverKey = "PONGOSERVERURL"
+    /// The addresses the app was built with, empty in builds made for anyone.
+    static var builtInServers: [String] {
+        let info = Bundle.main.infoDictionary ?? [:]
+        return [info["PongoServerURL"] as? String ?? "", info["PongoLocalServerURL"] as? String ?? ""]
+            .filter { !$0.isEmpty }
+    }
+    /// Whether the app knows a server to connect to.
+    private(set) var hasServer: Bool
+    /// The address of the server the user picked, nil when it's the built-in one.
+    private(set) var chosenServer: String?
+    /// Whether the sign-in screen opens on picking another server.
+    var editServerOnSignIn = false
+
     init() throws {
         let info = Bundle.main.infoDictionary ?? [:]
+        let chosen = UserDefaults.standard.string(forKey: Self.serverKey)
+        let servers = chosen.map { [$0] } ?? Self.builtInServers
+        chosenServer = chosen
+        hasServer = !servers.isEmpty
         config = AppConfig(
-            serverURL: info["PongoServerURL"] as? String ?? "http://localhost:8081/",
-            fallbackServerURLs: [info["PongoLocalServerURL"] as? String ?? ""],
+            serverURL: servers.first ?? "", fallbackServerURLs: Array(servers.dropFirst()),
             googleClientID: info["GoogleClientID"] as? String ?? "")
         database = try Database.appDatabase()
         client = APIClient(config: config)
@@ -180,6 +199,27 @@ final class AppModel {
             player.halt()
             await clearLibrary()
         }
+    }
+
+    /// Connects to the server at [url], or back to the built-in one when nil.
+    /// A session belongs to one server, so this signs out first.
+    func setServer(_ url: String?) async {
+        if auth.isSignedIn { await signOut() }
+        let servers = url.map { [$0] } ?? Self.builtInServers
+        if let url {
+            UserDefaults.standard.set(url, forKey: Self.serverKey)
+        } else {
+            UserDefaults.standard.removeObject(forKey: Self.serverKey)
+        }
+        chosenServer = url
+        config.servers.replace(with: servers)
+        hasServer = !servers.isEmpty
+    }
+
+    /// Signs out and asks for another server on the sign-in screen.
+    func changeServer() async {
+        editServerOnSignIn = true
+        await signOut()
     }
 
     /// Sends the last changes to the account, then signs out.

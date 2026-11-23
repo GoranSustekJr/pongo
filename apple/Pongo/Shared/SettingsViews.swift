@@ -58,6 +58,8 @@ struct ProfileView: View {
     @State private var profile: UserProfile?
     @State private var confirmSignOut = false
     @State private var confirmDelete = false
+    @State private var confirmServerChange = false
+    @State private var changingPassword = false
 
     var body: some View {
         let settings = model.settings
@@ -90,6 +92,26 @@ struct ProfileView: View {
                     }
                 }
             }
+            Section(L10n.server) {
+                GroupedRow(
+                    systemImage: "server.rack", title: L10n.server,
+                    subtitle: SignInView.shortAddress(model.config.serverURL))
+                    .groupedRowBackground()
+                if profile?.hasPassword == true {
+                    Button {
+                        changingPassword = true
+                    } label: {
+                        GroupedRow(systemImage: "key.fill", title: L10n.changepassword)
+                    }
+                    .groupedRowBackground()
+                }
+                Button {
+                    confirmServerChange = true
+                } label: {
+                    GroupedRow(systemImage: "arrow.left.arrow.right", title: L10n.changeserver)
+                }
+                .groupedRowBackground()
+            }
             Section {
                 Button(role: .destructive) {
                     confirmSignOut = true
@@ -113,6 +135,12 @@ struct ProfileView: View {
         .confirmationDialog(L10n.signout, isPresented: $confirmSignOut) {
             Button(L10n.signout, role: .destructive) { Task { await model.signOut() } }
         }
+        .confirmationDialog(L10n.changeserver, isPresented: $confirmServerChange) {
+            Button(L10n.changeserver, role: .destructive) { Task { await model.changeServer() } }
+        } message: {
+            Text(L10n.changeserverwarning)
+        }
+        .sheet(isPresented: $changingPassword) { ChangePasswordView() }
         .alert(L10n.deleteyouraccount, isPresented: $confirmDelete) {
             Button(L10n.cancel, role: .cancel) {}
             Button(L10n.delete, role: .destructive) {
@@ -129,6 +157,52 @@ struct ProfileView: View {
 }
 
 /// Every preference, grouped and ordered as in the Flutter app.
+/// Changes the password of a password account.
+struct ChangePasswordView: View {
+    @Environment(AppModel.self) private var model
+    @Environment(\.dismiss) private var dismiss
+    @State private var current = ""
+    @State private var new = ""
+    @State private var busy = false
+    @State private var problem: String?
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                SecureField(L10n.currentpassword, text: $current).textContentType(.password)
+                SecureField(L10n.newpassword, text: $new).textContentType(.newPassword)
+                Text(L10n.passwordrules).font(.footnote).foregroundStyle(.secondary)
+                if let problem { Text(problem).font(.footnote).foregroundStyle(.red) }
+            }
+            .navigationTitle(L10n.changepassword)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button(L10n.cancel) { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(L10n.changepassword) { Task { await save() } }
+                        .disabled(busy || current.isEmpty || new.count < 8)
+                }
+            }
+        }
+        #if os(macOS)
+            .frame(minWidth: 380, minHeight: 240)
+        #endif
+    }
+
+    private func save() async {
+        busy = true
+        defer { busy = false }
+        do {
+            try await model.auth.changePassword(from: current, to: new)
+            model.messages.show(L10n.passwordchanged, systemImage: "checkmark")
+            dismiss()
+        } catch let APIError.status(_, detail) where !detail.isEmpty {
+            problem = detail
+        } catch {
+            problem = L10n.error
+        }
+    }
+}
+
 struct PreferencesView: View {
     @Environment(AppModel.self) private var model
     @State private var confirmHistory = false

@@ -33,14 +33,18 @@ format, so a library still syncs with it.
 1. Create `Config/Pongo.local.xcconfig` (it's gitignored):
 
    ```
+   DEVELOPMENT_TEAM = <your team ID>
+   // Optional
    PONGO_SERVER_URL = http:/$()/<your server LAN IP>:8081/
    GOOGLE_CLIENT_ID = <iOS OAuth client ID>.apps.googleusercontent.com
-   DEVELOPMENT_TEAM = <your team ID>
    ```
 
-   `/$()/` keeps xcconfig from reading `//` as a comment. Optionally,
-   `PONGO_LOCAL_SERVER_URL` holds a second address, such as the server's on
-   the home network, which the apps use when the first can't be reached.
+   `/$()/` keeps xcconfig from reading `//` as a comment. Without
+   `PONGO_SERVER_URL` the app asks for the server's address on first launch;
+   either way it can be changed in Settings → Profile → Change server.
+   Optionally, `PONGO_LOCAL_SERVER_URL` holds a second address, such as the
+   server's on the home network, which the apps use when the first can't be
+   reached.
 
 2. Open `Pongo.xcodeproj` in Xcode 27 and run the `Pongo` scheme.
 
@@ -48,8 +52,13 @@ The app needs iOS 26.1, and the Mac app macOS 26.1. The bundle ID is
 `com.example.pongo.swift`; set `PONGO_BUNDLE_ID` in the local xcconfig to
 change it.
 
-Sign-in opens Google in a browser sheet (OAuth with PKCE) with the iOS client
-ID, which the server checks tokens against.
+The sign-in screen asks the server's `/server_info` how to sign in: a username
+and password (`auth/login`, `auth/register`), and Google when both the server
+and the app have a client ID. Google opens in a browser sheet (OAuth with PKCE)
+with the iOS client ID, which the server checks tokens against.
+
+`scripts/build_release.sh` builds `Pongo.ipa` and `Pongo-Mac.zip` for a GitHub
+release, with no server address or Google client ID in them.
 
 Tests for the core run with `swift test` in `PongoKit/`.
 

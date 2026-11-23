@@ -405,6 +405,27 @@ private final class TestStore: KeyValueStore, @unchecked Sendable {
         await config.servers.choose()
         #expect(config.serverURL == "http://127.0.0.1:9/")
     }
+
+    @Test func switchesToAnotherServer() {
+        let config = AppConfig(serverURL: "https://a.example/", fallbackServerURLs: ["http://10.0.0.2:8081/"], googleClientID: "")
+        config.servers.replace(with: ["http://192.168.1.10:8081"])
+        #expect(config.servers.all == ["http://192.168.1.10:8081/"])
+        #expect(config.socketURL == "ws://192.168.1.10:8081/")
+    }
+
+    @Test func readsTypedAddresses() {
+        #expect(ServerInfo.normalize("192.168.1.10") == "http://192.168.1.10:8081/")
+        #expect(ServerInfo.normalize(" 192.168.1.10:9000 ") == "http://192.168.1.10:9000/")
+        #expect(ServerInfo.normalize("my-mac.local") == "http://my-mac.local:8081/")
+        #expect(ServerInfo.normalize("pongo.example.com") == "https://pongo.example.com/")
+        #expect(ServerInfo.normalize("pongo.duckdns.org:48129") == "https://pongo.duckdns.org:48129/")
+        #expect(ServerInfo.normalize("HTTP://10.0.0.5:8081") == "http://10.0.0.5:8081/")
+        #expect(ServerInfo.normalize("http://10.0.0.5") == "http://10.0.0.5/")
+        #expect(ServerInfo.normalize("https://box.tail1234.ts.net/pongo") == "https://box.tail1234.ts.net/pongo/")
+        #expect(ServerInfo.normalize("") == nil)
+        #expect(ServerInfo.normalize("not an address") == nil)
+        #expect(ServerInfo.normalize("ftp://x.example") == nil)
+    }
 }
 
 @Suite struct LibraryChangeTests {

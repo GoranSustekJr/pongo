@@ -1060,6 +1060,29 @@
         }
       }
     },
+    "changepassword": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change password"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passwort ändern"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promijeni lozinku"
+          }
+        }
+      }
+    },
     "changeplaylisttile": {
       "extractionState": "manual",
       "localizations": {
@@ -1102,6 +1125,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Jeste li sigurni da želite promijeniti naslov playliste?"
+          }
+        }
+      }
+    },
+    "changeserver": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Change server"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server wechseln"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promijeni poslužitelj"
+          }
+        }
+      }
+    },
+    "changeserverwarning": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You'll be signed out of this server."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du wirst von diesem Server abgemeldet."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bit ćeš odjavljen s ovog poslužitelja."
           }
         }
       }
@@ -1497,6 +1566,29 @@
         }
       }
     },
+    "connect": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbinden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poveži"
+          }
+        }
+      }
+    },
     "connecting": {
       "extractionState": "manual",
       "localizations": {
@@ -1516,6 +1608,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Povezivanje…"
+          }
+        }
+      }
+    },
+    "connecttoserver": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connect to your server"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit deinem Server verbinden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poveži se sa svojim poslužiteljem"
+          }
+        }
+      }
+    },
+    "connecttoserverhint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type the address your Pongo server's setup printed, such as 192.168.1.10."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gib die Adresse ein, die die Einrichtung deines Pongo-Servers angezeigt hat, z. B. 192.168.1.10."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upiši adresu koju je ispisalo postavljanje tvog Pongo poslužitelja, npr. 192.168.1.10."
           }
         }
       }
@@ -1677,6 +1815,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stvori"
+          }
+        }
+      }
+    },
+    "createaccount": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create account"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konto erstellen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stvori račun"
           }
         }
       }
@@ -1861,6 +2022,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Trenutno koristite svjetli način."
+          }
+        }
+      }
+    },
+    "currentpassword": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current password"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktuelles Passwort"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trenutna lozinka"
           }
         }
       }
@@ -3425,6 +3609,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Jeste li sigurni da želite zaustaviti glazbeni servis?"
+          }
+        }
+      }
+    },
+    "haveanaccount": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Have an account? Sign in"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schon ein Konto? Anmelden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Već imate račun? Prijavite se"
           }
         }
       }
@@ -5930,6 +6137,52 @@
         }
       }
     },
+    "newhere": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New here? Create an account"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neu hier? Konto erstellen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Novi ste? Stvorite račun"
+          }
+        }
+      }
+    },
+    "newpassword": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New password"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neues Passwort"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nova lozinka"
+          }
+        }
+      }
+    },
     "newplaylist": {
       "extractionState": "manual",
       "localizations": {
@@ -6206,6 +6459,29 @@
         }
       }
     },
+    "noserveranswered": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Pongo server answered at that address."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unter dieser Adresse antwortet kein Pongo-Server."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na toj adresi ne odgovara nijedan Pongo poslužitelj."
+          }
+        }
+      }
+    },
     "nosharedplaylists": {
       "extractionState": "manual",
       "localizations": {
@@ -6248,6 +6524,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otvori jednu od svojih online playlista i odaberi „Prikaži na mom profilu”"
+          }
+        }
+      }
+    },
+    "nosigninmethod": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This server has no way to sign in that this app can use."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieser Server bietet keine Anmeldung, die diese App nutzen kann."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ovaj poslužitelj nema prijavu koju ova aplikacija može koristiti."
           }
         }
       }
@@ -6915,6 +7214,75 @@
           "stringUnit": {
             "state": "translated",
             "value": "Naši uvjeti i odredbe"
+          }
+        }
+      }
+    },
+    "password": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Password"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passwort"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lozinka"
+          }
+        }
+      }
+    },
+    "passwordchanged": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Password changed"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passwort geändert"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lozinka promijenjena"
+          }
+        }
+      }
+    },
+    "passwordrules": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At least 8 characters"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mindestens 8 Zeichen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Najmanje 8 znakova"
           }
         }
       }
@@ -9058,6 +9426,52 @@
         }
       }
     },
+    "server": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslužitelj"
+          }
+        }
+      }
+    },
+    "serveraddress": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server address"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Serveradresse"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adresa poslužitelja"
+          }
+        }
+      }
+    },
     "serverdownloading": {
       "extractionState": "manual",
       "localizations": {
@@ -10967,6 +11381,29 @@
         }
       }
     },
+    "tryagain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erneut versuchen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokušaj ponovno"
+          }
+        }
+      }
+    },
     "turnoffifanimationsaretoohardonthedevice": {
       "extractionState": "manual",
       "localizations": {
@@ -11151,6 +11588,29 @@
         }
       }
     },
+    "usebuiltinserver": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use the built-in server"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eingebauten Server verwenden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koristi ugrađeni poslužitelj"
+          }
+        }
+      }
+    },
     "usedetailedblurhash": {
       "extractionState": "manual",
       "localizations": {
@@ -11239,6 +11699,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Korisničko sučelje"
+          }
+        }
+      }
+    },
+    "username": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Username"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benutzername"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Korisničko ime"
           }
         }
       }

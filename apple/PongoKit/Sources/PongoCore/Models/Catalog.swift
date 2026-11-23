@@ -406,12 +406,15 @@ public struct UserProfile: Sendable {
     public var picture: String
     /// Whether the email is a private relay address.
     public var hiddenAuth: Bool
+    /// Whether the account signs in with a username and password.
+    public var hasPassword: Bool
 
     init(json: JSONValue) {
         email = json["email"]?.string ?? ""
         name = json["name"]?.string ?? ""
         picture = json["picture"]?.string ?? ""
         hiddenAuth = json["hidden_auth"]?.bool ?? false
+        hasPassword = json["password"]?.bool ?? false
     }
 }
 

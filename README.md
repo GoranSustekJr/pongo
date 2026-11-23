@@ -9,7 +9,7 @@ Pongo is a music streaming app you host yourself: native **iPhone and Mac** apps
 - **No ads, no premium tier, no tracking.**
 - **Open source** under the [MIT License](LICENSE).
 
-**To set it up yourself, follow [SELF_HOSTING.md](SELF_HOSTING.md).** It's meant for personal use, for you and maybe a few friends, not for running a public service; see the note at the top of the guide.
+**To set it up yourself, run `./setup.sh` and follow [SELF_HOSTING.md](SELF_HOSTING.md): about ten minutes, no keys or accounts needed.** It's meant for personal use, for you and maybe a few friends, not for running a public service; see the note at the top of the guide.
 
 <p align="center">
   <img src="docs/screenshots/mac-home.png" width="100%" alt="The Mac app: home with mixes and moods, and synced lyrics in the side panel" />
@@ -82,28 +82,14 @@ Friends follow your queue live on their own phones or Macs, each on their own ac
 
 ## Running it
 
-The API and database run in Docker; the apps connect to them over your network.
+On any machine with Docker:
 
 ```sh
-cp .env.example .env            # set DB_PASSWORD, JWT_SECRET, ALLOWED_EMAILS and the sign in ids
-docker compose up -d --build
-curl http://localhost:8081/health
+git clone https://github.com/GoranSustekJr/pongo.git && cd pongo
+./setup.sh
 ```
 
-Then build the iPhone or Mac app against it, as [apple/README.md](apple/README.md) describes: put the server's address (your computer's LAN address, not localhost, for a phone) and your Google iOS client ID in `apple/Config/Pongo.local.xcconfig` and run the `Pongo` or `Pongo Mac` scheme in Xcode. Only emails in `ALLOWED_EMAILS` can sign in; let others in with `scripts/enable_user.sh someone@example.com`.
-
-### Reaching it from the internet
-
-Over the internet the server is only served over HTTPS, through [Caddy](https://caddyserver.com), which gets a Let's Encrypt certificate for your hostname (a no-ip one works). Set `PONGO_DOMAIN` in `.env`, forward ports 80 and 443 on the router to the server (Let's Encrypt checks the hostname over port 80), and start it with the public override, which also limits the API's plain HTTP port to the server itself:
-
-```sh
-docker compose -f docker-compose.yml -f docker-compose.public.yml up -d --build
-curl https://$PONGO_DOMAIN/health
-```
-
-If ports 80 and 443 can't be forwarded, `docker-compose.dns.yml` gets the certificate through Let's Encrypt's DNS check instead, with a free [Duck DNS](https://www.duckdns.org) hostname, on any port; see [SELF_HOSTING.md](SELF_HOSTING.md#without-them-the-dns-check).
-
-Set `PONGO_SERVER_URL = https:/$()/<hostname>/` in the apps' local xcconfig. `PONGO_LOCAL_SERVER_URL` can hold the server's address at home too; the apps fall back to it when the first one can't be reached. The apps allow plain HTTP only to the local network, so the LAN setup above keeps working for development.
+It generates the secrets, starts the server and prints its address. Install the app from the [latest release](https://github.com/GoranSustekJr/pongo/releases/latest) (`Pongo.ipa` through SideStore or AltStore, or `Pongo-Mac.zip`), type in the address and create an account. No Google or Apple keys are needed. To use it away from home, [Tailscale](SELF_HOSTING.md#4-optional-use-it-away-from-home) is one command; HTTPS on your own domain through Caddy and Let's Encrypt is covered too. [SELF_HOSTING.md](SELF_HOSTING.md) has the details: invite-only servers, Google sign-in and building the apps yourself.
 
 Audio lives in the `pongo_audio` volume and the database in `pongo_db`. Back up both.
 
