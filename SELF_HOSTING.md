@@ -112,7 +112,7 @@ GOOGLE_CLIENT_ID = <your Google iOS client ID>
 - **iPhone:** connect it, trust the Mac, and turn on **Developer Mode** on the phone (Settings → Privacy & Security). Open `apple/Pongo.xcodeproj`, pick the **Pongo** scheme and your iPhone, and press Run.
 - **Mac:** pick the **Pongo Mac** scheme and press Run.
 
-To update the app later, run it from Xcode again; installing over it keeps its data. `apple/scripts/build_release.sh` builds the `Pongo.ipa` and `Pongo-Mac.zip` that go in a GitHub release, without your server address or Google client ID in them.
+To update the app later, run it from Xcode again; installing over it keeps its data. `apple/scripts/build_release.sh` builds the `Pongo.ipa` and `Pongo-Mac.zip` that go in a GitHub release, without your server address in them. Your Google client ID stays in, so people can sign in to your server with Google.
 
 ## Reaching it from outside your home, with your own domain
 

@@ -1,6 +1,8 @@
 #!/bin/sh
-# Builds the apps for anyone to install, with no server address or Google client
-# built in: people type their own server's address in the app.
+# Builds the apps for anyone to install, with no server address built in: people
+# type their own server's address in the app. Your Google client ID from
+# Pongo.local.xcconfig stays in, so people can sign in to your server with Google;
+# the app only offers Google on servers that say they accept it.
 #   apple/scripts/build_release.sh
 # Makes apple/build/release/Pongo.ipa (iPhone, for SideStore or AltStore, which sign
 # it with the installer's own Apple ID) and Pongo-Mac.zip (signed with your team from
@@ -13,7 +15,7 @@ rm -rf "$out" "$derived"
 mkdir -p "$out"
 
 # The empty settings override Pongo.local.xcconfig, so your own server stays out
-blank="PONGO_SERVER_URL= PONGO_LOCAL_SERVER_URL= GOOGLE_CLIENT_ID="
+blank="PONGO_SERVER_URL= PONGO_LOCAL_SERVER_URL="
 bundle=$(sed -n 's/^PONGO_BUNDLE_ID *= *//p' Config/Pongo.xcconfig | tail -n 1)
 
 echo "Building the iPhone app"

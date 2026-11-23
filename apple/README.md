@@ -58,7 +58,7 @@ and the app have a client ID. Google opens in a browser sheet (OAuth with PKCE)
 with the iOS client ID, which the server checks tokens against.
 
 `scripts/build_release.sh` builds `Pongo.ipa` and `Pongo-Mac.zip` for a GitHub
-release, with no server address or Google client ID in them.
+release, with no server address in them (the Google client ID stays in).
 
 Tests for the core run with `swift test` in `PongoKit/`.
 
