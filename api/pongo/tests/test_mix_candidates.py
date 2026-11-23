@@ -35,3 +35,25 @@ def test_no_known_seeds_give_no_candidates(monkeypatch):
 
     monkeypatch.setattr(deezer, "_get", get)
     assert asyncio.run(deezer.mix_candidates(["1"], exclude=set())) == []
+
+
+def test_anchors_keep_the_mix_to_its_own_artists(monkeypatch):
+    responses = {
+        "/track/1": _track(1, 10),
+        "/track/5": _track(5, 50),
+        "/artist/10/related": {"data": [{"id": 11}]},
+        "/artist/10/radio": {"data": [_track(99, 77), _track(100, 10)]},
+        "/artist/11/radio": {"data": [_track(110, 11)]},
+        "/artist/50/radio": {"data": [_track(500, 50)]},
+    }
+
+    async def get(path, **_):
+        if path not in responses:
+            raise deezer.DeezerError(path)
+        return responses[path]
+
+    monkeypatch.setattr(deezer, "_get", get)
+    # The latest seed is a tango the mix wandered to; the mix started from artist 10
+    mix = asyncio.run(deezer.mix_candidates(["5"], exclude=set(), anchors=["1"]))
+    # Its artists and those like them first, then what their radios wandered to
+    assert [t["id"] for t in mix] == ["110", "100", "99"]

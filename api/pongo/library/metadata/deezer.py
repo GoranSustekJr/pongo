@@ -4,8 +4,9 @@ The public API needs no key and allows 50 requests per 5 seconds per IP.
 """
 import asyncio
 import logging
+import random
 import time
-from collections import deque
+from collections import Counter, deque
 from urllib.parse import urlencode
 
 import httpx
@@ -213,16 +214,28 @@ async def get_genres(limit: int) -> dict:
 
 async def get_genre_page(genre_id: str, limit: int = 25) -> dict:
     """A genre's name and picture with its own charts."""
-    genre, chart = await asyncio.gather(_get(f"/genre/{genre_id}"), _get(f"/chart/{genre_id}", limit=limit))
+    genre, chart = await asyncio.gather(_get(f"/genre/{genre_id}"), _get(f"/chart/{genre_id}", limit=50))
     return {
         "id": str(genre["id"]),
         "name": genre.get("name", ""),
         "icons": _images(genre, "picture"),
-        "tracks": [track_shape(t) for t in chart["tracks"]["data"]],
+        "tracks": [track_shape(t) for t in chart["tracks"]["data"][:limit]],
         "albums": [album_shape(a) for a in chart["albums"]["data"]],
-        "artists": [artist_shape(a) for a in chart["artists"]["data"]],
+        "artists": genre_artists(chart, limit),
         "playlists": [_playlist_shape(p) for p in chart["playlists"]["data"]],
     }
+
+
+def genre_artists(chart: dict, limit: int) -> list[dict]:
+    """A genre's popular artists: those of its chart tracks, by how many they have.
+
+    Deezer's own artists of a genre's chart are the country's top artists whatever
+    the genre, so Croatian rappers would show up under latin and R&B."""
+    tracks = [t["artist"] for t in chart["tracks"]["data"] if t.get("artist")]
+    counts = Counter(a["id"] for a in tracks)
+    artists = list({a["id"]: a for a in reversed(tracks)}.values())[::-1]
+    artists.sort(key=lambda a: -counts[a["id"]])
+    return [artist_shape(a) for a in artists[:limit]]
 
 
 async def get_new_releases() -> dict:
@@ -247,16 +260,40 @@ async def get_charts(limit: int = 25) -> dict:
     }
 
 
-async def mix_candidates(seeds: list[str], exclude: set[str]) -> list[dict]:
+async def related_ids(artist_id: str, limit: int = 25) -> list[str]:
+    """The ids of Deezer's artists similar to the artist, most similar first."""
+    related = await _get(f"/artist/{artist_id}/related", limit=limit)
+    return [str(a["id"]) for a in related.get("data") or []]
+
+
+async def _artists_of(stids: list[str]) -> list:
+    """The main artist of each track, most common first, then in the tracks' order."""
+    tracks = await asyncio.gather(*(full_track(s) for s in stids), return_exceptions=True)
+    artists = [t["artist"]["id"] for t in tracks if not isinstance(t, Exception) and t.get("artist")]
+    counts = Counter(artists)
+    return sorted(dict.fromkeys(artists), key=lambda a: -counts[a])
+
+
+async def mix_candidates(seeds: list[str], exclude: set[str], anchors: list[str] | None = None) -> list[dict]:
     """Tracks similar to the seeds, most recent seed first, from the radios of their artists.
 
     The most recent seed's artist and related artists come first, older seeds' artists
-    later, so the mix follows where the listener is now. Excluded ids are left out.
+    later, so the mix follows where the listener is now. With [anchors], the tracks the
+    mix started from, it keeps to their artists instead: following what the mix itself
+    added would drift from one kind of music to another. Excluded ids are left out.
     """
-    tracks = await asyncio.gather(*(full_track(s) for s in seeds), return_exceptions=True)
-    artist_ids = list(dict.fromkeys(
-        t["artist"]["id"] for t in tracks if not isinstance(t, Exception)
-    ))
+    artist_ids = await _artists_of(seeds)
+    scene: set[str] = set()
+    if anchors:
+        own = await _artists_of(anchors)
+        if own:
+            scene = await _scene(own[:4])
+            scene |= {str(a) for a in own}
+            # The latest of the mix's own artists keeps it close to now; others take turns
+            recent = [a for a in artist_ids if a in own]
+            primary = recent[0] if recent else random.choice(own[:5])
+            others = [a for a in own if a != primary]
+            artist_ids = [primary, *random.sample(others, min(2, len(others)))]
     if not artist_ids:
         return []
     related = await _get(f"/artist/{artist_ids[0]}/related", limit=3)
@@ -274,4 +311,13 @@ async def mix_candidates(seeds: list[str], exclude: set[str]) -> list[dict]:
             if position < len(items) and str(items[position]["id"]) not in seen:
                 seen.add(str(items[position]["id"]))
                 mix.append(track_shape(items[position]))
+    if scene:
+        # Radios wander off too: songs of the mix's artists and those like them come first
+        mix.sort(key=lambda t: not any(a["id"] in scene for a in t["artists"]))
     return mix
+
+
+async def _scene(artist_ids: list) -> set[str]:
+    """The artists and those similar to them."""
+    lists = await asyncio.gather(*(related_ids(str(a)) for a in artist_ids), return_exceptions=True)
+    return {a for ids in lists if not isinstance(ids, Exception) for a in ids}

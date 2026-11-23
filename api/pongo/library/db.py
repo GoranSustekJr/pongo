@@ -37,6 +37,24 @@ async def track_duration(stid: str) -> float | None:
     return row[0] if row else None
 
 
+async def track_failures(stids: list[str]) -> dict[str, str]:
+    """Why each of the given tracks that failed to download the last time did."""
+    if not stids:
+        return {}
+    rows = await fetch_all("SELECT stid, reason FROM track_failure WHERE stid = ANY(%s)", (stids,))
+    return dict(rows)
+
+
+async def record_track_failure(stid: str, reason: str) -> None:
+    await execute(
+        """
+        INSERT INTO track_failure (stid, reason) VALUES (%s, %s)
+        ON CONFLICT (stid) DO UPDATE SET reason = EXCLUDED.reason, failed_at = now()
+        """,
+        (stid, reason),
+    )
+
+
 async def chosen_video(stid: str) -> str | None:
     """The YouTube video a user chose for the track, if one did."""
     row = await fetch_one("SELECT ytvid FROM track_override WHERE stid = %s", (stid,))

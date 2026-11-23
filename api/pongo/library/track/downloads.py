@@ -245,7 +245,27 @@ def _analyze_later(auid: int, path: Path) -> None:
 
 async def _fetch(stid: str, chosen: str | None = None) -> float:
     """Downloads and stores the track's audio: from the video [chosen], replacing what's
-    stored, or else a user's earlier choice, or else the best YouTube match."""
+    stored, or else a user's earlier choice, or else the best YouTube match. A failure is
+    remembered with its reason, for apps to show."""
+    try:
+        return await _fetch_audio(stid, chosen)
+    except asyncio.CancelledError:
+        raise
+    except Exception as error:
+        if isinstance(error, deezer.DeezerError):
+            reason = "catalog"
+        elif isinstance(error, TrackUnavailable) and stid in _no_match:
+            reason = "no_match"
+        else:
+            reason = "download"
+        try:
+            await db.record_track_failure(stid, reason)
+        except Exception:
+            log.exception("Couldn't record the failed download of %s", stid)
+        raise
+
+
+async def _fetch_audio(stid: str, chosen: str | None) -> float:
     started = time.monotonic()
     full = await deezer.full_track(stid)
     track = {
@@ -296,6 +316,7 @@ async def _fetch(stid: str, chosen: str | None = None) -> float:
             (stid, video_id, auid, duration, track["title"], track["artist"],
              full.get("isrc"), match_score),
         )
+        await conn.execute("DELETE FROM track_failure WHERE stid = %s", (stid,))
     _analyze_later(auid, Path(path))
     log.info("Fetched %s in %.1f s, %.1f s of it after the download",
              stid, time.monotonic() - started, time.monotonic() - downloaded)
@@ -389,6 +410,24 @@ async def ensure_track(stid: str, owner: str | None = None) -> float:
         except Exception as error:
             log.exception("Failed to fetch track %s", stid)
             raise TrackUnavailable(str(error)) from error
+
+
+def prepare(stids: list[str], owner: str) -> tuple[int, bool]:
+    """Starts downloading those of the tracks the server doesn't have, in the background,
+    as far as the owner's download limit allows. Returns how many it started, and whether
+    the limit stopped it."""
+    started = 0
+    for stid in stids:
+        if stid in _no_match or stid in _tasks:
+            continue
+        try:
+            task = _start(stid, owner)
+        except TrackUnavailable:
+            return started, True
+        started += 1
+        # Failures are recorded by _fetch; nobody waits for the result
+        task.add_done_callback(lambda done: done.cancelled() or done.exception())
+    return started, False
 
 
 async def use_version(stid: str, video_id: str, owner: str | None = None) -> float:

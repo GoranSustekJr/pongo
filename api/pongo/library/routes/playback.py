@@ -10,9 +10,9 @@ from fastapi.responses import FileResponse, Response, StreamingResponse
 
 from library import config, db, limits
 from library.auth import tokens
-from library.auth.tokens import current_session
-from library.metadata import deezer
-from library.track import loudness, mood, partial as partial_files
+from library.auth.tokens import Session, current_session
+from library.metadata import deezer, scenes
+from library.track import downloads, loudness, mood, partial as partial_files
 from library.track.downloads import (
     NotStreamable, TrackUnavailable, ensure_track, ensure_tracks, queue_of, stream_track, streaming,
 )
@@ -89,6 +89,17 @@ async def track_moods(request: Request):
     """The mood, tempo and scores of each of the tracks that were analyzed."""
     stids = [str(s) for s in (await request.json()).get("stids") or []][: config.MAX_BATCH_TRACKS]
     return {"moods": await mood.moods(stids)}
+
+
+@router.post("/prepare_tracks")
+async def prepare_tracks(request: Request, session: Session = Depends(current_session)):
+    """Starts downloading the given tracks the server doesn't have yet, such as a playlist's,
+    so they all play and shuffle. Tracks that failed are tried again."""
+    stids = [str(s) for s in (await request.json()).get("stids") or [] if str(s).isdigit()]
+    stids = stids[: config.MAX_BATCH_TRACKS]
+    have = {row[0] for row in await db.track_durations(stids)}
+    started, limited = downloads.prepare([s for s in stids if s not in have], session.uid)
+    return {"started": started, "limited": limited}
 
 
 @router.post("/download_track/{stid}", dependencies=[Depends(current_session)])
@@ -176,6 +187,7 @@ async def concatenating_tracks(websocket: WebSocket):
 
 
 MIX_SEEDS = 5
+MIX_ANCHORS = 10
 MIX_MAX_COUNT = 5
 MIX_MAX_EXCLUDE = 1000
 
@@ -198,6 +210,8 @@ async def _fits(stid: str, moods: set[str] | None) -> bool:
 async def next_mix_tracks(request: Request, session: tokens.Session = Depends(current_session)):
     data = await request.json()
     seeds = _catalog_ids(data.get("seeds"), MIX_SEEDS)
+    # The tracks the mix started from, whose kind of music it keeps to
+    anchors = _catalog_ids(data.get("anchors"), MIX_ANCHORS)
     exclude = set(_catalog_ids(data.get("exclude"), MIX_MAX_EXCLUDE))
     count = data.get("count")
     count = min(max(count, 1), MIX_MAX_COUNT) if isinstance(count, int) else 3
@@ -206,7 +220,7 @@ async def next_mix_tracks(request: Request, session: tokens.Session = Depends(cu
     if not seeds:
         raise HTTPException(status_code=422, detail="No seed tracks")
 
-    candidates = await deezer.mix_candidates(seeds, exclude)
+    candidates = await deezer.mix_candidates(seeds, exclude, anchors)
     by_stid = {track["id"]: track for track in candidates}
     order = list(by_stid)
     if wanted:
@@ -227,3 +241,12 @@ async def next_mix_tracks(request: Request, session: tokens.Session = Depends(cu
             if len(result) == count:
                 break
     return {"tracks": result}
+
+
+@router.post("/artist_groups")
+async def artist_groups(request: Request, session: Session = Depends(current_session)):
+    """The artists in scenes of artists that belong together, biggest first, so the
+    app can make mixes that keep to one kind of music."""
+    limits.check(limits.artist_groupings, session.uid)
+    artists = list(dict.fromkeys(_catalog_ids((await request.json()).get("artists"), scenes.MAX_ARTISTS)))
+    return {"groups": scenes.group(artists, await scenes.related(artists))}

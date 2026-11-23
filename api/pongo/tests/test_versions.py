@@ -92,3 +92,31 @@ def test_choosing_the_playing_version_only_remembers_it(monkeypatch, tmp_path):
     calls = _fake_store(monkeypatch)
     assert asyncio.run(downloads.use_version("1", "old", "user")) == 262.0
     assert calls["fetched"] == [] and calls["written"] == [("1", "old", "user")] and calls["deleted"] == []
+
+
+def test_preparing_starts_only_what_is_missing_and_stops_at_the_limit(monkeypatch):
+    started = []
+
+    async def fetch(stid, chosen=None):
+        started.append(stid)
+        return 1.0
+
+    monkeypatch.setattr(downloads, "_fetch", fetch)
+    monkeypatch.setattr(downloads, "_tasks", {})
+    monkeypatch.setattr(downloads, "_partials", {})
+    monkeypatch.setattr(downloads, "_no_match", {"gone": True})
+    monkeypatch.setattr(downloads.limits, "downloads", downloads.limits.SlidingWindow(2, 3600))
+
+    async def scenario(tmp):
+        count = downloads.prepare(["a", "gone", "b", "c"], "user")
+        assert count == (2, True)
+        count = count[0]
+        await asyncio.gather(*list(downloads._tasks.values()))
+        return count
+
+    import tempfile
+    from pathlib import Path
+    with tempfile.TemporaryDirectory() as tmp:
+        monkeypatch.setattr(downloads.config, "TEMP_DIR", Path(tmp))
+        assert asyncio.run(scenario(tmp)) == 2
+    assert started == ["a", "b"]

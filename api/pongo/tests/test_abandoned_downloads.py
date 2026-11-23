@@ -87,6 +87,12 @@ def test_a_track_without_a_match_is_not_searched_again(monkeypatch):
     monkeypatch.setattr(downloads.deezer, "full_track", full_track)
     monkeypatch.setattr(downloads.matcher, "find_video", find_video)
     monkeypatch.setattr(db, "chosen_video", not_stored)
+
+    async def record(stid, reason):
+        failures.append((stid, reason))
+
+    failures = []
+    monkeypatch.setattr(db, "record_track_failure", record)
     monkeypatch.setattr(downloads, "_no_match", {})
 
     async def scenario():
@@ -98,6 +104,7 @@ def test_a_track_without_a_match_is_not_searched_again(monkeypatch):
 
     asyncio.run(scenario())
     assert len(searches) == 1
+    assert failures == [("nomatch", "no_match")]
 
 
 def test_new_downloads_count_towards_the_users_limit(monkeypatch):

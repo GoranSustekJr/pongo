@@ -21,9 +21,12 @@ def _catalog_id(value) -> str:
 async def _availability(stids: list[str]) -> dict:
     durations = await db.track_durations(stids)
     existing = {row[0] for row in durations}
+    missing = [stid for stid in stids if stid not in existing]
     return {
         "durations": durations,
-        "missing_tracks": [stid for stid in stids if stid not in existing],
+        "missing_tracks": missing,
+        # Why the server couldn't download some of the missing ones, by stid
+        "failed_tracks": await db.track_failures(missing),
     }
 
 
