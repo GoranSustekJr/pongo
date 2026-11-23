@@ -9,10 +9,20 @@ struct LibraryView: View {
 
     var body: some View {
         List {
+            if model.auth.isSignedIn {
+                Section { ListenTogetherRow() }
+            }
             Section(L10n.online) {
                 row(.favourites, "heart.fill", L10n.favouritesongs, "\(counts[.favourites] ?? 0) \(L10n.plustracks)")
                 row(.userPlaylists(.online), "music.note.list", L10n.onlineplaylists,
                     "\(counts[.userPlaylists(.online)] ?? 0) \(L10n.playlists)")
+            }
+            if model.auth.isSignedIn {
+                Section(L10n.friends) {
+                    row(.friends, "person.2.fill", L10n.friends, L10n.friendsdescription)
+                    row(.followedPlaylists, "heart.text.square.fill", L10n.followedplaylists,
+                        "\(counts[.followedPlaylists] ?? 0) \(L10n.playlists)")
+                }
             }
             Section(L10n.offline) {
                 row(.downloads, "arrow.down.circle.fill", L10n.offlinesongs, "\(counts[.downloads] ?? 0) \(L10n.plustracks)")
@@ -41,6 +51,9 @@ struct LibraryView: View {
                 .userPlaylists(.online): (try? await database.onlinePlaylistCount()) ?? 0,
                 .userPlaylists(.offline): (try? await database.localPlaylistCount()) ?? 0,
             ]
+            if model.auth.isSignedIn, let followed = try? await model.social.followedPlaylists() {
+                counts[.followedPlaylists] = followed.count
+            }
         }
     }
 

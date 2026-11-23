@@ -39,6 +39,16 @@ struct PlayerToolbar: ToolbarContent {
         ToolbarItemGroup(placement: .primaryAction) {
             VolumeControl()
             RoutePicker().frame(width: 28, height: 28)
+            Button {
+                model.showsListenTogether = true
+            } label: {
+                let others = model.listening.othersPresent.count
+                Label(
+                    others > 0 ? "\(L10n.listentogether) (\(others))" : L10n.listentogether,
+                    systemImage: model.listening.isActive ? "person.2.wave.2.fill" : "person.2.wave.2")
+            }
+            .foregroundStyle(model.listening.isActive ? Color.pongoTeal : .primary)
+            .help(model.listening.summary)
             Button(L10n.lyrics, systemImage: router.inspector == .lyrics ? "quote.bubble.fill" : "quote.bubble") {
                 router.toggleInspector(.lyrics)
             }

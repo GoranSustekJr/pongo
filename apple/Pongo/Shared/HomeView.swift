@@ -268,12 +268,14 @@ struct RecommendationsView: View {
         #if DEBUG
             if DemoMode.isOn { moods = DemoMode.moods(for: tracks) }
         #endif
-        let made = MoodMix.make(tracks: tracks, moods: moods)
+        let artists = Array(Set(tracks.compactMap { $0.artists.first?.id }.filter { !$0.isEmpty }))
+        let scenes = try? await model.catalog.artistGroups(artists)
+        let made = MoodMix.make(tracks: tracks, moods: moods, scenes: scenes)
         withAnimation(.easeInOut(duration: 0.3)) { moodMixes = made }
         let names = await MoodNamer.names(for: made, locale: model.settings.settings.locale)
         guard !names.isEmpty else { return }
         for index in moodMixes.indices {
-            moodMixes[index].name = names[moodMixes[index].mood]
+            moodMixes[index].name = names[moodMixes[index].id]
         }
     }
 }

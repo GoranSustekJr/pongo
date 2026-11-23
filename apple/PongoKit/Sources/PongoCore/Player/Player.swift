@@ -84,6 +84,12 @@ public final class Player {
     @ObservationIgnored public var preferences = PlayerPreferences() {
         didSet {
             BassBoost.shared.level.store(preferences.bassBoost.rawValue, ordering: .relaxed)
+            // Tracks loaded without the boost get it once it's turned on
+            if preferences.bassBoost != .off, oldValue.bassBoost == .off {
+                for item in [engine.items(), incomingPlayer?.items() ?? []].joined() where item.audioMix == nil {
+                    BassBoost.attach(to: item)
+                }
+            }
             scheduleCrossfade()
         }
     }
@@ -140,7 +146,8 @@ public final class Player {
     /// Watches for each loaded item from the server failing, by item.
     @ObservationIgnored private var failureObservations: [ObjectIdentifier: NSKeyValueObservation] = [:]
     @ObservationIgnored private let cacheDirectory: URL
-    @ObservationIgnored private let engine = AVQueuePlayer()
+    // Replaced by the incoming player in crossfades
+    @ObservationIgnored private var engine = AVQueuePlayer()
     @ObservationIgnored private var loadedCurrent: Loaded?
     @ObservationIgnored private var loadedNext: Loaded?
     @ObservationIgnored private var observations: [NSKeyValueObservation] = []
@@ -148,13 +155,19 @@ public final class Player {
     // Incremented whenever a new queue starts, so older fills stop
     @ObservationIgnored private var generation = 0
     @ObservationIgnored private var gainFactor = 1.0
-    // Crossfades: the end of the previous track plays on in [tail] while the
-    // engine fades the next one in
-    @ObservationIgnored private let tail = AVPlayer()
-    @ObservationIgnored private var tailStid: String?
-    @ObservationIgnored private var tailGain = 1.0
-    @ObservationIgnored private var tailReady = false
-    @ObservationIgnored private var tailObservation: NSKeyValueObservation?
+    // Crossfades: a next track the current one will fade into loads into a
+    // player of its own, [incomingPlayer], rather than queued after it in the
+    // engine: taking it out of the engine's queue as the fade starts froze
+    // the music a moment on iPhones. At the fade the current track plays out
+    // to its end on [fading], the old engine, while the incoming player
+    // becomes the engine and fades the next one in.
+    @ObservationIgnored private var incomingPlayer: AVQueuePlayer?
+    /// Whether [incomingPlayer] has buffered the next track to start at once.
+    @ObservationIgnored private var incomingReady = false
+    @ObservationIgnored private var incomingObservation: NSKeyValueObservation?
+    @ObservationIgnored private var fading: AVQueuePlayer?
+    @ObservationIgnored private var fadingGain = 1.0
+    @ObservationIgnored private var crossfadeOwner: AVPlayer?
     @ObservationIgnored private var fadeIn = 1.0
     @ObservationIgnored private var crossfadeObserver: Any?
     @ObservationIgnored private var crossfadeTask: Task<Void, Never>?
@@ -795,6 +808,7 @@ public final class Player {
 
     private func stopEngine() {
         finishCrossfade()
+        clearIncoming()
         fadeTask?.cancel()
         engine.pause()
         engine.removeAllItems()
@@ -827,7 +841,9 @@ public final class Player {
         guard let url = stream ?? sourceURL(for: item) else { return nil }
         let playerItem = AVPlayerItem(url: url)
         playerItem.preferredForwardBufferDuration = 30
-        if stream == nil { BassBoost.attach(to: playerItem) }
+        // Only with the boost on: the tap rebuilt as another player started,
+        // which froze the music a moment at crossfades with the screen locked
+        if stream == nil, preferences.bassBoost != .off { BassBoost.attach(to: playerItem) }
         if !url.isFileURL {
             // Audio the server can't serve, or a server that can't be reached, fails as the item loads
             failureObservations[ObjectIdentifier(playerItem)] =
@@ -869,10 +885,18 @@ public final class Player {
         {
             return
         }
-        if let loadedNext { engine.remove(loadedNext.item) }
+        if incomingPlayer != nil {
+            clearIncoming()
+        } else if let loadedNext {
+            engine.remove(loadedNext.item)
+        }
         loadedNext = nil
         guard let nextIndex, let playerItem = playerItem(for: queue.items[nextIndex]) else { return }
-        engine.insert(playerItem, after: loadedCurrent.item)
+        if fades(into: queue.items[nextIndex]) {
+            loadIncoming(playerItem)
+        } else {
+            engine.insert(playerItem, after: loadedCurrent.item)
+        }
         loadedNext = Loaded(uid: queue.items[nextIndex].id, index: nextIndex, item: playerItem)
         scheduleCrossfade()
     }
@@ -894,7 +918,13 @@ public final class Player {
     }
 
     private func itemEnded(_ item: AVPlayerItem) {
-        guard item === loadedCurrent?.item, loadedNext == nil else { return }
+        guard item === loadedCurrent?.item else { return }
+        // A next track loaded for a fade that didn't happen starts as this one ends
+        if let player = incomingPlayer, loadedNext != nil {
+            handOver(to: player, fadingFor: nil)
+            return
+        }
+        guard loadedNext == nil else { return }
         // The end of a queue that doesn't repeat: back to the start, paused
         if let first = queue.playOrder.first {
             queue.select(first)
@@ -921,6 +951,23 @@ public final class Player {
     }
 
     private func observeEngine() {
+        bindEngine()
+        NotificationCenter.default.addObserver(
+            forName: AVPlayerItem.failedToPlayToEndTimeNotification, object: nil, queue: .main
+        ) { [weak self] notification in
+            guard let item = notification.object as? AVPlayerItem else { return }
+            MainActor.assumeIsolated { self?.itemFailed(item) }
+        }
+        NotificationCenter.default.addObserver(
+            forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: .main
+        ) { [weak self] notification in
+            guard let item = notification.object as? AVPlayerItem else { return }
+            MainActor.assumeIsolated { self?.itemEnded(item) }
+        }
+    }
+
+    /// Follows the engine's current item, playback and position.
+    private func bindEngine() {
         observations = [
             engine.observe(\.currentItem, options: [.new]) { [weak self] _, _ in
                 Task { @MainActor in self?.engineItemChanged() }
@@ -928,7 +975,7 @@ public final class Player {
             engine.observe(\.timeControlStatus, options: [.initial, .new]) { [weak self] player, _ in
                 let status = player.timeControlStatus
                 Task { @MainActor in
-                    guard let self else { return }
+                    guard let self, player === self.engine else { return }
                     let wasPlaying = self.isPlaying
                     self.isPlaying = status != .paused
                     if wasPlaying != self.isPlaying { self.onPlaybackChanged?() }
@@ -943,18 +990,13 @@ public final class Player {
         ) { [weak self] time in
             MainActor.assumeIsolated { self?.tick(time) }
         }
-        NotificationCenter.default.addObserver(
-            forName: AVPlayerItem.failedToPlayToEndTimeNotification, object: nil, queue: .main
-        ) { [weak self] notification in
-            guard let item = notification.object as? AVPlayerItem else { return }
-            MainActor.assumeIsolated { self?.itemFailed(item) }
-        }
-        NotificationCenter.default.addObserver(
-            forName: AVPlayerItem.didPlayToEndTimeNotification, object: nil, queue: .main
-        ) { [weak self] notification in
-            guard let item = notification.object as? AVPlayerItem else { return }
-            MainActor.assumeIsolated { self?.itemEnded(item) }
-        }
+    }
+
+    /// Stops following the engine, before the incoming player replaces it.
+    private func unbindEngine() {
+        observations = []
+        if let timeObserver { engine.removeTimeObserver(timeObserver) }
+        timeObserver = nil
     }
 
     private func tick(_ time: CMTime) {
@@ -1013,145 +1055,180 @@ public final class Player {
 
     // MARK: - Crossfades
 
-    /// When the current track starts fading into the next, or `nil` when it
-    /// plays to its end: without a crossfade length, a next track, a known
-    /// length, during alarms, for streams of downloads, and between tracks of
-    /// one album when those play gapless.
-    private func crossfadeStart() -> Double? {
-        let length = preferences.crossfade
-        guard length > 0, activeSleepAlarm == -1, let current, let loadedCurrent, let loadedNext,
-            loadedNext.item !== loadedCurrent.item, duration > length * 3
-        else { return nil }
-        let next = queue.items[loadedNext.index]
-        guard !streamed.contains(current.stid), !streamed.contains(next.stid) else { return nil }
+    /// Whether the current track fades into [next] when the time comes:
+    /// not with crossfades off, during alarms, for streams of downloads, and
+    /// between tracks of one album when those play gapless.
+    private func fades(into next: QueueItem) -> Bool {
+        guard preferences.crossfade > 0, activeSleepAlarm == -1, let current else { return false }
+        guard !streamed.contains(current.stid), !streamed.contains(next.stid) else { return false }
         if preferences.gaplessAlbums, let album = current.track.album?.id, !album.isEmpty,
             next.track.album?.id == album
         {
-            return nil
+            return false
         }
+        return true
+    }
+
+    /// When the current track starts fading into the next, or `nil` when it
+    /// plays to its end: without the next loaded for a fade, during alarms,
+    /// and for tracks too short to fade.
+    private func crossfadeStart() -> Double? {
+        let length = preferences.crossfade
+        guard length > 0, activeSleepAlarm == -1, incomingPlayer != nil, loadedNext != nil, duration > length * 3
+        else { return nil }
         return duration - length
     }
 
-    /// Watches for the moments to load the current track's end and to start
-    /// fading.
+    /// Watches for the moment to start fading.
     private func scheduleCrossfade() {
-        if let crossfadeObserver { engine.removeTimeObserver(crossfadeObserver) }
+        if let crossfadeObserver { crossfadeOwner?.removeTimeObserver(crossfadeObserver) }
         crossfadeObserver = nil
-        // The tail of the track that's fading out keeps playing
-        if crossfadeTask == nil, tailStid != nil, tailStid != current?.stid {
-            tail.replaceCurrentItem(with: nil)
-            tailStid = nil
-            tailReady = false
-            tailObservation = nil
-        }
+        crossfadeOwner = nil
         guard let start = crossfadeStart() else { return }
-        let times = [max(start - 8, 0.1), start].map { NSValue(time: CMTime(seconds: $0, preferredTimescale: 1000)) }
+        let times = [NSValue(time: CMTime(seconds: start, preferredTimescale: 1000))]
         crossfadeObserver = engine.addBoundaryTimeObserver(forTimes: times, queue: .main) { [weak self] in
             MainActor.assumeIsolated { self?.crossfadeBoundary() }
         }
-        // Already past the moment to load the end, such as after a seek
-        let position = engine.currentTime().seconds
-        if crossfadeTask == nil, let current, tailStid != current.stid, position > start - 8, position < start - 1 {
-            prepareTail(of: current, at: start + Self.handoffDelay)
-        }
+        crossfadeOwner = engine
     }
 
     private func crossfadeBoundary() {
-        guard crossfadeTask == nil, let start = crossfadeStart(), let current else { return }
+        guard crossfadeTask == nil, let start = crossfadeStart(), let player = incomingPlayer, incomingReady else {
+            return
+        }
         let position = engine.currentTime().seconds
-        if position < start - 0.5 {
-            prepareTail(of: current, at: start + Self.handoffDelay)
-        } else {
-            startCrossfade(at: position, start: start)
-        }
+        guard position > start - 0.5 else { return }
+        handOver(to: player, fadingFor: max(duration - position, 1))
     }
 
-    /// How long after the fade's start the engine hands the track over to
-    /// [tail], which gives the main thread time to schedule both exactly.
-    private static let handoffDelay = 0.4
-
-    /// Loads the track's end into [tail] ahead of time, buffered and ready
-    /// at [handoff], so it plays on without a pause.
-    private func prepareTail(of item: QueueItem, at handoff: Double) {
-        guard let url = sourceURL(for: item) else { return }
-        let playerItem = AVPlayerItem(url: url)
-        BassBoost.attach(to: playerItem)
-        tail.automaticallyWaitsToMinimizeStalling = false
-        tail.replaceCurrentItem(with: playerItem)
-        tail.volume = 0
-        tailStid = item.stid
-        tailReady = false
-        tailObservation = playerItem.observe(\.status, options: [.initial, .new]) { [weak self] observed, _ in
+    /// Loads [item], the next track, into a player of its own, paused and
+    /// silent, buffered to start the moment the fade does.
+    private func loadIncoming(_ item: AVPlayerItem) {
+        let player = AVQueuePlayer()
+        player.actionAtItemEnd = .advance
+        player.volume = 0
+        // Started at a set moment rather than when the player thinks it has
+        // buffered enough: a player starting up the second way briefly froze
+        // the other one on iPhones
+        player.automaticallyWaitsToMinimizeStalling = false
+        player.insert(item, after: nil)
+        incomingPlayer = player
+        incomingReady = false
+        incomingObservation = item.observe(\.status, options: [.initial, .new]) { [weak self] observed, _ in
             guard observed.status == .readyToPlay else { return }
-            Task { @MainActor in self?.prerollTail(playerItem, at: handoff) }
+            Task { @MainActor in self?.prerollIncoming(observed) }
         }
     }
 
-    private func prerollTail(_ item: AVPlayerItem, at handoff: Double) {
-        guard tail.currentItem === item, !tailReady else { return }
-        tailObservation = nil
-        tail.seek(to: CMTime(seconds: handoff, preferredTimescale: 1000), toleranceBefore: .zero, toleranceAfter: .zero) {
-            [weak self] finished in
-            guard finished else { return }
+    private func prerollIncoming(_ item: AVPlayerItem) {
+        guard let player = incomingPlayer, player.currentItem === item, !incomingReady else { return }
+        incomingObservation = nil
+        player.preroll(atRate: 1) { [weak self] ready in
             Task { @MainActor in
-                guard let self, self.tail.currentItem === item else { return }
-                self.tail.preroll(atRate: 1) { [weak self] ready in
-                    Task { @MainActor in
-                        guard let self, self.tail.currentItem === item else { return }
-                        self.tailReady = ready
-                    }
+                guard let self, self.incomingPlayer?.currentItem === item else { return }
+                self.incomingReady = ready
+            }
+        }
+    }
+
+    /// Drops the player loaded with the next track.
+    private func clearIncoming() {
+        guard let player = incomingPlayer else { return }
+        player.pause()
+        player.removeAllItems()
+        if let loadedNext { failureObservations[ObjectIdentifier(loadedNext.item)] = nil }
+        incomingPlayer = nil
+        incomingReady = false
+        incomingObservation = nil
+    }
+
+    /// Makes [player], loaded with the next track, the engine and starts it.
+    /// With a fade length, the current track fades out to its end on the old
+    /// engine meanwhile; without, it has ended.
+    private func handOver(to player: AVQueuePlayer, fadingFor length: Double?) {
+        if let crossfadeObserver { crossfadeOwner?.removeTimeObserver(crossfadeObserver) }
+        crossfadeObserver = nil
+        crossfadeOwner = nil
+        finishCrossfade()
+        unbindEngine()
+        let old = engine
+        engine = player
+        incomingPlayer = nil
+        incomingReady = false
+        incomingObservation = nil
+        if length != nil {
+            fading = old
+            fadingGain = gainFactor
+            fadeIn = 0
+        } else {
+            old.pause()
+            old.removeAllItems()
+        }
+        applyVolume(volume)
+        let clock = CMClockGetHostTimeClock()
+        engine.setRate(1, time: .invalid, atHostTime: CMTimeAdd(CMClockGetTime(clock), CMTime(value: 1, timescale: 20)))
+        bindEngine()
+        if let length {
+            for delay in [0.0, 0.5, 1.5, 3.0] {
+                Task { [weak self] in
+                    try? await Task.sleep(for: .seconds(delay))
+                    self?.logCrossfade(after: delay)
                 }
             }
-        }
-    }
-
-    /// Starts [tail] on the audio clock at the moment the engine reaches the
-    /// handoff point and moves the engine on to the next track then, so the
-    /// end plays on seamlessly; then fades one out as the other comes in.
-    private func startCrossfade(at position: Double, start: Double) {
-        // Without its end ready in time, the track plays to its end as usual
-        guard let current, tailStid == current.stid, tailReady else { return }
-        let wait = start + Self.handoffDelay - position
-        guard wait > 0.05 else { return }
-        let length = preferences.crossfade - Self.handoffDelay
-        tailGain = gainFactor
-        tail.volume = Float(min(volume * tailGain, 1))
-        let hostTime = CMTimeAdd(
-            CMClockGetTime(CMClockGetHostTimeClock()), CMTime(seconds: wait, preferredTimescale: 1_000_000_000))
-        tail.setRate(1, time: .invalid, atHostTime: hostTime)
-        crossfadeTask = Task {
-            // A hair late rather than early: a few doubled milliseconds can't be
-            // heard, a gap can
-            try? await Task.sleep(for: .seconds(wait + 0.02))
-            if Task.isCancelled { return }
-            fadeIn = 0
-            applyVolume(volume)
-            engine.advanceToNextItem()
-            // Equal power, so the sum stays as loud as either track
-            let steps = max(Int(length * 20), 1)
-            for step in 1...steps {
-                try? await Task.sleep(for: .milliseconds(50))
-                if Task.isCancelled { return }
-                let progress = Double(step) / Double(steps)
-                fadeIn = sin(progress * .pi / 2)
-                tail.volume = Float(min(volume * tailGain * cos(progress * .pi / 2), 1))
-                applyVolume(volume)
+            crossfadeTask = Task {
+                // Equal power, so the sum stays as loud as either track
+                let steps = max(Int(length * 20), 1)
+                for step in 1...steps {
+                    try? await Task.sleep(for: .milliseconds(50))
+                    if Task.isCancelled { return }
+                    let progress = Double(step) / Double(steps)
+                    fadeIn = sin(progress * .pi / 2)
+                    fading?.volume = Float(min(volume * fadingGain * cos(progress * .pi / 2), 1))
+                    applyVolume(volume)
+                }
+                crossfadeTask = nil
+                finishCrossfade()
             }
-            crossfadeTask = nil
-            finishCrossfade()
+        } else {
+            Task { self.engine.automaticallyWaitsToMinimizeStalling = true }
         }
+        engineItemChanged()
     }
 
-    /// Stops a crossfade or the end loaded for one, leaving the engine at full
-    /// volume.
+    /// Notes how both players are doing during a crossfade, to find why one
+    /// stops: where the audio goes, and whether each plays.
+    private func logCrossfade(after delay: Double) {
+        func describe(_ player: AVPlayer) -> String {
+            let status = switch player.timeControlStatus {
+            case .paused: "paused"
+            case .playing: "playing"
+            case .waitingToPlayAtSpecifiedRate: "waiting(\(player.reasonForWaitingToPlay?.rawValue ?? ""))"
+            @unknown default: "?"
+            }
+            let time = String(format: "%.2f", player.currentTime().seconds)
+            let file = player.currentItem.map { ($0.asset as? AVURLAsset)?.url.isFileURL == true ? "file" : "net" } ?? "none"
+            return "\(status) at \(time) vol \(String(format: "%.2f", player.volume)) \(file)"
+        }
+        #if os(iOS)
+            let route = AVAudioSession.sharedInstance().currentRoute.outputs.map { "\($0.portType.rawValue)" }.joined(separator: ",")
+        #else
+            let route = "mac"
+        #endif
+        log?("crossfade +\(delay)s route \(route): new \(describe(engine)); old \(fading.map(describe) ?? "done")")
+    }
+
+    /// Stops a crossfade, silencing the track that was fading out, and
+    /// leaves the engine at full volume.
     private func finishCrossfade() {
         crossfadeTask?.cancel()
         crossfadeTask = nil
-        tail.pause()
-        tail.replaceCurrentItem(with: nil)
-        tailStid = nil
-        tailReady = false
-        tailObservation = nil
+        if let fading {
+            fading.pause()
+            fading.removeAllItems()
+            self.fading = nil
+        }
+        // Once it plays on its own, the engine waits out slow downloads again
+        engine.automaticallyWaitsToMinimizeStalling = true
         guard fadeIn != 1 else { return }
         fadeIn = 1
         applyVolume(volume)
@@ -1197,6 +1274,10 @@ public final class Player {
             "seeds": JSONValue(seeds), "exclude": JSONValue(exclude), "count": .int(count),
         ]
         if let mixMood { request["mood"] = .string(mixMood.rawValue) }
+        // The tracks the mix started from, whose kind of music it keeps to:
+        // following only what it added itself would drift from one to another
+        let anchors = queue.items.filter { !$0.isMix }.map(\.stid)
+        request["anchors"] = JSONValue(Array(Set(anchors).shuffled().prefix(10)))
         let response = try await client.post("next_mix_tracks", request)
         guard let tracks = response["tracks"]?.array else { throw APIError.malformed("next_mix_tracks") }
         return tracks.compactMap { entry in

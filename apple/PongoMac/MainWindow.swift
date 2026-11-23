@@ -125,6 +125,22 @@ private struct Sidebar: View {
                 Label(L10n.importplaylists, systemImage: "square.and.arrow.down.on.square")
                     .tag(SidebarSection.importPlaylists)
             }
+            Section(L10n.friends) {
+                Label(L10n.friends, systemImage: "person.2").tag(SidebarSection.friends)
+                Label(L10n.followedplaylists, systemImage: "heart.text.square").tag(SidebarSection.followedPlaylists)
+                Button {
+                    model.showsListenTogether = true
+                } label: {
+                    HStack {
+                        Label(
+                            L10n.listentogether,
+                            systemImage: model.listening.isActive ? "person.2.wave.2.fill" : "person.2.wave.2")
+                        Spacer()
+                        if model.listening.isActive { LiveDot() }
+                    }
+                }
+                .buttonStyle(.plain)
+            }
             playlistSection(L10n.onlineplaylists, kind: .online, playlists: online)
             playlistSection(L10n.offlineplaylists, kind: .offline, playlists: offline)
         }
@@ -227,6 +243,8 @@ private struct SectionView: View {
         case .stats: StatsView()
         case .topSongs: TopSongsView()
         case .importPlaylists: ImportPlaylistsView()
+        case .friends: FriendsView()
+        case .followedPlaylists: FollowedPlaylistsView()
         case .playlists(let kind): UserPlaylistsView(kind: kind)
         case .playlist(let kind, let playlist):
             UserPlaylistView(kind: kind, playlist: playlist).id(playlist.id)

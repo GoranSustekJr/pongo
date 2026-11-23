@@ -13,6 +13,8 @@ struct TrackRow: View {
     /// Whether the server can stream the track right away.
     var available = true
     var hidden = false
+    /// Says why the track isn't on the server, where that matters.
+    var serverNote: ServerNote?
 
     var body: some View {
         let current = model.player.current
@@ -24,6 +26,11 @@ struct TrackRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(track.name).font(.system(size: 16.5, weight: .semibold))
                 Text(track.artistNames).font(.system(size: 12.5)).opacity(0.78)
+                if let serverNote {
+                    Label(serverNote.text, systemImage: serverNote.systemImage)
+                        .font(.system(size: 11.5, weight: .medium))
+                        .foregroundStyle(serverNote.color)
+                }
             }
             .lineLimit(1)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -34,8 +41,84 @@ struct TrackRow: View {
             TrackStatus(stid: track.id, isCurrent: isCurrent)
         }
         .frame(height: 65)
-        .opacity(available && !hidden ? 1 : 0.5)
+        .opacity(available && !hidden ? 1 : serverNote == nil ? 0.5 : 0.75)
         .contentShape(.rect)
+    }
+}
+
+/// Why a track of the user's playlist isn't on the server.
+enum ServerNote: Hashable {
+    /// The server hasn't downloaded it yet; it does when it plays.
+    case notYet
+    case failed(DownloadFailure)
+
+    init(failure: DownloadFailure?) {
+        self = failure.map(ServerNote.failed) ?? .notYet
+    }
+
+    var text: String {
+        switch self {
+        case .notYet: L10n.notonserveryet
+        case .failed(.noMatch): L10n.failednomatch
+        case .failed(.catalog): L10n.failedcatalog
+        case .failed(.download): L10n.faileddownload
+        }
+    }
+
+    var systemImage: String {
+        self == .notYet ? "icloud.slash" : "exclamationmark.triangle.fill"
+    }
+
+    var color: Color {
+        self == .notYet ? .orange : .red
+    }
+}
+
+/// A field that narrows a list of tracks to those whose title, artists or
+/// album contain what's typed.
+struct TrackSearchField: View {
+    var prompt = L10n.searchinplaylist
+    @Binding var text: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+            TextField(prompt, text: $text)
+                .textFieldStyle(.plain)
+                .autocorrectionDisabled()
+                .submitLabel(.search)
+            if !text.isEmpty {
+                Button {
+                    text = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(L10n.cancel)
+            }
+        }
+        .font(.system(size: 16))
+        .padding(.horizontal, 12)
+        .frame(height: 38)
+        .pongoGlass(in: Capsule(), interactive: true)
+    }
+}
+
+extension Track {
+    /// Whether the title, an artist or the album contains [query], ignoring
+    /// case and diacritics, so "durdevdan" finds "Đurđevdan".
+    func matches(_ query: String) -> Bool {
+        let query = query.trimmingCharacters(in: .whitespaces)
+        guard !query.isEmpty else { return true }
+        let fields = [name, artistNames, album?.name ?? ""]
+        let folded = Self.fold(query)
+        return fields.contains { Self.fold($0).contains(folded) }
+    }
+
+    private static func fold(_ text: String) -> String {
+        // Folding leaves đ, which has no decomposition, as it is
+        text.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+            .replacingOccurrences(of: "đ", with: "d")
     }
 }
 
@@ -79,6 +162,10 @@ struct TrackList: View {
     /// IDs of tracks the server has to fetch before they play.
     var missing: Set<String> = []
     var hidden: [String: Bool] = [:]
+    /// Whether the missing tracks say why they aren't on the server.
+    var explainsMissing = false
+    /// Why the server couldn't download some of the missing tracks.
+    var failed: [String: DownloadFailure] = [:]
     var showsAlbum = true
     /// Removes a track from the user's playlist, from its menu; nil elsewhere.
     var remove: ((Track) -> Void)?
@@ -90,9 +177,11 @@ struct TrackList: View {
                 Button {
                     play(index)
                 } label: {
+                    let available = !missing.contains(track.id)
                     TrackRow(
-                        track: track, collectionID: collectionID, available: !missing.contains(track.id),
-                        hidden: hidden[track.id] == true)
+                        track: track, collectionID: collectionID, available: available,
+                        hidden: hidden[track.id] == true,
+                        serverNote: explainsMissing && !available ? ServerNote(failure: failed[track.id]) : nil)
                 }
                 .buttonStyle(.row)
                 .contextMenu {
@@ -478,11 +567,22 @@ struct TrackEditor<Actions: View>: View {
     var title: String
     @State var tracks: [Track]
     var hidden: [String: Bool] = [:]
+    /// IDs of the tracks that aren't on the server, marked and selectable at once.
+    var missing: Set<String> = []
     /// Saves a new order; nil when the list can't be reordered.
     var reorder: (([Track]) async -> Void)?
     @ViewBuilder var actions: (_ selected: [Track], _ finish: @escaping () -> Void) -> Actions
 
     @State private var selection: Set<String> = []
+    @State private var query = ""
+
+    /// The tracks the search leaves.
+    private var listed: [Track] { tracks.filter { $0.matches(query) } }
+
+    /// Selects the missing tracks, or deselects them when they're all selected.
+    private func selectMissing() {
+        selection = missing.isSubset(of: selection) ? selection.subtracting(missing) : selection.union(missing)
+    }
 
     var body: some View {
         #if os(macOS)
@@ -490,6 +590,7 @@ struct TrackEditor<Actions: View>: View {
         #else
             NavigationStack {
                 list
+                    .searchable(text: $query, prompt: L10n.searchinplaylist)
                     .navigationTitle(selection.isEmpty ? title : "\(selection.count) \(L10n.selected)")
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar { toolbar }
@@ -502,7 +603,7 @@ struct TrackEditor<Actions: View>: View {
         /// actions sit in the sheet itself, with buttons to move songs as well
         /// as dragging them.
         private var macBody: some View {
-            let allSelected = !tracks.isEmpty && selection.count == tracks.count
+            let allSelected = !listed.isEmpty && Set(listed.map(\.id)).isSubset(of: selection)
             return VStack(spacing: 0) {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
@@ -512,17 +613,24 @@ struct TrackEditor<Actions: View>: View {
                         }
                     }
                     Spacer()
+                    if !missing.isEmpty {
+                        Button(L10n.selectnotonserver, systemImage: "icloud.slash", action: selectMissing)
+                    }
                     Button(allSelected ? L10n.deselectall : L10n.selectall) {
-                        selection = allSelected ? [] : Set(tracks.map(\.id))
+                        let ids = Set(listed.map(\.id))
+                        selection = allSelected ? selection.subtracting(ids) : selection.union(ids)
                     }
                 }
                 .padding(14)
+                if tracks.count > 1 {
+                    TrackSearchField(text: $query).padding(.horizontal, 14).padding(.bottom, 10)
+                }
                 Divider()
                 List(selection: $selection) {
-                    ForEach(tracks) { track in
+                    ForEach(listed) { track in
                         row(track).tag(track.id)
                     }
-                    .onMove(perform: moveAction)
+                    .onMove(perform: query.isEmpty ? moveAction : nil)
                 }
                 .listStyle(.inset)
                 Divider()
@@ -558,6 +666,7 @@ struct TrackEditor<Actions: View>: View {
         }
 
         private func canShift(_ step: Int) -> Bool {
+            guard query.isEmpty else { return false }
             let selected = tracks.indices.filter { selection.contains(tracks[$0].id) }
             guard let first = selected.first, let last = selected.last else { return false }
             return step < 0 ? first > 0 : last < tracks.count - 1
@@ -566,10 +675,10 @@ struct TrackEditor<Actions: View>: View {
 
     private var list: some View {
         List(selection: $selection) {
-            ForEach(tracks) { track in
+            ForEach(listed) { track in
                 row(track).tag(track.id).listRowBackground(Color.clear)
             }
-            .onMove(perform: moveAction)
+            .onMove(perform: query.isEmpty ? moveAction : nil)
         }
         .listStyle(.plain)
         .pongoBackground()
@@ -586,16 +695,25 @@ struct TrackEditor<Actions: View>: View {
             }
             .lineLimit(1)
             Spacer(minLength: 0)
+            if missing.contains(track.id) {
+                Image(systemName: "icloud.slash").foregroundStyle(.orange).accessibilityLabel(L10n.notonserveryet)
+            }
             if isHidden { Image(systemName: "eye.slash").foregroundStyle(.secondary) }
         }
         .opacity(isHidden ? 0.6 : 1)
     }
 
     @ToolbarContentBuilder private var toolbar: some ToolbarContent {
-        let allSelected = selection.count == tracks.count
+        let ids = Set(listed.map(\.id))
+        let allSelected = !ids.isEmpty && ids.isSubset(of: selection)
         ToolbarItem(placement: .barLeading) {
             Button(allSelected ? L10n.deselectall : L10n.selectall) {
-                selection = allSelected ? [] : Set(tracks.map(\.id))
+                selection = allSelected ? selection.subtracting(ids) : selection.union(ids)
+            }
+        }
+        if !missing.isEmpty {
+            ToolbarItem(placement: .barLeading) {
+                Button(L10n.selectnotonserver, systemImage: "icloud.slash", action: selectMissing)
             }
         }
         ToolbarItem(placement: .confirmationAction) {

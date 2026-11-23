@@ -39,6 +39,8 @@ struct NowPlayingView: View {
                             Spacer(minLength: 0)
                         }
                         PlayerControls(item: item, mode: mode, namespace: namespace, confirmHalt: $confirmHalt)
+                            // Drags between the buttons move the player down, not the lyrics behind them
+                            .background { Color.black.opacity(0.001).ignoresSafeArea(edges: .bottom) }
                             .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { controlsHeight = $0 }
                             .background(alignment: .bottom) { controlsBackground(mode) }
                     }

@@ -31,7 +31,7 @@ struct MacRootView: View {
         }
         .task(id: model.auth.isSignedIn) { await model.sessionChanged() }
         .onOpenURL { url in
-            if model.openJoinLink(url) { return }
+            if model.openJoinLink(url) || model.openFriendLink(url) { return }
             switch url {
             case PongoLinks.player where model.player.current != nil:
                 model.router.showsPlayer = true

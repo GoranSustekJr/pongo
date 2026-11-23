@@ -80,6 +80,14 @@ public final class CatalogRepository: Sendable {
             json: try await client.post("get_serialized_shuffle", ["stids": JSONValue(stids)]))
     }
 
+    /// Has the server start downloading those of the tracks with [stids] it
+    /// doesn't have, trying failed ones again. Returns how many it started,
+    /// and whether the user's hourly download limit stopped it.
+    public func prepare(_ stids: [String]) async throws -> (started: Int, limited: Bool) {
+        let data = try await client.post("prepare_tracks", ["stids": JSONValue(stids)])
+        return (data["started"]?.int ?? 0, data["limited"]?.bool ?? false)
+    }
+
     /// The mood of each of the tracks with [stids] the server has analyzed.
     public func moods(_ stids: [String]) async throws -> [String: TrackMood] {
         var moods: [String: TrackMood] = [:]
@@ -91,6 +99,13 @@ public final class CatalogRepository: Sendable {
             }
         }
         return moods
+    }
+
+    /// [artistIDs] in scenes of artists that belong together, such as Balkan
+    /// pop or tango, biggest first, as the server works them out.
+    public func artistGroups(_ artistIDs: [String]) async throws -> [[String]] {
+        let data = try await client.post("artist_groups", ["artists": JSONValue(Array(artistIDs.prefix(300)))])
+        return (data["groups"]?.array ?? []).map { ($0.array ?? []).compactMap(\.string) }
     }
 
     /// The length in seconds of the track with [stid], if the server has it.

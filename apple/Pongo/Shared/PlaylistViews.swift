@@ -123,6 +123,12 @@ struct UserPlaylistView: View {
     @State private var pickedCover: PhotosPickerItem?
     @State private var confirmDelete = false
     @State private var removing: Track?
+    @State private var query = ""
+    /// Shows only the tracks that aren't on the server.
+    @State private var onlyMissing = false
+    @State private var preparing = false
+    /// Whether the playlist shows on the user's profile.
+    @State private var shared = false
 
     init(kind: PlaylistKind, playlist: UserPlaylist) {
         self.kind = kind
@@ -135,11 +141,17 @@ struct UserPlaylistView: View {
 
     private var shown: [Track] { tracks.filter { hidden[$0.id] != true } }
 
+    /// The tracks the search and the missing filter leave.
+    private var visible: [Track] {
+        let notOnServer = onlyMissing ? Set(missing) : []
+        return tracks.filter { (!onlyMissing || notOnServer.contains($0.id)) && $0.matches(query) }
+    }
+
     var body: some View {
         CollectionScreen(
             title: playlist.title, subtitle: "\(shown.count) \(L10n.plustracks)", coverData: playlist.cover
         ) {
-            PlayShuffleBar(collectionID: collectionID, canShuffle: !shown.isEmpty && missing.isEmpty) {
+            PlayShuffleBar(collectionID: collectionID, canShuffle: shown.count > missing.count) {
                 await play(index: 0)
             } shuffle: {
                 await play(shuffle: true)
@@ -149,11 +161,30 @@ struct UserPlaylistView: View {
             if loaded && tracks.isEmpty {
                 EmptyMessage(systemImage: "music.note", title: L10n.notracks).padding(.top, 30)
             } else {
+                let notOnServer = missing
+                VStack(spacing: 12) {
+                    if !notOnServer.isEmpty {
+                        ServerMissingBanner(
+                            missing: notOnServer.count,
+                            failed: notOnServer.filter { availability.failed[$0] != nil }.count,
+                            onlyMissing: $onlyMissing, preparing: preparing
+                        ) {
+                            Task { await prepareMissing() }
+                        }
+                    }
+                    if tracks.count > 1 { TrackSearchField(text: $query) }
+                }
+                .padding(.horizontal, 15)
+                if visible.isEmpty {
+                    EmptyMessage(systemImage: "magnifyingglass", title: L10n.noresults).padding(.top, 30)
+                }
+                let listed = visible
                 TrackList(
-                    tracks: tracks, collectionID: collectionID, missing: Set(missing), hidden: hidden,
+                    tracks: listed, collectionID: collectionID, missing: Set(notOnServer), hidden: hidden,
+                    explainsMissing: true, failed: availability.failed,
                     showsAlbum: kind == .online, remove: { removing = $0 }
                 ) { index in
-                    let track = tracks[index]
+                    let track = listed[index]
                     guard let position = shown.firstIndex(of: track) else { return }
                     Task {
                         await model.player.playCollectionTrack(
@@ -170,6 +201,14 @@ struct UserPlaylistView: View {
                 renaming = true
             }
             Button(L10n.taptochange, systemImage: "photo") { pickingCover = true }
+            if kind == .online, model.auth.isSignedIn {
+                Button(
+                    shared ? L10n.hidefromprofile : L10n.showonprofile,
+                    systemImage: shared ? "person.crop.circle.badge.xmark" : "person.crop.circle.badge.checkmark"
+                ) {
+                    Task { await setShared(!shared) }
+                }
+            }
             if kind == .online, !tracks.isEmpty {
                 Button(L10n.download, systemImage: "icloud.and.arrow.down") {
                     Task { await model.addToPlaylist(tracks, kind: .offline, creating: true) }
@@ -179,7 +218,9 @@ struct UserPlaylistView: View {
             Button(L10n.delete, systemImage: "trash", role: .destructive) { confirmDelete = true }
         }
         .sheet(isPresented: $editing) {
-            TrackEditor(title: playlist.title, tracks: tracks, hidden: hidden, reorder: saveOrder) { selected, finish in
+            TrackEditor(
+                title: playlist.title, tracks: tracks, hidden: hidden, missing: Set(missing), reorder: saveOrder
+            ) { selected, finish in
                 ConfirmButton(
                     title: L10n.removefromplaylist, systemImage: "trash", question: L10n.removetracksfromplaylist,
                     message: L10n.removeselectedfromplaylist
@@ -227,6 +268,34 @@ struct UserPlaylistView: View {
         .photosPicker(isPresented: $pickingCover, selection: $pickedCover, matching: .images)
         .onChange(of: pickedCover) { Task { await setCover() } }
         .task(id: model.libraryRevision) { await load() }
+        .onChange(of: missing.isEmpty) { if missing.isEmpty { onlyMissing = false } }
+    }
+
+    /// Has the server download the tracks it doesn't have, then follows
+    /// along until they stop arriving.
+    private func prepareMissing() async {
+        guard !preparing else { return }
+        preparing = true
+        defer { preparing = false }
+        await model.prepareOnServer(missing) {
+            guard let found = try? await model.catalog.availability(tracks.map(\.id)) else { return nil }
+            availability = found
+            return missing.count
+        }
+    }
+
+    /// Shows the playlist on the user's profile, or hides it again.
+    private func setShared(_ value: Bool) async {
+        do {
+            let key = try await model.database.onlinePlaylistSyncID(playlist.id)
+            try await model.social.share(key, value)
+            shared = value
+            model.messages.show(value ? L10n.nowonprofile : L10n.offprofile, systemImage: value ? "person.2.fill" : "lock")
+            // Syncs a playlist that has never synced, so friends can open it
+            model.libraryChanged()
+        } catch {
+            model.messages.show(L10n.serverunreachable, systemImage: "exclamationmark.triangle", isError: true)
+        }
     }
 
     private var missing: [String] {
@@ -244,6 +313,11 @@ struct UserPlaylistView: View {
             if !tracks.isEmpty, let found = try? await model.catalog.availability(tracks.map(\.id)) {
                 availability = found
             }
+            if model.auth.isSignedIn, let key = try? await database.onlinePlaylistSyncID(playlist.id),
+                let account = try? await model.social.account()
+            {
+                shared = account.shared.contains(key)
+            }
         } else {
             let downloads = (try? await database.localTracks(playlist.id)) ?? []
             tracks = downloads.map(\.track)
@@ -256,7 +330,13 @@ struct UserPlaylistView: View {
     private func play(index: Int? = nil, shuffle: Bool = false) async {
         if kind == .online {
             let durations = availability.durations.merging(model.player.fetchedDurations) { first, _ in first }
-            await model.player.playOnline(collectionID, shown, durations: durations, index: index, shuffle: shuffle)
+            // Shuffle plays what the server has; the rest would hold it up
+            let notOnServer = Set(missing)
+            let tracks = shuffle ? shown.filter { !notOnServer.contains($0.id) } : shown
+            if shuffle, !notOnServer.isEmpty {
+                model.messages.show(L10n.shuffleleavesout, systemImage: "shuffle")
+            }
+            await model.player.playOnline(collectionID, tracks, durations: durations, index: index, shuffle: shuffle)
             if shuffle { model.suggestSongs(for: collectionID, trackCount: shown.count) }
         } else {
             model.player.playOffline(collectionID, shown, durations: offlineDurations, index: index, shuffle: shuffle)
@@ -595,5 +675,51 @@ struct PlaylistPicker: View {
             model.messages.show(L10n.downloadfailed, systemImage: "exclamationmark.triangle", isError: true)
             return false
         }
+    }
+}
+
+/// Says how many of a playlist's songs aren't on the server, which keeps
+/// them from shuffling, and offers to show them and to download them there.
+struct ServerMissingBanner: View {
+    var missing: Int
+    var failed: Int
+    @Binding var onlyMissing: Bool
+    var preparing: Bool
+    var prepare: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("\(missing) \(L10n.songsnotonserver)").font(.system(size: 15, weight: .semibold))
+                    if failed > 0 {
+                        Text("\(failed) \(L10n.songsfailed)").font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(.red)
+                        Text(L10n.failedhint).font(.system(size: 12)).foregroundStyle(.secondary)
+                    }
+                }
+            } icon: {
+                Image(systemName: failed > 0 ? "exclamationmark.triangle.fill" : "icloud.slash")
+                    .foregroundStyle(failed > 0 ? .red : .orange)
+            }
+            HStack(spacing: 10) {
+                Button(onlyMissing ? L10n.showallsongs : L10n.shownotonserver) {
+                    withAnimation(.smooth(duration: 0.25)) { onlyMissing.toggle() }
+                }
+                Button(action: prepare) {
+                    HStack(spacing: 6) {
+                        if preparing { ProgressView().controlSize(.small) }
+                        Text(L10n.getonserver)
+                    }
+                }
+                .disabled(preparing)
+            }
+            .font(.system(size: 14, weight: .semibold))
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.capsule)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .pongoGlass(in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }

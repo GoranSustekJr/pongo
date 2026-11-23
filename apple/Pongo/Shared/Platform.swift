@@ -14,7 +14,7 @@ import SwiftUI
     }
 
     extension Color {
-        init(platformColor: NSColor) { self.init(nsColor: platformColor) }
+        nonisolated init(platformColor: NSColor) { self.init(nsColor: platformColor) }
     }
 
     nonisolated extension NSImage {
@@ -52,7 +52,7 @@ import SwiftUI
     }
 
     extension Color {
-        init(platformColor: UIColor) { self.init(uiColor: platformColor) }
+        nonisolated init(platformColor: UIColor) { self.init(uiColor: platformColor) }
     }
 
     extension UIImage {
@@ -73,14 +73,17 @@ extension ImageRenderer {
 
 extension Color {
     /// A color that's [dark] in dark mode and [light] in light mode.
-    static func adaptive(light: PlatformColor, dark: PlatformColor) -> Color {
+    ///
+    /// SwiftUI resolves it on its render threads too, so it must not be tied
+    /// to the main actor: Swift stops the app when it is.
+    nonisolated static func adaptive(light: PlatformColor, dark: PlatformColor) -> Color {
         #if os(macOS)
             Color(
-                nsColor: NSColor(name: nil) { appearance in
+                nsColor: NSColor(name: nil) { @Sendable appearance in
                     appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua ? dark : light
                 })
         #else
-            Color(platformColor: UIColor { $0.userInterfaceStyle == .dark ? dark : light })
+            Color(platformColor: UIColor { @Sendable traits in traits.userInterfaceStyle == .dark ? dark : light })
         #endif
     }
 }

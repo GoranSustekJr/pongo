@@ -283,6 +283,19 @@ extension Database {
 
     public func onlinePlaylistCount() throws -> Int { try count("SELECT COUNT(*) FROM online_playlist") }
 
+    /// The key online playlist [opid] syncs under, made now if it has none yet,
+    /// which names it on the server, such as on the user's profile.
+    public func onlinePlaylistSyncID(_ opid: Int) throws -> String {
+        if let id = try db.query("SELECT sync_id FROM online_playlist WHERE opid = ?", [.int(opid)]).first?["sync_id"]?
+            .text
+        {
+            return id
+        }
+        let id = Self.newSyncID()
+        try db.execute("UPDATE online_playlist SET sync_id = ? WHERE opid = ?", [.text(id), .int(opid)])
+        return id
+    }
+
     /// Creates an online playlist and returns its ID.
     public func createOnlinePlaylist(_ title: String, cover: Data?) throws -> Int {
         try db.execute(

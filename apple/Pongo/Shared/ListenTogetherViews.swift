@@ -574,3 +574,95 @@ extension ListeningSession {
     /// Where the headphone delay is kept between sessions.
     static let delayKey = "listenTogetherDelay"
 }
+
+extension ListeningSession {
+    /// The other people in the session right now.
+    var othersPresent: [Listener] { listeners.filter { $0.id != userID && $0.isPresent } }
+
+    /// One line on the session for rows outside the player: who's in it, or
+    /// what it's for when there's none.
+    var summary: String {
+        guard isActive else { return L10n.listentogetherdescription }
+        if state == .connecting || state == .reconnecting { return L10n.connecting }
+        let names = othersPresent.map(\.name).filter { !$0.isEmpty }
+        let who = names.isEmpty
+            ? (isHost ? L10n.sharesessioncode : L10n.connecting)
+            : "\(L10n.listeningwith) \(ListFormatter.localizedString(byJoining: names))"
+        return [L10n.sessionlive, code, who].compactMap { $0 }.joined(separator: " · ")
+    }
+}
+
+/// Opens Listen together from a list, saying whether a session is live.
+struct ListenTogetherRow: View {
+    @Environment(AppModel.self) private var model
+
+    var body: some View {
+        let session = model.listening
+        Button {
+            model.showsListenTogether = true
+        } label: {
+            GroupedRow(
+                systemImage: session.isActive ? "person.2.wave.2.fill" : "person.2.wave.2",
+                title: L10n.listentogether, subtitle: session.summary
+            ) {
+                if session.isActive {
+                    HStack(spacing: -8) {
+                        ForEach(session.othersPresent.prefix(3)) { listener in
+                            ListenerAvatar(listener: listener, size: 24)
+                        }
+                    }
+                    LiveDot()
+                }
+            }
+        }
+        .foregroundStyle(.primary)
+        .groupedRowBackground()
+    }
+}
+
+/// A pulsing dot that says something is live.
+struct LiveDot: View {
+    @State private var pulsing = false
+
+    var body: some View {
+        Circle()
+            .fill(Color.pongoTeal)
+            .frame(width: 8, height: 8)
+            .background(Circle().fill(Color.pongoTeal.opacity(0.4)).scaleEffect(pulsing ? 2.4 : 1).opacity(pulsing ? 0 : 1))
+            .onAppear {
+                withAnimation(.easeOut(duration: 1.4).repeatForever(autoreverses: false)) { pulsing = true }
+            }
+            .accessibilityHidden(true)
+    }
+}
+
+/// The live session in the mini player: who's listening, opening the session.
+struct MiniSessionButton: View {
+    @Environment(AppModel.self) private var model
+    var compact = false
+
+    var body: some View {
+        let session = model.listening
+        if session.isActive {
+            let others = session.othersPresent.count
+            Button {
+                model.showsListenTogether = true
+            } label: {
+                HStack(spacing: 3) {
+                    Image(systemName: "person.2.wave.2.fill")
+                        .font(.system(size: compact ? 13 : 15, weight: .semibold))
+                    if others > 0 {
+                        Text("\(others)").font(.system(size: compact ? 12 : 13, weight: .bold).monospacedDigit())
+                    }
+                }
+                .foregroundStyle(Color.pongoTeal)
+                .padding(.horizontal, 6)
+                .frame(minWidth: 36, minHeight: 36)
+                .contentShape(.rect)
+            }
+            .buttonStyle(.press)
+            .accessibilityLabel(L10n.listentogether)
+            .transition(.scale.combined(with: .opacity))
+        }
+    }
+}

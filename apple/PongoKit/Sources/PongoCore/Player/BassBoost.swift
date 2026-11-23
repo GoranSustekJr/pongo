@@ -130,6 +130,11 @@ private let tapPrepare: MTAudioProcessingTapPrepareCallback = { tap, maxFrames, 
         return
     }
     state.delays = Array(repeating: [Float](repeating: 0, count: 4), count: Int(description.mChannelsPerFrame))
+    // Audio starting out starts at the strength wanted: fading in from plain
+    // would make it jump louder for a moment, without the headroom, as when
+    // a crossfade hands a track's end to another player mid song
+    state.active = min(max(BassBoost.shared.level.load(ordering: .relaxed), 0), state.setups.count)
+    state.amount = state.active == 0 ? 0 : 1
     state.capacity = Int(maxFrames)
     state.boosted = .allocate(capacity: state.capacity)
     state.ramp = .allocate(capacity: state.capacity)
@@ -140,6 +145,7 @@ private let tapUnprepare: MTAudioProcessingTapUnprepareCallback = { tap in
     state.setups.forEach(vDSP_biquad_DestroySetup)
     state.setups = []
     state.active = 0
+    state.amount = 0
     state.boosted?.deallocate()
     state.ramp?.deallocate()
     state.boosted = nil
@@ -155,6 +161,14 @@ private let tapProcess: MTAudioProcessingTapProcessCallback = {
     guard state.canProcess, !state.setups.isEmpty, let boosted = state.boosted, let ramp = state.ramp,
         count > 0, count <= state.capacity
     else { return }
+    boost(state, buffers, count: count, boosted: boosted, ramp: ramp)
+}
+
+/// Runs the bass filter of the wanted strength over the buffers.
+private func boost(
+    _ state: TapState, _ buffers: UnsafeMutablePointer<AudioBufferList>, count: Int,
+    boosted: UnsafeMutablePointer<Float>, ramp: UnsafeMutablePointer<Float>
+) {
     let wanted = min(max(BassBoost.shared.level.load(ordering: .relaxed), 0), state.setups.count)
     if state.amount == 0 && state.active != wanted {
         // Faded out: the filter of the wanted strength starts afresh

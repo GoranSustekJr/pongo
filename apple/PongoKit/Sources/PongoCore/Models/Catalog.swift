@@ -298,10 +298,14 @@ public struct TrackAvailability: Sendable, Hashable {
     public var durations: [String: Double]
     /// IDs of the tracks the server has to fetch first.
     public var missing: [String]
+    /// Why the server couldn't fetch some of the missing tracks the last time
+    /// it tried, by ID.
+    public var failed: [String: DownloadFailure]
 
-    public init(durations: [String: Double] = [:], missing: [String] = []) {
+    public init(durations: [String: Double] = [:], missing: [String] = [], failed: [String: DownloadFailure] = [:]) {
         self.durations = durations
         self.missing = missing
+        self.failed = failed
     }
 
     /// Parses the `durations` and `missing_tracks` fields of a response.
@@ -316,6 +320,25 @@ public struct TrackAvailability: Sendable, Hashable {
         missing = (json["missing_tracks"]?.array ?? []).compactMap { value in
             guard let stid = ArtistRef.idString(value), stid != "null" else { return nil }
             return stid
+        }
+        failed = (json["failed_tracks"]?.object ?? [:]).compactMapValues { $0.string.map(DownloadFailure.init) }
+    }
+}
+
+/// Why the server couldn't download a track.
+public enum DownloadFailure: Sendable, Hashable {
+    /// YouTube has no recording that matches it.
+    case noMatch
+    /// The catalog doesn't have it any more.
+    case catalog
+    /// Downloading it failed.
+    case download
+
+    init(reason: String) {
+        switch reason {
+        case "no_match": self = .noMatch
+        case "catalog": self = .catalog
+        default: self = .download
         }
     }
 }

@@ -94,6 +94,29 @@
         }
       }
     },
+    "addedtolibrary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Added to your library"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zu deiner Mediathek hinzugefügt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodano u tvoju biblioteku"
+          }
+        }
+      }
+    },
     "addedtoplaylist": {
       "extractionState": "manual",
       "localizations": {
@@ -136,6 +159,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dodaj pjesmu u playlistu"
+          }
+        }
+      }
+    },
+    "addtolibrary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add to library"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zur Mediathek"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodaj u biblioteku"
           }
         }
       }
@@ -757,6 +803,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Brisanjem računa bit ćeš odjavljen, a tvoji podaci bit će uklonjeni s poslužitelja."
+          }
+        }
+      }
+    },
+    "byperson": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "by"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "von"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "od"
           }
         }
       }
@@ -1516,6 +1585,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kontrole"
+          }
+        }
+      }
+    },
+    "copied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiert"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopirano"
           }
         }
       }
@@ -2532,6 +2624,98 @@
         }
       }
     },
+    "failedcatalog": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't download: no longer in the catalog"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht geladen: nicht mehr im Katalog"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nije preuzeto: više nije u katalogu"
+          }
+        }
+      }
+    },
+    "faileddownload": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't download: the download failed"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht geladen: Download fehlgeschlagen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nije preuzeto: preuzimanje nije uspjelo"
+          }
+        }
+      }
+    },
+    "failedhint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try one again with Download to the server, pick its recording with Wrong version? in its menu, or remove it in Edit."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versuche es mit „Auf den Server laden“ erneut, wähle die Aufnahme mit „Falsche Version?“ in seinem Menü oder entferne es unter „Bearbeiten“."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokušaj ponovno s „Preuzmi na poslužitelj”, odaberi snimku s „Kriva verzija?” u izborniku pjesme ili je ukloni u „Uredi”."
+          }
+        }
+      }
+    },
+    "failednomatch": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't download: no match on YouTube"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht geladen: kein Treffer auf YouTube"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nije preuzeto: nema je na YouTubeu"
+          }
+        }
+      }
+    },
     "favouritesmix": {
       "extractionState": "manual",
       "localizations": {
@@ -2693,6 +2877,144 @@
         }
       }
     },
+    "follow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folgen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prati"
+          }
+        }
+      }
+    },
+    "followedplaylists": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlists you follow"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gefolgte Playlists"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playliste koje pratiš"
+          }
+        }
+      }
+    },
+    "followers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Followers"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follower"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pratitelji"
+          }
+        }
+      }
+    },
+    "following": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Following"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folge ich"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pratim"
+          }
+        }
+      }
+    },
+    "followmeonpongo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow me on Pongo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folge mir auf Pongo"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prati me na Pongu"
+          }
+        }
+      }
+    },
+    "followsyou": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follows you"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folgt dir"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prati te"
+          }
+        }
+      }
+    },
     "foryou": {
       "extractionState": "manual",
       "localizations": {
@@ -2712,6 +3034,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "Za tebe"
+          }
+        }
+      }
+    },
+    "friendcodehint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friends find you by your name or this code. Share it so they can follow you."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Freunde finden dich über deinen Namen oder diesen Code. Teile ihn, damit sie dir folgen können."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prijatelji te nalaze po imenu ili ovom kodu. Podijeli ga da te mogu pratiti."
+          }
+        }
+      }
+    },
+    "friends": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friends"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Freunde"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prijatelji"
+          }
+        }
+      }
+    },
+    "friendsdescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow people and their playlists"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folge Leuten und ihren Playlists"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prati ljude i njihove playliste"
+          }
+        }
+      }
+    },
+    "friendssignin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in to follow friends"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Melde dich an, um Freunden zu folgen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prijavi se da pratiš prijatelje"
           }
         }
       }
@@ -2827,6 +3241,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Žanrovi"
+          }
+        }
+      }
+    },
+    "getonserver": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download to the server"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf den Server laden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preuzmi na poslužitelj"
           }
         }
       }
@@ -3080,6 +3517,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sakri"
+          }
+        }
+      }
+    },
+    "hidefromprofile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide from my profile"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von meinem Profil entfernen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ukloni s mog profila"
           }
         }
       }
@@ -4280,6 +4740,29 @@
         }
       }
     },
+    "inlibrary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In your library"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In deiner Mediathek"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "U tvojoj biblioteci"
+          }
+        }
+      }
+    },
     "join": {
       "extractionState": "manual",
       "localizations": {
@@ -4803,6 +5286,29 @@
         }
       }
     },
+    "listeningnow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "listening"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hören zu"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sluša"
+          }
+        }
+      }
+    },
     "listeningwith": {
       "extractionState": "manual",
       "localizations": {
@@ -4868,6 +5374,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reproducirajte svoj red na mobitelima prijatelja u isto vrijeme, svatko na svom računu i slušalicama."
+          }
+        }
+      }
+    },
+    "listentogetherdescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start or join a session to hear the same songs as your friends, at the same time"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starte oder tritt einer Session bei und höre dieselben Lieder wie deine Freunde, gleichzeitig"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokreni ili se pridruži sesiji i slušaj iste pjesme kao prijatelji, u isto vrijeme"
           }
         }
       }
@@ -5539,6 +6068,52 @@
         }
       }
     },
+    "nofollowedplaylists": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlists you add from friends show here"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playlists, die du von Freunden hinzufügst, erscheinen hier"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ovdje se pojavljuju playliste koje dodaš od prijatelja"
+          }
+        }
+      }
+    },
+    "nofollowers": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No one follows you yet"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch folgt dir niemand"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Još te nitko ne prati"
+          }
+        }
+      }
+    },
     "nolyricsavailable": {
       "extractionState": "manual",
       "localizations": {
@@ -5558,6 +6133,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stihovi nisu dostupni"
+          }
+        }
+      }
+    },
+    "nopeoplefound": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No one found"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niemand gefunden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nitko nije pronađen"
           }
         }
       }
@@ -5604,6 +6202,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nema rezultata"
+          }
+        }
+      }
+    },
+    "nosharedplaylists": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No playlists shown yet"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch keine Playlists gezeigt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Još nema prikazanih playlista"
+          }
+        }
+      }
+    },
+    "nosharedplaylistsyou": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open one of your online playlists and choose Show on my profile"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffne eine deiner Online-Playlists und wähle „Auf meinem Profil zeigen“"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otvori jednu od svojih online playlista i odaberi „Prikaži na mom profilu”"
           }
         }
       }
@@ -5723,6 +6367,29 @@
         }
       }
     },
+    "notfollowinganyone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search for friends above to follow them"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suche oben nach Freunden, um ihnen zu folgen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Potraži prijatelje gore da ih pratiš"
+          }
+        }
+      }
+    },
     "nothingplaying": {
       "extractionState": "manual",
       "localizations": {
@@ -5769,6 +6436,29 @@
         }
       }
     },
+    "notonserveryet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not on the server yet"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nicht auf dem Server"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Još nije na poslužitelju"
+          }
+        }
+      }
+    },
     "notracks": {
       "extractionState": "manual",
       "localizations": {
@@ -5811,6 +6501,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sada si domaćin"
+          }
+        }
+      }
+    },
+    "nowonprofile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friends can see this playlist now"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Freunde sehen diese Playlist jetzt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prijatelji sada vide ovu playlistu"
           }
         }
       }
@@ -5949,6 +6662,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Offline pjesme"
+          }
+        }
+      }
+    },
+    "offprofile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only you see this playlist now"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur du siehst diese Playlist jetzt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Samo ti sada vidiš ovu playlistu"
           }
         }
       }
@@ -6229,6 +6965,29 @@
         }
       }
     },
+    "personnotfound": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No one on this server has this code"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niemand auf diesem Server hat diesen Code"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nitko na ovom poslužitelju nema taj kod"
+          }
+        }
+      }
+    },
     "picklines": {
       "extractionState": "manual",
       "localizations": {
@@ -6501,6 +7260,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Istoimena playlista već postoji"
+          }
+        }
+      }
+    },
+    "playlistnotshared": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This playlist isn't shared any more"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Playlist wird nicht mehr geteilt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ova playlista više nije dijeljena"
           }
         }
       }
@@ -7402,6 +8184,29 @@
         }
       }
     },
+    "removefromlibrary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from library"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus der Mediathek entfernen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ukloni iz biblioteke"
+          }
+        }
+      }
+    },
     "removefromplaylist": {
       "extractionState": "manual",
       "localizations": {
@@ -7885,6 +8690,52 @@
         }
       }
     },
+    "savecopy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save a copy"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopie speichern"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spremi kopiju"
+          }
+        }
+      }
+    },
+    "savedcopy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved to your online playlists"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In deinen Online-Playlists gespeichert"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spremljeno u tvoje online playliste"
+          }
+        }
+      }
+    },
     "saveyourdata": {
       "extractionState": "manual",
       "localizations": {
@@ -7954,6 +8805,29 @@
         }
       }
     },
+    "searchinplaylist": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search in this playlist"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In dieser Playlist suchen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Traži u ovoj playlisti"
+          }
+        }
+      }
+    },
     "searchmarket": {
       "extractionState": "manual",
       "localizations": {
@@ -7973,6 +8847,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tržište pretraživanja"
+          }
+        }
+      }
+    },
+    "searchpeople": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search by name or code"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach Name oder Code suchen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Traži po imenu ili kodu"
           }
         }
       }
@@ -8138,6 +9035,75 @@
         }
       }
     },
+    "selectnotonserver": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select those not on the server"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehlende auswählen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odaberi one kojih nema"
+          }
+        }
+      }
+    },
+    "serverdownloading": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server is downloading them"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Server lädt sie"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslužitelj ih preuzima"
+          }
+        }
+      }
+    },
+    "serverdownloadlimit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The server's hourly download limit is reached; try again later"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das stündliche Download-Limit des Servers ist erreicht; versuche es später"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dosegnuto je satno ograničenje preuzimanja; pokušaj kasnije"
+          }
+        }
+      }
+    },
     "serverunreachable": {
       "extractionState": "manual",
       "localizations": {
@@ -8230,6 +9196,29 @@
         }
       }
     },
+    "sessionlive": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uživo"
+          }
+        }
+      }
+    },
     "sessionnotfound": {
       "extractionState": "manual",
       "localizations": {
@@ -8295,6 +9284,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Postavke"
+          }
+        }
+      }
+    },
+    "sharecode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teilen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podijeli"
           }
         }
       }
@@ -8391,6 +9403,29 @@
         }
       }
     },
+    "showallsongs": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show all"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle anzeigen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikaži sve"
+          }
+        }
+      }
+    },
     "showexplore": {
       "extractionState": "manual",
       "localizations": {
@@ -8479,6 +9514,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Prikaži povijest na početnoj stranici"
+          }
+        }
+      }
+    },
+    "shownotonserver": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show them"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anzeigen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikaži"
+          }
+        }
+      }
+    },
+    "showonprofile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show on my profile"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf meinem Profil zeigen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikaži na mom profilu"
           }
         }
       }
@@ -8594,6 +9675,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nasumična reprodukcija"
+          }
+        }
+      }
+    },
+    "shuffleleavesout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shuffle leaves out the songs that aren't on the server"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zufällig lässt die Lieder weg, die nicht auf dem Server sind"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasumično izostavlja pjesme koje nisu na poslužitelju"
           }
         }
       }
@@ -8962,6 +10066,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pjesme"
+          }
+        }
+      }
+    },
+    "songsfailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "couldn't be downloaded"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "konnten nicht geladen werden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nije se moglo preuzeti"
+          }
+        }
+      }
+    },
+    "songsnotonserver": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "not on the server yet"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "noch nicht auf dem Server"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "još nije na poslužitelju"
           }
         }
       }
@@ -10645,6 +11795,52 @@
         }
       }
     },
+    "yourfriendcode": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your friend code"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Freundescode"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoj kod za prijatelje"
+          }
+        }
+      }
+    },
+    "yourfriendprofile": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your profile"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Profil"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoj profil"
+          }
+        }
+      }
+    },
     "yourmoods": {
       "extractionState": "manual",
       "localizations": {
@@ -10710,6 +11906,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vaš profil"
+          }
+        }
+      }
+    },
+    "yourprofilehint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How others see you"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So sehen dich andere"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kako te drugi vide"
           }
         }
       }

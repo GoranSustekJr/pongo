@@ -167,13 +167,24 @@ private struct PlayerColumn: View {
             }
             .frame(maxWidth: 300)
             HStack(spacing: 18) {
+                // Each shows its panel in place of the other's, or closes its own
                 modeButton(state.lyricsOn ? "quote.bubble.fill" : "quote.bubble", on: state.mode == .lyrics) {
-                    state.toggleLyrics(model)
+                    if state.mode == .lyrics {
+                        state.lyricsOn = false
+                    } else {
+                        state.showsQueue = false
+                        state.lyricsOn = false
+                        state.toggleLyrics(model)
+                    }
                 }
                 .opacity(state.lyricsExist ? 1 : 0.5)
                 modeButton("list.bullet", on: state.mode == .queue) {
-                    state.showsQueue.toggle()
-                    if state.showsQueue { state.lyricsOn = false }
+                    if state.mode == .queue {
+                        state.showsQueue = false
+                    } else {
+                        state.lyricsOn = false
+                        state.showsQueue = true
+                    }
                 }
                 RoutePicker().frame(width: 34, height: 34)
             }
@@ -189,6 +200,8 @@ private struct PlayerColumn: View {
                 .foregroundStyle(on ? .black : .white)
                 .frame(width: 34, height: 34)
                 .background(on ? AnyShapeStyle(.white) : AnyShapeStyle(.clear), in: .circle)
+                // The whole circle clicks, not just the symbol's lines
+                .contentShape(.circle)
         }
         .buttonStyle(.plain)
         .pongoGlass(in: .circle, interactive: true)

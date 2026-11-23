@@ -37,15 +37,18 @@ extension Mood {
     }
 }
 
-/// The user's songs of one mood, which play as a mix that keeps to it.
+/// The user's songs of one mood and one scene of artists, which play as a
+/// mix that keeps to both.
 struct MoodMix: Identifiable {
     let mood: Mood
+    /// The scene's biggest artist, or empty when artists weren't grouped.
+    var scene = ""
     let tracks: [Track]
     /// A name the on-device model gave the mix, if it could.
     var name: String?
 
-    var id: Mood { mood }
-    var collectionID: String { "mix.mood.\(mood.rawValue)" }
+    var id: String { scene.isEmpty ? mood.rawValue : "\(mood.rawValue).\(scene)" }
+    var collectionID: String { "mix.mood.\(id)" }
 
     /// The artists with the most songs in the mix, most first.
     var artists: [String] {
@@ -59,15 +62,37 @@ struct MoodMix: Identifiable {
         return tracks.compactMap { $0.coverURL(size: 150) }.filter { seen.insert($0).inserted }.prefix(3).map { $0 }
     }
 
-    /// A mix for each mood with at least three of [tracks], the biggest
-    /// first.
-    static func make(tracks: [Track], moods: [String: TrackMood]) -> [MoodMix] {
+    /// Most mixes shown.
+    static let maxCount = 10
+
+    /// A mix for each mood and scene of artists with at least three of
+    /// [tracks], the biggest first. A mood alone would put Croatian pop,
+    /// American pop and tango in one mix: how songs sound says nothing of
+    /// their language or style. Songs of artists in no [scenes] are left
+    /// out, unless there are no scenes at all.
+    static func make(tracks: [Track], moods: [String: TrackMood], scenes: [[String]]? = nil) -> [MoodMix] {
         var seen = Set<String>()
         let unique = tracks.filter { seen.insert($0.id).inserted }
         let grouped = Dictionary(grouping: unique.filter { moods[$0.id] != nil }) { moods[$0.id]!.mood }
-        return grouped.filter { $0.value.count >= 3 }
-            .sorted { ($0.value.count, $1.key.rawValue) > ($1.value.count, $0.key.rawValue) }
-            .map { MoodMix(mood: $0.key, tracks: $0.value) }
+        var mixes: [MoodMix] = []
+        for (mood, tracks) in grouped {
+            guard let scenes else {
+                mixes.append(MoodMix(mood: mood, tracks: tracks))
+                continue
+            }
+            // Each artist's scene, named after its first, biggest artist
+            var sceneOf: [String: String] = [:]
+            for scene in scenes where scene.count > 1 {
+                for artist in scene { sceneOf[artist] = scene[0] }
+            }
+            let byScene = Dictionary(grouping: tracks.filter { sceneOf[$0.artists.first?.id ?? ""] != nil }) {
+                sceneOf[$0.artists.first!.id]!
+            }
+            mixes += byScene.map { MoodMix(mood: mood, scene: $0.key, tracks: $0.value) }
+        }
+        return mixes.filter { $0.tracks.count >= 3 }
+            .sorted { ($0.tracks.count, $1.id) > ($1.tracks.count, $0.id) }
+            .prefix(maxCount).map { $0 }
     }
 }
 
@@ -83,9 +108,9 @@ enum MoodNamer {
 
     private static let storeKey = "moodMixNames"
 
-    static func names(for mixes: [MoodMix], locale: String) async -> [Mood: String] {
+    static func names(for mixes: [MoodMix], locale: String) async -> [String: String] {
         var stored = UserDefaults.standard.dictionary(forKey: storeKey) as? [String: String] ?? [:]
-        var names: [Mood: String] = [:]
+        var names: [String: String] = [:]
         let model = SystemLanguageModel.default
         let wanted = Locale.Language(identifier: locale)
         let language = model.supportedLanguages.contains { $0.languageCode == wanted.languageCode }
@@ -95,7 +120,7 @@ enum MoodNamer {
             let artists = mix.artists.prefix(4)
             let key = "\(language.languageCode?.identifier ?? "en")|\(mix.mood.rawValue)|\(artists.joined(separator: ","))"
             if let name = stored[key] {
-                names[mix.mood] = name
+                names[mix.id] = name
                 continue
             }
             guard model.availability == .available else { continue }
@@ -111,7 +136,7 @@ enum MoodNamer {
             guard let response = try? await session.respond(to: prompt, generating: MixName.self) else { continue }
             let name = response.content.name.trimmingCharacters(in: CharacterSet(charactersIn: "\"“”' ."))
             guard !name.isEmpty, name.count <= 40 else { continue }
-            names[mix.mood] = name
+            names[mix.id] = name
             stored[key] = name
         }
         UserDefaults.standard.set(stored, forKey: storeKey)

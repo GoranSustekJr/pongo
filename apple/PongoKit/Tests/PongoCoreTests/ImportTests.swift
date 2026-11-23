@@ -194,3 +194,37 @@ private final class FakeMatcher: SongMatching, @unchecked Sendable {
         ])
     }
 }
+
+@Suite struct AvailabilityTests {
+    @Test func readsWhyTracksFailed() throws {
+        let json = try JSONValue.decode(Data(#"{"durations": [["1", 200.5]], "missing_tracks": ["2", "3", "4"], "failed_tracks": {"2": "no_match", "3": "something"}}"#.utf8))
+        let availability = TrackAvailability(json: json)
+        #expect(availability.durations == ["1": 200.5])
+        #expect(availability.missing == ["2", "3", "4"])
+        #expect(availability.failed == ["2": .noMatch, "3": .download])
+        // Older servers don't send it
+        #expect(TrackAvailability(json: try JSONValue.decode(Data(#"{"missing_tracks": ["2"]}"#.utf8))).failed.isEmpty)
+    }
+}
+
+@Suite struct SocialTests {
+    @Test func readsFriendLinks() {
+        #expect(SocialRepository.code(in: URL(string: "pongo://friend/p8v8lku7")!) == "P8V8LKU7")
+        #expect(SocialRepository.code(in: URL(string: "pongo://join/ABC")!) == nil)
+        #expect(SocialRepository.code(in: SocialRepository.link(for: "P8V8LKU7")) == "P8V8LKU7")
+    }
+
+    @Test func readsSharedTracksAsTheySync() throws {
+        let json = try JSONValue.decode(Data(#"{"stid": "1006925732", "title": "Minut srca tvog", "artists": "[{\"id\":\"1\",\"name\":\"Magazin\"}]", "image": null, "album": null}"#.utf8))
+        let track = try #require(SocialRepository.track(json))
+        #expect(track.id == "1006925732" && track.name == "Minut srca tvog" && track.artistNames == "Magazin")
+    }
+
+    @Test func playlistsKeepTheirSyncKey() async throws {
+        let database = try Database()
+        let opid = try await database.createOnlinePlaylist("Ljeto", cover: nil)
+        let key = try await database.onlinePlaylistSyncID(opid)
+        #expect(key.count == 32)
+        #expect(try await database.onlinePlaylistSyncID(opid) == key)
+    }
+}

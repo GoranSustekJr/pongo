@@ -40,6 +40,7 @@ struct MiniPlayer: View {
                 .clipped()
                 .id(item.id)
                 .transition(.push(from: skips >= 0 ? .trailing : .leading).combined(with: .opacity))
+                MiniSessionButton(compact: inline)
                 Button(action: player.togglePlayback) {
                     Image(systemName: player.isPlaying ? "pause.fill" : "play.fill")
                         .font(.system(size: inline ? 17 : 20))
@@ -60,6 +61,7 @@ struct MiniPlayer: View {
                 await model.nowPlaying.loadBackdrop(url)
             }
             .animation(.smooth(duration: 0.35), value: item.id)
+            .animation(.smooth(duration: 0.3), value: model.listening.isActive)
             .onTapGesture { model.router.showsPlayer = true }
             .onLongPressGesture(minimumDuration: 0.5) { model.router.confirmsHalt = true }
             .simultaneousGesture(swipe)

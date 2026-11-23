@@ -22,7 +22,7 @@ struct RootView: View {
         .environment(\.usesLiquidGlass, settings.useLiquidGlass)
         // A tap on the live lyrics
         .onOpenURL { url in
-            if model.openJoinLink(url) { return }
+            if model.openJoinLink(url) || model.openFriendLink(url) { return }
             switch url {
             case PongoLinks.lyrics where model.player.current != nil:
                 model.nowPlaying.lyricsOn = true

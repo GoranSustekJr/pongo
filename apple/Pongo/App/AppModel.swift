@@ -40,6 +40,7 @@ final class AppModel {
     let recents = RecentCollections()
     let imports: PlaylistImports
     let versions: TrackVersionsRepository
+    let social: SocialRepository
     #if os(iOS)
         @ObservationIgnored private var liveLyrics: LiveLyricsController?
     #endif
@@ -97,6 +98,7 @@ final class AppModel {
         listening = ListeningSession(client: client, player: player)
         imports = PlaylistImports(client: client, database: database, messages: messages)
         versions = TrackVersionsRepository(client: client)
+        social = SocialRepository(client: client)
         sync = LibrarySync(
             client: client, store: database, sources: [database, SettingsSyncSource(settings: settings)])
         L10n.selectedLanguage = settings.settings.locale
