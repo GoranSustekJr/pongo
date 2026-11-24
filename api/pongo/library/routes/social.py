@@ -9,7 +9,7 @@ import secrets
 import psycopg
 from fastapi import APIRouter, Depends, HTTPException, Request
 
-from library import db, limits
+from library import db, limits, listen
 from library.auth.tokens import Session, current_session
 
 router = APIRouter(prefix="/social")
@@ -305,3 +305,52 @@ async def share_playlist(request: Request, session: Session = Depends(current_se
     else:
         await db.execute("DELETE FROM shared_playlist WHERE uid = %s AND key = %s", (session.uid, key))
     return {"shared": bool(data.get("shared", True))}
+
+
+async def _related(uid: str, other: str) -> bool:
+    """Whether either of the two follows the other."""
+    row = await db.fetch_one(
+        "SELECT EXISTS (SELECT 1 FROM follow WHERE (uid = %s AND followee = %s) OR (uid = %s AND followee = %s))",
+        (uid, other, other, uid),
+    )
+    return bool(row and row[0])
+
+
+@router.post("/invite")
+async def invite(request: Request, session: Session = Depends(current_session)):
+    """Asks the person with friend code `code` to listen along with the user's session
+    `session`. Only people who follow each other one way or the other can ask."""
+    data = await _body(request)
+    other, _, _ = await _person(data.get("code"))
+    if other == session.uid:
+        raise HTTPException(status_code=422, detail="yourself")
+    limits.check(limits.people_searches, session.uid)
+    listening = listen.hub.find(str(data.get("session") or ""))
+    inviter = listening.members.get(session.uid) if listening else None
+    if listening is None or inviter is None or not inviter.present:
+        raise HTTPException(status_code=404, detail="no_session")
+    if not await _related(session.uid, other):
+        raise HTTPException(status_code=403, detail="not_friends")
+    if other in {m.uid for m in listening.present()}:
+        return {"ok": True, "already": True}
+    if not await listen.hub.invite(listening, inviter, await _code(session.uid), other):
+        raise HTTPException(status_code=429, detail="too_many_invites")
+    return {"ok": True}
+
+
+@router.post("/invites")
+async def invites(session: Session = Depends(current_session)):
+    """The user's invitations to listen together that are still open."""
+    return {"invites": [i.describe() for i in listen.hub.invites_for(session.uid)]}
+
+
+@router.post("/answer_invite")
+async def answer_invite(request: Request, session: Session = Depends(current_session)):
+    """Accepts or declines the invitation to session `session`; whoever asked is told."""
+    data = await _body(request)
+    row = await db.fetch_one("SELECT name FROM users WHERE uid = %s", (session.uid,))
+    await listen.hub.answer(
+        session.uid, (row[0] if row else "") or "", str(data.get("session") or "").strip().upper(),
+        data.get("accept") is True,
+    )
+    return {"ok": True}

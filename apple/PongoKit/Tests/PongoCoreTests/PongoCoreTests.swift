@@ -8,6 +8,18 @@ private func item(_ stid: String) -> QueueItem {
 }
 
 @Suite struct PlaybackQueueTests {
+    @Test func tracksPutBeforeTheCurrentOneKeepTheCollectionsOrder() {
+        // An album started at its third track, whose first two arrive later
+        var queue = PlaybackQueue()
+        queue.replace(with: [item("c")], startingAt: 0)
+        queue.append(item("d"))
+        queue.insert(item("a"), at: 0)
+        queue.insert(item("b"), at: 1)
+        #expect(queue.items.map(\.stid) == ["a", "b", "c", "d"])
+        #expect(queue.current?.stid == "c")
+        #expect(queue.nextIndex(userSkipped: false) == 3)
+    }
+
     @Test func playsInOrderAndRepeats() {
         var queue = PlaybackQueue()
         queue.replace(with: ["a", "b", "c"].map(item), startingAt: 1)

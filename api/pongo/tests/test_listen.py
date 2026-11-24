@@ -167,3 +167,45 @@ def test_guests_suggest_songs_and_hear_back(hub):
         await hub.handle(session, "host", {"type": "answer", "to": "guest", "accepted": True, "title": "One"})
         assert guest_inbox[-1] == {"type": "answered", "accepted": True, "title": "One"}
     _run(scenario())
+
+
+def test_a_friend_is_invited_and_the_host_hears_the_answer(hub):
+    async def scenario():
+        host_inbox, friend_inbox = [], []
+        host = _member("host", host_inbox)
+        session = await hub.create(host)
+        # The friend is listening in a session of their own, so they hear of it at once
+        other = await hub.create(_member("friend", friend_inbox))
+        assert await hub.invite(session, host, "HOSTCODE", "friend")
+        assert friend_inbox[-1]["type"] == "invite"
+        assert friend_inbox[-1]["invite"]["session"] == session.code
+        assert friend_inbox[-1]["invite"]["code"] == "HOSTCODE"
+        assert [i.session for i in hub.invites_for("friend")] == [session.code]
+        await hub.answer("friend", "Friend", session.code, False)
+        assert host_inbox[-1] == {"type": "inviteAnswer", "name": "Friend", "accepted": False}
+        assert hub.invites_for("friend") == []
+        hub.end(other)
+    _run(scenario())
+
+
+def test_invitations_go_once_the_session_ends_or_the_friend_joined(hub):
+    async def scenario():
+        host = _member("host", [])
+        session = await hub.create(host)
+        await hub.invite(session, host, "HOSTCODE", "friend")
+        await hub.join(session, _member("friend", []))
+        assert hub.invites_for("friend") == []
+        await hub.invite(session, host, "HOSTCODE", "late")
+        hub.end(session)
+        assert hub.invites_for("late") == []
+    _run(scenario())
+
+
+def test_one_person_holds_a_limited_number_of_invitations(hub):
+    async def scenario():
+        for index in range(listen.MAX_INVITES + 1):
+            host = _member(f"host{index}", [])
+            session = await hub.create(host)
+            assert await hub.invite(session, host, "CODE", "friend") == (index < listen.MAX_INVITES)
+        assert len(hub.invites_for("friend")) == listen.MAX_INVITES
+    _run(scenario())

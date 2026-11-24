@@ -241,6 +241,33 @@ private struct PersonRow: View {
     }
 }
 
+/// Asks a friend to listen along, starting a session first if the user
+/// isn't in one.
+struct ListenInviteButton: View {
+    @Environment(AppModel.self) private var model
+    let person: Person
+    @State private var sending = false
+
+    var body: some View {
+        Button {
+            sending = true
+            Task {
+                await model.inviteToListen(person)
+                sending = false
+            }
+        } label: {
+            HStack(spacing: 6) {
+                if sending { ProgressView().controlSize(.small) } else { Image(systemName: "person.2.wave.2") }
+                Text(model.listening.isActive ? L10n.invitetolisten : L10n.listentogether)
+            }
+            .font(.system(size: 15, weight: .semibold))
+        }
+        .buttonStyle(.glass)
+        .buttonBorderShape(.capsule)
+        .disabled(sending)
+    }
+}
+
 /// Follows or unfollows a person.
 struct FollowButton: View {
     @Environment(AppModel.self) private var model
@@ -317,8 +344,13 @@ struct PersonView: View {
                         if profile.person.isYou {
                             Text(L10n.yourprofilehint).font(.system(size: 13)).foregroundStyle(.secondary)
                         } else {
-                            FollowButton(code: profile.person.code, following: profile.person.following) { _ in
-                                Task { await load() }
+                            HStack(spacing: 10) {
+                                FollowButton(code: profile.person.code, following: profile.person.following) { _ in
+                                    Task { await load() }
+                                }
+                                if profile.followsYou || profile.person.following {
+                                    ListenInviteButton(person: profile.person)
+                                }
                             }
                         }
                     }

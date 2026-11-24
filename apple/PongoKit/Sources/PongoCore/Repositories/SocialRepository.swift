@@ -89,6 +89,33 @@ public struct SocialAccount: Sendable, Hashable {
     public var shared: Set<String>
 }
 
+/// A friend asking the user to listen along with their session.
+public struct ListenInvite: Sendable, Hashable, Identifiable {
+    /// The code of the session to join.
+    public var session: String
+    /// Who asked, by their friend code.
+    public var from: Person
+    public var sent: Date
+
+    public var id: String { session }
+
+    public init(session: String, from: Person, sent: Date = Date()) {
+        self.session = session
+        self.from = from
+        self.sent = sent
+    }
+
+    public init?(json: JSONValue?) {
+        guard let json, let session = json["session"]?.string, let code = json["code"]?.string else { return nil }
+        self.init(
+            session: session,
+            from: Person(
+                code: code, name: json["name"]?.string ?? "",
+                picture: json["picture"]?.string.flatMap { $0.isEmpty ? nil : URL(string: $0) }),
+            sent: Date(timeIntervalSince1970: json["at"]?.double ?? Date().timeIntervalSince1970))
+    }
+}
+
 /// Friends: finding people on the server by name or code, following them,
 /// and seeing and following the playlists they show.
 public final class SocialRepository: Sendable {
@@ -172,6 +199,22 @@ public final class SocialRepository: Sendable {
     /// Shows the user's online playlist with sync key [key] on their profile, or hides it.
     public func share(_ key: String, _ shared: Bool) async throws {
         _ = try await client.post("social/share_playlist", ["key": .string(key), "shared": .bool(shared)])
+    }
+
+    /// Asks the person with friend code [code] to join the session with
+    /// [session], which the user is in.
+    public func invite(_ code: String, to session: String) async throws {
+        _ = try await client.post("social/invite", ["code": .string(code), "session": .string(session)])
+    }
+
+    /// The user's open invitations to listen together, newest first.
+    public func invites() async throws -> [ListenInvite] {
+        (try await client.post("social/invites", [:])["invites"]?.array ?? []).compactMap { ListenInvite(json: $0) }
+    }
+
+    /// Accepts or declines the invitation to [session]; whoever asked is told.
+    public func answer(_ session: String, accept: Bool) async throws {
+        _ = try await client.post("social/answer_invite", ["session": .string(session), "accept": .bool(accept)])
     }
 
     private static func people(_ data: JSONValue) -> [Person] {

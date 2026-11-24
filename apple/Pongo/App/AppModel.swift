@@ -56,8 +56,19 @@ final class AppModel {
     var versionRequest: Track?
     /// Whether the screen of listening together shows.
     var showsListenTogether = false
+    /// Friends asking the user to listen along, oldest first; the first one
+    /// is asked about.
+    private(set) var invites: [ListenInvite] = []
+    /// Invitations the user answered, which a later check may still return.
+    @ObservationIgnored private var answeredInvites: Set<String> = []
+    @ObservationIgnored private var inviteWatcher: Task<Void, Never>?
     private(set) var favouriteIDs: Set<String> = []
     private(set) var downloadedIDs: Set<String> = []
+    /// Tracks waiting for or in the middle of downloading.
+    private(set) var downloadingIDs: Set<String> = []
+    /// Every track of the downloads running now, done or not, so a page can
+    /// tell how far along its own tracks are; empties once all are done.
+    private(set) var downloadBatch: Set<String> = []
     private var localRevision = 0
 
     /// Grows whenever the library changed, here or through a sync, so screens
@@ -142,7 +153,9 @@ final class AppModel {
         applyPreferences()
         player.onMessage = { [weak self] message in self?.show(message) }
         listening.onNotice = { [weak self] notice in self?.show(notice) }
-        listening.delay = UserDefaults.standard.double(forKey: ListeningSession.delayKey)
+        listening.delay =
+            UserDefaults.standard.object(forKey: ListeningSession.delayKey) as? Double ?? ListeningSession.defaultDelay
+        listening.onInvite = { [weak self] invite in self?.received([invite]) }
         player.onTrackStarted = { [weak self] item in
             guard let self, !item.isMix, Int(item.stid) != nil else { return }
             Task { try? await self.database.addPlayedTrack(item.stid) }
@@ -189,8 +202,12 @@ final class AppModel {
                 if let owner, owner != account { await clearLibrary() }
                 try? await database.setLibraryOwner(account)
             }
+            watchInvites()
             await sync.start()
         } else {
+            inviteWatcher?.cancel()
+            inviteWatcher = nil
+            invites = []
             // A session is someone's own; another account starts without it
             if listening.isActive { listening.leave() }
             #if DEBUG
@@ -200,6 +217,85 @@ final class AppModel {
             await clearLibrary()
         }
     }
+
+    // MARK: - Inviting friends to listen together
+
+    /// Asks every so often whether friends invited the user to listen along,
+    /// which the app can only learn by asking while it isn't in a session.
+    private func watchInvites() {
+        inviteWatcher?.cancel()
+        inviteWatcher = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self else { return }
+                await self.checkInvites()
+                try? await Task.sleep(for: .seconds(20))
+            }
+        }
+    }
+
+    func checkInvites() async {
+        guard auth.isSignedIn, let open = try? await social.invites() else { return }
+        // Gone ones were answered elsewhere or the session ended
+        invites.removeAll { invite in !open.contains { $0.session == invite.session } }
+        received(open)
+    }
+
+    private func received(_ new: [ListenInvite]) {
+        for invite in new.reversed()
+        where !answeredInvites.contains(invite.session) && !invites.contains(where: { $0.session == invite.session })
+            && invite.session != listening.code
+        {
+            invites.append(invite)
+        }
+    }
+
+    /// Joins the session the friend invited the user to, or declines it.
+    func answer(_ invite: ListenInvite, accept: Bool) {
+        answeredInvites.insert(invite.session)
+        invites.removeAll { $0.session == invite.session }
+        let social = social
+        Task { try? await social.answer(invite.session, accept: accept) }
+        guard accept else { return }
+        // Joining one session declines the others
+        for other in invites {
+            answeredInvites.insert(other.session)
+            Task { try? await social.answer(other.session, accept: false) }
+        }
+        invites = []
+        Haptics.tap()
+        listening.join(invite.session)
+        showsListenTogether = true
+    }
+
+    /// Asks [person] to listen along: in the session the user is in, or a new
+    /// one the user hosts, where guests may add songs and vote to skip.
+    func inviteToListen(_ person: Person) async {
+        if !listening.isActive {
+            let rights = UserDefaults.standard.stringArray(forKey: Self.lastRightsKey)
+                .map { Set($0.compactMap(ListenRight.init(rawValue:))) } ?? ListenPreset.party.rights
+            listening.host(rights: rights)
+        }
+        // A new session has its code once the server answered
+        for _ in 0..<50 where listening.code == nil && listening.isActive {
+            try? await Task.sleep(for: .milliseconds(200))
+        }
+        guard let code = listening.code else {
+            messages.show(L10n.serverunreachable, systemImage: "wifi.slash", isError: true)
+            return
+        }
+        do {
+            try await social.invite(person.code, to: code)
+            Haptics.tap()
+            messages.show(L10n.invitesent, detail: person.name, systemImage: "paperplane")
+        } catch APIError.status(403, _) {
+            messages.show(L10n.invitenotfriends, systemImage: "person.crop.circle.badge.xmark", isError: true)
+        } catch {
+            messages.show(L10n.invitefailed, systemImage: "exclamationmark.triangle", isError: true)
+        }
+    }
+
+    /// Where the rights the user last started a session with are kept.
+    static let lastRightsKey = "listenTogetherRights"
 
     /// Connects to the server at [url], or back to the built-in one when nil.
     /// A session belongs to one server, so this signs out first.
@@ -282,7 +378,75 @@ final class AppModel {
         libraryChanged()
     }
 
+    /// How many of [stids] that are being downloaded are done, and of how
+    /// many, while any of them still are.
+    func downloadProgress(of stids: [String]) -> (done: Int, total: Int)? {
+        guard !downloadingIDs.isEmpty else { return nil }
+        let batch = stids.filter(downloadBatch.contains)
+        let waiting = batch.filter(downloadingIDs.contains).count
+        guard waiting > 0 else { return nil }
+        return (batch.count - waiting, batch.count)
+    }
+
+    private func startDownloading(_ stids: [String]) {
+        downloadingIDs.formUnion(stids)
+        downloadBatch.formUnion(stids)
+    }
+
+    private func finishedDownloading(_ stid: String) {
+        downloadingIDs.remove(stid)
+        if downloadingIDs.isEmpty { downloadBatch = [] }
+    }
+
+    /// Downloads [tracks] a few at a time, showing each one's progress, and
+    /// returns whether any was saved; throws if every one failed.
+    func downloadAll(_ tracks: [Track]) async throws -> Bool {
+        let tracks = tracks.filter { !downloadingIDs.contains($0.id) }
+        startDownloading(tracks.map(\.id))
+        defer { tracks.forEach { finishedDownloading($0.id) } }
+        return try await downloads.downloadAll(tracks.map { (track: $0, cover: String?.none) }) { [weak self] stid, saved in
+            guard let self else { return }
+            self.finishedDownloading(stid)
+            if saved { self.downloadedIDs.insert(stid) }
+        }
+    }
+
+    /// Adds [tracks] to the playlist with [id], downloading those in
+    /// [toDownload] first for an offline playlist, and says how it went.
+    func addTracks(_ tracks: [Track], kind: PlaylistKind, toDownload: [String], to id: Int) async {
+        if kind == .offline, !toDownload.isEmpty {
+            messages.show(L10n.downloadhasstarted, systemImage: "arrow.down.circle")
+            do {
+                guard try await downloadAll(tracks.filter { toDownload.contains($0.id) }) else { return }
+                messages.show(L10n.downloadsucceeded, systemImage: "arrow.down.circle")
+            } catch {
+                messages.show(L10n.downloadfailed, systemImage: "exclamationmark.triangle", isError: true)
+                return
+            }
+        }
+        var added = 0
+        for track in tracks {
+            let new =
+                kind == .online
+                ? (try? await database.addOnlineTrack(OnlinePlaylistTrack(opid: id, track: track))) ?? false
+                : (try? await database.addLocalTrack(id, track.id)) ?? false
+            if new { added += 1 }
+        }
+        // A download's own message says enough
+        if toDownload.isEmpty || kind == .online {
+            if added == 0 {
+                messages.show(L10n.playlistalreadycontainsthistrack, systemImage: "bookmark.fill")
+            } else {
+                messages.show(L10n.successful, systemImage: "text.badge.checkmark")
+            }
+        }
+        libraryChanged()
+    }
+
     func download(_ track: Track) async {
+        guard !downloadingIDs.contains(track.id) else { return }
+        startDownloading([track.id])
+        defer { finishedDownloading(track.id) }
         do {
             let outcome = try await downloads.download(track)
             messages.show(
@@ -404,6 +568,10 @@ final class AppModel {
         case .voted(let count, let needed):
             messages.show("\(L10n.votedtoskip) · \(count)/\(needed)", systemImage: "forward")
         case .hostChanged(let name): messages.show("\(L10n.hostisnow) \(name)", systemImage: "crown")
+        case .inviteAnswered(let name, let accepted):
+            messages.show(
+                accepted ? L10n.inviteaccepted : L10n.invitedeclined, detail: name,
+                systemImage: accepted ? "person.crop.circle.badge.checkmark" : "person.crop.circle.badge.xmark")
         case .suggested(let title): messages.show(L10n.suggestedtohost, detail: title, systemImage: "lightbulb")
         case .suggestionAnswered(let title, let accepted):
             messages.show(

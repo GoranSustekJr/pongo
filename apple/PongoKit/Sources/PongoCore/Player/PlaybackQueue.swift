@@ -165,6 +165,17 @@ public struct PlaybackQueue: Sendable, Equatable {
         if currentIndex == nil { currentIndex = 0 }
     }
 
+    /// Inserts [item] at [index] of the queue, which also plays there while
+    /// shuffled; the current entry stays current.
+    public mutating func insert(_ item: QueueItem, at index: Int) {
+        let index = min(max(index, 0), items.count)
+        items.insert(item, at: index)
+        shuffleOrder = shuffleOrder.map { $0 >= index ? $0 + 1 : $0 }
+        if shuffleEnabled { shuffleOrder.insert(index, at: min(index, shuffleOrder.count)) }
+        if let currentIndex, index <= currentIndex { self.currentIndex = currentIndex + 1 }
+        if currentIndex == nil { currentIndex = 0 }
+    }
+
     /// How many entries the user queued to play right after the current one.
     public var queuedCount: Int {
         guard let position else { return 0 }

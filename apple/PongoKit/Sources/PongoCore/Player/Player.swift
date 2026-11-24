@@ -294,22 +294,40 @@ public final class Player {
                 index: index, shuffle: shuffle)
             return
         }
-        // Tracks are queued in order while the server fetches the missing ones
+        // Tracks are queued while the server fetches the missing ones. The
+        // chosen track goes first, then those after it; those before it are
+        // put back in front of it last, so the queue keeps the collection's
+        // order. Shuffled, the tracks are fetched in a random order.
+        let first = index.flatMap { tracks.indices.contains($0) ? $0 : nil }
+            ?? (shuffle && !tracks.isEmpty ? Int.random(in: tracks.indices) : 0)
+        var order: [Int]
+        if shuffle {
+            order = [first] + tracks.indices.filter { $0 != first }.shuffled()
+        } else {
+            order = Array(tracks.indices[first...]) + Array(tracks.indices[..<first])
+        }
+        if tracks.isEmpty { order = [] }
         canShuffle = false
         stopEngine()
         queue.clear()
-        let batch = await socket.openBatch(missing)
+        let batch = await socket.openBatch(order.map { tracks[$0].id }.filter { known[$0] == nil })
         defer {
             batch.close()
             if generation == self.generation { canShuffle = true }
         }
         var started = false
-        for track in tracks {
+        // Where the next track from before the chosen one goes; nil once one
+        // of them started the queue, since none after the chosen one could
+        var earlier: Int? = 0
+        for position in order {
+            let track = tracks[position]
+            let before = !shuffle && position < first
             guard generation == self.generation else { return }
             var duration = known[track.id]
             if duration == nil, !started, preferences.streamWhileDownloading {
                 // The first track plays while the server downloads it
                 started = true
+                if before { earlier = nil }
                 let item = startStreaming(track, collectionID: collectionID)
                 duration = await batch.next()
                 trackFetched(track.id, duration)
@@ -327,10 +345,14 @@ public final class Player {
                 guard duration != nil, generation == self.generation else { continue }
             }
             let item = QueueItem(track: track, collectionID: collectionID, duration: duration!)
-            if started {
+            if started && before, let at = earlier {
+                insert(item, at: at)
+                earlier = at + 1
+            } else if started {
                 append(item)
             } else {
                 started = true
+                if before { earlier = nil }
                 queue.setShuffle(false)
                 queue.replace(with: [item], startingAt: 0)
                 loadCurrent(autoplay: true)
@@ -564,8 +586,17 @@ public final class Player {
             await playCollection()
             return
         }
-        if current.stid != stid && queue.items.count > index && queueMatchesCollection {
-            skip(to: index)
+        // Tracks the server couldn't get are left out of the queue, so the
+        // track is found by its ID rather than its place
+        let entry = queueMatchesCollection
+            ? (queue.items.indices.contains(index) && queue.items[index].stid == stid
+                ? index : queue.items.firstIndex { $0.stid == stid })
+            : nil
+        if current.stid != stid, let entry {
+            skip(to: entry)
+        } else if current.stid != stid && queueMatchesCollection {
+            // Still being fetched, or left out: start the collection from it
+            await playCollection()
         } else {
             togglePlayback()
         }
@@ -605,6 +636,15 @@ public final class Player {
         item.addedBy = user ?? addingAs
         queueMatchesCollection = false
         append(item)
+    }
+
+    /// Puts [item] at [index] of the queue, before the current entry.
+    private func insert(_ item: QueueItem, at index: Int) {
+        queue.insert(item, at: index)
+        reindexLoaded()
+        refreshNext()
+        reportQueueToMix()
+        Task { await gains.prefetch([item.stid]) }
     }
 
     private func append(_ item: QueueItem) {

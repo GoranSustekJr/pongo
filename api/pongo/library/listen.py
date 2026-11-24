@@ -47,6 +47,9 @@ CODE_LENGTH = 6
 RECONNECT_SECONDS = 30
 MAX_MEMBERS = 20
 MAX_SESSIONS = 500
+# How long an invitation to a session waits for an answer, and how many one person holds
+INVITE_SECONDS = 600
+MAX_INVITES = 20
 
 Send = Callable[[dict], Awaitable[None]]
 
@@ -118,9 +121,29 @@ def _rights(value) -> set[str]:
     return {right for right in value if right in RIGHTS} if isinstance(value, list) else set()
 
 
+@dataclass
+class Invite:
+    """Someone asking a friend to listen along with their session."""
+    session: str
+    # The uid, name, picture and friend code of who asked
+    uid: str
+    name: str
+    picture: str
+    code: str
+    at: float = field(default_factory=time.time)
+
+    def describe(self) -> dict:
+        return {
+            "session": self.session, "name": self.name, "picture": self.picture, "code": self.code,
+            "at": self.at,
+        }
+
+
 class Hub:
     def __init__(self):
         self.sessions: dict[str, Session] = {}
+        # Open invitations, by who's invited, then by session
+        self.invites: dict[str, dict[str, Invite]] = {}
 
     def _new_code(self) -> str:
         while True:
@@ -302,6 +325,51 @@ class Hub:
             await self._hand_over(session, present[0])
         else:
             await self._broadcast(session, session.describe())
+
+    # Invitations
+
+    def invites_for(self, uid: str) -> list[Invite]:
+        """[uid]'s invitations to sessions still going, newest first."""
+        now = time.time()
+        mine = self.invites.get(uid, {})
+        for code, invite in list(mine.items()):
+            session = self.sessions.get(code)
+            inviter = session.members.get(invite.uid) if session else None
+            if (now - invite.at > INVITE_SECONDS or session is None or inviter is None
+                    or not inviter.present or uid in {m.uid for m in session.present()}):
+                del mine[code]
+        if not mine:
+            self.invites.pop(uid, None)
+        return sorted(mine.values(), key=lambda i: i.at, reverse=True)
+
+    async def invite(self, session: Session, inviter: Member, code: str, to: str) -> bool:
+        """Asks [to] to join [session]; returns False when they hold too many invitations.
+
+        [code] is the inviter's friend code, which the invited app shows them by. Someone
+        connected to a session hears of it at once; others when their app asks."""
+        if session.code not in self.invites.get(to, {}) and len(self.invites_for(to)) >= MAX_INVITES:
+            return False
+        mine = self.invites.setdefault(to, {})
+        invite = Invite(session=session.code, uid=inviter.uid, name=inviter.name, picture=inviter.picture,
+                        code=code)
+        mine[session.code] = invite
+        for other in self.sessions.values():
+            member = other.members.get(to)
+            if member is not None and member.present and other is not session:
+                await self._send(member, {"type": "invite", "invite": invite.describe()})
+        return True
+
+    async def answer(self, uid: str, name: str, code: str, accepted: bool) -> None:
+        """[uid] answered the invitation to session [code]; whoever asked hears of it."""
+        invite = self.invites.get(uid, {}).pop(code, None)
+        if not self.invites.get(uid):
+            self.invites.pop(uid, None)
+        session = self.sessions.get(code)
+        if invite is None or session is None:
+            return
+        inviter = session.members.get(invite.uid)
+        if inviter is not None:
+            await self._send(inviter, {"type": "inviteAnswer", "name": name, "accepted": accepted})
 
     def end(self, session: Session) -> None:
         for timer in session.timers.values():

@@ -109,6 +109,8 @@ public enum ListenNotice: Sendable, Equatable {
     case nowHosting
     /// Someone else hosts the session now.
     case hostChanged(String)
+    /// The friend the user asked to listen along joined, or said no.
+    case inviteAnswered(String, accepted: Bool)
 }
 
 /// Listening together: one person's queue plays on everyone's devices, each
@@ -152,18 +154,33 @@ public final class ListeningSession {
     public private(set) var recap: SessionRecap?
     /// Seconds a guest's player runs ahead of the host's, to make up for
     /// headphones that play late, such as Bluetooth ones; negative plays
-    /// behind.
-    public var delay: Double = 0 {
+    /// behind. Guests play a little behind unless the user set it, so the host
+    /// hears the music, and what they change, first.
+    public var delay: Double = ListeningSession.defaultDelay {
         didSet {
             lastCorrection = .distantPast
+            measuredLag = nil
             follow()
         }
     }
+
+    /// How far behind the host a guest plays unless they set otherwise.
+    public static let defaultDelay = -0.25
+
+    /// How many seconds behind the host's player the user's actually is, as
+    /// measured while following; negative is ahead.
+    public private(set) var measuredLag: Double?
+    /// How long news takes from the server to the user, one way, as the
+    /// quickest answer to a ping measured it.
+    public var networkDelay: Double? { bestRoundTrip.isFinite ? bestRoundTrip / 2 : nil }
 
     /// The emoji listeners can react with.
     public static let reactionEmoji = ["🔥", "❤️", "😂", "😮", "🙌", "💃"]
 
     @ObservationIgnored public var onNotice: ((ListenNotice) -> Void)?
+    /// Called when a friend asks the user to join their session, while the
+    /// user is in another.
+    @ObservationIgnored public var onInvite: ((ListenInvite) -> Void)?
 
     public var isActive: Bool { state != .idle }
     public var isHost: Bool { userID != nil && userID == hostID }
@@ -206,7 +223,7 @@ public final class ListeningSession {
     /// The server's clock less this device's, and how sure of it the
     /// measurement was.
     @ObservationIgnored private var clockOffset: Double = 0
-    @ObservationIgnored private var bestRoundTrip = Double.infinity
+    private var bestRoundTrip = Double.infinity
     /// Whether the user just voted, so the count that comes back is told.
     @ObservationIgnored private var justVoted = false
     /// What played, for the recap, and who else was there.
@@ -299,6 +316,7 @@ public final class ListeningSession {
         skipVotes = nil
         reactions = []
         justVoted = false
+        measuredLag = nil
     }
 
     // MARK: - The connection
@@ -446,6 +464,11 @@ public final class ListeningSession {
                 suggestions.count < 50
             else { return }
             suggestions.append(SongSuggestion(from: from, track: track, next: next))
+        case "invite":
+            guard let invite = Self.invite(message["invite"]) else { return }
+            onInvite?(invite)
+        case "inviteAnswer":
+            onNotice?(.inviteAnswered(message["name"] as? String ?? "", accepted: message["accepted"] as? Bool == true))
         case "answered":
             onNotice?(.suggestionAnswered(message["title"] as? String ?? "", accepted: message["accepted"] as? Bool == true))
         case "reaction":
@@ -486,6 +509,13 @@ public final class ListeningSession {
             }
         }
         setUpPlayer()
+    }
+
+    private static func invite(_ value: Any?) -> ListenInvite? {
+        guard let value = value as? [String: Any], let data = try? JSONSerialization.data(withJSONObject: value),
+            let json = try? JSONValue.decode(data)
+        else { return nil }
+        return ListenInvite(json: json)
     }
 
     private static func rights(_ value: Any?) -> Set<ListenRight> {
@@ -776,8 +806,14 @@ public final class ListeningSession {
         }
         if player.current?.id != playback.entry || player.isPlaying != playback.playing {
             lastCorrection = Date()
+            measuredLag = nil
             player.follow(entry: playback.entry, position: target, playing: playback.playing, tolerance: 0.3)
             return
+        }
+        // How far behind the host this player is, once a correction settled
+        if playback.playing, !player.isBuffering, Date().timeIntervalSince(lastCorrection) > 1.5 {
+            let lag = target - delay - player.exactPosition
+            measuredLag = measuredLag.map { $0 * 0.7 + lag * 0.3 } ?? lag
         }
         // Drifting apart: a seek, but not again before the last one settled
         guard playback.playing, !player.isBuffering, Date().timeIntervalSince(lastCorrection) > 5,

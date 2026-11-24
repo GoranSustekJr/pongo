@@ -6,7 +6,8 @@ import SwiftUI
 struct ListenTogetherView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
-    @State private var startRights = ListenPreset.party.rights
+    @State private var startRights = UserDefaults.standard.stringArray(forKey: AppModel.lastRightsKey)
+        .map { Set($0.compactMap(ListenRight.init(rawValue:))) } ?? ListenPreset.party.rights
     @State private var code = ""
 
     var body: some View {
@@ -59,6 +60,7 @@ struct ListenTogetherView: View {
         Section {
             Button {
                 Haptics.tap()
+                UserDefaults.standard.set(startRights.map(\.rawValue).sorted(), forKey: AppModel.lastRightsKey)
                 session.host(rights: startRights)
             } label: {
                 Label(L10n.startsession, systemImage: "dot.radiowaves.left.and.right")
@@ -173,6 +175,9 @@ struct ListenTogetherView: View {
                 }
             }
             .groupedRowBackground()
+            if session.state == .live {
+                InviteFriendsSection()
+            }
         }
         Section {
             Button(L10n.leavesession, systemImage: "rectangle.portrait.and.arrow.right", role: .destructive) {
@@ -544,8 +549,8 @@ private struct FloatingReaction: View {
     }
 }
 
-/// How far ahead of the host the user's player runs, for headphones that
-/// play late.
+/// How far behind or ahead of the host the user's player runs, for
+/// headphones that play late, and how far it actually is.
 private struct DelaySlider: View {
     @Environment(AppModel.self) private var model
 
@@ -555,7 +560,7 @@ private struct DelaySlider: View {
             HStack {
                 Label(L10n.headphonedelay, systemImage: "headphones")
                 Spacer()
-                Text("\(Int((session.delay * 1000).rounded())) ms")
+                Text(Self.describe(-session.delay))
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
             }
@@ -563,9 +568,92 @@ private struct DelaySlider: View {
                 value: Binding {
                     session.delay
                 } set: { delay in
-                    session.delay = (delay * 20).rounded() / 20
-                    UserDefaults.standard.set(session.delay, forKey: ListeningSession.delayKey)
+                    set((delay * 20).rounded() / 20)
                 }, in: -0.5...0.5)
+            HStack {
+                if let lag = session.measuredLag {
+                    Text("\(L10n.measured): \(Self.describe(lag))" + network(session))
+                        .monospacedDigit()
+                        .contentTransition(.numericText())
+                        .animation(.smooth, value: Int(lag * 100))
+                }
+                Spacer()
+                if session.delay != ListeningSession.defaultDelay {
+                    Button(L10n.resetdelay) { set(ListeningSession.defaultDelay) }
+                        .buttonStyle(.borderless)
+                }
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+        }
+    }
+
+    private func set(_ delay: Double) {
+        model.listening.delay = delay
+        UserDefaults.standard.set(delay, forKey: ListeningSession.delayKey)
+    }
+
+    private func network(_ session: ListeningSession) -> String {
+        session.networkDelay.map { " · \(L10n.network) \(Int(($0 * 1000).rounded())) ms" } ?? ""
+    }
+
+    /// [lag] seconds behind the host, as the user reads it.
+    static func describe(_ lag: Double) -> String {
+        let ms = Int((lag * 1000).rounded())
+        if abs(ms) < 10 { return "0 ms" }
+        return "\(abs(ms)) ms \(ms > 0 ? L10n.behindhost : L10n.aheadofhost)"
+    }
+}
+
+/// The people the user follows and who follow them, to ask to the session.
+private struct InviteFriendsSection: View {
+    @Environment(AppModel.self) private var model
+    @State private var people: [Person]?
+    @State private var invited: Set<String> = []
+    @State private var sending: Set<String> = []
+
+    var body: some View {
+        Section(L10n.invitefriends) {
+            if let people {
+                if people.isEmpty {
+                    Text(L10n.nofriendstoinvite).foregroundStyle(.secondary)
+                }
+                ForEach(people) { person in
+                    HStack(spacing: 12) {
+                        Avatar(url: person.picture, size: 36)
+                        Text(person.name).lineLimit(1)
+                        Spacer()
+                        Button {
+                            Task {
+                                sending.insert(person.code)
+                                await model.inviteToListen(person)
+                                sending.remove(person.code)
+                                invited.insert(person.code)
+                            }
+                        } label: {
+                            if sending.contains(person.code) {
+                                ProgressView().controlSize(.small)
+                            } else {
+                                Text(invited.contains(person.code) ? L10n.invited : L10n.invite)
+                            }
+                        }
+                        .buttonStyle(.glass)
+                        .disabled(sending.contains(person.code))
+                    }
+                }
+            } else {
+                ProgressView().frame(maxWidth: .infinity)
+            }
+        }
+        .groupedRowBackground()
+        .task {
+            async let following = try? model.social.people()
+            async let followers = try? model.social.people(followers: true)
+            let all = (await following ?? []) + (await followers ?? [])
+            var seen = Set<String>()
+            let names = Set(model.listening.listeners.map(\.name))
+            // Someone listening already needs no invitation; names are all the session tells
+            people = all.filter { seen.insert($0.code).inserted && !$0.isYou && !names.contains($0.name) }
         }
     }
 }

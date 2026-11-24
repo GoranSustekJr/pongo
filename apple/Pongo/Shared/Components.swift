@@ -35,7 +35,9 @@ struct TrackRow: View {
             .lineLimit(1)
             .frame(maxWidth: .infinity, alignment: .leading)
             if hidden { Image(systemName: "eye.slash").font(.footnote).opacity(0.7) }
-            if !track.isDownloaded, model.downloadedIDs.contains(track.id) {
+            if model.downloadingIDs.contains(track.id) {
+                ProgressView().controlSize(.small).accessibilityLabel(L10n.downloading)
+            } else if !track.isDownloaded, model.downloadedIDs.contains(track.id) {
                 Image(systemName: "arrow.down.circle.fill").font(.caption).opacity(0.6)
             }
             TrackStatus(stid: track.id, isCurrent: isCurrent)
@@ -173,6 +175,7 @@ struct TrackList: View {
 
     var body: some View {
         LazyVStack(spacing: 0) {
+            DownloadProgressBar(stids: tracks.map(\.id)).padding(.bottom, 6)
             ForEach(Array(tracks.enumerated()), id: \.offset) { index, track in
                 Button {
                     play(index)
@@ -197,6 +200,30 @@ struct TrackList: View {
             }
         }
         .padding(.horizontal, 15)
+    }
+}
+
+/// How far the download of a list's tracks is, while any of them download.
+struct DownloadProgressBar: View {
+    @Environment(AppModel.self) private var model
+    let stids: [String]
+
+    var body: some View {
+        if let progress = model.downloadProgress(of: stids) {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Label(L10n.downloading, systemImage: "arrow.down.circle")
+                    Spacer()
+                    Text("\(progress.done) / \(progress.total)").monospacedDigit()
+                }
+                .font(.system(size: 13.5, weight: .semibold))
+                ProgressView(value: Double(progress.done), total: Double(max(progress.total, 1)))
+                    .tint(Color.pongoTeal)
+            }
+            .padding(12)
+            .pongoGlass(in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .animation(.smooth, value: progress.done)
+        }
     }
 }
 

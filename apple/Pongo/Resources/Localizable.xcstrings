@@ -232,6 +232,29 @@
         }
       }
     },
+    "aheadofhost": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ahead of the host"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vor dem Host"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ispred domaćina"
+          }
+        }
+      }
+    },
     "alarm": {
       "extractionState": "manual",
       "localizations": {
@@ -734,6 +757,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "prije nego što se morate probuditi u"
+          }
+        }
+      }
+    },
+    "behindhost": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "behind the host"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hinter dem Host"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iza domaćina"
           }
         }
       }
@@ -3665,19 +3711,19 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "If you hear the music later than your friends, as Bluetooth headphones often do, move this right until you're in time."
+            "value": "You play 250 ms behind the host, so they hear the music, and what they change, first. If you hear it out of time with your friends, as Bluetooth headphones can make you, move this until you're in time; right plays earlier."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wenn du die Musik später hörst als deine Freunde, wie oft mit Bluetooth-Kopfhörern, schieb dies nach rechts, bis es passt."
+            "value": "Du hörst 250 ms nach dem Host, damit er die Musik und seine Änderungen zuerst hört. Wenn du nicht im Takt mit deinen Freunden bist, wie es mit Bluetooth-Kopfhörern passieren kann, verschieb dies, bis es passt; nach rechts spielt früher."
           }
         },
         "hr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ako glazbu čuješ kasnije od prijatelja, što se često događa s Bluetooth slušalicama, pomakni ovo udesno dok ne budete usklađeni."
+            "value": "Sviraš 250 ms iza domaćina, tako da on prvi čuje glazbu i ono što mijenja. Ako glazbu ne čuješ usklađeno s prijateljima, što se može dogoditi s Bluetooth slušalicama, pomakni ovo dok ne budete usklađeni; udesno svira ranije."
           }
         }
       }
@@ -4970,6 +5016,259 @@
         }
       }
     },
+    "invite": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einladen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozovi"
+          }
+        }
+      }
+    },
+    "inviteaccepted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Is listening with you now"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hört jetzt mit dir"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sada sluša s tobom"
+          }
+        }
+      }
+    },
+    "invitebody": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "asks you to listen along."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lädt dich zum Mithören ein."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "te poziva da slušate zajedno."
+          }
+        }
+      }
+    },
+    "invited": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invited"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eingeladen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozvano"
+          }
+        }
+      }
+    },
+    "invitedeclined": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can't listen right now"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kann gerade nicht mithören"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trenutno ne može slušati"
+          }
+        }
+      }
+    },
+    "invitefailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't send the invitation"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einladung konnte nicht gesendet werden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozivnica nije poslana"
+          }
+        }
+      }
+    },
+    "invitefriends": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite friends"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Freunde einladen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozovi prijatelje"
+          }
+        }
+      }
+    },
+    "invitenotfriends": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can only invite people who follow you or whom you follow"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du kannst nur Leute einladen, denen du folgst oder die dir folgen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Možeš pozvati samo osobe koje pratiš ili koje prate tebe"
+          }
+        }
+      }
+    },
+    "invitesent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invitation sent"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einladung gesendet"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozivnica poslana"
+          }
+        }
+      }
+    },
+    "invitetitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listen together?"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemeinsam hören?"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slušati zajedno?"
+          }
+        }
+      }
+    },
+    "invitetolisten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite to listen"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zum Mithören einladen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozovi na slušanje"
+          }
+        }
+      }
+    },
     "join": {
       "extractionState": "manual",
       "localizations": {
@@ -5792,6 +6091,29 @@
         }
       }
     },
+    "measured": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Measured"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemessen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Izmjereno"
+          }
+        }
+      }
+    },
     "minuteslistened": {
       "extractionState": "manual",
       "localizations": {
@@ -6114,6 +6436,29 @@
         }
       }
     },
+    "network": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "network"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Netzwerk"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mreža"
+          }
+        }
+      }
+    },
     "newalbums": {
       "extractionState": "manual",
       "localizations": {
@@ -6363,6 +6708,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Još te nitko ne prati"
+          }
+        }
+      }
+    },
+    "nofriendstoinvite": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow friends to invite them here."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folge Freunden, um sie hier einzuladen."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prati prijatelje da ih možeš pozvati."
           }
         }
       }
@@ -6731,6 +7099,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Obavijest"
+          }
+        }
+      }
+    },
+    "notnow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht jetzt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne sada"
           }
         }
       }
@@ -8824,6 +9215,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ponovi ovu pjesmu"
+          }
+        }
+      }
+    },
+    "resetdelay": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurücksetzen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vrati zadano"
           }
         }
       }

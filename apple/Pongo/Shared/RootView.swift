@@ -127,6 +127,16 @@ struct MainTabView: View {
         ) { track in
             NavigationStack { TrackVersionsView(track: track) }
         }
+        .alert(
+            L10n.invitetitle,
+            isPresented: Binding { model.invites.first != nil } set: { _ in },
+            presenting: model.invites.first
+        ) { invite in
+            Button(L10n.join) { model.answer(invite, accept: true) }
+            Button(L10n.notnow, role: .cancel) { model.answer(invite, accept: false) }
+        } message: { invite in
+            Text("\(invite.from.name) \(L10n.invitebody)")
+        }
         .alert(L10n.haltmusicplayer, isPresented: $router.confirmsHalt) {
             Button(L10n.cancel, role: .cancel) {}
             Button(L10n.halt, role: .destructive) { model.player.halt() }

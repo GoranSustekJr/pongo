@@ -13,6 +13,7 @@ extension L10n {
     static var `addtolibrary`: String { tr("addtolibrary") }
     static var `addtoplaylist`: String { tr("addtoplaylist") }
     static var `addtrackstoyoutplaylist`: String { tr("addtrackstoyoutplaylist") }
+    static var `aheadofhost`: String { tr("aheadofhost") }
     static var `alarm`: String { tr("alarm") }
     static var `album`: String { tr("album") }
     static var `albums`: String { tr("albums") }
@@ -35,6 +36,7 @@ extension L10n {
     static var `bassboostlow`: String { tr("bassboostlow") }
     static var `bassboostmedium`: String { tr("bassboostmedium") }
     static var `beforeyouneedtowakeupat`: String { tr("beforeyouneedtowakeupat") }
+    static var `behindhost`: String { tr("behindhost") }
     static var `biggestmonth`: String { tr("biggestmonth") }
     static var `buypremium`: String { tr("buypremium") }
     static var `bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium`: String { tr("bydeletingyouraccountyouwilldeleteallyourprivilegesifpayingpremium") }
@@ -219,6 +221,17 @@ extension L10n {
     static var `importtofavourites`: String { tr("importtofavourites") }
     static var `importtoimport`: String { tr("importtoimport") }
     static var `inlibrary`: String { tr("inlibrary") }
+    static var `invite`: String { tr("invite") }
+    static var `inviteaccepted`: String { tr("inviteaccepted") }
+    static var `invitebody`: String { tr("invitebody") }
+    static var `invited`: String { tr("invited") }
+    static var `invitedeclined`: String { tr("invitedeclined") }
+    static var `invitefailed`: String { tr("invitefailed") }
+    static var `invitefriends`: String { tr("invitefriends") }
+    static var `invitenotfriends`: String { tr("invitenotfriends") }
+    static var `invitesent`: String { tr("invitesent") }
+    static var `invitetitle`: String { tr("invitetitle") }
+    static var `invitetolisten`: String { tr("invitetolisten") }
     static var `join`: String { tr("join") }
     static var `joinsession`: String { tr("joinsession") }
     static var `justify`: String { tr("justify") }
@@ -255,6 +268,7 @@ extension L10n {
     static var `madeforyou`: String { tr("madeforyou") }
     static var `makehost`: String { tr("makehost") }
     static var `maximumvolumeofthealarm`: String { tr("maximumvolumeofthealarm") }
+    static var `measured`: String { tr("measured") }
     static var `minuteslistened`: String { tr("minuteslistened") }
     static var `minutespermonth`: String { tr("minutespermonth") }
     static var `mix`: String { tr("mix") }
@@ -269,6 +283,7 @@ extension L10n {
     static var `movedown`: String { tr("movedown") }
     static var `moveup`: String { tr("moveup") }
     static var `name`: String { tr("name") }
+    static var `network`: String { tr("network") }
     static var `newalbums`: String { tr("newalbums") }
     static var `newhere`: String { tr("newhere") }
     static var `newpassword`: String { tr("newpassword") }
@@ -280,6 +295,7 @@ extension L10n {
     static var `noalbums`: String { tr("noalbums") }
     static var `nofollowedplaylists`: String { tr("nofollowedplaylists") }
     static var `nofollowers`: String { tr("nofollowers") }
+    static var `nofriendstoinvite`: String { tr("nofriendstoinvite") }
     static var `nolyricsavailable`: String { tr("nolyricsavailable") }
     static var `nopeoplefound`: String { tr("nopeoplefound") }
     static var `noplainlyrics`: String { tr("noplainlyrics") }
@@ -296,6 +312,7 @@ extension L10n {
     static var `notfollowinganyone`: String { tr("notfollowinganyone") }
     static var `nothingplaying`: String { tr("nothingplaying") }
     static var `notification`: String { tr("notification") }
+    static var `notnow`: String { tr("notnow") }
     static var `notonserveryet`: String { tr("notonserveryet") }
     static var `notracks`: String { tr("notracks") }
     static var `nowhosting`: String { tr("nowhosting") }
@@ -387,6 +404,7 @@ extension L10n {
     static var `repeatoff`: String { tr("repeatoff") }
     static var `repeatthequeue`: String { tr("repeatthequeue") }
     static var `repeatthissong`: String { tr("repeatthissong") }
+    static var `resetdelay`: String { tr("resetdelay") }
     static var `rightadd`: String { tr("rightadd") }
     static var `rightalignment`: String { tr("rightalignment") }
     static var `rightmanage`: String { tr("rightmanage") }

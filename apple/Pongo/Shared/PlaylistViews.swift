@@ -638,43 +638,21 @@ struct PlaylistPicker: View {
         }
     }
 
-    /// Adds the tracks to the playlist with [id], downloading them first for
-    /// an offline playlist.
+    /// Adds the tracks to the playlist with [id]. An offline playlist's
+    /// tracks download in the background, where the pages showing them follow
+    /// along, so the picker closes right away.
     private func add(to id: Int) async {
-        working = true
-        defer { working = false }
-        let database = model.database
-        if request.kind == .offline, !request.toDownload.isEmpty, !(await downloadMissing()) {
+        let model = model
+        let request = request
+        if request.kind == .offline, !request.toDownload.isEmpty {
+            Task { await model.addTracks(request.tracks, kind: request.kind, toDownload: request.toDownload, to: id) }
+            dismiss()
             return
         }
-        var added = 0
-        for track in request.tracks {
-            let new =
-                request.kind == .online
-                ? (try? await database.addOnlineTrack(OnlinePlaylistTrack(opid: id, track: track))) ?? false
-                : (try? await database.addLocalTrack(id, track.id)) ?? false
-            if new { added += 1 }
-        }
-        if added == 0 {
-            model.messages.show(L10n.playlistalreadycontainsthistrack, systemImage: "bookmark.fill")
-        } else {
-            model.messages.show(L10n.successful, systemImage: "text.badge.checkmark")
-        }
-        model.libraryChanged()
+        working = true
+        defer { working = false }
+        await model.addTracks(request.tracks, kind: request.kind, toDownload: [], to: id)
         dismiss()
-    }
-
-    private func downloadMissing() async -> Bool {
-        model.messages.show(L10n.downloadhasstarted, systemImage: "arrow.down.circle")
-        let tracks = request.tracks.filter { request.toDownload.contains($0.id) }.map { (track: $0, cover: String?.none) }
-        do {
-            guard try await model.downloads.downloadAll(tracks) else { return false }
-            model.messages.show(L10n.downloadsucceeded, systemImage: "arrow.down.circle")
-            return true
-        } catch {
-            model.messages.show(L10n.downloadfailed, systemImage: "exclamationmark.triangle", isError: true)
-            return false
-        }
     }
 }
 

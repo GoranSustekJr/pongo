@@ -80,25 +80,33 @@ public final class DownloadsRepository: Sendable {
     /// Downloads several tracks, a few at a time, saving each as it arrives.
     ///
     /// Returns whether any track was saved, or throws the first error if
-    /// every track failed.
-    public func downloadAll(_ tracks: [(track: Track, cover: String?)]) async throws -> Bool {
+    /// every track failed. [finished] is told the ID of each track once it's
+    /// done, and whether it's on the device now.
+    public func downloadAll(
+        _ tracks: [(track: Track, cover: String?)],
+        finished: (@MainActor (String, Bool) -> Void)? = nil
+    ) async throws -> Bool {
         var saved = 0
         var firstError: Error?
         // The server fetches as many tracks at once; more workers would only wait
-        try await withThrowingTaskGroup(of: Result<DownloadOutcome, Error>.self) { group in
+        try await withThrowingTaskGroup(of: (String, Result<DownloadOutcome, Error>).self) { group in
             var next = 0
             func addNext() {
                 guard next < tracks.count else { return }
                 let entry = tracks[next]
                 next += 1
                 group.addTask {
-                    do { return .success(try await self.download(entry.track, cover: entry.cover)) } catch {
-                        return .failure(error)
-                    }
+                    do { return (entry.track.id, .success(try await self.download(entry.track, cover: entry.cover))) }
+                    catch { return (entry.track.id, .failure(error)) }
                 }
             }
             for _ in 0..<Self.parallelDownloads { addNext() }
-            for try await result in group {
+            for try await (stid, result) in group {
+                if let finished {
+                    let done: Bool
+                    if case .success = result { done = true } else { done = false }
+                    await finished(stid, done)
+                }
                 switch result {
                 case .success(.downloaded): saved += 1
                 case .success: break
