@@ -124,6 +124,7 @@ struct SyncedLyricsView: View {
                                         $0.frame(in: .named(LyricsScroller.space))
                                     } action: { scroller.frames[line.id] = $0 }
                                 #endif
+                                .contentShape(.rect)
                                 .onTapGesture {
                                     model.player.seek(to: max(line.time - Double(model.nowPlaying.delay) / 1000, 0))
                                     resumeFollowing(proxy, after: .zero)

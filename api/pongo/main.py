@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from library import config, db, limits, migrations
 from library.metadata import deezer
 from library.imports import links
-from library.routes import account, catalog, imports, listen, playback, social, sync, versions
+from library.routes import account, catalog, handoff, imports, listen, playback, social, sync, versions
 from library.track import downloads, loudness, mood
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -45,6 +45,7 @@ app.include_router(listen.router)
 app.include_router(imports.router)
 app.include_router(versions.router)
 app.include_router(social.router)
+app.include_router(handoff.router)
 
 
 @app.middleware("http")

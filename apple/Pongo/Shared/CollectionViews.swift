@@ -61,8 +61,8 @@ struct OnlineCollectionView: View {
     }
 }
 
-/// The menu of a catalog collection: saving its tracks as a playlist, online
-/// or downloaded.
+/// The menu of a catalog collection: saving its tracks as a playlist, or
+/// downloading its songs to the device, and removing them again.
 struct CollectionActions: View {
     @Environment(AppModel.self) private var model
     let tracks: [Track]
@@ -71,8 +71,14 @@ struct CollectionActions: View {
         Button(L10n.addtoplaylist, systemImage: "music.note.list") {
             Task { await model.addToPlaylist(tracks, creating: true) }
         }
-        Button(L10n.download, systemImage: "icloud.and.arrow.down") {
-            Task { await model.addToPlaylist(tracks, kind: .offline, creating: true) }
+        if model.isDownloaded(tracks) {
+            Button(L10n.removedownload, systemImage: "arrow.down.circle.dotted", role: .destructive) {
+                Task { await model.removeDownloads(tracks.map(\.id)) }
+            }
+        } else {
+            Button(L10n.download, systemImage: "arrow.down.circle") {
+                Task { await model.downloadSongs(tracks) }
+            }
         }
     }
 }

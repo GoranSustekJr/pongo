@@ -1,40 +1,72 @@
 import PongoCore
 import SwiftUI
 
-/// The first tab, as in the Flutter app: the search bar on top, and the
-/// recommendations under it until the user searches.
+/// The first tab: the recommendations, with the profile picture in the
+/// corner that opens settings.
 struct HomeView: View {
     @Environment(AppModel.self) private var model
-    @State private var query = ""
-    @State private var searchActive = false
 
     var body: some View {
-        let showsSearch = searchActive || !query.isEmpty
         RecommendationsView()
-            .overlay {
-                if showsSearch {
-                    SearchView(query: $query).transition(.opacity)
-                }
-            }
-            .animation(.easeInOut(duration: 0.2), value: showsSearch)
+            .navigationTitle(L10n.home)
             #if os(iOS)
-                .searchable(
-                    text: $query, isPresented: $searchActive, placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: L10n.searchsongsartistsalbums
-                )
+                .toolbar(removing: .title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) { ProfileButton() }
+                }
             #endif
-            .onSubmit(of: .search) { model.rememberSearch(query) }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(removing: .title)
-            .onChange(of: model.router.searchRequest, initial: true) {
-                guard let request = model.router.searchRequest else { return }
-                model.router.searchRequest = nil
-                query = request
-                searchActive = true
-                model.rememberSearch(request)
-            }
     }
 }
+
+#if os(iOS)
+    /// The user's picture, which opens settings.
+    struct ProfileButton: View {
+        @Environment(AppModel.self) private var model
+        @State private var picture: String?
+
+        var body: some View {
+            Button {
+                model.router.showsSettings = true
+            } label: {
+                CoverImage(picture, placeholder: "person.fill")
+                    .frame(width: 34, height: 34)
+                    .clipShape(.circle)
+            }
+            .buttonStyle(.tappable)
+            .accessibilityLabel(L10n.settings)
+            .task(id: model.auth.isSignedIn) {
+                picture = model.auth.isSignedIn ? (try? await model.auth.fetchProfile())?.picture : nil
+            }
+        }
+    }
+
+    /// The search tab: recent searches, and results as the user types.
+    struct SearchScreen: View {
+        @Environment(AppModel.self) private var model
+        @State private var query = ""
+
+        var body: some View {
+            @Bindable var router = model.router
+            NavigationStack(path: $router.searchPath) {
+                SearchView(query: $query)
+                    .navigationTitle(L10n.search)
+                    .navigationDestination(for: Route.self, destination: RouteView.init)
+                    .searchable(
+                        text: $query, placement: .navigationBarDrawer(displayMode: .always),
+                        prompt: L10n.searchsongsartistsalbums)
+            }
+            .tint(.primary)
+                .onSubmit(of: .search) { model.rememberSearch(query) }
+                .onChange(of: model.router.searchRequest, initial: true) {
+                    guard let request = model.router.searchRequest else { return }
+                    model.router.searchRequest = nil
+                    query = request
+                    if !request.isEmpty { model.rememberSearch(request) }
+                }
+        }
+    }
+#endif
 
 /// Recommendations from the play history and the charts: shortcuts under
 /// the greeting, mixes, the recent tracks, new releases, the charts and the
@@ -232,7 +264,9 @@ struct RecommendationsView: View {
         do {
             let fresh = try await model.catalog.homeFeed(
                 history: (try? await model.database.playedTracks(limit: 50)) ?? [], market: settings.market,
-                locale: settings.locale, categoryCount: settings.categoryCount,
+                // The region the device is set to, for its country's charts
+                locale: settings.locale, country: Locale.current.region?.identifier,
+                categoryCount: settings.categoryCount,
                 includeHistory: settings.enableHistory, includeCategories: settings.enableCategories)
             withAnimation(.easeInOut(duration: 0.3)) { feed = fresh }
             failed = false

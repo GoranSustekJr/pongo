@@ -215,6 +215,27 @@ extension Database {
         try !db.query("SELECT stid FROM downloaded_tracks WHERE stid = ?", [.text(stid)]).isEmpty
     }
 
+    /// The length in seconds of each downloaded track among [stids].
+    public func downloadedDurations(_ stids: [String]) throws -> [String: Double] {
+        guard !stids.isEmpty else { return [:] }
+        var durations: [String: Double] = [:]
+        for row in try db.query(
+            "SELECT stid, duration FROM downloaded_tracks WHERE stid IN (\(placeholders(stids.count)))",
+            stids.map(SQLValue.text))
+        {
+            if let stid = row["stid"]?.text, let milliseconds = row["duration"]?.int, milliseconds > 0 {
+                durations[stid] = Double(milliseconds) / 1000
+            }
+        }
+        return durations
+    }
+
+    /// Sets the length of the downloaded track [stid], after its audio changed.
+    public func setDownloadDuration(_ stid: String, milliseconds: Int) throws {
+        try db.execute(
+            "UPDATE downloaded_tracks SET duration = ? WHERE stid = ?", [.int(milliseconds), .text(stid)])
+    }
+
     /// The IDs in [stids] that aren't downloaded, in their original order.
     public func missingDownloads(_ stids: [String]) throws -> [String] {
         guard !stids.isEmpty else { return [] }

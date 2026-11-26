@@ -40,7 +40,8 @@ struct MacRootView: View {
                 model.router.showsPlayer = true
             case PongoLinks.topSongs:
                 model.router.showsPlayer = false
-                model.router.section = .topSongs
+                model.router.section = .stats
+                Task { @MainActor in model.router.path = [.topSongs] }
             default:
                 break
             }

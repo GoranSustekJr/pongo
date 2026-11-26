@@ -81,12 +81,8 @@ struct MainTabView: View {
                 // Controls are white; teal marks what is on or selected
                 .tint(.primary)
             }
-            Tab(L10n.settings, systemImage: "gearshape.fill", value: AppTab.settings) {
-                NavigationStack(path: $router.settings) {
-                    SettingsView().navigationDestination(for: Route.self, destination: RouteView.init)
-                }
-                // Controls are white; teal marks what is on or selected
-                .tint(.primary)
+            Tab(L10n.search, systemImage: "magnifyingglass", value: AppTab.search, role: .search) {
+                SearchScreen()
             }
         }
         // Lists run behind the glass bars without being blurred under them
@@ -106,6 +102,18 @@ struct MainTabView: View {
         }
         .sheet(item: Binding { model.listening.recap } set: { if $0 == nil { model.listening.dismissRecap() } }) { recap in
             SessionRecapView(recap: recap)
+        }
+        .sheet(isPresented: $router.showsSettings) {
+            NavigationStack(path: $router.settings) {
+                SettingsView()
+                    .navigationDestination(for: Route.self, destination: RouteView.init)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button(L10n.done, systemImage: "checkmark") { router.showsSettings = false }
+                        }
+                    }
+            }
+            .tint(.primary)
         }
         .fullScreenCover(isPresented: $router.showsPlayer) {
             NowPlayingView()

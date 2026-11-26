@@ -93,3 +93,47 @@ def test_genre_page_has_the_genres_charts(monkeypatch):
     assert page["tracks"][0]["id"] == "1"
     assert page["albums"][0]["artists"][0]["name"] == "A"
     assert page["playlists"][0]["name"] == "Rap hits"
+
+
+def test_charts_follow_the_listeners_country(monkeypatch):
+    paths = []
+
+    async def get(path, **params):
+        paths.append(path)
+        if path.startswith("/playlist/"):
+            return {"data": [
+                {"id": 1, "title": "A1", "artist": {"id": 7, "name": "Seven"}},
+                {"id": 2, "title": "B", "artist": {"id": 8, "name": "Eight"}},
+                {"id": 3, "title": "A2", "artist": {"id": 7, "name": "Seven"}},
+                {"id": 4, "title": "Gone", "readable": False, "artist": {"id": 9, "name": "Nine"}},
+            ]}
+        return {"data": [
+            {"id": 1116189071, "title": "Top Turkey"}, {"id": 1362526495, "title": "Top Ukraine"},
+            {"id": 1111142221, "title": "Top UK"}, {"id": 3155776842, "title": "Top Worldwide"},
+            {"id": 5, "title": "Top Women UK"},
+        ]}
+
+    monkeypatch.setattr(deezer, "_get", get)
+    charts = asyncio.run(deezer.get_charts("gb"))
+    assert paths[0] == "/playlist/1111142221/tracks"
+    assert [t["id"] for t in charts["tracks"]] == ["1", "2", "3"]
+    assert [a["name"] for a in charts["artists"]] == ["Seven", "Eight"]
+    # The UK's charts, not Ukraine's, then the worldwide one
+    assert [p["name"] for p in charts["playlists"]] == ["Top UK", "Top Women UK", "Top Worldwide"]
+
+
+def test_countries_without_a_chart_get_a_neighbours_or_the_worldwide_one():
+    assert deezer.chart_for("BA") == deezer.COUNTRY_CHARTS["HR"]
+    assert deezer.chart_for("IS") == ("Worldwide", deezer.WORLDWIDE_CHART)
+    assert deezer.chart_for(None) is None and deezer.chart_for("") is None
+
+
+def test_worldwide_charts_are_listed_once(monkeypatch):
+    async def get(path, **params):
+        if path.startswith("/playlist/"):
+            return {"data": []}
+        return {"data": [{"id": 3155776842, "title": "Top Worldwide"}, {"id": 6, "title": "Top Women Worldwide"}]}
+
+    monkeypatch.setattr(deezer, "_get", get)
+    playlists = asyncio.run(deezer.get_charts("IS"))["playlists"]
+    assert [p["name"] for p in playlists] == ["Top Worldwide", "Top Women Worldwide"]

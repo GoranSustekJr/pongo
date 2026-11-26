@@ -33,6 +33,7 @@ final class AppModel {
     let lyrics: LyricsClient
     let player: Player
     let listening: ListeningSession
+    let handoff: PlaybackHandoff
     let sync: LibrarySync
     let router = Router()
     let messages = MessageCenter()
@@ -64,6 +65,17 @@ final class AppModel {
     @ObservationIgnored private var inviteWatcher: Task<Void, Never>?
     private(set) var favouriteIDs: Set<String> = []
     private(set) var downloadedIDs: Set<String> = []
+    /// The online playlists kept downloaded on this device: their songs
+    /// download, also those added later. Not synced, as downloads aren't.
+    /// The downloaded playlists checked for missing songs while the app runs.
+    @ObservationIgnored var healedPlaylists = Set<Int>()
+    var downloadedPlaylists: Set<Int> = Set(
+        (DefaultsStore().string(.downloadedPlaylists) ?? "").split(separator: ",").compactMap { Int($0) })
+    {
+        didSet {
+            DefaultsStore().set(downloadedPlaylists.sorted().map(String.init).joined(separator: ","), for: .downloadedPlaylists)
+        }
+    }
     /// Tracks waiting for or in the middle of downloading.
     private(set) var downloadingIDs: Set<String> = []
     /// Every track of the downloads running now, done or not, so a page can
@@ -112,9 +124,13 @@ final class AppModel {
         catalog = CatalogRepository(client: client)
         let lyrics = LyricsClient()
         self.lyrics = lyrics
-        downloads = DownloadsRepository(client: client, socket: socket, database: database, lyrics: lyrics)
         let auth = auth
         let config = config
+        downloads = DownloadsRepository(
+            client: client, socket: socket, database: database, lyrics: lyrics,
+            audioURL: { stid in
+                await MainActor.run { URL(string: "\(config.serverURL)play_song/\(stid)?st=\(auth.streamToken)") }
+            })
         player = Player(
             client: client, socket: socket, gains: TrackGains(client: client, database: database),
             store: DefaultsStore(),
@@ -125,7 +141,10 @@ final class AppModel {
                 // The token is in the path, so the audio the playlist points to carries it too
                 URL(string: "\(config.serverURL)stream/\(auth.streamToken)/\(stid)/index.m3u8")
             })
+        let database = database
+        player.downloadedDurations = { stids in (try? await database.downloadedDurations(stids)) ?? [:] }
         listening = ListeningSession(client: client, player: player)
+        handoff = PlaybackHandoff(client: client, player: player, name: Self.deviceName)
         imports = PlaylistImports(client: client, database: database, messages: messages)
         versions = TrackVersionsRepository(client: client)
         social = SocialRepository(client: client)
@@ -149,8 +168,32 @@ final class AppModel {
         Self.current = self
     }
 
+    /// What the user's other devices call this one.
+    static var deviceName: String {
+        #if os(iOS)
+            UIDevice.current.model
+        #else
+            Host.current().localizedName ?? "Mac"
+        #endif
+    }
+
     private func configurePlayer() {
         applyPreferences()
+        handoff.isEnabled = { [weak self] in
+            guard let self else { return false }
+            return self.auth.isSignedIn && !self.listening.isActive
+        }
+        handoff.onNotice = { [weak self] notice in
+            guard let self else { return }
+            switch notice {
+            case .sent(let name):
+                self.messages.show(L10n.nowplayingon, detail: name, systemImage: "laptopcomputer.and.iphone")
+            case .received(let name):
+                self.messages.show(L10n.playingfrom, detail: name, systemImage: "laptopcomputer.and.iphone")
+            case .failed:
+                self.messages.show(L10n.transferfailed, systemImage: "exclamationmark.triangle", isError: true)
+            }
+        }
         player.onMessage = { [weak self] message in self?.show(message) }
         listening.onNotice = { [weak self] notice in self?.show(notice) }
         listening.delay =
@@ -203,10 +246,12 @@ final class AppModel {
                 try? await database.setLibraryOwner(account)
             }
             watchInvites()
+            handoff.start()
             await sync.start()
         } else {
             inviteWatcher?.cancel()
             inviteWatcher = nil
+            handoff.stop()
             invites = []
             // A session is someone's own; another account starts without it
             if listening.isActive { listening.leave() }
@@ -414,14 +459,24 @@ final class AppModel {
     /// Adds [tracks] to the playlist with [id], downloading those in
     /// [toDownload] first for an offline playlist, and says how it went.
     func addTracks(_ tracks: [Track], kind: PlaylistKind, toDownload: [String], to id: Int) async {
+        var tracks = tracks
         if kind == .offline, !toDownload.isEmpty {
             messages.show(L10n.downloadhasstarted, systemImage: "arrow.down.circle")
             do {
-                guard try await downloadAll(tracks.filter { toDownload.contains($0.id) }) else { return }
-                messages.show(L10n.downloadsucceeded, systemImage: "arrow.down.circle")
+                _ = try await downloadAll(tracks.filter { toDownload.contains($0.id) })
             } catch {
                 messages.show(L10n.downloadfailed, systemImage: "exclamationmark.triangle", isError: true)
                 return
+            }
+            // An offline playlist only holds songs on the device
+            let missing = Set((try? await database.missingDownloads(tracks.map(\.id))) ?? [])
+            tracks.removeAll { missing.contains($0.id) }
+            if missing.isEmpty {
+                messages.show(L10n.downloadsucceeded, systemImage: "arrow.down.circle")
+            } else {
+                messages.show(
+                    L10n.downloadfailed, detail: "\(missing.count)/\(toDownload.count)",
+                    systemImage: "exclamationmark.triangle", isError: true)
             }
         }
         var added = 0
@@ -431,6 +486,10 @@ final class AppModel {
                 ? (try? await database.addOnlineTrack(OnlinePlaylistTrack(opid: id, track: track))) ?? false
                 : (try? await database.addLocalTrack(id, track.id)) ?? false
             if new { added += 1 }
+        }
+        // Songs added to a downloaded playlist are downloaded with it
+        if kind == .online, downloadedPlaylists.contains(id) {
+            Task { await downloadSongs(tracks, quietly: true) }
         }
         // A download's own message says enough
         if toDownload.isEmpty || kind == .online {
@@ -485,21 +544,11 @@ final class AppModel {
         messages.show(L10n.checkingsongs, systemImage: "hourglass")
         // As many at once as the server downloads
         let socket = socket
-        let unavailable = await withTaskGroup(of: String?.self) { group in
-            var failed = Set<String>()
-            var next = toFetch.makeIterator()
-            for _ in 0..<4 {
-                guard let stid = next.next() else { break }
-                group.addTask { await socket.ensureAvailable(stid) == .unavailable ? stid : nil }
-            }
-            while let result = await group.next() {
-                if let result { failed.insert(result) }
-                if let stid = next.next() {
-                    group.addTask { await socket.ensureAvailable(stid) == .unavailable ? stid : nil }
-                }
-            }
-            return failed
+        let failed = UnavailableTracks()
+        await concurrently(toFetch, width: 4) { stid in
+            if await socket.ensureAvailable(stid) == .unavailable { await failed.add(stid) }
         }
+        let unavailable = await failed.stids
         if messages.current?.text == L10n.checkingsongs { messages.dismiss() }
         guard !unavailable.isEmpty else { return tracks }
         let names = tracks.filter { unavailable.contains($0.id) }.map(\.name)
@@ -598,4 +647,11 @@ final class SleepAlarmLog {
             try? line.write(to: file)
         }
     }
+}
+
+/// The tracks the server couldn't get, gathered from several tasks.
+private actor UnavailableTracks {
+    private(set) var stids = Set<String>()
+
+    func add(_ stid: String) { stids.insert(stid) }
 }

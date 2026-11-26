@@ -54,6 +54,9 @@ struct NowPlayingView: View {
         #if os(iOS)
             .background { DarkInterface() }
         #endif
+        .sheet(isPresented: Bindable(model.router).showsSleepAlarms) {
+            NavigationStack { SleepAlarmsView() }
+        }
         .alert(L10n.haltmusicplayer, isPresented: $confirmHalt) {
             Button(L10n.cancel, role: .cancel) {}
             Button(L10n.halt, role: .destructive) { player.halt() }
@@ -187,23 +190,13 @@ private struct PlayerControls: View {
     }
 
     private var bottomRow: some View {
-        let player = model.player
         let state = model.nowPlaying
-        let repeatMode = player.queue.repeatMode
         return HStack(spacing: 0) {
             Button {
                 withAnimation(.spring(duration: 0.55, bounce: 0.12)) { state.toggleLyrics(model) }
             } label: {
                 Image(systemName: state.lyricsOn ? "quote.bubble.fill" : "quote.bubble")
                     .opacity(state.lyricsExist ? 1 : 0.55)
-                    .frame(maxWidth: .infinity, minHeight: 44)
-            }
-            Button {
-                cycleRepeat()
-            } label: {
-                Image(systemName: repeatMode == .one ? "repeat.1" : "repeat")
-                    .opacity(repeatMode == .off ? 0.55 : 1)
-                    .contentTransition(.symbolEffect(.replace))
                     .frame(maxWidth: .infinity, minHeight: 44)
             }
             Menu {
@@ -224,7 +217,6 @@ private struct PlayerControls: View {
         .font(.system(size: 19))
         .buttonStyle(.press)
         .padding(.top, 2)
-        .sensoryFeedback(.selection, trigger: repeatMode)
     }
 
     @ViewBuilder private var moreMenu: some View {
@@ -256,30 +248,22 @@ private struct PlayerControls: View {
                 Task { await model.showArtist(artist) }
             }
         }
+        // Catalog tracks only, downloaded or not: files from the device have no other recordings
+        if track.id.allSatisfy(\.isNumber) {
+            Button(L10n.wrongversion, systemImage: "waveform.badge.magnifyingglass") {
+                model.versionRequest = track
+            }
+        }
         if isDJMix(item) {
             Divider()
             Button("Shazam", systemImage: "shazam.logo") { Task { await model.shazam(item.stid) } }
         }
         Divider()
+        Button(L10n.sleep, systemImage: "moon.zzz") { model.router.showsSleepAlarms = true }
         Button(L10n.halt, systemImage: "stop.fill") { confirmHalt = true }
     }
-
-    /// Off, then the track, then the whole queue, as in the Flutter app.
-    private func cycleRepeat() {
-        let player = model.player
-        guard player.activeSleepAlarm == -1 else {
-            model.messages.show(L10n.sleepalarmisenabled, systemImage: "alarm", isError: true)
-            return
-        }
-        let next: RepeatMode =
-            switch player.queue.repeatMode {
-            case .off: .one
-            case .one: .all
-            case .all: .off
-            }
-        player.setRepeatMode(next)
-    }
 }
+
 
 /// The title and artists, centered while playing; next to them the small
 /// cover while lyrics or the queue show.
@@ -346,7 +330,7 @@ private struct ArtistLinks: View {
         .scrollIndicators(.hidden)
         .scrollBounceBehavior(.basedOnSize, axes: .horizontal)
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
-        .buttonStyle(.plain)
+        .buttonStyle(.tappable)
     }
 }
 
@@ -388,7 +372,7 @@ private struct PlayerProgress: View {
                     Marquee(text: album?.name ?? "", alignment: .center)
                         .font(.system(size: 12))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.tappable)
                 Text("-" + formatTime(max(duration - position, 0))).frame(width: 54, alignment: .trailing)
             }
             .font(.system(size: 14).monospacedDigit())

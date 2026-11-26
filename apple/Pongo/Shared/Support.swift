@@ -63,22 +63,21 @@ final class MessageCenter {
 struct ToastView: View {
     let toast: Toast
 
+    // One short line, so it covers as little as it can
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 8) {
             Image(systemName: toast.systemImage)
-                .font(.title3)
+                .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(toast.isError ? Color.orange : Color.pongoTeal)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(toast.text).font(.subheadline.weight(.semibold))
-                if let detail = toast.detail {
-                    Text(detail).font(.footnote).foregroundStyle(.secondary)
-                }
-            }
-            .multilineTextAlignment(.leading)
+            (Text(toast.text).fontWeight(.semibold)
+                + Text(toast.detail.map { " · \($0)" } ?? "").foregroundStyle(.secondary))
+                .font(.footnote)
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
         }
-        .padding(.horizontal, 18)
-        .padding(.vertical, 12)
-        .glassEffect(.regular, in: .rect(cornerRadius: 24))
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+        .glassEffect(.regular, in: .capsule)
         .padding(.horizontal)
     }
 }

@@ -2,8 +2,10 @@ import PongoCore
 import SwiftUI
 
 /// The queue filling the player behind its controls, in sections: the
-/// tracks played, folded away; the one playing; those the user queued next;
-/// and the rest. A tap plays an entry, holding one lifts it to reorder,
+/// tracks played, folded away; those the user queued next (the one playing
+/// shows in the controls);
+/// the rest of the collection it was started from, which shuffling reorders;
+/// and the tracks added after it, such as by a mix. A tap plays an entry, holding one lifts it to reorder,
 /// swiping moves it up or removes it, and editing selects entries to remove
 /// or download.
 struct QueuePanel: View {
@@ -24,7 +26,8 @@ struct QueuePanel: View {
         let position = queue.position ?? 0
         let played = Array(entries.prefix(position))
         let queued = Array(entries.dropFirst(position + 1).prefix(queue.queuedCount))
-        let rest = Array(entries.dropFirst(position + 1 + queued.count))
+        let collection = Array(entries.dropFirst(position + 1 + queued.count).prefix(queue.collectionCount))
+        let added = Array(entries.dropFirst(position + 1 + queued.count + collection.count))
         ScrollViewReader { proxy in
             List {
                 if model.listening.isActive {
@@ -42,10 +45,6 @@ struct QueuePanel: View {
                     playedToggle(count: played.count)
                     if showsPlayed { rows(played, base: 0, dimmed: true) }
                 }
-                if let current = entries.indices.contains(position) ? entries[position] : nil {
-                    header(L10n.nowplaying)
-                    row(current, dimmed: false)
-                }
                 if !queued.isEmpty {
                     header(L10n.nextinqueue) {
                         EmptyView()
@@ -57,9 +56,21 @@ struct QueuePanel: View {
                     }
                     rows(queued, base: position + 1, dimmed: false)
                 }
-                if !rest.isEmpty || model.player.isMixing {
-                    header(L10n.upnext) { QueueSummary(upcoming: queued + rest) }
-                    rows(rest, base: position + 1 + queued.count, dimmed: false)
+                if !collection.isEmpty || (added.isEmpty && model.player.isMixing) {
+                    header(L10n.upnext) { QueueSummary(upcoming: queued + collection + added) }
+                    rows(collection, base: position + 1 + queued.count, dimmed: false)
+                }
+                if !added.isEmpty {
+                    header(L10n.afterthat) {
+                        if collection.isEmpty {
+                            QueueSummary(upcoming: queued + added)
+                        } else {
+                            Text(L10n.afterthatdetail)
+                                .font(.system(size: 13))
+                                .foregroundStyle(.white.opacity(0.6))
+                        }
+                    }
+                    rows(added, base: position + 1 + queued.count + collection.count, dimmed: false)
                 }
             }
             .listStyle(.plain)
@@ -83,8 +94,12 @@ struct QueuePanel: View {
             #endif
             .ignoresSafeArea(edges: .bottom)
             .onAppear {
-                if let current = queue.current { proxy.scrollTo(current.id, anchor: UnitPoint(x: 0.5, y: 0.15)) }
+                // Opens at what plays next, with what played folded away above it
+                if let next = (queued + collection + added).first {
+                    proxy.scrollTo(next.item.id, anchor: UnitPoint(x: 0.5, y: 0.15))
+                }
             }
+
         }
         #if os(iOS)
             .overlay(alignment: .top) { bar }
@@ -272,6 +287,17 @@ struct QueuePanel: View {
                 .buttonStyle(.press)
                 .disabled(!player.canShuffle)
                 .opacity(player.canShuffle ? 1 : 0.55)
+                let repeatMode = player.queue.repeatMode
+                Button {
+                    model.cycleRepeat()
+                } label: {
+                    Image(systemName: repeatMode == .one ? "repeat.1" : "repeat")
+                        .contentTransition(.symbolEffect(.replace))
+                        .barPill(isOn: repeatMode != .off)
+                }
+                .buttonStyle(.press)
+                .accessibilityLabel(L10n.repeatmode)
+                .sensoryFeedback(.selection, trigger: repeatMode)
             }
             Spacer(minLength: 0)
             HStack(spacing: 0) {
@@ -290,6 +316,22 @@ struct QueuePanel: View {
                     .contentShape(.rect)
                 }
                 .buttonStyle(.press)
+                if !model.handoff.devices.isEmpty {
+                    Rectangle().fill(.white.opacity(0.2)).frame(width: 1, height: 20)
+                    Menu {
+                        TransferMenuItems()
+                    } label: {
+                        Image(systemName: model.handoff.busyWith == nil ? "laptopcomputer.and.iphone" : "ellipsis")
+                            .symbolEffect(.pulse, isActive: model.handoff.busyWith != nil)
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 14)
+                            .frame(height: 42)
+                            .contentShape(.rect)
+                    }
+                    .menuStyle(.button)
+                    .buttonStyle(.tappable)
+                    .accessibilityLabel(L10n.transferto)
+                }
                 Rectangle().fill(.white.opacity(0.2)).frame(width: 1, height: 20)
                 Menu {
                     menuItems
@@ -301,7 +343,7 @@ struct QueuePanel: View {
                         .contentShape(.rect)
                 }
                 .menuStyle(.button)
-                .buttonStyle(.plain)
+                .buttonStyle(.tappable)
             }
             .font(.system(size: 16, weight: .semibold))
             .playerChrome(in: Capsule())
@@ -422,11 +464,8 @@ private struct QueueRow: View {
                         .contentTransition(.symbolEffect(.replace))
                         .frame(width: 47, height: 47)
                 } else {
+                    // Holding a row lifts it to reorder, so it needs no handle
                     TrackStatus(stid: item.stid, isCurrent: isCurrent)
-                    // The entry playing stays where it is
-                    Image(systemName: "line.3.horizontal")
-                        .font(.system(size: 20))
-                        .opacity(isCurrent ? 0 : 0.9)
                 }
             }
             .foregroundStyle(.white)
@@ -439,7 +478,7 @@ private struct QueueRow: View {
             }
             .contentShape(.rect)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tappable)
     }
 }
 
@@ -480,5 +519,23 @@ extension View {
             .contentShape(.capsule)
             .playerChrome(in: Capsule(), isOn: isOn)
             .animation(.snappy, value: isOn)
+    }
+}
+
+extension AppModel {
+    /// Off, then the track, then the whole queue, as in the Flutter app;
+    /// a running sleep alarm keeps it as it is.
+    func cycleRepeat() {
+        guard player.activeSleepAlarm == -1 else {
+            messages.show(L10n.sleepalarmisenabled, systemImage: "alarm", isError: true)
+            return
+        }
+        let next: RepeatMode =
+            switch player.queue.repeatMode {
+            case .off: .one
+            case .one: .all
+            case .all: .off
+            }
+        player.setRepeatMode(next)
     }
 }

@@ -13,6 +13,8 @@ extension L10n {
     static var `addtolibrary`: String { tr("addtolibrary") }
     static var `addtoplaylist`: String { tr("addtoplaylist") }
     static var `addtrackstoyoutplaylist`: String { tr("addtrackstoyoutplaylist") }
+    static var `afterthat`: String { tr("afterthat") }
+    static var `afterthatdetail`: String { tr("afterthatdetail") }
     static var `aheadofhost`: String { tr("aheadofhost") }
     static var `alarm`: String { tr("alarm") }
     static var `album`: String { tr("album") }
@@ -30,6 +32,7 @@ extension L10n {
     static var `audioplayer`: String { tr("audioplayer") }
     static var `audioplayercaching`: String { tr("audioplayercaching") }
     static var `away`: String { tr("away") }
+    static var `back`: String { tr("back") }
     static var `bassboost`: String { tr("bassboost") }
     static var `bassboostdescription`: String { tr("bassboostdescription") }
     static var `bassboosthigh`: String { tr("bassboosthigh") }
@@ -94,6 +97,7 @@ extension L10n {
     static var `currentlyusingdarkmode`: String { tr("currentlyusingdarkmode") }
     static var `currentlyusinglightmode`: String { tr("currentlyusinglightmode") }
     static var `currentpassword`: String { tr("currentpassword") }
+    static var `currentsong`: String { tr("currentsong") }
     static var `dailymix`: String { tr("dailymix") }
     static var `darkmode`: String { tr("darkmode") }
     static var `data`: String { tr("data") }
@@ -107,9 +111,12 @@ extension L10n {
     static var `donotterminatetheapp`: String { tr("donotterminatetheapp") }
     static var `doublecliktoadjustvolume`: String { tr("doublecliktoadjustvolume") }
     static var `download`: String { tr("download") }
+    static var `downloaded`: String { tr("downloaded") }
     static var `downloadfailed`: String { tr("downloadfailed") }
     static var `downloadhasstarted`: String { tr("downloadhasstarted") }
     static var `downloading`: String { tr("downloading") }
+    static var `downloadremoved`: String { tr("downloadremoved") }
+    static var `downloads`: String { tr("downloads") }
     static var `downloadsstillplay`: String { tr("downloadsstillplay") }
     static var `downloadsucceeded`: String { tr("downloadsucceeded") }
     static var `downloadtracksnow`: String { tr("downloadtracksnow") }
@@ -155,6 +162,8 @@ extension L10n {
     static var `general`: String { tr("general") }
     static var `genres`: String { tr("genres") }
     static var `getonserver`: String { tr("getonserver") }
+    static var `getqueuefrom`: String { tr("getqueuefrom") }
+    static var `go`: String { tr("go") }
     static var `goodafternoon`: String { tr("goodafternoon") }
     static var `goodevening`: String { tr("goodevening") }
     static var `goodmorning`: String { tr("goodmorning") }
@@ -282,6 +291,7 @@ extension L10n {
     static var `moodparty`: String { tr("moodparty") }
     static var `movedown`: String { tr("movedown") }
     static var `moveup`: String { tr("moveup") }
+    static var `mute`: String { tr("mute") }
     static var `name`: String { tr("name") }
     static var `network`: String { tr("network") }
     static var `newalbums`: String { tr("newalbums") }
@@ -318,6 +328,7 @@ extension L10n {
     static var `nowhosting`: String { tr("nowhosting") }
     static var `nowonprofile`: String { tr("nowonprofile") }
     static var `nowplaying`: String { tr("nowplaying") }
+    static var `nowplayingon`: String { tr("nowplayingon") }
     static var `off`: String { tr("off") }
     static var `offline`: String { tr("offline") }
     static var `offlineplaylist`: String { tr("offlineplaylist") }
@@ -347,6 +358,7 @@ extension L10n {
     static var `playall`: String { tr("playall") }
     static var `played`: String { tr("played") }
     static var `playingdetailsbackgroundwilldynamicallychange`: String { tr("playingdetailsbackgroundwilldynamicallychange") }
+    static var `playingfrom`: String { tr("playingfrom") }
     static var `playlist`: String { tr("playlist") }
     static var `playlistalreadycontainsthistrack`: String { tr("playlistalreadycontainsthistrack") }
     static var `playlistdownloaded`: String { tr("playlistdownloaded") }
@@ -388,6 +400,8 @@ extension L10n {
     static var `reconnecting`: String { tr("reconnecting") }
     static var `relatedartists`: String { tr("relatedartists") }
     static var `releasedAlbums`: String { tr("releasedAlbums") }
+    static var `removedownload`: String { tr("removedownload") }
+    static var `removedownloadbody`: String { tr("removedownloadbody") }
     static var `removefromdownloaded`: String { tr("removefromdownloaded") }
     static var `removefromdownloadedbody`: String { tr("removefromdownloadedbody") }
     static var `removefromfavourites`: String { tr("removefromfavourites") }
@@ -425,6 +439,8 @@ extension L10n {
     static var `searchpeople`: String { tr("searchpeople") }
     static var `searchpreferences`: String { tr("searchpreferences") }
     static var `searchsongsartistsalbums`: String { tr("searchsongsartistsalbums") }
+    static var `seekback`: String { tr("seekback") }
+    static var `seekforward`: String { tr("seekforward") }
     static var `selectall`: String { tr("selectall") }
     static var `selected`: String { tr("selected") }
     static var `selectedtracks`: String { tr("selectedtracks") }
@@ -448,7 +464,9 @@ extension L10n {
     static var `sharesessioncode`: String { tr("sharesessioncode") }
     static var `shazamfailed`: String { tr("shazamfailed") }
     static var `show`: String { tr("show") }
+    static var `showalbum`: String { tr("showalbum") }
     static var `showallsongs`: String { tr("showallsongs") }
+    static var `showartist`: String { tr("showartist") }
     static var `showexplore`: String { tr("showexplore") }
     static var `showexploreonstartpage`: String { tr("showexploreonstartpage") }
     static var `showhistory`: String { tr("showhistory") }
@@ -515,6 +533,8 @@ extension L10n {
     static var `trackremovedfromfavourites`: String { tr("trackremovedfromfavourites") }
     static var `tracks`: String { tr("tracks") }
     static var `trackunavailable`: String { tr("trackunavailable") }
+    static var `transferfailed`: String { tr("transferfailed") }
+    static var `transferto`: String { tr("transferto") }
     static var `translationunavailable`: String { tr("translationunavailable") }
     static var `tryagain`: String { tr("tryagain") }
     static var `turnoffifanimationsaretoohardonthedevice`: String { tr("turnoffifanimationsaretoohardonthedevice") }
@@ -522,6 +542,7 @@ extension L10n {
     static var `unabletohaltthemusicplayer`: String { tr("unabletohaltthemusicplayer") }
     static var `unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon`: String { tr("unabletohaltthemusicplayerbecausesleepalarmiscurrentlyon") }
     static var `unlike`: String { tr("unlike") }
+    static var `unmute`: String { tr("unmute") }
     static var `upnext`: String { tr("upnext") }
     static var `useanimations`: String { tr("useanimations") }
     static var `useblur`: String { tr("useblur") }
@@ -555,6 +576,7 @@ extension L10n {
     static var `year`: String { tr("year") }
     static var `you`: String { tr("you") }
     static var `youcan`: String { tr("youcan") }
+    static var `yourdevices`: String { tr("yourdevices") }
     static var `yourfriendcode`: String { tr("yourfriendcode") }
     static var `yourfriendprofile`: String { tr("yourfriendprofile") }
     static var `yourmoods`: String { tr("yourmoods") }

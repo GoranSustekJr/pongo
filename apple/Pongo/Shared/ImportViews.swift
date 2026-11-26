@@ -471,7 +471,7 @@ private struct CandidateRow: View {
             }
             .contentShape(.rect)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tappable)
     }
 
     private var subtitle: String {
@@ -649,7 +649,7 @@ private struct ImportSongSearchView: View {
                 } label: {
                     TrackRow(track: track, collectionID: "import.search")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.tappable)
                 .groupedRowBackground()
             }
         }

@@ -5,8 +5,9 @@ extension AppModel {
     /// Makes the server play [track] from the YouTube [video], an ID or link,
     /// and drops this device's copies of the old recording. Returns whether it worked.
     func useVersion(_ video: String, for track: Track) async -> Bool {
+        let duration: Double
         do {
-            try await versions.use(video, for: track.id)
+            duration = try await versions.use(video, for: track.id)
         } catch APIError.status(422, let detail) {
             messages.show(
                 detail == "not_a_video" ? L10n.versionnotvideo : L10n.versionfailed,
@@ -17,7 +18,13 @@ extension AppModel {
             return false
         }
         await player.forgetAudio(of: track.id)
-        _ = try? await downloads.refreshAudio(of: track.id)
+        // A downloaded copy is the old recording, so it's downloaded again
+        do {
+            if try await downloads.refreshAudio(of: track, durationSeconds: duration) { libraryChanged() }
+        } catch {
+            messages.show(L10n.downloadfailed, detail: track.name, systemImage: "exclamationmark.triangle", isError: true)
+            return true
+        }
         messages.show(L10n.versionchanged, detail: track.name, systemImage: "checkmark.circle")
         return true
     }
@@ -58,7 +65,7 @@ struct TrackVersionsView: View {
                         } label: {
                             VersionRow(version: version, switching: switching == version.id)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.tappable)
                         .disabled(switching != nil)
                         .groupedRowBackground()
                     }

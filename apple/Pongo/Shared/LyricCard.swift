@@ -107,7 +107,7 @@ struct LyricCardSheet: View {
                                 .padding(.vertical, 9)
                                 .background(.white.opacity(isOn ? 0.14 : 0), in: .rect(cornerRadius: 12))
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.tappable)
                         .id(index)
                     }
                 }

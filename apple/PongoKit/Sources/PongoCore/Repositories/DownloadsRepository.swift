@@ -2,9 +2,12 @@ import Foundation
 
 /// Where downloaded tracks and their covers are kept.
 public enum Downloads {
+    /// Where tests keep downloads instead of the user's documents.
+    nonisolated(unsafe) static var testDirectory: URL?
+
     /// The directory downloaded files are saved in.
     public static var directory: URL {
-        let directory = URL.documentsDirectory.appending(path: "Downloads", directoryHint: .isDirectory)
+        let directory = testDirectory ?? URL.documentsDirectory.appending(path: "Downloads", directoryHint: .isDirectory)
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
     }
@@ -32,12 +35,39 @@ public enum Downloads {
     }
 }
 
+extension URLSession {
+    /// A session that keeps nothing in the shared cache, for audio files the
+    /// app saves itself: the cache would hold a second copy of each.
+    public static let uncached: URLSession = {
+        let configuration = URLSessionConfiguration.default
+        configuration.urlCache = nil
+        configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
+        return URLSession(configuration: configuration)
+    }()
+}
+
 /// What happened when a track was downloaded.
 public enum DownloadOutcome: Sendable {
     /// The track was saved to the device.
     case downloaded
     /// The track was already on the device.
     case alreadyDownloaded
+}
+
+/// How many downloads were saved, and the first that failed.
+private actor DownloadTally {
+    private var saved = 0
+    private var firstError: Error?
+
+    var total: (saved: Int, firstError: Error?) { (saved, firstError) }
+
+    func add(_ result: Result<DownloadOutcome, Error>) {
+        switch result {
+        case .success(.downloaded): saved += 1
+        case .success: break
+        case .failure(let error): firstError = firstError ?? error
+        }
+    }
 }
 
 /// Tracks saved to the device.
@@ -47,20 +77,42 @@ public final class DownloadsRepository: Sendable {
     private let database: Database
     private let session: URLSession
     private let lyrics: LyricsClient?
+    private let audioURL: @Sendable (String) async -> URL?
 
     static let parallelDownloads = 4
 
     /// Creates the downloads, which also save each track's lyrics from
-    /// [lyrics].
+    /// [lyrics]. [audioURL] is where the player streams a track from, which
+    /// downloads use too.
     public init(
         client: APIClient, socket: TrackSocket, database: Database, lyrics: LyricsClient? = nil,
-        session: URLSession = .shared
+        session: URLSession = .uncached, audioURL: @escaping @Sendable (String) async -> URL? = { _ in nil }
     ) {
         self.client = client
         self.socket = socket
         self.database = database
         self.lyrics = lyrics
         self.session = session
+        self.audioURL = audioURL
+    }
+
+    /// The audio of the track with [stid].
+    ///
+    /// Fetched like the player streams it: a server behind its proxy has the
+    /// proxy send audio files, which it only does for GET requests, so the
+    /// older POST, which the app falls back on, gets an error there.
+    func fetchAudio(_ stid: String) async throws -> Data {
+        // Never a cached copy: after a new version was picked the URL stays the same
+        if let url = await audioURL(stid),
+            let (data, response) = try? await session.data(
+                for: URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 300)),
+            (response as? HTTPURLResponse)?.statusCode == 200, !data.isEmpty
+        {
+            return data
+        }
+        let data = try await client.postForData("download_track/\(stid)", timeout: 300)
+        guard !data.isEmpty else { throw APIError.malformed("Track \(stid) came without audio") }
+        return data
     }
 
     /// Downloads [track], with the cover at [cover], a URL or path, or else
@@ -72,7 +124,7 @@ public final class DownloadsRepository: Sendable {
         guard case .ready(let duration) = await socket.ensureAvailable(track.id) else {
             throw APIError.malformed("Track \(track.id) is unavailable")
         }
-        let audio = try await client.postForData("download_track/\(track.id)", timeout: 300)
+        let audio = try await fetchAudio(track.id)
         try await save(track, audio: audio, durationSeconds: duration, cover: cover ?? track.album?.images.bestURL)
         return .downloaded
     }
@@ -86,35 +138,20 @@ public final class DownloadsRepository: Sendable {
         _ tracks: [(track: Track, cover: String?)],
         finished: (@MainActor (String, Bool) -> Void)? = nil
     ) async throws -> Bool {
-        var saved = 0
-        var firstError: Error?
+        let tally = DownloadTally()
         // The server fetches as many tracks at once; more workers would only wait
-        try await withThrowingTaskGroup(of: (String, Result<DownloadOutcome, Error>).self) { group in
-            var next = 0
-            func addNext() {
-                guard next < tracks.count else { return }
-                let entry = tracks[next]
-                next += 1
-                group.addTask {
-                    do { return (entry.track.id, .success(try await self.download(entry.track, cover: entry.cover))) }
-                    catch { return (entry.track.id, .failure(error)) }
-                }
-            }
-            for _ in 0..<Self.parallelDownloads { addNext() }
-            for try await (stid, result) in group {
-                if let finished {
-                    let done: Bool
-                    if case .success = result { done = true } else { done = false }
-                    await finished(stid, done)
-                }
-                switch result {
-                case .success(.downloaded): saved += 1
-                case .success: break
-                case .failure(let error): firstError = firstError ?? error
-                }
-                addNext()
+        await concurrently(tracks, width: Self.parallelDownloads) { entry in
+            let result: Result<DownloadOutcome, Error>
+            do { result = .success(try await self.download(entry.track, cover: entry.cover)) }
+            catch { result = .failure(error) }
+            await tally.add(result)
+            if let finished {
+                let done: Bool
+                if case .success = result { done = true } else { done = false }
+                await finished(entry.track.id, done)
             }
         }
+        let (saved, firstError) = await tally.total
         if saved == 0, let firstError { throw firstError }
         return saved > 0
     }
@@ -145,13 +182,23 @@ public final class DownloadsRepository: Sendable {
         }
     }
 
-    /// Downloads the audio of the downloaded track with [stid] again, after the
-    /// server changed which recording it plays. Returns whether it was downloaded.
+    /// Downloads the audio of the downloaded [track] again, after the server
+    /// changed which recording it plays, now [durationSeconds] long, with
+    /// lyrics that fit it. Returns whether the track was downloaded.
     @discardableResult
-    public func refreshAudio(of stid: String) async throws -> Bool {
-        guard try await database.isDownloaded(stid) else { return false }
-        let audio = try await client.postForData("download_track/\(stid)", timeout: 300)
-        try audio.write(to: Downloads.directory.appending(path: "\(stid).m4a"), options: .atomic)
+    public func refreshAudio(of track: Track, durationSeconds: Double) async throws -> Bool {
+        guard try await database.isDownloaded(track.id) else { return false }
+        let audio = try await fetchAudio(track.id)
+        try audio.write(to: Downloads.directory.appending(path: "\(track.id).m4a"), options: .atomic)
+        if durationSeconds > 0 {
+            try await database.setDownloadDuration(track.id, milliseconds: Int(durationSeconds * 1000))
+            if let lyrics {
+                let found = await lyrics.fetch(
+                    name: track.name, artist: track.artists.first?.name ?? "", album: track.album?.name ?? "",
+                    durationSeconds: Int(durationSeconds))
+                Downloads.saveLyrics(found, for: track.id)
+            }
+        }
         return true
     }
 

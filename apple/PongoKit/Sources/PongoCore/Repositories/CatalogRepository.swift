@@ -113,17 +113,18 @@ public final class CatalogRepository: Sendable {
         try? await client.post("get_track_duration", ["stid": .string(stid)])["duration"]?.double
     }
 
-    /// The home screen content for the user's [history] of played track IDs.
+    /// The home screen content for the user's [history] of played track IDs,
+    /// with the charts of [country], an ISO code such as "GB".
     public func homeFeed(
-        history: [String], market: String, locale: String, categoryCount: Int,
+        history: [String], market: String, locale: String, country: String?, categoryCount: Int,
         includeHistory: Bool, includeCategories: Bool
     ) async throws -> HomeFeed {
-        let data = try await client.post(
-            "get_recommendations",
-            [
-                "market": .string(market), "history": JSONValue(history),
-                "category_num": .int(categoryCount), "locale": .string(locale),
-            ])
+        var body: [String: JSONValue] = [
+            "market": .string(market), "history": JSONValue(history),
+            "category_num": .int(categoryCount), "locale": .string(locale),
+        ]
+        if let country { body["country"] = .string(country) }
+        let data = try await client.post("get_recommendations", body)
         var feed = HomeFeed()
         if includeHistory { feed.history = Track.list(data.at("history", "tracks")) }
         if includeCategories {

@@ -23,6 +23,8 @@ https://:{$PONGO_TLS_PORT} {
 		@audio header X-Pongo-Audio *
 		handle_response @audio {
 			root * /srv/pongo
+			# The file server only sends files for GET, and the app downloads with POST
+			method GET
 			rewrite * /{rp.header.X-Pongo-Audio}
 			header Content-Type audio/mp4
 			file_server

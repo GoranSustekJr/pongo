@@ -95,7 +95,7 @@ struct TrackSearchField: View {
                 } label: {
                     Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.tappable)
                 .accessibilityLabel(L10n.cancel)
             }
         }
@@ -146,6 +146,8 @@ extension ButtonStyle where Self == RowButtonStyle {
 struct PressButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
+            // The whole frame takes taps, not just the icon and text drawn in it
+            .contentShape(.rect)
             .scaleEffect(configuration.isPressed ? 0.9 : 1)
             .opacity(configuration.isPressed ? 0.6 : 1)
             .animation(.spring(duration: 0.25), value: configuration.isPressed)
@@ -154,6 +156,20 @@ struct PressButtonStyle: ButtonStyle {
 
 extension ButtonStyle where Self == PressButtonStyle {
     static var press: PressButtonStyle { PressButtonStyle() }
+}
+
+/// A button drawn only by its label, like `.plain`, but whose whole frame
+/// takes taps and clicks, not just the icon and text drawn in it.
+struct TappableButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .contentShape(.rect)
+            .opacity(configuration.isPressed ? 0.6 : 1)
+    }
+}
+
+extension ButtonStyle where Self == TappableButtonStyle {
+    static var tappable: TappableButtonStyle { TappableButtonStyle() }
 }
 
 /// The tracks of a collection, separated by thin lines; a tap plays one and
@@ -173,11 +189,70 @@ struct TrackList: View {
     var remove: ((Track) -> Void)?
     var play: (Int) -> Void
 
+    #if os(macOS)
+        @Environment(AppModel.self) private var model
+        /// The song the arrow keys picked, while the list has the keyboard.
+        @State private var picked: Int?
+        @FocusState private var hasKeyboard: Bool
+    #endif
+
     var body: some View {
+        #if os(macOS)
+            ScrollViewReader { proxy in
+                rows
+                    // Tab or a click gives the list the keyboard: the arrows pick
+                    // a song, Return plays it, Option-Return plays it next and
+                    // Shift-Return adds it to the end of the queue
+                    .focusable(interactions: .edit)
+                    .focused($hasKeyboard)
+                    .focusEffectDisabled()
+                    .onChange(of: hasKeyboard) { _, has in
+                        if has, picked == nil, !tracks.isEmpty { picked = 0 }
+                    }
+                    .onKeyPress(.downArrow) { move(by: 1, proxy) }
+                    .onKeyPress(.upArrow) { move(by: -1, proxy) }
+                    .onKeyPress(.home) { move(to: 0, proxy) }
+                    .onKeyPress(.end) { move(to: tracks.count - 1, proxy) }
+                    .onKeyPress(.return, phases: .down) { press in
+                        guard let picked, tracks.indices.contains(picked) else { return .ignored }
+                        let track = tracks[picked]
+                        if press.modifiers.contains(.option) {
+                            Task { await model.player.addNext(track, collectionID: collectionID) }
+                        } else if press.modifiers.contains(.shift) {
+                            Task { await model.player.addLast(track, collectionID: collectionID) }
+                        } else {
+                            play(picked)
+                        }
+                        return .handled
+                    }
+            }
+        #else
+            rows
+        #endif
+    }
+
+    #if os(macOS)
+        private func move(by step: Int, _ proxy: ScrollViewProxy) -> KeyPress.Result {
+            move(to: (picked ?? (step > 0 ? -1 : tracks.count)) + step, proxy)
+        }
+
+        private func move(to index: Int, _ proxy: ScrollViewProxy) -> KeyPress.Result {
+            guard !tracks.isEmpty else { return .ignored }
+            let index = min(max(index, 0), tracks.count - 1)
+            picked = index
+            withAnimation(.snappy(duration: 0.2)) { proxy.scrollTo(index) }
+            return .handled
+        }
+    #endif
+
+    private var rows: some View {
         LazyVStack(spacing: 0) {
             DownloadProgressBar(stids: tracks.map(\.id)).padding(.bottom, 6)
             ForEach(Array(tracks.enumerated()), id: \.offset) { index, track in
                 Button {
+                    #if os(macOS)
+                        picked = index
+                    #endif
                     play(index)
                 } label: {
                     let available = !missing.contains(track.id)
@@ -187,6 +262,16 @@ struct TrackList: View {
                         serverNote: explainsMissing && !available ? ServerNote(failure: failed[track.id]) : nil)
                 }
                 .buttonStyle(.row)
+                #if os(macOS)
+                    .background {
+                        if hasKeyboard, picked == index {
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(Color.pongoTeal.opacity(0.22))
+                                .padding(.horizontal, -8)
+                        }
+                    }
+                    .id(index)
+                #endif
                 .contextMenu {
                     TrackMenu(track: track, collectionID: collectionID, showsAlbum: showsAlbum)
                     if let remove {

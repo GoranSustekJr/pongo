@@ -46,6 +46,8 @@ public enum StorageKey: String, Sendable {
     case bassBoost = "BASSBOOSTKEY"
     case bassBoostLevel = "BASSBOOSTLEVELKEY"
     case smartShuffle = "SMARTSHUFFLEKEY"
+    /// The IDs of the online playlists kept downloaded on this device.
+    case downloadedPlaylists = "DOWNLOADEDPLAYLISTSKEY"
 }
 
 /// Stores string values by key.

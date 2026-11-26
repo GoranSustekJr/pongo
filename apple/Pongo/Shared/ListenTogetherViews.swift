@@ -255,7 +255,7 @@ private struct PresetRow: View {
             }
             .contentShape(.rect)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tappable)
     }
 }
 
@@ -328,7 +328,7 @@ private struct ListenerRow: View {
                     Image(systemName: "ellipsis.circle").font(.system(size: 20))
                 }
                 .menuStyle(.button)
-                .buttonStyle(.plain)
+                .buttonStyle(.tappable)
                 .foregroundStyle(.secondary)
             }
         }

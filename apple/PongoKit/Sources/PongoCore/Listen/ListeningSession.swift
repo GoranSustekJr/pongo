@@ -274,7 +274,7 @@ public final class ListeningSession {
     /// Leaves the session; the music plays on here on its own.
     public func leave() {
         let socket = socket
-        Task { try? await socket?.send(Self.message(["type": "leave"])) }
+        Task { try? await socket?.sendOnce(Self.message(["type": "leave"])) }
         end()
     }
 
@@ -369,12 +369,12 @@ public final class ListeningSession {
         case .join(let code): first["join"] = code
         }
         do {
-            try await socket.send(Self.message(first))
+            try await socket.sendOnce(Self.message(first))
             ping()
             var wasLive = false
             while !Task.isCancelled {
                 let text: String
-                switch try await socket.receive() {
+                switch try await socket.receiveOnce() {
                 case .string(let string): text = string
                 case .data(let data): text = String(decoding: data, as: UTF8.self)
                 @unknown default: continue
@@ -405,7 +405,7 @@ public final class ListeningSession {
     private func send(_ object: [String: Any]) {
         guard let socket else { return }
         let message = Self.message(object)
-        Task { try? await socket.send(message) }
+        Task { try? await socket.sendOnce(message) }
     }
 
     private static func message(_ object: [String: Any]) -> URLSessionWebSocketTask.Message {
@@ -605,7 +605,7 @@ public final class ListeningSession {
             hasher.combine(item.addedBy)
             hasher.combine(item.duration)
         }
-        hasher.combine(queue.shuffleOrder)
+        hasher.combine(queue.playOrder)
         hasher.combine(queue.shuffleEnabled)
         hasher.combine(queue.repeatMode)
         let signature = hasher.finalize()

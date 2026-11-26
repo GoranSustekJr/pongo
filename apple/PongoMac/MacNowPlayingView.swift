@@ -76,7 +76,7 @@ struct MacNowPlayingView: View {
                         .frame(width: 36, height: 36)
                         .contentShape(.circle)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.tappable)
                 .pongoGlass(in: .circle, interactive: true)
                 .keyboardShortcut(.cancelAction)
                 .help(L10n.closeplayer)
@@ -126,7 +126,7 @@ private struct PlayerColumn: View {
                     }
                     .menuStyle(.button)
                     .menuIndicator(.hidden)
-                    .buttonStyle(.plain)
+                    .buttonStyle(.tappable)
                     .pongoGlass(in: .circle, interactive: true)
                 }
                 Scrubber(item: item, showsTimes: true, height: 6, color: .white)
@@ -169,22 +169,11 @@ private struct PlayerColumn: View {
             HStack(spacing: 18) {
                 // Each shows its panel in place of the other's, or closes its own
                 modeButton(state.lyricsOn ? "quote.bubble.fill" : "quote.bubble", on: state.mode == .lyrics) {
-                    if state.mode == .lyrics {
-                        state.lyricsOn = false
-                    } else {
-                        state.showsQueue = false
-                        state.lyricsOn = false
-                        state.toggleLyrics(model)
-                    }
+                    model.togglePlayerLyrics()
                 }
                 .opacity(state.lyricsExist ? 1 : 0.5)
                 modeButton("list.bullet", on: state.mode == .queue) {
-                    if state.mode == .queue {
-                        state.showsQueue = false
-                    } else {
-                        state.lyricsOn = false
-                        state.showsQueue = true
-                    }
+                    model.togglePlayerQueue()
                 }
                 RoutePicker().frame(width: 34, height: 34)
             }
@@ -203,7 +192,7 @@ private struct PlayerColumn: View {
                 // The whole circle clicks, not just the symbol's lines
                 .contentShape(.circle)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tappable)
         .pongoGlass(in: .circle, interactive: true)
     }
 }
@@ -227,6 +216,6 @@ private struct ArtistLinks: View {
             }
         }
         .lineLimit(1)
-        .buttonStyle(.plain)
+        .buttonStyle(.tappable)
     }
 }

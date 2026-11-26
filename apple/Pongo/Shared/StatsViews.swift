@@ -49,6 +49,12 @@ struct StatsView: View {
         }
         .background { AppBackground() }
         .navigationTitle(L10n.stats)
+        .toolbar {
+            // Your most played songs of all time, which used to be a screen of their own
+            NavigationLink(value: Route.topSongs) {
+                Label(L10n.top25, systemImage: "flame")
+            }
+        }
         .task(id: model.libraryRevision) { await load() }
         .task(id: "\(byYear)|\(month ?? "")|\(year ?? "")") { await loadStats() }
         .animation(.snappy, value: byYear)

@@ -61,9 +61,11 @@ public struct UserPlaylist: Sendable, Hashable, Identifiable {
 }
 
 /// Which kind of playlist: of catalog tracks or of downloaded ones.
-public enum PlaylistKind: String, Sendable, Hashable {
+public enum PlaylistKind: String, Sendable, Hashable, Identifiable {
     case online
     case offline
+
+    public var id: String { rawValue }
 }
 
 /// A catalog track saved in one of the user's online playlists.

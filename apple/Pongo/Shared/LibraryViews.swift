@@ -1,43 +1,25 @@
 import PongoCore
 import SwiftUI
 
-/// The library tab, grouped as in the Flutter app: what's online, what's on
-/// the device, and the sleep alarm.
+/// The library tab: playlists, favourites, downloads and friends, then the
+/// sleep alarms and the stats.
 struct LibraryView: View {
     @Environment(AppModel.self) private var model
     @State private var counts: [Route: Int] = [:]
 
     var body: some View {
         List {
-            if model.auth.isSignedIn {
-                Section { ListenTogetherRow() }
-            }
-            Section(L10n.online) {
-                row(.favourites, "heart.fill", L10n.favouritesongs, "\(counts[.favourites] ?? 0) \(L10n.plustracks)")
-                row(.userPlaylists(.online), "music.note.list", L10n.onlineplaylists,
-                    "\(counts[.userPlaylists(.online)] ?? 0) \(L10n.playlists)")
-            }
-            if model.auth.isSignedIn {
-                Section(L10n.friends) {
-                    row(.friends, "person.2.fill", L10n.friends, L10n.friendsdescription)
-                    row(.followedPlaylists, "heart.text.square.fill", L10n.followedplaylists,
-                        "\(counts[.followedPlaylists] ?? 0) \(L10n.playlists)")
+            Section {
+                row(.allPlaylists, "music.note.list", L10n.playlists, counts[.allPlaylists])
+                row(.favourites, "heart.fill", L10n.favouritesongs, counts[.favourites])
+                row(.downloads, "arrow.down.circle.fill", L10n.downloads, counts[.downloads])
+                if model.auth.isSignedIn {
+                    row(.friends, "person.2.fill", L10n.friends, nil)
                 }
             }
-            Section(L10n.offline) {
-                row(.downloads, "arrow.down.circle.fill", L10n.offlinesongs, "\(counts[.downloads] ?? 0) \(L10n.plustracks)")
-                row(.userPlaylists(.offline), "square.stack.fill", L10n.offlineplaylists,
-                    "\(counts[.userPlaylists(.offline)] ?? 0) \(L10n.playlists)")
-            }
-            Section(L10n.sleep) {
-                row(.sleepAlarms, "moon.zzz.fill", L10n.sleep, L10n.sleepandalarmclock)
-            }
-            Section(L10n.stats) {
-                row(.stats, "chart.bar.fill", L10n.stats, L10n.statsdescription)
-                row(.topSongs, "flame.fill", L10n.top25, L10n.top25description)
-            }
             Section {
-                row(.importPlaylists, "square.and.arrow.down.on.square", L10n.importplaylists, "Spotify · Apple Music")
+                row(.sleepAlarms, "moon.zzz.fill", L10n.sleep, nil)
+                row(.stats, "chart.bar.fill", L10n.stats, nil)
             }
         }
         .listStyle(.insetGrouped)
@@ -45,21 +27,24 @@ struct LibraryView: View {
         .navigationTitle(L10n.library)
         .task(id: model.libraryRevision) {
             let database = model.database
+            let online = (try? await database.onlinePlaylistCount()) ?? 0
+            let offline = (try? await database.localPlaylistCount()) ?? 0
             counts = [
                 .favourites: (try? await database.favouriteCount()) ?? 0,
                 .downloads: (try? await database.downloadCount()) ?? 0,
-                .userPlaylists(.online): (try? await database.onlinePlaylistCount()) ?? 0,
-                .userPlaylists(.offline): (try? await database.localPlaylistCount()) ?? 0,
+                .allPlaylists: online + offline,
             ]
-            if model.auth.isSignedIn, let followed = try? await model.social.followedPlaylists() {
-                counts[.followedPlaylists] = followed.count
-            }
         }
     }
 
-    private func row(_ route: Route, _ image: String, _ title: String, _ subtitle: String) -> some View {
+    /// A row with how many things it holds at its end, if it says.
+    private func row(_ route: Route, _ image: String, _ title: String, _ count: Int?) -> some View {
         NavigationLink(value: route) {
-            GroupedRow(systemImage: image, title: title, subtitle: subtitle)
+            GroupedRow(systemImage: image, title: title) {
+                if let count {
+                    Text("\(count)").font(.system(size: 15)).foregroundStyle(.secondary).monospacedDigit()
+                }
+            }
         }
         .groupedRowBackground()
     }

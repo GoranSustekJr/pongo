@@ -13,11 +13,11 @@ private func item(_ stid: String) -> QueueItem {
         var queue = PlaybackQueue()
         queue.replace(with: [item("c")], startingAt: 0)
         queue.append(item("d"))
-        queue.insert(item("a"), at: 0)
-        queue.insert(item("b"), at: 1)
-        #expect(queue.items.map(\.stid) == ["a", "b", "c", "d"])
+        queue.insert(item("a"), atPosition: 0)
+        queue.insert(item("b"), atPosition: 1)
+        #expect(queue.playOrder.map { queue.items[$0].stid } == ["a", "b", "c", "d"])
         #expect(queue.current?.stid == "c")
-        #expect(queue.nextIndex(userSkipped: false) == 3)
+        #expect(queue.items[queue.nextIndex(userSkipped: false)!].stid == "d")
     }
 
     @Test func playsInOrderAndRepeats() {
@@ -38,8 +38,9 @@ private func item(_ stid: String) -> QueueItem {
         var queue = PlaybackQueue()
         queue.replace(with: (0..<20).map { item("\($0)") }, startingAt: 7)
         queue.setShuffle(true)
-        #expect(queue.shuffleOrder.first == 7)
-        #expect(queue.shuffleOrder.sorted() == Array(0..<20))
+        // Tracks before it weren't played, so they're shuffled in too
+        #expect(queue.playOrder.first == 7)
+        #expect(queue.playOrder.sorted() == Array(0..<20))
         #expect(queue.position == 0)
     }
 
@@ -51,22 +52,79 @@ private func item(_ stid: String) -> QueueItem {
         let next = queue.nextIndex(userSkipped: true)!
         #expect(queue.items[next].stid == "next")
         #expect(queue.current?.stid == "3")
-        #expect(queue.shuffleOrder.sorted() == Array(0..<11))
+        #expect(queue.playOrder.sorted() == Array(0..<11))
     }
 
-    @Test func suggestionsSpreadThroughTheRestOfTheShuffle() {
+    @Test func shufflingOnlyReordersTheRestOfTheCollection() {
         var queue = PlaybackQueue()
         queue.replace(with: (0..<12).map { item("\($0)") }, startingAt: 0)
+        queue.select(1)
+        queue.select(2)
+        var next = item("next")
+        next.isQueued = true
+        queue.insertNext(next)
+        var mix = item("mix")
+        mix.isMix = true
+        queue.append(mix)
+        queue.append(item("added"))
+        func stids(_ queue: PlaybackQueue) -> [String] { queue.playOrder.map { queue.items[$0].stid } }
+        for _ in 0..<5 {
+            queue.setShuffle(true)
+            let order = stids(queue)
+            #expect(Array(order.prefix(4)) == ["0", "1", "2", "next"])
+            #expect(Set(order[4..<13]) == Set((3..<12).map { "\($0)" }))
+            #expect(Array(order.suffix(2)) == ["mix", "added"])
+            #expect(queue.queuedCount == 1 && queue.collectionCount == 9)
+            queue.setShuffle(false)
+            #expect(stids(queue) == ["0", "1", "2", "next"] + (3..<12).map { "\($0)" } + ["mix", "added"])
+        }
+    }
+
+    @Test func unshufflingGoesOnInTheCollectionsOrder() {
+        var queue = PlaybackQueue()
         queue.setShuffle(true)
-        queue.insertSuggestions(["s1", "s2", "s3"].map(item))
+        queue.replace(with: (0..<10).map { item("\($0)") }, startingAt: 5)
+        let second = queue.nextIndex(userSkipped: true)!
+        queue.select(second)
+        queue.setShuffle(false)
         let order = queue.playOrder.map { queue.items[$0].stid }
-        let slots = order.indices.filter { order[$0].hasPrefix("s") }
-        #expect(order.count == 15)
-        #expect(Set(queue.shuffleOrder) == Set(0..<15))
-        #expect(queue.current?.stid == "0")
-        // Never right after the current entry, never two in a row
-        #expect(slots.first! >= 2)
-        #expect(zip(slots, slots.dropFirst()).allSatisfy { $1 - $0 > 1 })
+        let current = Int(queue.current!.stid)!
+        let rest = (0..<10).filter { $0 != 5 && $0 != current }
+        // Those after the current track first, then those before it
+        let expected = rest.filter { $0 > current } + rest.filter { $0 < current }
+        #expect(Array(order.prefix(2)) == ["5", "\(current)"])
+        #expect(Array(order.dropFirst(2)) == expected.map(String.init))
+    }
+
+    @Test func tracksAddedWhileLoadingStayBeforeTheMix() {
+        var queue = PlaybackQueue()
+        queue.replace(with: [item("a")], startingAt: 0)
+        var mix = item("mix")
+        mix.isMix = true
+        queue.append(mix)
+        var late = item("b")
+        late.contextIndex = 1
+        queue.append(late)
+        #expect(queue.playOrder.map { queue.items[$0].stid } == ["a", "b", "mix"])
+    }
+
+    @Test func queuesSavedBeforePartsStillLoad() throws {
+        var queue = PlaybackQueue()
+        queue.replace(with: ["a", "b", "c"].map(item), startingAt: 1)
+        var old = try JSONSerialization.jsonObject(with: try JSONEncoder().encode(queue.snapshot(position: 0)))
+            as! [String: Any]
+        old["order"] = nil
+        old["played"] = nil
+        old["shuffleEnabled"] = true
+        old["shuffleOrder"] = [1, 2, 0]
+        old["items"] = (old["items"] as! [[String: Any]]).map { var item = $0; item["contextIndex"] = nil; return item }
+        var restored = PlaybackQueue()
+        restored.restore(
+            try JSONDecoder().decode(PlaybackQueue.Snapshot.self, from: try JSONSerialization.data(withJSONObject: old)))
+        #expect(restored.playOrder == [1, 2, 0])
+        #expect(restored.collectionCount == 2)
+        restored.setShuffle(false)
+        #expect(restored.playOrder == [1, 2, 0])
     }
 
     @Test func savedQueuesKeepTheirMixAndLoadOlderOnes() throws {
@@ -123,7 +181,7 @@ private func item(_ stid: String) -> QueueItem {
         var queue = PlaybackQueue()
         queue.replace(with: ["a", "b", "c"].map(item), startingAt: 0)
         queue.move(fromOffsets: [0], toOffset: 3)
-        #expect(queue.items.map(\.stid) == ["b", "c", "a"])
+        #expect(queue.playOrder.map { queue.items[$0].stid } == ["b", "c", "a"])
         #expect(queue.current?.stid == "a")
     }
 }

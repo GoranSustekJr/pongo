@@ -8,6 +8,7 @@ import SwiftUI
 struct MainWindow: View {
     @Environment(AppModel.self) private var model
     @State private var query = ""
+    @FocusState private var searchFocused: Bool
 
     var body: some View {
         @Bindable var router = model.router
@@ -59,6 +60,23 @@ struct MainWindow: View {
         .sheet(isPresented: Binding { model.showsListenTogether } set: { model.showsListenTogether = $0 }) {
             ListenTogetherView()
         }
+        .sheet(item: $router.newPlaylist) { kind in
+            NavigationStack {
+                PlaylistCreateForm(kind: kind, initialCover: nil) { id in
+                    router.newPlaylist = nil
+                    // Opens the new playlist, ready for songs
+                    if let playlist = await model.playlists(kind).first(where: { $0.id == id }) {
+                        router.section = .playlist(kind, playlist)
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(L10n.cancel) { router.newPlaylist = nil }
+                    }
+                }
+            }
+            .frame(minWidth: 420, minHeight: 420)
+        }
         .alert(
             L10n.invitetitle,
             isPresented: Binding { model.invites.first != nil } set: { _ in },
@@ -96,6 +114,8 @@ struct MainWindow: View {
             }
         }
         .searchable(text: $query, placement: .sidebar, prompt: L10n.searchsongsartistsalbums)
+        .searchFocused($searchFocused)
+        .onChange(of: router.searchFocusRequests) { searchFocused = true }
         .onSubmit(of: .search) { model.rememberSearch(query) }
         .onChange(of: query) { _, query in
             if !query.isEmpty, router.section != .search {
@@ -121,38 +141,25 @@ private struct Sidebar: View {
 
     var body: some View {
         @Bindable var router = model.router
+        // Search is the field on top; importing is in the File menu
         List(selection: $router.section) {
             Section {
                 Label(L10n.home, systemImage: "house").tag(SidebarSection.home)
-                Label(L10n.search, systemImage: "magnifyingglass").tag(SidebarSection.search)
             }
             Section(L10n.library) {
+                Label(L10n.playlists, systemImage: "music.note.list").tag(SidebarSection.allPlaylists)
                 Label(L10n.favouritesongs, systemImage: "heart").tag(SidebarSection.favourites)
-                Label(L10n.offlinesongs, systemImage: "arrow.down.circle").tag(SidebarSection.downloads)
+                Label(L10n.downloads, systemImage: "arrow.down.circle").tag(SidebarSection.downloads)
                 Label(L10n.sleep, systemImage: "moon.zzz").tag(SidebarSection.sleepAlarms)
                 Label(L10n.stats, systemImage: "chart.bar").tag(SidebarSection.stats)
-                Label(L10n.top25, systemImage: "flame").tag(SidebarSection.topSongs)
-                Label(L10n.importplaylists, systemImage: "square.and.arrow.down.on.square")
-                    .tag(SidebarSection.importPlaylists)
-            }
-            Section(L10n.friends) {
                 Label(L10n.friends, systemImage: "person.2").tag(SidebarSection.friends)
-                Label(L10n.followedplaylists, systemImage: "heart.text.square").tag(SidebarSection.followedPlaylists)
-                Button {
-                    model.showsListenTogether = true
-                } label: {
-                    HStack {
-                        Label(
-                            L10n.listentogether,
-                            systemImage: model.listening.isActive ? "person.2.wave.2.fill" : "person.2.wave.2")
-                        Spacer()
-                        if model.listening.isActive { LiveDot() }
-                    }
-                }
-                .buttonStyle(.plain)
             }
-            playlistSection(L10n.onlineplaylists, kind: .online, playlists: online)
-            playlistSection(L10n.offlineplaylists, kind: .offline, playlists: offline)
+            if !online.isEmpty || !offline.isEmpty {
+                Section(L10n.playlists) {
+                    playlistRows(.online, online)
+                    playlistRows(.offline, offline)
+                }
+            }
         }
         .listStyle(.sidebar)
         .safeAreaInset(edge: .bottom) { AccountButton() }
@@ -162,18 +169,21 @@ private struct Sidebar: View {
         }
     }
 
-    private func playlistSection(_ title: String, kind: PlaylistKind, playlists: [UserPlaylist]) -> some View {
-        Section(title) {
-            Label(L10n.playlists, systemImage: kind == .online ? "music.note.list" : "square.stack")
-                .tag(SidebarSection.playlists(kind))
-            ForEach(playlists) { playlist in
-                Label {
+    private func playlistRows(_ kind: PlaylistKind, _ playlists: [UserPlaylist]) -> some View {
+        ForEach(playlists) { playlist in
+            Label {
+                HStack(spacing: 4) {
                     Text(playlist.title).lineLimit(1)
-                } icon: {
-                    CoverImage(data: playlist.cover).frame(width: 18, height: 18).coverShape(4)
+                    // Offline playlists live on this Mac only; downloaded ones play without the server
+                    if kind == .offline || model.downloadedPlaylists.contains(playlist.id) {
+                        Spacer(minLength: 0)
+                        Image(systemName: "arrow.down.circle").font(.system(size: 10)).foregroundStyle(.secondary)
+                    }
                 }
-                .tag(SidebarSection.playlist(kind, playlist))
+            } icon: {
+                CoverImage(data: playlist.cover).frame(width: 18, height: 18).coverShape(4)
             }
+            .tag(SidebarSection.playlist(kind, playlist))
         }
     }
 }
@@ -208,14 +218,14 @@ private struct AccountButton: View {
                 }
                 .contentShape(.rect)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.tappable)
             .help(L10n.profile)
             Button {
                 open(.general)
             } label: {
                 Image(systemName: "gearshape").font(.system(size: 15)).frame(width: 26, height: 26)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.tappable)
             .foregroundStyle(.secondary)
             .help(L10n.preferences)
         }
@@ -251,10 +261,8 @@ private struct SectionView: View {
         case .downloads: DownloadsView()
         case .sleepAlarms: SleepAlarmsView()
         case .stats: StatsView()
-        case .topSongs: TopSongsView()
-        case .importPlaylists: ImportPlaylistsView()
         case .friends: FriendsView()
-        case .followedPlaylists: FollowedPlaylistsView()
+        case .allPlaylists: UserPlaylistsView(kind: nil)
         case .playlists(let kind): UserPlaylistsView(kind: kind)
         case .playlist(let kind, let playlist):
             UserPlaylistView(kind: kind, playlist: playlist).id(playlist.id)

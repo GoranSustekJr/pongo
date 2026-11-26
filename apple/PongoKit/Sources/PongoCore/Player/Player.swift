@@ -132,6 +132,9 @@ public final class Player {
     @ObservationIgnored private let store: KeyValueStore
     @ObservationIgnored private let streamURL: (String, Bool) -> URL?
     @ObservationIgnored private let downloadStreamURL: (String) -> URL?
+    /// The length in seconds of each of the given tracks that's downloaded.
+    /// Those play from the device and never wait for the server.
+    @ObservationIgnored public var downloadedDurations: ([String]) async -> [String: Double] = { _ in [:] }
     // Tracks the server is still downloading, which play from its stream
     @ObservationIgnored private var downloading: Set<String> = []
     // Tracks whose loaded item is the server's stream of their download
@@ -286,7 +289,9 @@ public final class Player {
             return
         }
         let generation = startNewQueue()
-        let known = durations.merging(fetchedDurations) { first, _ in first }
+        let known = await downloadedDurations(tracks.map(\.id))
+            .merging(durations) { first, _ in first }
+            .merging(fetchedDurations) { first, _ in first }
         let missing = tracks.map(\.id).filter { known[$0] == nil }
         if missing.isEmpty {
             startQueue(
@@ -328,7 +333,7 @@ public final class Player {
                 // The first track plays while the server downloads it
                 started = true
                 if before { earlier = nil }
-                let item = startStreaming(track, collectionID: collectionID)
+                let item = startStreaming(track, collectionID: collectionID, at: position, shuffle: shuffle)
                 duration = await batch.next()
                 trackFetched(track.id, duration)
                 if !finishStreaming(item, duration: duration, generation: generation) {
@@ -344,7 +349,8 @@ public final class Player {
                 trackFetched(track.id, duration)
                 guard duration != nil, generation == self.generation else { continue }
             }
-            let item = QueueItem(track: track, collectionID: collectionID, duration: duration!)
+            var item = QueueItem(track: track, collectionID: collectionID, duration: duration!)
+            item.contextIndex = position
             if started && before, let at = earlier {
                 insert(item, at: at)
                 earlier = at + 1
@@ -353,7 +359,8 @@ public final class Player {
             } else {
                 started = true
                 if before { earlier = nil }
-                queue.setShuffle(false)
+                // Shuffled, the tracks arrive in a random order and play as they arrive
+                queue.setShuffle(shuffle)
                 queue.replace(with: [item], startingAt: 0)
                 loadCurrent(autoplay: true)
             }
@@ -391,11 +398,13 @@ public final class Player {
         let streaming = StreamingStart()
         let start: @MainActor () -> Void = { [weak self] in
             guard let self, generation == self.generation else { return }
-            streaming.item = self.startStreaming(track, collectionID: collectionID)
+            streaming.item = self.startStreaming(track, collectionID: collectionID, at: 0, shuffle: false)
             self.startMixIfWanted()
         }
-        let duration = await ensureAvailable(
-            track.id, streamingStart: preferences.streamWhileDownloading ? start : nil)
+        let downloaded = await downloadedDurations([track.id])[track.id]
+        let duration = if let downloaded { downloaded } else {
+            await ensureAvailable(track.id, streamingStart: preferences.streamWhileDownloading ? start : nil)
+        }
         if let streaming = streaming.item {
             _ = finishStreaming(streaming, duration: duration, generation: generation)
             return
@@ -406,8 +415,8 @@ public final class Player {
         startMixIfWanted()
     }
 
-    /// Mixes about [count] tracks like those of the shuffled queue of
-    /// [collectionID] into it, marked as suggestions.
+    /// Adds about [count] tracks like those of the shuffled queue of
+    /// [collectionID] after the collection, marked as suggestions.
     public func addSuggestions(to collectionID: String, count: Int) async {
         let generation = self.generation
         guard remote == nil, queue.shuffleEnabled, current?.collectionID == collectionID else { return }
@@ -424,7 +433,7 @@ public final class Player {
             let items = entries.map {
                 QueueItem(track: $0.track, collectionID: collectionID, duration: $0.duration, isMix: true)
             }
-            queue.insertSuggestions(items)
+            for item in items { queue.append(item) }
             suggestedIDs.formUnion(items.map(\.id))
             added += items.map(\.stid)
             refreshNext()
@@ -464,10 +473,12 @@ public final class Player {
 
     /// Starts a queue of just [track], played from the server's download of
     /// it. Its length is filled in once the download ends.
-    private func startStreaming(_ track: Track, collectionID: String) -> QueueItem {
+    /// [index] is its place in the collection.
+    private func startStreaming(_ track: Track, collectionID: String, at index: Int, shuffle: Bool) -> QueueItem {
         downloading.insert(track.id)
-        let item = QueueItem(track: track, collectionID: collectionID, duration: 0)
-        queue.setShuffle(false)
+        var item = QueueItem(track: track, collectionID: collectionID, duration: 0)
+        item.contextIndex = index
+        queue.setShuffle(shuffle)
         queue.replace(with: [item], startingAt: 0)
         loadCurrent(autoplay: true)
         return item
@@ -608,7 +619,7 @@ public final class Player {
         if track.isDownloaded {
             return QueueItem(track: track, collectionID: collectionID, duration: 0)
         }
-        var duration = fetchedDurations[track.id]
+        var duration = await downloadedDurations([track.id])[track.id] ?? fetchedDurations[track.id]
         if duration == nil {
             duration = try? await client.post("get_track_duration", ["stid": .string(track.id)])["duration"]?.double
         }
@@ -638,9 +649,9 @@ public final class Player {
         append(item)
     }
 
-    /// Puts [item] at [index] of the queue, before the current entry.
-    private func insert(_ item: QueueItem, at index: Int) {
-        queue.insert(item, at: index)
+    /// Puts [item] at [position] of the play order, before the current entry.
+    private func insert(_ item: QueueItem, at position: Int) {
+        queue.insert(item, atPosition: position)
         reindexLoaded()
         refreshNext()
         reportQueueToMix()
@@ -806,13 +817,7 @@ public final class Player {
     public func setShuffle(_ enabled: Bool) {
         if let remote, remote(.shuffle(enabled)) { return }
         guard canShuffle || !enabled else { return }
-        if !enabled {
-            // Suggestions belong to the shuffle; unshuffled, the playlist plays as it is
-            let suggestions = queue.items.indices.filter {
-                suggestedIDs.contains(queue.items[$0].id) && $0 != queue.currentIndex
-            }
-            if !suggestions.isEmpty { remove(at: suggestions) }
-        }
+        // Only the collection's tracks still to play change order
         queue.setShuffle(enabled)
         refreshNext()
         reportQueueToMix()
@@ -1562,15 +1567,7 @@ public final class Player {
     /// here if it's still current in it.
     public func follow(_ snapshot: PlaybackQueue.Snapshot) {
         _ = startNewQueue()
-        var snapshot = snapshot
-        // Their downloads are on their device; here the tracks play from the server
-        snapshot.items = snapshot.items.map { item in
-            var item = item
-            item.track.audioPath = nil
-            item.track.localImagePath = nil
-            return item
-        }
-        queue.restore(snapshot)
+        queue.restore(Self.fromAnotherDevice(snapshot))
         canShuffle = true
         queueMatchesCollection = false
         if let uid = loadedCurrent?.uid, uid == current?.id {
@@ -1617,15 +1614,65 @@ public final class Player {
         }
     }
 
+    /// [snapshot] without the paths of files on the device it came from:
+    /// their downloads are there, so here the tracks play from this device's
+    /// downloads or the server.
+    private static func fromAnotherDevice(_ snapshot: PlaybackQueue.Snapshot) -> PlaybackQueue.Snapshot {
+        var snapshot = snapshot
+        snapshot.items = snapshot.items.map { item in
+            var item = item
+            item.track.audioPath = nil
+            item.track.localImagePath = nil
+            return item
+        }
+        return snapshot
+    }
+
+    // MARK: - Moving between devices
+
+    /// The queue as another of the user's devices takes it over, or `nil`
+    /// while listening along with someone.
+    public func handoffSnapshot() -> PlaybackQueue.Snapshot? {
+        guard remote == nil, !queue.isEmpty else { return nil }
+        return fullSnapshot()
+    }
+
+    /// Plays the queue another of the user's devices played, from [position]
+    /// in its current track.
+    public func takeOver(_ snapshot: PlaybackQueue.Snapshot, at position: Double) {
+        guard remote == nil else { return }
+        _ = startNewQueue()
+        queue.restore(Self.fromAnotherDevice(snapshot))
+        canShuffle = true
+        queueMatchesCollection = false
+        suggestedIDs = Set(snapshot.suggested ?? []).intersection(queue.items.map(\.id))
+        loadCurrent(autoplay: false)
+        guard let current else { return }
+        // Its report may be a few seconds old, so it may be just past the end
+        seekEngine(to: current.duration > 0 ? min(position, max(current.duration - 2, 0)) : position)
+        resume()
+        if snapshot.mixActive == true {
+            mixMood = snapshot.mixMood
+            mix.start()
+            reportQueueToMix()
+        }
+        saveModes()
+        saveState()
+    }
+
     // MARK: - Saving the queue
 
-    /// Saves the queue, position and modes so the next launch can resume.
-    public func saveState() {
+    private func fullSnapshot() -> PlaybackQueue.Snapshot {
         var snapshot = queue.snapshot(position: progress.position)
         snapshot.mixActive = mix.isActive
         snapshot.mixMood = mixMood
         snapshot.suggested = Array(suggestedIDs)
-        guard let data = try? JSONEncoder().encode(snapshot) else { return }
+        return snapshot
+    }
+
+    /// Saves the queue, position and modes so the next launch can resume.
+    public func saveState() {
+        guard let data = try? JSONEncoder().encode(fullSnapshot()) else { return }
         store.set(String(decoding: data, as: UTF8.self), for: .queue)
     }
 

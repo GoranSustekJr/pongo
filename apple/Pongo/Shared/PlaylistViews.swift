@@ -28,32 +28,62 @@ extension AppModel {
     }
 }
 
-/// The user's online or offline playlists.
+/// The user's playlists: of [kind], or all of them when it's `nil`, with
+/// downloaded ones marked, those followed from friends, and importing.
 struct UserPlaylistsView: View {
     @Environment(AppModel.self) private var model
-    let kind: PlaylistKind
-    @State private var playlists: [UserPlaylist] = []
-    @State private var counts: [Int: Int] = [:]
+    let kind: PlaylistKind?
+    @State private var playlists: [Entry] = []
+    @State private var counts: [String: Int] = [:]
+    @State private var followedCount = 0
     @State private var loaded = false
-    @State private var creating = false
-    @State private var deleting: UserPlaylist?
+    @State private var creating: PlaylistKind?
+    @State private var deleting: Entry?
+
+    struct Entry: Identifiable, Hashable {
+        var kind: PlaylistKind
+        var playlist: UserPlaylist
+        var id: String { "\(kind)-\(playlist.id)" }
+    }
+
+    private var kinds: [PlaylistKind] { kind.map { [$0] } ?? [.online, .offline] }
 
     var body: some View {
         List {
-            ForEach(playlists) { playlist in
-                NavigationLink(value: Route.userPlaylist(kind, playlist)) {
-                    HStack(spacing: 14) {
-                        CoverImage(data: playlist.cover).frame(width: 60, height: 60).coverShape(10)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(playlist.title).font(.system(size: 17, weight: .semibold)).lineLimit(1)
-                            Text("\(counts[playlist.id] ?? 0) \(L10n.plustracks)")
-                                .font(.system(size: 13)).foregroundStyle(.secondary)
+            if kind == nil, model.auth.isSignedIn, followedCount > 0 {
+                Section {
+                    NavigationLink(value: Route.followedPlaylists) {
+                        GroupedRow(systemImage: "heart.text.square.fill", title: L10n.followedplaylists) {
+                            Text("\(followedCount)").font(.system(size: 15)).foregroundStyle(.secondary)
                         }
                     }
+                    .groupedRowBackground()
                 }
-                .groupedRowBackground()
-                .swipeActions {
-                    Button(L10n.delete, systemImage: "trash", role: .destructive) { deleting = playlist }
+            }
+            Section {
+                ForEach(playlists) { entry in
+                    NavigationLink(value: Route.userPlaylist(entry.kind, entry.playlist)) {
+                        HStack(spacing: 14) {
+                            CoverImage(data: entry.playlist.cover).frame(width: 60, height: 60).coverShape(10)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(entry.playlist.title).font(.system(size: 17, weight: .semibold)).lineLimit(1)
+                                HStack(spacing: 4) {
+                                    // Offline playlists live on this device only; downloaded ones play without the server
+                                    if (kind == nil && entry.kind == .offline)
+                                        || (entry.kind == .online && model.downloadedPlaylists.contains(entry.playlist.id))
+                                    {
+                                        Image(systemName: "arrow.down.circle.fill").foregroundStyle(Color.pongoTeal)
+                                    }
+                                    Text("\(counts[entry.id] ?? 0) \(L10n.plustracks)")
+                                }
+                                .font(.system(size: 13)).foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .groupedRowBackground()
+                    .swipeActions {
+                        Button(L10n.delete, systemImage: "trash", role: .destructive) { deleting = entry }
+                    }
                 }
             }
         }
@@ -63,20 +93,34 @@ struct UserPlaylistsView: View {
             if loaded && playlists.isEmpty {
                 VStack(spacing: 16) {
                     EmptyMessage(systemImage: "music.note.list", title: L10n.createnewplaylistnow)
-                    Button(L10n.newplaylist, systemImage: "plus") { creating = true }.buttonStyle(.glassProminent)
-                            .tint(.pongoTeal)
+                    Button(L10n.newplaylist, systemImage: "plus") { creating = kind ?? .online }
+                        .buttonStyle(.glassProminent)
+                        .tint(.pongoTeal)
                 }
             }
         }
-        .navigationTitle(kind == .online ? L10n.onlineplaylists : L10n.offlineplaylists)
+        .navigationTitle(kind == .online ? L10n.onlineplaylists : kind == .offline ? L10n.offlineplaylists : L10n.playlists)
         .toolbar {
-            Button(L10n.newplaylist, systemImage: "plus") { creating = true }
+            if let kind {
+                Button(L10n.newplaylist, systemImage: "plus") { creating = kind }
+            } else {
+                Menu {
+                    Button(L10n.newplaylist, systemImage: "music.note.list") { creating = .online }
+                    Button(L10n.newplaylistlocal, systemImage: "arrow.down.circle") { creating = .offline }
+                    Divider()
+                    NavigationLink(value: Route.importPlaylists) {
+                        Label(L10n.importplaylists, systemImage: "square.and.arrow.down.on.square")
+                    }
+                } label: {
+                    Label(L10n.newplaylist, systemImage: "plus")
+                }
+            }
         }
-        .sheet(isPresented: $creating) {
+        .sheet(item: $creating) { kind in
             NavigationStack {
-                PlaylistCreateForm(kind: kind, initialCover: nil) { _ in creating = false }
+                PlaylistCreateForm(kind: kind, initialCover: nil) { _ in creating = nil }
                     .toolbar {
-                        ToolbarItem(placement: .cancellationAction) { Button(L10n.cancel) { creating = false } }
+                        ToolbarItem(placement: .cancellationAction) { Button(L10n.cancel) { creating = nil } }
                     }
             }
             .presentationDetents([.medium, .large])
@@ -84,21 +128,31 @@ struct UserPlaylistsView: View {
         .confirmationDialog(
             L10n.removeplaylist, isPresented: Binding { deleting != nil } set: { if !$0 { deleting = nil } },
             titleVisibility: .visible, presenting: deleting
-        ) { playlist in
-            Button(L10n.delete, role: .destructive) { Task { await delete(playlist) } }
+        ) { entry in
+            Button(L10n.delete, role: .destructive) { Task { await delete(entry) } }
         }
         .task(id: model.libraryRevision) {
-            playlists = await model.playlists(kind)
-            for playlist in playlists { counts[playlist.id] = await model.trackCount(kind, playlist.id) }
+            var entries: [Entry] = []
+            for kind in kinds {
+                entries += await model.playlists(kind).map { Entry(kind: kind, playlist: $0) }
+            }
+            playlists = entries
+            for entry in entries {
+                counts[entry.id] = await model.trackCount(entry.kind, entry.playlist.id)
+            }
             loaded = true
+            if kind == nil, model.auth.isSignedIn, let followed = try? await model.social.followedPlaylists() {
+                followedCount = followed.count
+            }
         }
     }
 
-    private func delete(_ playlist: UserPlaylist) async {
-        if kind == .online {
-            try? await model.database.deleteOnlinePlaylist(playlist.id)
+    private func delete(_ entry: Entry) async {
+        if entry.kind == .online {
+            try? await model.database.deleteOnlinePlaylist(entry.playlist.id)
+            model.downloadedPlaylists.remove(entry.playlist.id)
         } else {
-            try? await model.database.deleteLocalPlaylist(playlist.id)
+            try? await model.database.deleteLocalPlaylist(entry.playlist.id)
         }
         model.libraryChanged()
     }
@@ -122,6 +176,7 @@ struct UserPlaylistView: View {
     @State private var pickingCover = false
     @State private var pickedCover: PhotosPickerItem?
     @State private var confirmDelete = false
+    @State private var confirmRemoveDownload = false
     @State private var removing: Track?
     @State private var query = ""
     /// Shows only the tracks that aren't on the server.
@@ -149,7 +204,10 @@ struct UserPlaylistView: View {
 
     var body: some View {
         CollectionScreen(
-            title: playlist.title, subtitle: "\(shown.count) \(L10n.plustracks)", coverData: playlist.cover
+            title: playlist.title,
+            subtitle: "\(shown.count) \(L10n.plustracks)"
+                + (kind == .online && model.downloadedPlaylists.contains(playlist.id) ? " · \(L10n.downloaded)" : ""),
+            coverData: playlist.cover
         ) {
             PlayShuffleBar(collectionID: collectionID, canShuffle: shown.count > missing.count) {
                 await play(index: 0)
@@ -210,8 +268,14 @@ struct UserPlaylistView: View {
                 }
             }
             if kind == .online, !tracks.isEmpty {
-                Button(L10n.download, systemImage: "icloud.and.arrow.down") {
-                    Task { await model.addToPlaylist(tracks, kind: .offline, creating: true) }
+                if model.downloadedPlaylists.contains(playlist.id) {
+                    Button(L10n.removedownload, systemImage: "arrow.down.circle.dotted", role: .destructive) {
+                        confirmRemoveDownload = true
+                    }
+                } else {
+                    Button(L10n.download, systemImage: "arrow.down.circle") {
+                        Task { await model.downloadPlaylist(playlist, tracks: tracks) }
+                    }
                 }
             }
             Divider()
@@ -256,6 +320,13 @@ struct UserPlaylistView: View {
         }
         .confirmationDialog(L10n.removeplaylist, isPresented: $confirmDelete, titleVisibility: .visible) {
             Button(L10n.delete, role: .destructive) { Task { await deletePlaylist() } }
+        }
+        .confirmationDialog(L10n.removedownload, isPresented: $confirmRemoveDownload, titleVisibility: .visible) {
+            Button(L10n.removedownload, role: .destructive) {
+                Task { await model.removeDownload(of: playlist, tracks: tracks) }
+            }
+        } message: {
+            Text(L10n.removedownloadbody)
         }
         .confirmationDialog(
             L10n.removetracksfromplaylist, isPresented: Binding { removing != nil } set: { if !$0 { removing = nil } },
@@ -313,6 +384,10 @@ struct UserPlaylistView: View {
             if !tracks.isEmpty, let found = try? await model.catalog.availability(tracks.map(\.id)) {
                 availability = found
             }
+            // Songs another device added to a downloaded playlist download here too
+            let playlist = playlist
+            let tracks = tracks
+            Task { await model.keepDownloaded(playlist, tracks: tracks) }
             if model.auth.isSignedIn, let key = try? await database.onlinePlaylistSyncID(playlist.id),
                 let account = try? await model.social.account()
             {
@@ -406,6 +481,7 @@ struct UserPlaylistView: View {
         if model.player.current?.collectionID == collectionID { model.player.halt() }
         if kind == .online {
             try? await model.database.deleteOnlinePlaylist(playlist.id)
+            model.downloadedPlaylists.remove(playlist.id)
         } else {
             try? await model.database.deleteLocalPlaylist(playlist.id)
         }

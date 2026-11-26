@@ -7,7 +7,6 @@ import SwiftUI
 struct MiniPlayer: View {
     @Environment(AppModel.self) private var model
     @Environment(\.tabViewBottomAccessoryPlacement) private var placement
-    @Environment(\.colorScheme) private var colorScheme
 
     /// How far the track info follows a sideways swipe.
     @State private var offset: CGFloat = 0
@@ -15,7 +14,6 @@ struct MiniPlayer: View {
 
     var body: some View {
         let player = model.player
-        let backdrop = model.nowPlaying.backdrop
         if let item = player.current {
             let inline = placement == .inline
             HStack(spacing: 10) {
@@ -52,14 +50,9 @@ struct MiniPlayer: View {
             }
             .padding(.leading, inline ? 6 : 8)
             .padding(.trailing, 6)
+            // Plain glass like the tab bar under it; the cover brings the color
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background { background(backdrop) }
-            .environment(\.colorScheme, backdrop == nil ? colorScheme : .dark)
             .contentShape(.rect)
-            .task(id: "\(item.track.id)|\(model.settings.settings.useBlur)") {
-                let url = model.settings.settings.useBlur ? item.track.coverURL(size: 300) : nil
-                await model.nowPlaying.loadBackdrop(url)
-            }
             .animation(.smooth(duration: 0.35), value: item.id)
             .animation(.smooth(duration: 0.3), value: model.listening.isActive)
             .onTapGesture { model.router.showsPlayer = true }
@@ -67,21 +60,6 @@ struct MiniPlayer: View {
             .simultaneousGesture(swipe)
             .sensoryFeedback(.impact(weight: .light), trigger: skips)
             .sensoryFeedback(.warning, trigger: model.router.confirmsHalt) { _, asks in asks }
-        }
-    }
-
-    /// The song's colors filling the accessory's glass. They spill past its
-    /// edges and the accessory's own shape cuts them, so they keep its shape
-    /// while the tab bar grows and shrinks.
-    @ViewBuilder private func background(_ backdrop: PlatformImage?) -> some View {
-        if let backdrop {
-            Image(platformImage: backdrop).resizable().scaledToFill()
-                .overlay { Color.black.opacity(0.18) }
-                .opacity(0.9)
-                .padding(-30)
-                .allowsHitTesting(false)
-                .transition(.opacity)
-                .id(backdrop)
         }
     }
 

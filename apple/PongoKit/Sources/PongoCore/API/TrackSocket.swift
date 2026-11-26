@@ -39,7 +39,7 @@ public final class TrackSocket: Sendable {
             defer { task.cancel(with: .normalClosure, reason: nil) }
             do {
                 let token = await client.tokens?.accessToken()
-                try await task.send(message(["stid": .string(stid), "at+JWT": JSONValue(token)]))
+                try await task.sendOnce(message(["stid": .string(stid), "at+JWT": JSONValue(token)]))
                 let exists = try await receive(task)["exists"]?.string
                 if exists != "true" && exists != "false" {
                     if renewed { return .unavailable }
@@ -65,9 +65,9 @@ public final class TrackSocket: Sendable {
     public func openBatch(_ stids: [String]) async -> TrackBatch {
         let task = connect("concenating_stids")
         let token = await client.tokens?.accessToken()
-        try? await task.send(message(["stids": .int(stids.count), "at+JWT": JSONValue(token)]))
+        try? await task.sendOnce(message(["stids": .int(stids.count), "at+JWT": JSONValue(token)]))
         for stid in stids {
-            try? await task.send(message(["stid": .string(stid)]))
+            try? await task.sendOnce(message(["stid": .string(stid)]))
         }
         return TrackBatch(task: task)
     }
@@ -96,7 +96,7 @@ public final class TrackBatch: Sendable {
 }
 
 private func receive(_ task: URLSessionWebSocketTask) async throws -> JSONValue {
-    switch try await task.receive() {
+    switch try await task.receiveOnce() {
     case .string(let text): return try JSONValue.decode(Data(text.utf8))
     case .data(let data): return try JSONValue.decode(data)
     @unknown default: return .null

@@ -2,15 +2,15 @@ import PDFKit
 import PongoCore
 import SwiftUI
 
-/// The settings tab, as in the Flutter app: the profile, the preferences and
-/// what Pongo is.
+/// Settings, opened from the profile picture: the account, then one plain
+/// list of everything else.
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
     @State private var profile: UserProfile?
 
     var body: some View {
         List {
-            Section(L10n.profile) {
+            Section {
                 NavigationLink(value: Route.profile) {
                     HStack(spacing: 14) {
                         CoverImage(profile?.picture, placeholder: "person.fill")
@@ -18,30 +18,33 @@ struct SettingsView: View {
                             .clipShape(Circle())
                         VStack(alignment: .leading, spacing: 2) {
                             Text(profile?.name ?? L10n.profile).font(.system(size: 17, weight: .semibold))
-                            Text(L10n.yourprofile).font(.system(size: 13)).foregroundStyle(.secondary)
+                            if let email = profile?.email, !email.isEmpty {
+                                Text(email).font(.system(size: 13)).foregroundStyle(.secondary)
+                            }
                         }
                     }
                     .padding(.vertical, 4)
                 }
                 .groupedRowBackground()
             }
-            Section(L10n.settings) {
-                NavigationLink(value: Route.preferences) {
-                    GroupedRow(systemImage: "slider.horizontal.3", title: L10n.preferences, subtitle: L10n.yourpreferences)
-                }
-                .groupedRowBackground()
-            }
-            Section(L10n.about) {
-                NavigationLink(value: Route.about) {
-                    GroupedRow(systemImage: "info.circle", title: L10n.about, subtitle: L10n.aboutpongo)
-                }
-                .groupedRowBackground()
+            Section {
+                link(.preferences, "slider.horizontal.3", L10n.preferences)
+                link(.sleepAlarms, "moon.zzz", L10n.sleep)
+                link(.importPlaylists, "square.and.arrow.down.on.square", L10n.importplaylists)
+                link(.about, "info.circle", L10n.about)
             }
         }
         .listStyle(.insetGrouped)
         .pongoBackground()
         .navigationTitle(L10n.settings)
         .task { profile = try? await model.auth.fetchProfile() }
+    }
+
+    private func link(_ route: Route, _ image: String, _ title: String) -> some View {
+        NavigationLink(value: route) {
+            GroupedRow(systemImage: image, title: title)
+        }
+        .groupedRowBackground()
     }
 }
 

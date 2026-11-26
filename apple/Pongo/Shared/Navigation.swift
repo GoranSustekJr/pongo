@@ -2,9 +2,9 @@ import Observation
 import PongoCore
 import SwiftUI
 
-/// The app's tabs.
+/// The app's tabs; settings open from the profile picture on home.
 enum AppTab: Hashable {
-    case home, library, settings
+    case home, library, search
 }
 
 /// A screen pushed onto a tab's navigation stack.
@@ -16,6 +16,8 @@ enum Route: Hashable {
     case favourites
     case downloads
     case userPlaylists(PlaylistKind)
+    /// Online and offline playlists together, and those followed from friends.
+    case allPlaylists
     case userPlaylist(PlaylistKind, UserPlaylist)
     case sleepAlarms
     case stats
@@ -36,7 +38,12 @@ final class Router {
     var tab = AppTab.home
     var home: [Route] = []
     var library: [Route] = []
+    var searchPath: [Route] = []
     var settings: [Route] = []
+    /// Whether settings show, over the tabs on iPhone.
+    var showsSettings = false
+    /// Whether the sleep alarms show in a sheet of their own.
+    var showsSleepAlarms = false
     var showsPlayer = false
     /// Whether the mini player asked to confirm halting the player.
     var confirmsHalt = false
@@ -50,6 +57,10 @@ final class Router {
         var path: [Route] = []
         /// What the panel beside the content shows, if it's open.
         var inspector: InspectorPane?
+        /// Goes up each time the menu asks for the cursor in the search field.
+        var searchFocusRequests = 0
+        /// The kind of playlist the menu asked to create, while its form shows.
+        var newPlaylist: PlaylistKind?
     #endif
 
     /// Shows [route] on the current tab, closing the player.
@@ -58,15 +69,19 @@ final class Router {
         #if os(macOS)
             path.append(route)
         #else
+            if showsSettings {
+                settings.append(route)
+                return
+            }
             switch tab {
             case .home: home.append(route)
             case .library: library.append(route)
-            case .settings: settings.append(route)
+            case .search: searchPath.append(route)
             }
         #endif
     }
 
-    /// Searches for [query] in the search bar at the top of home.
+    /// Searches for [query] in the search tab.
     func search(for query: String) {
         searchRequest = query
         #if os(macOS)
@@ -74,8 +89,9 @@ final class Router {
             section = .search
             path = []
         #else
-            tab = .home
-            home = []
+            showsSettings = false
+            tab = .search
+            searchPath = []
         #endif
     }
 }
@@ -83,8 +99,7 @@ final class Router {
 #if os(macOS)
     /// The Mac window's sidebar.
     enum SidebarSection: Hashable {
-        case home, search, favourites, downloads, sleepAlarms, stats, topSongs, importPlaylists
-        case friends, followedPlaylists
+        case home, search, favourites, downloads, sleepAlarms, stats, friends, allPlaylists
         case playlists(PlaylistKind)
         case playlist(PlaylistKind, UserPlaylist)
     }
@@ -107,6 +122,7 @@ struct RouteView: View {
         case .favourites: FavouritesView()
         case .downloads: DownloadsView()
         case .userPlaylists(let kind): UserPlaylistsView(kind: kind)
+        case .allPlaylists: UserPlaylistsView(kind: nil)
         case .userPlaylist(let kind, let playlist): UserPlaylistView(kind: kind, playlist: playlist)
         case .sleepAlarms: SleepAlarmsView()
         case .stats: StatsView()

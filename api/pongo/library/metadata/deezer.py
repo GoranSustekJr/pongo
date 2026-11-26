@@ -5,6 +5,7 @@ The public API needs no key and allows 50 requests per 5 seconds per IP.
 import asyncio
 import logging
 import random
+import re
 import time
 from collections import Counter, deque
 from urllib.parse import urlencode
@@ -231,11 +232,7 @@ def genre_artists(chart: dict, limit: int) -> list[dict]:
 
     Deezer's own artists of a genre's chart are the country's top artists whatever
     the genre, so Croatian rappers would show up under latin and R&B."""
-    tracks = [t["artist"] for t in chart["tracks"]["data"] if t.get("artist")]
-    counts = Counter(a["id"] for a in tracks)
-    artists = list({a["id"]: a for a in reversed(tracks)}.values())[::-1]
-    artists.sort(key=lambda a: -counts[a["id"]])
-    return [artist_shape(a) for a in artists[:limit]]
+    return popular_artists(chart["tracks"]["data"], limit)
 
 
 async def get_new_releases() -> dict:
@@ -246,17 +243,93 @@ async def get_new_releases() -> dict:
     return {"albums": {"items": [album_shape(a) for a in albums["data"]]}}
 
 
-async def get_charts(limit: int = 25) -> dict:
+# The country charts of Deezer's "Deezer Charts" account, by ISO country code, with
+# the country as the account's playlist titles name it. Deezer's /chart/0 follows the
+# location of whoever asks, which is the server, so every listener got its country's chart
+DEEZER_CHARTS_USER = 637006841
+WORLDWIDE_CHART = 3155776842
+COUNTRY_CHARTS: dict[str, tuple[str, int]] = {
+    "AE": ("United Arab Emirates", 1362491345), "AR": ("Argentina", 1279119721),
+    "AT": ("Austria", 1313615765), "AU": ("Australia", 1313616925), "BE": ("Belgium", 1266968331),
+    "BG": ("Bulgaria", 1362494565), "BO": ("Bolivia", 1362495515), "BR": ("Brazil", 1111141961),
+    "CA": ("Canada", 1652248171), "CH": ("Switzerland", 1313617925), "CI": ("Ivory Coast", 1362497945),
+    "CL": ("Chile", 1279119121), "CO": ("Colombia", 1116188451), "CR": ("Costa Rica", 1313618455),
+    "CZ": ("Czech Republic", 1266969571), "DE": ("Germany", 1111143121), "DK": ("Denmark", 1313618905),
+    "DZ": ("Algeria", 1362501015), "EC": ("Ecuador", 1362501235), "EE": ("Estonia", 1221037201),
+    "EG": ("Egypt", 1362501615), "ES": ("Spain", 1116190041), "FI": ("Finland", 1221034071),
+    "FR": ("France", 1109890291), "GB": ("UK", 1111142221), "GT": ("Guatemala", 1279118671),
+    "HN": ("Honduras", 1116190301), "HR": ("Croatia", 1266971131), "HU": ("Hungary", 1362506695),
+    "ID": ("Indonesia", 1116188761), "IE": ("Ireland", 1313619455), "IL": ("Israel", 1362507345),
+    "IT": ("Italy", 1116187241), "JM": ("Jamaica", 1362508575), "JO": ("Jordan", 1362508765),
+    "JP": ("Japan", 1362508955), "KE": ("Kenya", 1362509215), "KR": ("South Korea", 1362510315),
+    "LB": ("Lebanon", 1362511155), "LT": ("Lithuania", 1221037371), "LV": ("Latvia", 1221037511),
+    "MA": ("Morocco", 1362512715), "MX": ("Mexico", 1111142361), "MY": ("Malaysia", 1362515675),
+    "NG": ("Nigeria", 1362516565), "NL": ("Netherlands", 1266971851), "NO": ("Norway", 1313619885),
+    "PE": ("Peru", 1362518525), "PH": ("Philippines", 1362518895), "PL": ("Poland", 1266972311),
+    "PT": ("Portugal", 1362519755), "PY": ("Paraguay", 1362520135), "RO": ("Romania", 1279117071),
+    "RS": ("Serbia", 1266972981), "SA": ("Saudi Arabia", 1362521285), "SE": ("Sweden", 1313620305),
+    "SG": ("Singapore", 1313620765), "SI": ("Slovenia", 1362522355), "SK": ("Slovakia", 1266973701),
+    "SN": ("Senegal", 1362523075), "SV": ("El Salvador", 1362523615), "TH": ("Thailand", 1362524475),
+    "TN": ("Tunisia", 1362525375), "TR": ("Turkey", 1116189071), "UA": ("Ukraine", 1362526495),
+    "US": ("USA", 1313621735), "VE": ("Venezuela", 1362527605), "ZA": ("South Africa", 1362528775),
+}
+# Countries whose music is close enough to a neighbour's chart, where Deezer has none
+NEIGHBOUR_CHARTS = {"BA": "HR", "ME": "RS", "MK": "RS", "XK": "RS", "LU": "BE", "LI": "CH", "NZ": "AU",
+                    "BY": "UA", "MD": "RO"}
+
+
+def popular_artists(tracks: list[dict], limit: int) -> list[dict]:
+    """The artists of chart tracks, those with the most tracks first, then in chart order."""
+    artists = [t["artist"] for t in tracks if t.get("artist")]
+    counts = Counter(a["id"] for a in artists)
+    unique = list({a["id"]: a for a in reversed(artists)}.values())[::-1]
+    unique.sort(key=lambda a: -counts[a["id"]])
+    return [artist_shape(a) for a in unique[:limit]]
+
+
+def chart_for(country: str | None) -> tuple[str, int] | None:
+    """The country's chart playlist, the worldwide one for a country without its own,
+    or None when the app didn't say which country it's in."""
+    if not country:
+        return None
+    code = country.strip().upper()
+    code = code if code in COUNTRY_CHARTS else NEIGHBOUR_CHARTS.get(code, code)
+    return COUNTRY_CHARTS.get(code, ("Worldwide", WORLDWIDE_CHART))
+
+
+async def get_charts(country: str | None = None, limit: int = 25) -> dict:
+    """The charts of the listener's [country], an ISO code such as "GB".
+
+    Apps from before they sent their country get /chart/0, the server's country's."""
     # The home page works without charts, so they must not fail it
     try:
-        chart = await _get("/chart/0", limit=limit)
+        chart = chart_for(country)
+        if chart is None:
+            data = await _get("/chart/0", limit=limit)
+            return {
+                "tracks": [track_shape(t) for t in data["tracks"]["data"]],
+                "artists": [artist_shape(a) for a in data["artists"]["data"]],
+                "playlists": [_playlist_shape(p) for p in data["playlists"]["data"]],
+            }
+        name, playlist_id = chart
+        tracks, playlists = await asyncio.gather(
+            _get(f"/playlist/{playlist_id}/tracks", limit=100),
+            _get(f"/user/{DEEZER_CHARTS_USER}/playlists", limit=200),
+        )
     except (DeezerError, httpx.HTTPError) as error:
         log.warning("Deezer charts unavailable: %s", error)
         return {"tracks": [], "artists": [], "playlists": []}
+    tracks = [t for t in tracks.get("data") or [] if t.get("readable", True)]
+    # The country's own chart first, then its other charts, then the worldwide ones
+    owned = playlists.get("data") or []
+    own = [p for p in owned if p["id"] == playlist_id]
+    named = re.compile(rf"\b{re.escape(name)}\b", re.IGNORECASE)
+    local = [p for p in owned if named.search(p.get("title", "")) and p["id"] != playlist_id]
+    world = [p for p in owned if "worldwide" in p.get("title", "").lower() and p["id"] != playlist_id]
     return {
-        "tracks": [track_shape(t) for t in chart["tracks"]["data"]],
-        "artists": [artist_shape(a) for a in chart["artists"]["data"]],
-        "playlists": [_playlist_shape(p) for p in chart["playlists"]["data"]],
+        "tracks": [track_shape(t) for t in tracks[:limit]],
+        "artists": popular_artists(tracks, limit),
+        "playlists": [_playlist_shape(p) for p in {p["id"]: p for p in own + local + world}.values()],
     }
 
 

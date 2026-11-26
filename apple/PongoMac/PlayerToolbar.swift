@@ -12,10 +12,8 @@ struct PlayerToolbar: ToolbarContent {
         let player = model.player
         let router = model.router
         let hasTrack = player.current != nil
+        // Shuffle and repeat are by the queue, in the full player and in the Controls menu
         ToolbarItemGroup(placement: .navigation) {
-            Button(L10n.shuffle, systemImage: "shuffle") { player.setShuffle(!player.queue.shuffleEnabled) }
-                .foregroundStyle(player.queue.shuffleEnabled ? Color.pongoTeal : .primary)
-                .disabled(!player.canShuffle || !hasTrack)
             Button(L10n.previous, systemImage: "backward.fill", action: player.skipToPrevious)
                 .disabled(!hasTrack)
             Button(player.isPlaying ? L10n.pause : L10n.play, systemImage: player.isPlaying ? "pause.fill" : "play.fill",
@@ -25,11 +23,6 @@ struct PlayerToolbar: ToolbarContent {
             .disabled(!hasTrack)
             Button(L10n.next, systemImage: "forward.fill", action: player.skipToNext)
                 .disabled(!hasTrack)
-            Button(L10n.repeatmode, systemImage: player.queue.repeatMode == .one ? "repeat.1" : "repeat") {
-                player.cycleRepeatMode()
-            }
-            .foregroundStyle(player.queue.repeatMode == .off ? Color.primary : Color.pongoTeal)
-            .disabled(!hasTrack)
         }
         ToolbarItem(placement: .principal) {
             NowPlayingCapsule()
@@ -39,16 +32,27 @@ struct PlayerToolbar: ToolbarContent {
         ToolbarItemGroup(placement: .primaryAction) {
             VolumeControl()
             RoutePicker().frame(width: 28, height: 28)
-            Button {
-                model.showsListenTogether = true
-            } label: {
-                let others = model.listening.othersPresent.count
-                Label(
-                    others > 0 ? "\(L10n.listentogether) (\(others))" : L10n.listentogether,
-                    systemImage: model.listening.isActive ? "person.2.wave.2.fill" : "person.2.wave.2")
+            // Playing elsewhere: with friends, or on another of the user's devices
+            let others = model.listening.othersPresent.count
+            let listenLabel = Label(
+                others > 0 ? "\(L10n.listentogether) (\(others))" : L10n.listentogether,
+                systemImage: model.listening.isActive ? "person.2.wave.2.fill" : "person.2.wave.2")
+            if model.handoff.devices.isEmpty {
+                Button { model.showsListenTogether = true } label: { listenLabel }
+                    .foregroundStyle(model.listening.isActive ? Color.pongoTeal : .primary)
+                    .help(model.listening.summary)
+            } else {
+                Menu {
+                    Button(L10n.listentogether + "…", systemImage: "person.2.wave.2") { model.showsListenTogether = true }
+                    TransferMenuItems()
+                } label: {
+                    listenLabel
+                } primaryAction: {
+                    model.showsListenTogether = true
+                }
+                .foregroundStyle(model.listening.isActive ? Color.pongoTeal : .primary)
+                .help("\(L10n.listentogether) · \(L10n.transferto)")
             }
-            .foregroundStyle(model.listening.isActive ? Color.pongoTeal : .primary)
-            .help(model.listening.summary)
             Button(L10n.lyrics, systemImage: router.inspector == .lyrics ? "quote.bubble.fill" : "quote.bubble") {
                 router.toggleInspector(.lyrics)
             }
@@ -89,7 +93,7 @@ private struct NowPlayingCapsule: View {
                             }
                         }
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.tappable)
                 .help(L10n.openplayer)
                 VStack(spacing: 0) {
                     Marquee(text: item.track.name, alignment: .center)

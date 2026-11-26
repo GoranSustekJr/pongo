@@ -32,21 +32,6 @@ final class NowPlayingModel {
     /// without synced lyrics.
     var showsSynced: Bool { !syncedLines.isEmpty || plainLines.isEmpty }
 
-    /// The current track's cover blurred into its colors, behind the mini
-    /// player. Kept here so the mini player doesn't fade it in again each
-    /// time it's rebuilt.
-    private(set) var backdrop: PlatformImage?
-    private var backdropURL: URL?
-
-    /// Blurs the cover at [url] into [backdrop], unless it's the one there.
-    func loadBackdrop(_ url: URL?) async {
-        guard url != backdropURL else { return }
-        backdropURL = url
-        let image = await url.asyncMap { await ImagePipeline.shared.blurred(for: $0) } ?? nil
-        guard backdropURL == url else { return }
-        withAnimation(.easeInOut(duration: 0.5)) { backdrop = image }
-    }
-
     /// A pale color of the current cover, for the player's sliders and the
     /// buttons that are on.
     private(set) var accent = Color.white

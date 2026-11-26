@@ -132,9 +132,14 @@
                 case "favourites": model.router.section = .favourites
                 case "sleep": model.router.section = .sleepAlarms
                 case "search": model.router.search(for: "Queen")
+                case "playlists": model.router.section = .allPlaylists
                 case "import", "importdone":
                     model.imports.showDemo(results: screen == "importdone")
-                    model.router.section = .importPlaylists
+                    model.router.section = .allPlaylists
+                    Task {
+                        try? await Task.sleep(for: .milliseconds(100))
+                        model.router.path = [.importPlaylists]
+                    }
                 default: break
                 }
                 return
@@ -160,9 +165,13 @@
             case "favourites":
                 model.router.tab = .library
                 model.router.library = [.favourites]
-            case "settings": model.router.tab = .settings
+            case "settings": model.router.showsSettings = true
+            case "search": model.router.tab = .search
+            case "playlists":
+                model.router.tab = .library
+                model.router.library = [.allPlaylists]
             case "preferences":
-                model.router.tab = .settings
+                model.router.showsSettings = true
                 model.router.settings = [.preferences]
             case "sleep":
                 model.router.tab = .library

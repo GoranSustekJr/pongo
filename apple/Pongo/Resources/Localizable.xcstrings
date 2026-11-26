@@ -232,6 +232,52 @@
         }
       }
     },
+    "afterthat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After that"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anschließend"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nakon toga"
+          }
+        }
+      }
+    },
+    "afterthatdetail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Songs added after the list you started"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Songs nach der gestarteten Liste"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pjesme nakon popisa koji si pokrenuo"
+          }
+        }
+      }
+    },
     "aheadofhost": {
       "extractionState": "manual",
       "localizations": {
@@ -619,6 +665,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Odsutan/na"
+          }
+        }
+      }
+    },
+    "back": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurück"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Natrag"
           }
         }
       }
@@ -2095,6 +2164,29 @@
         }
       }
     },
+    "currentsong": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current Song"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktueller Song"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trenutna pjesma"
+          }
+        }
+      }
+    },
     "dailymix": {
       "extractionState": "manual",
       "localizations": {
@@ -2394,6 +2486,29 @@
         }
       }
     },
+    "downloaded": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloaded"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geladen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preuzeto"
+          }
+        }
+      }
+    },
     "downloadfailed": {
       "extractionState": "manual",
       "localizations": {
@@ -2459,6 +2574,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Preuzimanje"
+          }
+        }
+      }
+    },
+    "downloadremoved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download removed"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download entfernt"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preuzimanje uklonjeno"
+          }
+        }
+      }
+    },
+    "downloads": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloads"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloads"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preuzimanja"
           }
         }
       }
@@ -3494,6 +3655,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Preuzmi na poslužitelj"
+          }
+        }
+      }
+    },
+    "getqueuefrom": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play here from"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hierher holen von"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preuzmi ovdje s"
+          }
+        }
+      }
+    },
+    "go": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Go"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehe zu"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idi"
           }
         }
       }
@@ -6413,6 +6620,29 @@
         }
       }
     },
+    "mute": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mute"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ton aus"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Isključi zvuk"
+          }
+        }
+      }
+    },
     "name": {
       "extractionState": "manual",
       "localizations": {
@@ -7241,6 +7471,29 @@
         }
       }
     },
+    "nowplayingon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Now playing on"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läuft jetzt auf"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sada svira na"
+          }
+        }
+      }
+    },
     "off": {
       "extractionState": "manual",
       "localizations": {
@@ -7904,6 +8157,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pozadina detalja reprodukcije će se dinamički mijenjati"
+          }
+        }
+      }
+    },
+    "playingfrom": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Playing from"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiedergabe von"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svira s uređaja"
           }
         }
       }
@@ -8851,6 +9127,52 @@
         }
       }
     },
+    "removedownload": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Download"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download entfernen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ukloni preuzimanje"
+          }
+        }
+      }
+    },
+    "removedownloadbody": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The songs are deleted from this device, except those an offline playlist or another downloaded playlist still holds. They keep playing online."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Songs werden von diesem Gerät gelöscht, außer denen, die noch in einer Offline-Playlist oder einer anderen geladenen Playlist sind. Online spielen sie weiter."
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pjesme se brišu s ovog uređaja, osim onih koje još drži neki izvanmrežni ili drugi preuzeti popis. I dalje se sviraju online."
+          }
+        }
+      }
+    },
     "removefromdownloaded": {
       "extractionState": "manual",
       "localizations": {
@@ -9702,6 +10024,52 @@
         }
       }
     },
+    "seekback": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back 10 Seconds"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 Sekunden zurück"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 sekundi natrag"
+          }
+        }
+      }
+    },
+    "seekforward": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forward 10 Seconds"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 Sekunden vor"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "10 sekundi naprijed"
+          }
+        }
+      }
+    },
     "selectall": {
       "extractionState": "manual",
       "localizations": {
@@ -10231,6 +10599,29 @@
         }
       }
     },
+    "showalbum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Album"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Album anzeigen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikaži album"
+          }
+        }
+      }
+    },
     "showallsongs": {
       "extractionState": "manual",
       "localizations": {
@@ -10250,6 +10641,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Prikaži sve"
+          }
+        }
+      }
+    },
+    "showartist": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Artist"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Künstler anzeigen"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prikaži izvođača"
           }
         }
       }
@@ -11772,6 +12186,52 @@
         }
       }
     },
+    "transferfailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't transfer the music"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Musik konnte nicht übertragen werden"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glazbu nije moguće prebaciti"
+          }
+        }
+      }
+    },
+    "transferto": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transfer to"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übertragen auf"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prebaci na"
+          }
+        }
+      }
+    },
     "translationunavailable": {
       "extractionState": "manual",
       "localizations": {
@@ -11929,6 +12389,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ne sviđa mi se"
+          }
+        }
+      }
+    },
+    "unmute": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unmute"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ton an"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uključi zvuk"
           }
         }
       }
@@ -12688,6 +13171,29 @@
           "stringUnit": {
             "state": "translated",
             "value": "Možeš"
+          }
+        }
+      }
+    },
+    "yourdevices": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your devices"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Geräte"
+          }
+        },
+        "hr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tvoji uređaji"
           }
         }
       }

@@ -108,7 +108,8 @@ async def get_recommendations(request: Request):
         deezer.get_genres(data.get("category_num", 20)),
         deezer.get_tracks(history),
         deezer.get_new_releases(),
-        deezer.get_charts(),
+        # Sent by apps since they ask for the listener's country's charts
+        deezer.get_charts(data.get("country") if isinstance(data.get("country"), str) else None),
     )
     return {
         "history": {"tracks": history_tracks} if history else None,
